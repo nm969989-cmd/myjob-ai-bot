@@ -984,12 +984,13 @@ def log_job(url, job_text, success, reason="", is_failed=False):
         if success:
             stats["applied"] += 1
             today_str = datetime.now().strftime("%Y-%m-%d")
-            # Streak Logic
-            if stats["last_apply_date"] != today_str:
-                if stats["last_apply_date"]:
-                    last_date = datetime.strptime(stats["last_apply_date"], "%Y-%m-%d")
+            # Streak Logic (use .get so older stats files without this key don't crash)
+            last_apply_date = stats.get("last_apply_date", "")
+            if last_apply_date != today_str:
+                if last_apply_date:
+                    last_date = datetime.strptime(last_apply_date, "%Y-%m-%d")
                     if (datetime.now() - last_date).days <= 1:
-                        stats["current_streak"] += 1
+                        stats["current_streak"] = stats.get("current_streak", 0) + 1
                     else:
                         stats["current_streak"] = 1
                 else:
@@ -2102,8 +2103,14 @@ def run_playwright_apply(job_url, job_description=""):
                 
                 # Fill standard fields
                 for field in fields:
-                    selector = field["selector"]
-                    value = field["value"]
+                    # Defensive access: a malformed AI field entry must skip one
+                    # field, not abort the entire application.
+                    if not isinstance(field, dict):
+                        continue
+                    selector = field.get("selector")
+                    value = field.get("value")
+                    if not selector:
+                        continue
                     
                     # Detect __ASK_USER__ fields — Zero-Interruption Auto-Hallucinate
                     if str(value).startswith("__ASK_USER__:"):
@@ -2213,7 +2220,8 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                     if str(value) == "EliteJobBot@2026!":
                         display_value = "******** (Vault Password)"
                     else:
-                        display_value = value[:40] + "..." if len(value) > 40 else value
+                        value_str = str(value)
+                        display_value = value_str[:40] + "..." if len(value_str) > 40 else value_str
                     try:
                         locator = page.locator(selector).first
                         if locator.is_visible():
@@ -2896,7 +2904,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                 pass
 
 # --- 5. TELEGRAM CHANNEL SCRAPER (PUBLIC WEB PREVIEW) ---
-def scrape_single_channel(channel_name, applied_jobs, active_chat_id):
+def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2):
     """
     Scrapes one Telegram public channel and triggers applications for new jobs.
     Returns (new_jobs_found, attempts_this_cycle).
@@ -2929,7 +2937,11 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id):
         print(f"[Scraper] @{channel_name} → Fetch error: {e}")
         return 0, 0
 
-    for msg in reversed(messages):
+    # Only inspect the latest 5 messages per channel for lightning fast cloud runs
+    recent_messages = messages[-5:] if len(messages) > 5 else messages
+    for msg in reversed(recent_messages):
+        if attempts_this_cycle >= max_jobs:
+            break
         message_text = msg.get_text(separator=" ")
 
         # --- IMPROVED LINK EXTRACTION ---
@@ -2959,6 +2971,8 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id):
             continue
 
         for job_link in urls_found:
+            if attempts_this_cycle >= max_jobs:
+                break
             job_link = job_link.rstrip(").,!*'\"")
             if job_link in applied_jobs:
                 continue
@@ -4427,9 +4441,10 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                         reader = csv.reader(f)
                         next(reader, None) # skip header
                         for row in reader:
-                            if len(row) > 2:
+                            # CSV columns: [Date, Job Title, URL, Status, Notes]
+                            if len(row) > 3:
                                 total_logs += 1
-                                if row[2] == "Applied":
+                                if "Applied" in row[3]:
                                     success_count += 1
             except:
                 pass

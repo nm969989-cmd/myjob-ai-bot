@@ -505,7 +505,7 @@ def scrape_foundit():
             "Referer": "https://www.foundit.in/",
             "Origin": "https://www.foundit.in",
         }
-        url = "https://www.foundit.in/middleware/jobsearch/v2/search?query=software+engineer+fresher&location=Tamil+Nadu&experience=0-1&limit=20"
+        url = "https://www.foundit.in/middleware/jobsearch/v2/search?query=software+engineer+fresher&location=Tamil+Nadu&experience=0-1&limit=20&sort=1"
         resp = requests.get(url, headers=headers, timeout=15)
 
         if resp.status_code != 200:
@@ -800,14 +800,17 @@ def run_radar():
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(scrapers)) as executor:
         future_to_name = {executor.submit(func): name for name, func in scrapers.items()}
-        for future in concurrent.futures.as_completed(future_to_name):
-            name = future_to_name[future]
-            try:
-                res = future.result()
-                if res:
-                    all_jobs.extend(res)
-            except Exception as e:
-                print(f"  [Radar Concurrent] Scraper '{name}' raised exception: {e}")
+        try:
+            for future in concurrent.futures.as_completed(future_to_name, timeout=35):
+                name = future_to_name[future]
+                try:
+                    res = future.result()
+                    if res:
+                        all_jobs.extend(res)
+                except Exception as e:
+                    print(f"  [Radar Concurrent] Scraper '{name}' raised exception: {e}")
+        except concurrent.futures.TimeoutError:
+            print("  [Radar] ThreadPool timeout (35s) reached. Proceeding with collected jobs.")
 
     new_jobs = []
     for job in all_jobs:
@@ -816,6 +819,17 @@ def run_radar():
             new_jobs.append(job)
             mark_seen(link)
             seen_jobs.add(link)
+
+    # Sort newest-posted first. date_posted is normally "YYYY-MM-DD" but some
+    # sources pass a full ISO timestamp; take the first 10 chars and fall back
+    # to an empty string (sorts last) if it can't be parsed.
+    def _posted_key(job):
+        raw = str(job.get("date_posted", ""))[:10]
+        try:
+            return datetime.strptime(raw, "%Y-%m-%d")
+        except Exception:
+            return datetime.min
+    new_jobs.sort(key=_posted_key, reverse=True)
 
     print(f"\n[Radar] Total new unique jobs: {len(new_jobs)}")
 
