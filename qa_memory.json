@@ -1,0 +1,17 @@
+{
+    "What are your salary expectations?": "30000",
+    "What is your notice period / When can you start?": "1 week",
+    "Are you willing to relocate for this position?": "yes",
+    "How did you hear about this opportunity?": "LinkedIn",
+    "Why do you want to work here? / Why are you a good fit?": "I am a highly motivated engineer passionate about building scalable software and contributing to innovative, fast-paced teams. I thrive in environments where I can tackle complex technical challenges, collaborate with talented professionals, and continuously grow my skill set to deliver high-quality products.",
+    "What is your highest level of education?": "Bachelor's Degree in Information Technology",
+    "Are you legally authorized to work in the country where this job is located?": "yes",
+    "Will you now or in the future require sponsorship for employment visa status?": "No",
+    "How many years of professional experience do you have in software development / IT?": "Entry level / 0 years",
+    "Describe a difficult technical challenge you faced and how you solved it.": "During a recent project, I encountered a data synchronization issue where the frontend state was falling out of sync with the backend. I systematically debugged the issue, identified a race condition in the API calls, and implemented a robust debouncing mechanism that completely resolved the inconsistency.",
+    "Are you open to contract or temporary roles, or only full-time permanent?": "Open to both full-time permanent and contract roles.",
+    "Have you ever been employed by this company or its subsidiaries before?": "No",
+    "Do you have an active Security Clearance?": "No",
+    "Do you require any reasonable accommodations to perform the essential duties of this job?": "No",
+    "What are your preferred pronouns?": "He/Him"
+}

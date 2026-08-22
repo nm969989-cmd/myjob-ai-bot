@@ -1,0 +1,66 @@
+name: Telegram Job Bot Cloud Automation
+
+on:
+  schedule:
+    # Runs every 1 hour (24/7/365) — 100% Free on Public / Fits in Free Tier Private
+    - cron: '0 * * * *'
+  workflow_dispatch: # Allows manual 1-click trigger from GitHub Actions dashboard
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - '**.md'
+      - 'applied_jobs_log.csv'
+      - 'radar_seen_jobs.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  run-job-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Check out repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🌐 Install Playwright Chromium with System Dependencies
+        run: |
+          python -m playwright install --with-deps chromium
+
+      - name: 🚀 Run Telegram Job Bot Cloud Cycle
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          TARGET_CHANNEL: ${{ secrets.TARGET_CHANNEL || 'JobSkull' }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          BOT_EMAIL: ${{ secrets.BOT_EMAIL }}
+          BOT_EMAIL_PASSWORD: ${{ secrets.BOT_EMAIL_PASSWORD }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+        run: |
+          python cloud_runner.py
+
+      - name: 💾 Commit & Push Application Logs
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add applied_jobs_log.csv radar_seen_jobs.txt chat_id.json 2>/dev/null || true
+          git commit -m "🤖 Cloud Run: Auto-updated applied jobs & seen radar [skip ci]" || echo "No changes to commit"
+          git push || echo "Push failed or already up to date"

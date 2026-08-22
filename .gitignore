@@ -1,0 +1,49 @@
+# Secrets - never push these
+.env
+chat_id.json
+DEPLOY.bat
+START_BOT.bat
+START_BACKGROUND.vbs
+STOP_BOT.bat
+deploy_helper.js
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs & debug
+debug.log
+*.log
+
+# Seen jobs memory (regenerated)
+radar_seen_jobs.txt
+
+# Test/scratch files
+test_*.py
+scratch_*.py
+*.png
+*.pdf
+!resume.pdf
+step_*.png
+resume_*.png
+after_submit.png
+test_after.png
+test_before.png
+test_final.png
+error_screenshot.png
+temp_js.js
+
+# Upgrade scripts (not needed in cloud)
+upgrade_*.py
+patch.py
+fix.py
+inject.py
+extract.py
+save_session.py
+save_instahyre_session.py
+generate_sample_pdfs.py
+
+# Local chrome/browser profiles and configurations
+chrome_profile/
+chrome_profile_session/

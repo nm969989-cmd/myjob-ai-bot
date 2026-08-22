@@ -1,0 +1,776 @@
+{
+  "last_scan": "2026-08-22 07:02:46",
+  "total": 77,
+  "jobs": [
+    {
+      "title": "Lead Product Designer",
+      "company": "HighLevel",
+      "link": "https://remoteOK.com/remote-jobs/remote-lead-product-designer-highlevel-1136841",
+      "location": "Remote 🌍",
+      "source": "RemoteOK 🌏",
+      "date_posted": "2026-08-17",
+      "description": "About us HighLevel is an AI-powered business operating system that gives agencies, entrepreneurs and SMBs the infrastruc...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Staff Software Development Engineer SDM",
+      "company": "Delinea",
+      "link": "https://remoteOK.com/remote-jobs/remote-staff-software-development-engineer-sdm-delinea-1136796",
+      "location": "Remote 🌍",
+      "source": "RemoteOK 🌏",
+      "date_posted": "2026-08-16",
+      "description": "About Delinea:Delinea is a pioneer in securing human and machine identities through intelligent, centralized authorizati...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer Case Execution",
+      "company": "Pivotal Health",
+      "link": "https://remoteOK.com/remote-jobs/remote-senior-software-engineer-case-execution-pivotal-health-1136795",
+      "location": "Remote 🌍",
+      "source": "RemoteOK 🌏",
+      "date_posted": "2026-08-16",
+      "description": "About Pivotal HealthPivotal Health is the leading technology platform that helps healthcare providers get paid fairly in...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Backend Engineer, Flag Delivery",
+      "company": "LaunchDarkly",
+      "link": "https://jobicy.com/jobs/151348-backend-engineer-flag-delivery",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "About the Job: LaunchDarkly is hiring a Backend Software Engineer to join our Flag Delivery team. Serving data to our cu...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Technical Lead Manager",
+      "company": "Homebound",
+      "link": "https://jobicy.com/jobs/151337-technical-lead-manager",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "About Us: Homebound is on a mission to make it possible for anyone, anywhere, to build a home using technology. Created ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Engineering Manager, Product Engineering",
+      "company": "Boulevard",
+      "link": "https://jobicy.com/jobs/151329-engineering-manager-product-engineering",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "Who is Boulevard? Boulevard provides the first and only client experience platform for appointment-based, self-care busi...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Director of Engineering, Data",
+      "company": "Boulevard",
+      "link": "https://jobicy.com/jobs/151326-director-of-engineering-data",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "Who is Boulevard? Boulevard provides the first and only client experience platform for appointment-based, self-care busi...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Data Platform Engineer",
+      "company": "Astronomer",
+      "link": "https://jobicy.com/jobs/151314-data-platform-engineer",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "Astronomer empowers data teams to bring mission-critical software, analytics, and AI to life and is the company behind A...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Frontend Engineer – Growth (USA Only - 100% Remote)",
+      "company": "Close",
+      "link": "https://jobicy.com/jobs/151313-senior-frontend-engineer-growth-usa-only-100-remote",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "About Us Since 2013, we’ve been building a CRM that gets out of your way and helps your team sell more, faster. Now we’r...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer – Backend (USA Only - 100% Remote)",
+      "company": "Close",
+      "link": "https://jobicy.com/jobs/151308-senior-software-engineer-backend-usa-only-100-remote",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "About Us Since 2013, we’ve been building a CRM that gets out of your way and helps your team sell more, faster. Now we’r...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "AI Software Engineer II, Government Technology",
+      "company": "ICON plc",
+      "link": "https://jobicy.com/jobs/151298-ai-software-engineer-ii-government-technology",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "ICON is looking for a pragmatic builder who has made the leap from traditional software engineering into the emerging wo...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "Tremendous",
+      "link": "https://jobicy.com/jobs/151290-senior-software-engineer-3",
+      "location": "LATAM,  Canada,  USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "Tremendous is the global platform built for businesses to send thousands of payouts to anyone, anywhere, for free. We're...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Customer Solution Engineer - AI Native/Consumption Quote to Cash",
+      "company": "Zuora",
+      "link": "https://jobicy.com/jobs/149450-customer-solution-engineer-ai-native-consumption-quote-to-cash",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-21",
+      "description": "About ZuoraAt Zuora, we help businesses grow smarter and adapt faster. Our platform powers modern business models — from...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Staff AI Engineer",
+      "company": "Acquia, Inc.",
+      "link": "https://jobicy.com/jobs/151267-staff-ai-engineer",
+      "location": "Canada",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "About Acquia Acquia empowers the world’s most ambitious brands to create digital customer experiences that matter. With ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Generative Media Engineer, AI Social - US",
+      "company": "Luxury Presence",
+      "link": "https://jobicy.com/jobs/151260-generative-media-engineer-ai-social-us",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "Luxury Presence is building the AI growth platform for real estate. Backed by Bessemer Venture Partners and other top in...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Generative Media Engineer, AI Social - CANADA",
+      "company": "Luxury Presence",
+      "link": "https://jobicy.com/jobs/151258-generative-media-engineer-ai-social-canada",
+      "location": "Canada",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "Luxury Presence is building the AI growth platform for real estate. Backed by Bessemer Venture Partners and other top in...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Engineering Manager",
+      "company": "ClickUp",
+      "link": "https://jobicy.com/jobs/151257-engineering-manager-2",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "At ClickUp, we're building the future of work: the first truly converged AI workspace unifying tasks, docs, chat, calend...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Backend Engineer",
+      "company": "ClickUp",
+      "link": "https://jobicy.com/jobs/151253-senior-backend-engineer-2",
+      "location": "Czechia,  Hungary,  Ukraine",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "At ClickUp, we're building the future of work: the first truly converged AI workspace unifying tasks, docs, chat, calend...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Engineering Manager, Maps & Search - US",
+      "company": "Luxury Presence",
+      "link": "https://jobicy.com/jobs/151251-engineering-manager-maps-search-us",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "Luxury Presence is building the AI growth platform for real estate. Backed by Bessemer Venture Partners and other top in...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Engineering Manager (Frontend)",
+      "company": "ClickUp",
+      "link": "https://jobicy.com/jobs/151249-engineering-manager-frontend",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "At ClickUp, we're building the future of work: the first truly converged AI workspace unifying tasks, docs, chat, calend...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Engineering Manager, Maps & Search - CANADA",
+      "company": "Luxury Presence",
+      "link": "https://jobicy.com/jobs/151246-engineering-manager-maps-search-canada",
+      "location": "Canada",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "Luxury Presence is building the AI growth platform for real estate. Backed by Bessemer Venture Partners and other top in...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Staff Backend Engineer, Hierarchy",
+      "company": "ClickUp",
+      "link": "https://jobicy.com/jobs/151239-staff-backend-engineer-hierarchy",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "At ClickUp, we're building the future of work: the first truly converged AI workspace unifying tasks, docs, chat, calend...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Data Engineer | NDA",
+      "company": "GT",
+      "link": "https://jobicy.com/jobs/151233-data-engineer-nda",
+      "location": "Poland",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "GT was founded in 2019 by a former Apple, Nest, and Google executive. GT’s mission is to connect the world’s best talent...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Principal Engineer TL/M - Software Development (PaaS)",
+      "company": "Aviatrix",
+      "link": "https://jobicy.com/jobs/151229-principal-engineer-tl-m-software-development-paas",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "WHO WE ARE: Aviatrix® is pioneering the Cloud Native Security Fabric — the architecture the Containment Era requires. Th...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "C++/Rust Graphics and Windowing System Software Engineer - Mir",
+      "company": "Canonical Ltd.",
+      "link": "https://jobicy.com/jobs/151197-c-rust-graphics-and-windowing-system-software-engineer-mir",
+      "location": "APAC,  EMEA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "Canonical is a leading provider of open source software and operating systems to the global enterprise and technology ma...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Database Engineer",
+      "company": "Ruby Labs",
+      "link": "https://jobicy.com/jobs/146614-database-engineer",
+      "location": "Europe,  Türkiye",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-20",
+      "description": "About usRuby Labs is a leading tech company that creates and operates innovative consumer products. We offer a diverse r...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Fullstack Engineer",
+      "company": "Dispatch",
+      "link": "https://jobicy.com/jobs/151178-senior-fullstack-engineer-2",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-19",
+      "description": "About Us The financial advisory industry is a $80T market in the US, but has seen little technological innovation compar...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Fullstack Engineer",
+      "company": "Monks",
+      "link": "https://jobicy.com/jobs/151168-fullstack-engineer",
+      "location": "LATAM,  Brazil",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-19",
+      "description": "Please note that we will never request payment or bank account information at any stage of the recruitment process. As w...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Principal Engineer - Platform & Data",
+      "company": "Masabi",
+      "link": "https://jobicy.com/jobs/151159-principal-engineer-platform-data",
+      "location": "UK",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-19",
+      "description": "About Us_// At Masabi, we’re driving the fare payment revolution, powering the journeys of millions all over the world. ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "AI Tooling Engineer",
+      "company": "Qventus",
+      "link": "https://jobicy.com/jobs/151154-ai-tooling-engineer",
+      "location": "USA",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-19",
+      "description": "On this journey for over 12 years, Qventus is leading the transformation of healthcare. We enable hospitals to focus on ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Technical Lead",
+      "company": "Masabi",
+      "link": "https://jobicy.com/jobs/151153-technical-lead",
+      "location": "Poland",
+      "source": "Jobicy 💼",
+      "date_posted": "2026-08-19",
+      "description": "About Us_// At Masabi, we’re driving the fare payment revolution, powering the journeys of millions all over the world. ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Embedded Software Engineer (m/w/d)",
+      "company": "encontec GmbH",
+      "link": "https://www.arbeitnow.com/jobs/companies/encontec-gmbh/senior-embedded-software-engineer-aalen-49241",
+      "location": "Aalen, Baden-Württemberg, Deutschland",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787355020",
+      "description": "Senior Embedded Software Engineer (m/w/d)Willkommen in der faszinierenden Welt der Optronics!Komm in unser Team und prof...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Kubernetes Administrator/Private Cloud Engineer (m/w/d)",
+      "company": "virtual7 GmbH",
+      "link": "https://www.arbeitnow.com/jobs/companies/virtual7-gmbh/remote-kubernetes-administrator-private-cloud-engineer-karlsruhe-233097",
+      "location": "Remote 🌍",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787355011",
+      "description": "Als IT-Dienstleister treiben wir die Digitalisierung des öffentlichen Sektors voran und schaffen echten Mehrwert für Mil...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "AI Solution Architect (m/w/d)",
+      "company": "virtual7 GmbH",
+      "link": "https://www.arbeitnow.com/jobs/companies/virtual7-gmbh/remote-ai-solution-architect-nurnberg-mittelfranken-115971",
+      "location": "Remote 🌍",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787355011",
+      "description": "Als IT-Dienstleister treiben wir die Digitalisierung des öffentlichen Sektors voran und schaffen echten Mehrwert für Mil...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Veeam Data Cloud Vault Solution Specialist",
+      "company": "Veeamsoftware",
+      "link": "https://www.arbeitnow.com/jobs/companies/veeamsoftware/remote-veeam-data-cloud-vault-solution-specialist-215456",
+      "location": "Remote 🌍",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787334942",
+      "description": "&lt;div class=&quot;content-intro&quot;&gt;&lt;div class=&quot;elementToProof&quot;&gt; &lt;p&gt;Veeam is the Data and A...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Full-Stack Software Engineer - Journey",
+      "company": "Ecosia",
+      "link": "https://www.arbeitnow.com/jobs/companies/ecosia/full-stack-software-engineer-journey-berlin-103466",
+      "location": "Berlin / fully remote",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787334014",
+      "description": "We are looking for a Full-Stack Software Engineer with solid frontend and backend experience to join us remotely or in o...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Werkstudent Softwareentwicklung Schwerpunkt Security (m/w/d)",
+      "company": "Meierhofer",
+      "link": "https://www.arbeitnow.com/jobs/companies/meierhofer/remote-werkstudent-softwareentwicklung-schwerpunkt-security-leipzig-124861",
+      "location": "Remote 🌍",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787333413",
+      "description": "Unsere StandorteBerlin, Hannover, Leipzig, München, Passau oder remote / im Homeoffice – die Tätigkeit ist standortunabh...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Werkstudent Data Science / Business Intelligence (m/w/d)",
+      "company": "Meierhofer",
+      "link": "https://www.arbeitnow.com/jobs/companies/meierhofer/remote-werkstudent-data-science-business-intelligence-leipzig-326594",
+      "location": "Remote 🌍",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787333413",
+      "description": "Unsere StandorteBerlin, Hannover, Leipzig, München, Passau oder remote / im Homeoffice – du kannst uns standortunabhängi...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Hackers wanted – Software Engineers",
+      "company": "freiheit.com technologies",
+      "link": "https://www.arbeitnow.com/jobs/companies/freiheitcom-technologies/hackers-wanted-software-engineers-hamburg-403221",
+      "location": "Hamburg",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787333051",
+      "description": "ABOUT OUR COMPANY &nbsp; We are an engineering organization. Our mission is to “Ship great software” and build custom, l...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Hackers wanted – Senior Software Engineer",
+      "company": "freiheit.com technologies",
+      "link": "https://www.arbeitnow.com/jobs/companies/freiheitcom-technologies/hackers-wanted-senior-software-engineer-hamburg-51509",
+      "location": "Hamburg",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787333051",
+      "description": "ABOUT OUR COMPANY &nbsp; We are an engineering organization. Our mission is to “Ship great software” and build custom, l...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Product Designer (Wallets) - 100% Remote Worldwide",
+      "company": "Tether Operations Limited",
+      "link": "https://www.arbeitnow.co.uk/jobs/companies/tether-operations-limited/senior-product-designer-wallets-100-remote-worldwide-united-kindom-71221",
+      "location": "Remote 🌍",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787347816",
+      "description": "Join Tether and Shape the Future of Digital FinanceAt Tether, we’re not just building products, we’re pioneering a globa...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Product Designer (Contract), London, UK",
+      "company": "eucalyptus",
+      "link": "https://www.arbeitnow.co.uk/jobs/companies/eucalyptus/senior-product-designer-contract-london-uk-360151",
+      "location": "",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787316940",
+      "description": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h3&gt;About Eucalyptus&lt;/h3&gt; &lt;p&gt;We&#39;re on a mission to make...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Lead Product Designer, London, UK",
+      "company": "eucalyptus",
+      "link": "https://www.arbeitnow.co.uk/jobs/companies/eucalyptus/lead-product-designer-london-uk-41660",
+      "location": "",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787316940",
+      "description": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h3&gt;About Eucalyptus&lt;/h3&gt; &lt;p&gt;We&#39;re on a mission to make...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Marketing Operations Manager",
+      "company": "Tangible",
+      "link": "https://www.arbeitnow.co.uk/jobs/companies/tangible/marketing-operations-manager-london-430330",
+      "location": "Remote 🌍",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787315482",
+      "description": "Tangible is a fast-growing, tech-driven platform providing liquidity solutions to LPs in the private markets. We combine...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Intermediate Software Engineer, Security Factory: Vulnerability Management",
+      "company": "gitlab",
+      "link": "https://www.arbeitnow.co.uk/jobs/companies/gitlab/remote-intermediate-software-engineer-security-factory-vulnerability-management-85833",
+      "location": "Remote",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787306114",
+      "description": "&lt;div class=&quot;content-intro&quot;&gt;&lt;p&gt;GitLab is the intelligent orchestration platform for DevSecOps. GitL...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Principal Product Designer",
+      "company": "Smarkets",
+      "link": "https://www.arbeitnow.co.uk/jobs/companies/smarkets/principal-product-designer-london-80415",
+      "location": "London",
+      "source": "Arbeitnow 🌐",
+      "date_posted": "1787294413",
+      "description": "Smarkets: Predicting the Future of BettingSmarkets runs one of the world’s most sophisticated prediction markets, handli...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Software Engineer III",
+      "company": "Elsevier",
+      "link": "https://www.adzuna.in/details/5851750146?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-22",
+      "description": "Job Description Are you a Systems Engineer looking for an innovative role? Do you enjoy being part of a team that works ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "Psiog",
+      "link": "https://www.adzuna.in/details/5851171194?utm_medium=api&utm_source=17a50eee",
+      "location": "Injambakkam, Chennai",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "Design, develop, and maintain scalable microservices and RESTful APIs using Node.js Build responsive, performant fronten...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Software Engineer II",
+      "company": "PDI Technologies",
+      "link": "https://www.adzuna.in/details/5851150942?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "For nearly 40 years, PDI has helped convenience retailers and petroleum wholesalers adapt to changes in the industry by ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Software Engineer",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5851150441?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we’re on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "Appian",
+      "link": "https://www.adzuna.in/details/5851148839?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "Here at Appian, our values of Intensity and Excellence define who we are. We set high standards and live up to them, ens...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5851148677?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we’re on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5851146871?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we’re on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5851143509?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we’re on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Software Engineer",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5851142083?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we’re on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Software Engineer",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5851139622?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we’re on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Lead Software Engineer - IN B",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5851135203?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we’re on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Sr. Software Engineer",
+      "company": "Cognizant",
+      "link": "https://www.adzuna.in/details/5850893686?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "Job Summary We are seeking a Sr. Software Engineer with 6 to 10 years of experience in Automotive Functional Safety. The...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5850636544?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we're on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5850636594?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we're on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Lead Software Engineer - IN B",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5850636581?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "At U.S. Bancorp India, we're on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Software Engineer 2",
+      "company": "Aditi Tech Consulting Private Limited",
+      "link": "https://www.adzuna.in/details/5850382388?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "Summary The Backend Developer is responsible for designing, developing, and maintaining cloud-native, event-driven backe...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Python Software Developer",
+      "company": "Randomtrees",
+      "link": "https://www.adzuna.in/details/5850380219?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "Roles & Responsibilities: Oversee the software engineering function, ensuring best practices, methods, and processes are...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Frontend Developer",
+      "company": "Witbloom Training Placement",
+      "link": "https://www.adzuna.in/details/5850379747?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "6 frontend development with React.js, JavaScript/TypeScript. Generative AI APIs, prompt engineering, and LLM integration...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior React Developer",
+      "company": "Mindera",
+      "link": "https://www.adzuna.in/details/5850375762?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-21",
+      "description": "Job description As a Senior React Developer, you will be tasked with creating and implementing high-quality and dynamic ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Sr. Software Engineer B2",
+      "company": "Cognizant",
+      "link": "https://www.adzuna.in/details/5848053862?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-19",
+      "description": "Job Summary This role is for a senior software engineer B2 with twelve to fifteen years of experience focused on designi...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Specialist - Software Engineering",
+      "company": "Vivantify Technology Solutions India Pvt. Ltd.",
+      "link": "https://www.adzuna.in/details/5846549704?utm_medium=api&utm_source=17a50eee",
+      "location": "Coimbatore, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-18",
+      "description": "Location : PAN INDIA Experience: 5–7 Years About The Role We are looking for a Frontend Software Engineer with strong ex...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Software Engineer Intern",
+      "company": "Zybisys Consulting Services Llp",
+      "link": "https://www.adzuna.in/details/5845820644?utm_medium=api&utm_source=17a50eee",
+      "location": "Tiruchirappalli, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-18",
+      "description": "We are looking for passionate and motivated Associate Software Engineers who are eager to work on modern technologies in...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Full Stack Developer",
+      "company": "Sisco Jobs",
+      "link": "https://www.adzuna.in/details/5844349041?utm_medium=api&utm_source=17a50eee",
+      "location": "Gopalapuram, Chennai",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-16",
+      "description": "Job Description We are Sisco Jobs, a recruitment consultancy based in Trichy, Tamil Nadu. We are hiring for the position...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Java Fullstack (Angular) Developer",
+      "company": "Infosys",
+      "link": "https://www.adzuna.in/details/5843020167?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-15",
+      "description": "Primary skills:Technology->Java ; Information Management Tools,Technology->Reactive Programming->react JS,Technology->UI...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Software Engineer",
+      "company": "U.S. Bank",
+      "link": "https://www.adzuna.in/details/5841945152?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-14",
+      "description": "At U.S. Bancorp India, we’re on a journey to do our best. We believe it takes all of us to bring our shared ambition to ...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Software Engineer - Full Stack Development",
+      "company": "Kyndryl",
+      "link": "https://www.adzuna.in/details/5841438605?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-14",
+      "description": "Partially Remote Bangalore, Karnataka, India Hyderabad, Telangana, India Chennai, Tamil Nadu, India Greater Noida, Uttar...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior React Native Engineer with Spring boot",
+      "company": "Expleo Solutions Limited",
+      "link": "https://www.adzuna.in/details/5841126388?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-14",
+      "description": "About the job We are looking for a Senior React Native engineer with 7 years of total experience and passion for buildin...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Java React Developer",
+      "company": "Infosys",
+      "link": "https://www.adzuna.in/details/5837019561?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-11",
+      "description": "Min. 3 years of relevant experience Must have design experience using best practices, Design Patterns, SDLC, OOP, OOD Mu...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "UI - Full Stack Developer 2",
+      "company": "InfoBeans Systems India Private Limited",
+      "link": "https://www.adzuna.in/details/5831396206?utm_medium=api&utm_source=17a50eee",
+      "location": "Chennai, Tamil Nadu",
+      "source": "Adzuna India 🇮🇳",
+      "date_posted": "2026-08-07",
+      "description": "Task Description: • University Degree in Computer Science, Information Systems, Business Administration, or related fiel...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Data Engineer",
+      "company": "Lemon.io",
+      "link": "https://remotive.com/remote-jobs/software-development/senior-data-engineer-2091097",
+      "location": "Remote 🌍",
+      "source": "Remotive 🚀",
+      "date_posted": "2026-08-19",
+      "description": "Are you a talented Senior Data Engineer looking for a remote job that lets you show your skills and get decent compensat...",
+      "found_at": "2026-08-22 07:02"
+    },
+    {
+      "title": "Senior Graphic Designer",
+      "company": "Lemon.io",
+      "link": "https://remotive.com/remote-jobs/design/senior-graphic-designer-2091081",
+      "location": "Remote 🌍",
+      "source": "Remotive 🚀",
+      "date_posted": "2026-07-28",
+      "description": "Are you a talented Senior Designer looking for a remote job that lets you show your skills and get decent compensation? ...",
+      "found_at": "2026-08-22 07:02"
+    }
+  ]
+}
