@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-GitHub Actions Cloud Runner — High Performance Single-Run Automation.
-Runs every cycle in GitHub Actions (16GB RAM Runner), processes new jobs, applies, and exits cleanly.
+GitHub Actions Cloud Runner — 100% Cloud-Based Job Bot Engine.
+Runs 24/7 in GitHub Actions Ubuntu Runners without requiring your local PC.
+Scrapes channels, runs multi-platform radar, auto-applies with Playwright, and alerts Telegram.
 """
 import os
 import sys
@@ -11,6 +12,7 @@ import re
 from datetime import datetime
 from dotenv import load_dotenv
 
+# Ensure environment is loaded
 load_dotenv(override=True)
 
 # Ensure UTF-8 output
@@ -25,27 +27,23 @@ print("=" * 60)
 print(f"🚀 GITHUB ACTIONS CLOUD RUNNER — {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}")
 print("=" * 60)
 
-# Import bot modules
-from job_radar import run_radar, escape_md
 import telebot
+from job_radar import run_radar, escape_md
 
-# Load secrets from environment
-token = os.getenv("TELEGRAM_TOKEN", "").strip()
+# Load credentials with smart fallbacks
+token = os.getenv("TELEGRAM_TOKEN", "").strip() or "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4"
 chat_id = os.getenv("TELEGRAM_CHAT_ID", "").strip()
-gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
-target_channel = os.getenv("TARGET_CHANNEL", "JobSkull").strip()
-
-if not token:
-    print("❌ ERROR: TELEGRAM_TOKEN secret is missing in GitHub Actions!")
-    sys.exit(1)
 
 if not chat_id and os.path.exists("chat_id.json"):
     try:
         with open("chat_id.json", "r") as f:
             data = json.load(f)
-            chat_id = data.get("chat_id")
+            chat_id = str(data.get("chat_id", "7607565831")).strip()
     except Exception:
         pass
+
+if not chat_id:
+    chat_id = "7607565831"
 
 bot = telebot.TeleBot(token, parse_mode=None)
 
@@ -53,27 +51,40 @@ bot = telebot.TeleBot(token, parse_mode=None)
 # STEP 1: Multi-Platform Job Radar Scan
 # -------------------------------------------------------------
 print("\n📡 [1/3] Running Multi-Platform Job Radar...")
+radar_jobs_count = 0
 try:
     new_radar_jobs = run_radar()
-    print(f"✅ Job Radar scan finished. Found {len(new_radar_jobs)} new opportunities.")
+    radar_jobs_count = len(new_radar_jobs) if new_radar_jobs else 0
+    print(f"✅ Job Radar scan finished. Found {radar_jobs_count} new opportunities.")
 except Exception as e:
     print(f"⚠️ Radar Scan error: {e}")
 
 # -------------------------------------------------------------
-# STEP 2: Telegram Channel Scrape & Ad-Bypass
+# STEP 2: Telegram Channel Scrape & Playwright Auto-Apply
 # -------------------------------------------------------------
-print(f"\n📢 [2/3] Scraping Telegram Channel: @{target_channel}...")
+print("\n📢 [2/3] Scraping Telegram Channels & Auto-Applying...")
+channels_scanned = 0
+channel_jobs_found = 0
+channel_attempts = 0
+
 try:
-    from main import check_telegram_channel, TARGET_CHANNELS
+    from main import scrape_single_channel, load_applied_jobs, TARGET_CHANNELS
     
-    channels_to_scan = list(set([target_channel] + list(TARGET_CHANNELS)))
+    applied_jobs = load_applied_jobs()
+    target_channel_env = os.getenv("TARGET_CHANNEL", "JobSkull").strip()
+    channels_to_scan = list(dict.fromkeys([target_channel_env] + list(TARGET_CHANNELS)))
+    
     for ch in channels_to_scan:
         if ch:
-            print(f"  🔍 Checking @{ch.replace('@', '')}...")
+            clean_ch = ch.replace("@", "").strip()
+            print(f"  🔍 Checking @{clean_ch}...")
             try:
-                check_telegram_channel(ch.replace("@", ""))
+                found, attempts = scrape_single_channel(clean_ch, applied_jobs, chat_id)
+                channels_scanned += 1
+                channel_jobs_found += (found or 0)
+                channel_attempts += (attempts or 0)
             except Exception as ch_err:
-                print(f"  ⚠️ Error scanning @{ch}: {ch_err}")
+                print(f"  ⚠️ Error scanning @{clean_ch}: {ch_err}")
                 
 except Exception as e:
     print(f"⚠️ Channel Scraper error: {e}")
@@ -82,6 +93,7 @@ except Exception as e:
 # STEP 3: Check Follow-up Reminders (Ghosting Preventer)
 # -------------------------------------------------------------
 print("\n👻 [3/3] Checking for 7-day follow-up applications...")
+follow_up_count = 0
 try:
     if os.path.exists("applied_jobs_log.csv") and chat_id:
         import csv
@@ -98,11 +110,12 @@ try:
                     dt = datetime.strptime(date_str, "%Y-%m-%d")
                     if (now - dt).days == 7:
                         follow_ups.append((i, row[1], row[2]))
-                except:
+                except Exception:
                     pass
                 
         if follow_ups:
-            msg = f"👻 *GHOSTING PREVENTER ALERT*\nIt has been 7 days since you applied to {len(follow_ups)} jobs.\n\n"
+            follow_up_count = len(follow_ups)
+            msg = f"👻 *GHOSTING PREVENTER ALERT*\nIt has been 7 days since you applied to {follow_up_count} jobs.\n\n"
             for idx, job_title, url in follow_ups[:8]:
                 msg += f"💼 *{escape_md(job_title[:35])}*\n🔗 [Job Link]({url})\n"
                 if len(rows[idx]) >= 5:
@@ -112,7 +125,6 @@ try:
             msg += "\n📝 _Consider reaching out to the recruiter on LinkedIn or sending a quick follow-up email!_"
             try:
                 bot.send_message(chat_id, msg, parse_mode="Markdown", disable_web_page_preview=True)
-                # Save updated follow-up status
                 with open("applied_jobs_log.csv", "w", newline="", encoding="utf-8") as f:
                     writer = csv.writer(f)
                     writer.writerows(rows)
@@ -120,6 +132,32 @@ try:
                 print(f"⚠️ Failed to send ghosting alert: {tg_e}")
 except Exception as e:
     print(f"⚠️ Follow-up check error: {e}")
+
+# -------------------------------------------------------------
+# STEP 4: Cloud Status Update to Telegram
+# -------------------------------------------------------------
+now_ist_hour = (datetime.utcnow().hour + 5) + (datetime.utcnow().minute + 30) // 60
+print(f"\n📊 Cycle summary: Radar={radar_jobs_count}, Channels={channels_scanned}, New={channel_jobs_found}, Applied={channel_attempts}")
+
+# If this was triggered manually or it's the morning cycle (8:00 - 10:00 AM IST) or jobs were found/applied, send report
+is_morning = 8 <= (now_ist_hour % 24) <= 10
+if radar_jobs_count > 0 or channel_attempts > 0 or is_morning or os.getenv("GITHUB_EVENT_NAME") == "workflow_dispatch":
+    try:
+        status_msg = (
+            f"☁️ *GitHub Actions Cloud Run Complete*\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🕒 Time: {datetime.now().strftime('%d %b %Y, %I:%M %p UTC')}\n"
+            f"📡 Radar Jobs Found: *{radar_jobs_count}*\n"
+            f"📢 Channels Scanned: *{channels_scanned}*\n"
+            f"🎯 Auto-Applied Attempts: *{channel_attempts}*\n"
+            f"👻 7-Day Follow-ups: *{follow_up_count}*\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🟢 _100% Cloud Autonomous (No PC Required)_"
+        )
+        bot.send_message(chat_id, status_msg, parse_mode="Markdown", disable_web_page_preview=True)
+        print("✅ Status summary sent to Telegram.")
+    except Exception as e:
+        print(f"⚠️ Failed to send status summary: {e}")
 
 print("\n" + "=" * 60)
 print("✅ GITHUB ACTIONS CYCLE COMPLETE! Exiting cleanly.")
