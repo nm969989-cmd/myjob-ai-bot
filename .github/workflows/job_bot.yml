@@ -20,7 +20,7 @@ permissions:
 jobs:
   run-job-bot:
     runs-on: ubuntu-22.04
-    timeout-minutes: 10
+    timeout-minutes: 30
 
     steps:
       - name: 📥 Check out repository
