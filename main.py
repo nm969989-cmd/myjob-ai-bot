@@ -1654,19 +1654,18 @@ def run_playwright_apply(job_url, job_description=""):
 
         try:
             # Robust navigation with exponential backoff retry
-            max_nav_retries = 3
+            max_nav_retries = 2
             nav_success = False
             for attempt in range(max_nav_retries):
                 try:
                     print(f"[Browser] Navigating to: {job_url} (Attempt {attempt+1}/{max_nav_retries})")
                     if "joinsuperset.com" in job_url:
-                        page.goto(job_url, timeout=60000, wait_until="networkidle")
+                        page.goto(job_url, timeout=25000, wait_until="networkidle")
                     else:
-                        # Randomize wait condition for general links to simulate varied network conditions
                         wait_cond = random.choice(["domcontentloaded", "load"])
-                        page.goto(job_url, timeout=60000, wait_until=wait_cond)
+                        page.goto(job_url, timeout=25000, wait_until=wait_cond)
                     nav_success = True
-                    break  # Success
+                    break
                 except Exception as nav_err:
                     err_str = str(nav_err)
                     print(f"[Browser] Network error on attempt {attempt+1}: {err_str[:120]}")

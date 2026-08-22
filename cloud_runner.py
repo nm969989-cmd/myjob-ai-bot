@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 # Mark script start time
 START_TIME = time.time()
-MAX_EXECUTION_SECONDS = 4 * 60  # 4-minute soft budget so GitHub Actions completes quickly
+MAX_EXECUTION_SECONDS = 3 * 60  # 3-minute soft budget so GitHub Actions completes quickly
 
 # Ensure environment is loaded
 load_dotenv(override=True)
