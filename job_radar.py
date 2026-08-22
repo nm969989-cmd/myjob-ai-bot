@@ -706,44 +706,70 @@ def send_radar_telegram(new_jobs):
         job_lines = []
         global_idx = 1
         
+        job_entries = []
+        global_idx = 1
+        
         for src, jobs in grouped_jobs.items():
-            job_lines.append(f"\n📡 *{escape_md(src)}*\n━━━━━━━━━━━━━━━━━━━━━━")
+            section_header = f"📡 *{escape_md(src)}*\n━━━━━━━━━━━━━━━━━━━━━━"
+            job_entries.append(section_header)
             for job in jobs:
-                title   = escape_md(job.get("title", "Unknown Role"))[:45]
-                company = escape_md(job.get("company", "Unknown"))[:25]
-                loc     = escape_md(job.get("location", ""))[:20]
+                title   = escape_md(job.get("title", "Unknown Role"))[:60]
+                company = escape_md(job.get("company", "Unknown Company"))[:35]
+                loc     = escape_md(job.get("location", "Remote / PAN India"))[:35]
                 link    = job.get("link", "").strip()
                 date_str = job.get("date_posted", "")
+                desc    = escape_md(clean_html(job.get("description", "")))[:110]
+                if desc:
+                    desc = desc.replace("\n", " ").strip()
                 
                 # Time display
-                time_tag = ""
+                time_tag = "🟢 Today"
                 if date_str and len(date_str) >= 10:
                     try:
                         dt = datetime.strptime(date_str[:10], "%Y-%m-%d")
                         days = (datetime.now() - dt).days
-                        if days == 0: time_tag = "🟢"
-                        elif days == 1: time_tag = "🟡"
-                        elif days <= 7: time_tag = f"📅{days}d"
-                        else: time_tag = "📆"
+                        if days == 0: time_tag = "🟢 Today"
+                        elif days == 1: time_tag = "🟡 Yesterday"
+                        elif days <= 7: time_tag = f"📅 {days}d ago"
+                        else: time_tag = f"📆 {date_str[:10]}"
                     except Exception:
-                        time_tag = ""
+                        time_tag = "🟢 Recent"
                 
-                # Compact single-line format: #1 🟢 Title — Company (Location) [View]
-                line = f"*{global_idx}.* {time_tag} [{title}]({link}) — _{company}_"
-                if loc:
-                    line += f" 📍{loc}"
-                job_lines.append(line)
+                # Rich multi-line job card with location and work detail
+                entry = (
+                    f"*{global_idx}.* [{title}]({link})\n"
+                    f"   🏢 *Company:* _{company}_\n"
+                    f"   📍 *Location:* `{loc}`\n"
+                    f"   🕒 *Posted:* {time_tag}"
+                )
+                if desc and len(desc) > 15:
+                    entry += f"\n   📝 *Work Detail:* _{desc}_"
+                
+                job_entries.append(entry)
                 global_idx += 1
         
-        # Split into chunks of ~20 lines per message (Telegram 4096 char limit)
-        LINES_PER_MSG = 20
-        chunks = [job_lines[i:i+LINES_PER_MSG] for i in range(0, len(job_lines), LINES_PER_MSG)]
+        # Split into smart character-length chunks (Telegram max 4096 chars)
+        chunks = []
+        current_chunk = []
+        current_len = 0
         
-        # Send header + first chunk as one message
+        for item in job_entries:
+            item_len = len(item) + 2
+            if current_len + item_len > 3400 and current_chunk:
+                chunks.append("\n\n".join(current_chunk))
+                current_chunk = [item]
+                current_len = item_len
+            else:
+                current_chunk.append(item)
+                current_len += item_len
+        if current_chunk:
+            chunks.append("\n\n".join(current_chunk))
+        
+        # Header
         header = (
             f"📡 *JOB RADAR REPORT*\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🆕 Found *{total}* New Job{'s' if total > 1 else ''}!\n"
+            f"🆕 Found *{total}* New Opportunities!\n"
             f"🕒 {now_str}\n"
             f"📊 *Sources:*\n{source_summary}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n\n"
@@ -751,24 +777,24 @@ def send_radar_telegram(new_jobs):
         
         for idx, chunk in enumerate(chunks):
             if idx == 0:
-                msg = header + "\n".join(chunk)
+                msg = header + chunk
             else:
-                msg = f"📡 *Jobs (cont. {idx+1}/{len(chunks)})*\n\n" + "\n".join(chunk)
+                msg = f"📡 *Opportunities (Part {idx+1}/{len(chunks)})*\n\n" + chunk
             
             # Add footer to the last chunk
             if idx == len(chunks) - 1:
                 msg += (
                     f"\n\n━━━━━━━━━━━━━━━━━━━━━━\n"
                     f"📊 *Total:* {total} jobs across {len(source_counts)} sources\n"
-                    f"⏰ Next scan in 6 hours\n"
+                    f"⏰ Next scan in 1 hour (24/7 Cloud)\n"
                     f"🟢 = Today | 🟡 = Yesterday | 📅 = This week\n"
-                    f"_Tap any job title to view \u0026 apply!_"
+                    f"_Tap any job title link to view & apply directly!_"
                 )
             
             try:
                 radar_bot.send_message(chat_id, msg, parse_mode="Markdown", disable_web_page_preview=True)
                 if idx < len(chunks) - 1:
-                    time.sleep(0.5)  # Small delay between chunks
+                    time.sleep(0.6)  # Small delay between chunks
             except Exception as msg_e:
                 print(f"[Radar] Failed to send chunk #{idx+1}: {msg_e}")
                 # Fallback: try without Markdown if formatting fails

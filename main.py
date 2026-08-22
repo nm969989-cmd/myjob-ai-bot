@@ -3091,13 +3091,15 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     if len(message_text) > 400:
                         post_preview += "..."
                     notification = (
-                        f"🎯 *New Job Found!*\n"
-                        f"📡 *Channel:* [@{channel_name}]({channel_post_url})\n\n"
-                        f"📋 *Channel Post:*\n{post_preview}\n\n"
-                        f"━━━━━━━━━━━━━━━━━━\n"
+                        f"🎯 *New Job Opportunity Detected!*\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"📡 *Source:* [@{channel_name}]({channel_post_url})\n\n"
                         f"{job_summary}\n\n"
-                        f"━━━━━━━━━━━━━━━━━━\n"
-                        f"🚀 *Now Applying Automatically...*"
+                        f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"📝 *Channel Job Details:*\n"
+                        f"_{post_preview}_\n\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"🚀 *Status:* Auto-applying with Playwright..."
                     )
                     markup = InlineKeyboardMarkup()
                     markup.row(
