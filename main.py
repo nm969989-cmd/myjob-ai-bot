@@ -59,8 +59,15 @@ sys.stderr = sys.stdout
 print("--- NEW SERVER BOOT ---")
 
 # --- 1. CONFIGURATION & ENVIRONMENT VARIABLES ---
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "7607565831")  # Hardcoded fallback so HF never forgets
+_raw_token = os.getenv("TELEGRAM_TOKEN", "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4")
+TELEGRAM_TOKEN = str(_raw_token).strip().strip('"').strip("'")
+if TELEGRAM_TOKEN.lower().startswith("bot"):
+    TELEGRAM_TOKEN = TELEGRAM_TOKEN[3:]
+if not TELEGRAM_TOKEN:
+    TELEGRAM_TOKEN = "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4"
+
+_raw_chat = os.getenv("TELEGRAM_CHAT_ID", "7607565831")
+TELEGRAM_CHAT_ID = str(_raw_chat).strip().strip('"').strip("'") or "7607565831"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 TARGET_CHANNEL = os.getenv("TARGET_CHANNEL", "JobSkull")  # Primary channel (kept for backward compat)
 # All channels to monitor (from env as comma-separated list, or use defaults)

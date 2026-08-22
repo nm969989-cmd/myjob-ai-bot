@@ -34,10 +34,16 @@ print("=" * 60)
 import telebot
 from job_radar import run_radar, escape_md
 
-# Load credentials with smart fallbacks
-token = os.getenv("TELEGRAM_TOKEN", "").strip() or "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4"
-chat_id = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+# Load credentials with smart sanitization
+_raw_token = os.getenv("TELEGRAM_TOKEN", "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4")
+token = str(_raw_token).strip().strip('"').strip("'")
+if token.lower().startswith("bot"):
+    token = token[3:]
+if not token:
+    token = "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4"
 
+_raw_chat = os.getenv("TELEGRAM_CHAT_ID", "7607565831")
+chat_id = str(_raw_chat).strip().strip('"').strip("'")
 if not chat_id and os.path.exists("chat_id.json"):
     try:
         with open("chat_id.json", "r") as f:

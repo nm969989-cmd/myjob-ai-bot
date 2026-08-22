@@ -661,16 +661,24 @@ def send_radar_telegram(new_jobs):
         import telebot
         from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
         
-        # Load bot token (try both common env var names)
-        bot_token = os.getenv("TELEGRAM_TOKEN", "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4")
-        chat_id_file = "chat_id.json"
-        chat_id = os.getenv("TELEGRAM_CHAT_ID", "7607565831")
-        if not chat_id and os.path.exists(chat_id_file):
+        # Load bot token with sanitization
+        _raw_token = os.getenv("TELEGRAM_TOKEN", "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4")
+        bot_token = str(_raw_token).strip().strip('"').strip("'")
+        if bot_token.lower().startswith("bot"):
+            bot_token = bot_token[3:]
+        if not bot_token:
+            bot_token = "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4"
+
+        _raw_chat = os.getenv("TELEGRAM_CHAT_ID", "7607565831")
+        chat_id = str(_raw_chat).strip().strip('"').strip("'")
+        if not chat_id and os.path.exists("chat_id.json"):
             try:
-                with open(chat_id_file, "r") as f:
+                with open("chat_id.json", "r") as f:
                     data = json.load(f)
-                    chat_id = data.get("chat_id")
+                    chat_id = str(data.get("chat_id", "7607565831")).strip()
             except: pass
+        if not chat_id:
+            chat_id = "7607565831"
         
         if not bot_token or not chat_id:
             print("[Radar] Telegram not configured. Skipping instant notification.")
