@@ -179,7 +179,7 @@ def get_gemini_client():
     if not GEMINI_API_KEYS:
         return None
     try:
-        return genai.Client(api_key=GEMINI_API_KEYS[current_gemini_key_index], http_options={'timeout': 120.0})
+        return genai.Client(api_key=GEMINI_API_KEYS[current_gemini_key_index], http_options={'timeout': 15.0})
     except Exception:
         return None
 
@@ -207,7 +207,7 @@ def get_groq_client():
     if not GROQ_API_KEYS:
         return None
     try:
-        return groq.Groq(api_key=GROQ_API_KEYS[current_groq_key_index], timeout=120.0)
+        return groq.Groq(api_key=GROQ_API_KEYS[current_groq_key_index], timeout=15.0)
     except Exception:
         return None
 

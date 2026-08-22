@@ -17,6 +17,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: job-bot-cloud
+  cancel-in-progress: true
+
 jobs:
   run-job-bot:
     runs-on: ubuntu-22.04
