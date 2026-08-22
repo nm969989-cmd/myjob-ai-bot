@@ -90,11 +90,11 @@ try:
             clean_ch = ch.replace("@", "").strip()
             print(f"  🔍 Checking @{clean_ch}...")
             try:
-                found, attempts = scrape_single_channel(clean_ch, applied_jobs, chat_id, max_jobs=2)
+                found, attempts = scrape_single_channel(clean_ch, applied_jobs, chat_id, max_jobs=1)
                 channels_scanned += 1
                 channel_jobs_found += (found or 0)
                 channel_attempts += (attempts or 0)
-                if channel_attempts >= 4:
+                if channel_attempts >= 2:
                     print("  🎯 Reached max applications limit for this cycle. Moving to summary.")
                     break
             except Exception as ch_err:

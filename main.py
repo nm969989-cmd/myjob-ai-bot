@@ -6,33 +6,6 @@ import random
 import requests
 import csv
 
-# --- SSL/TLS MONKEYPATCH FOR HUGGING FACE TO TELEGRAM CONNECTION ISSUES ---
-import ssl
-from requests.adapters import HTTPAdapter
-from urllib3.poolmanager import PoolManager
-
-class TLSv1_2Adapter(HTTPAdapter):
-    def init_poolmanager(self, connections, maxsize, block=False, **pool_kwargs):
-        # Force TLS 1.2 to prevent UNEXPECTED_EOF_WHILE_READING errors on Hugging Face
-        context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-        context.verify_mode = ssl.CERT_REQUIRED
-        context.check_hostname = True
-        context.load_default_certs()
-        self.poolmanager = PoolManager(
-            num_pools=connections,
-            maxsize=maxsize,
-            block=block,
-            ssl_context=context,
-            **pool_kwargs
-        )
-
-# Apply monkeypatch to all requests HTTPS sessions
-original_init = requests.sessions.Session.__init__
-def patched_init(self, *args, **kwargs):
-    original_init(self, *args, **kwargs)
-    self.mount("https://", TLSv1_2Adapter())
-requests.sessions.Session.__init__ = patched_init
-# --------------------------------------------------------------------------
 from datetime import datetime
 from bs4 import BeautifulSoup
 from flask import Flask
@@ -171,7 +144,7 @@ if TELEGRAM_TOKEN:
 else:
     bot = None
 # Handle multiple Gemini API keys
-GEMINI_API_KEYS = [k.strip() for k in str(os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip()]
+GEMINI_API_KEYS = [k.strip() for k in str(os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip() and k.strip().startswith("AIza")]
 current_gemini_key_index = 0
 
 def get_gemini_client():
