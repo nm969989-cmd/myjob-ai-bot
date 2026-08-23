@@ -186,7 +186,7 @@ if TELEGRAM_TOKEN:
     bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=True, num_threads=30)
     try:
         from telebot.types import BotCommand, MenuButtonWebApp, WebAppInfo
-        miniapp_url = os.getenv("MINI_APP_URL", "https://manojprofessional007-myjob-bot.hf.space/miniapp")
+        miniapp_url = os.getenv("MINI_APP_URL", "https://nm969989-cmd.github.io/myjob-ai-bot/")
         commands = [
             BotCommand("app", "🚀 Launch Visual Job Radar Mini-App"),
             BotCommand("jobs", "📱 Browse Latest Verified Jobs"),
@@ -4403,7 +4403,7 @@ if bot:
     def send_miniapp_button(message):
         save_chat_id(message.chat.id)
         from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-        miniapp_url = os.getenv("MINI_APP_URL", "https://manojprofessional007-myjob-bot.hf.space/miniapp")
+        miniapp_url = os.getenv("MINI_APP_URL", "https://nm969989-cmd.github.io/myjob-ai-bot/")
         
         markup = InlineKeyboardMarkup()
         markup.row(
@@ -4426,7 +4426,7 @@ if bot:
     def send_welcome(message):
         save_chat_id(message.chat.id)
         from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-        miniapp_url = os.getenv("MINI_APP_URL", "https://manojprofessional007-myjob-bot.hf.space/miniapp")
+        miniapp_url = os.getenv("MINI_APP_URL", "https://nm969989-cmd.github.io/myjob-ai-bot/")
         
         markup = InlineKeyboardMarkup()
         markup.row(
