@@ -285,7 +285,7 @@ def _make_job(title, company, link, location, source, date_posted="", descriptio
     }
 
 def is_social_or_promo_link(url):
-    """Detects if a URL is a social media link, channel promo, or non-job page."""
+    """Detects if a URL is a social media link, channel promo, parked domain, or non-job page."""
     if not url or not isinstance(url, str):
         return True
     u = url.lower().strip()
@@ -294,7 +294,12 @@ def is_social_or_promo_link(url):
         "instagram.com", "facebook.com", "fb.com", "twitter.com", "x.com",
         "youtube.com", "youtu.be", "pinterest.com", "threads.net",
         "linktr.ee", "bio.link", "campsite.bio", "taplink.cc", "beacons.ai",
-        "play.google.com", "apps.apple.com", "aratt.ai"
+        "play.google.com", "apps.apple.com", "aratt.ai",
+        # Expired / Parked / Squatter domains
+        "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com",
+        "namecheap.com", "domainmarket.com", "parklogic.com", "parkingcrew.com",
+        "bodis.com", "above.com", "domainagents.com", "undeveloped.com",
+        "buydomains.com", "domain_profile.cfm", "domainforbuy"
     ]
     if any(d in u for d in promo_domains):
         return True

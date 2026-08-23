@@ -493,6 +493,17 @@ def bypass_blog_redirect(blog_url):
             print(f"[Bypasser] Redirect resolved to direct job page: {final_url_after_redirect}")
             return clean_tracking_params(final_url_after_redirect)
 
+        # Check if the final redirect landed on a parked / expired domain sale page
+        parked_domains_list = [
+            "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com",
+            "namecheap.com", "domainmarket.com", "parklogic.com", "parkingcrew.com",
+            "bodis.com", "above.com", "domainagents.com", "undeveloped.com",
+            "buydomains.com", "domain_profile.cfm", "domainforbuy"
+        ]
+        if any(p in final_url_after_redirect.lower() for p in parked_domains_list):
+            print(f"[Bypasser] Redirected to parked/expired domain ({final_url_after_redirect}) — rejecting.")
+            return ""
+
         # If redirect changed the URL significantly (e.g. shortener resolved), use the final URL
         parsed_original = urlparse(blog_url)
         parsed_final = urlparse(final_url_after_redirect)
@@ -521,13 +532,17 @@ def bypass_blog_redirect(blog_url):
             if url_match:
                 meta_url = url_match.group(1)
                 if meta_url.startswith("http") and blog_domain not in meta_url:
-                    print(f"[Bypasser] Found meta refresh redirect: {meta_url}")
-                    return clean_tracking_params(meta_url)
+                    if not any(p in meta_url.lower() for p in parked_domains_list):
+                        print(f"[Bypasser] Found meta refresh redirect: {meta_url}")
+                        return clean_tracking_params(meta_url)
 
         skip_domains = [
             "newsletter", "instagram.com", "youtube.com", "youtu.be", "whatsapp.com", "telegram.org",
             "t.me", "telegram.dog", "facebook.com", "twitter.com", "x.com", "pinterest.com", "reddit.com",
-            "play.google.com", "apps.apple.com", "aratt.ai", "wa.me",
+            "play.google.com", "apps.apple.com", "aratt.ai", "wa.me", "threads.net", "linktr.ee",
+            "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com", "namecheap.com",
+            "domainmarket.com", "parklogic.com", "parkingcrew.com", "bodis.com", "above.com",
+            "domainagents.com", "undeveloped.com", "buydomains.com", "domain_profile.cfm", "domainforbuy"
         ]
 
         # Priority 1: Direct ATS / Job board links inside container
@@ -2941,18 +2956,23 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                 pass
 
 def is_social_or_promo_link(url):
-    """Detects if a URL is a social media link, channel promo, or non-job page."""
+    """Detects if a URL is a social media link, channel promo, parked domain, or non-job page."""
     if not url or not isinstance(url, str):
         return True
     u = url.lower().strip()
     
-    # Exclude social media profiles, chat groups & channel promos
+    # Exclude social media profiles, chat groups, channel promos & parked domains
     promo_domains = [
         "t.me", "telegram.org", "telegram.dog", "whatsapp.com", "wa.me",
         "instagram.com", "facebook.com", "fb.com", "twitter.com", "x.com",
         "youtube.com", "youtu.be", "pinterest.com", "threads.net",
         "linktr.ee", "bio.link", "campsite.bio", "taplink.cc", "beacons.ai",
-        "play.google.com", "apps.apple.com", "aratt.ai"
+        "play.google.com", "apps.apple.com", "aratt.ai",
+        # Expired / Parked / Squatter domains
+        "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com",
+        "namecheap.com", "domainmarket.com", "parklogic.com", "parkingcrew.com",
+        "bodis.com", "above.com", "domainagents.com", "undeveloped.com",
+        "buydomains.com", "domain_profile.cfm", "domainforbuy"
     ]
     if any(d in u for d in promo_domains):
         return True
@@ -2992,17 +3012,18 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
             company = m_comp_after.group(1).strip()
 
     company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
-    if not company or len(company) < 2 or company.lower() in ["verified recruiter", "hiring", "job"]:
+    invalid_companies = ["verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan", "afternic", "domain", "admin", "unknown"]
+    if not company or len(company) < 2 or company.lower() in invalid_companies:
         # Fallback from direct URL domain
-        if final_url and "http" in final_url:
+        if final_url and "http" in final_url and not is_social_or_promo_link(final_url):
             from urllib.parse import urlparse
             netloc = urlparse(final_url).netloc.lower()
             for part in netloc.split('.'):
-                if part not in ["www", "com", "in", "io", "co", "careers", "jobs", "apply", "wd3", "myworkdayjobs", "sensehq", "greenhouse", "lever", "smartrecruiters", "docs", "google"]:
+                if part not in ["www", "com", "in", "io", "co", "careers", "jobs", "apply", "wd3", "myworkdayjobs", "sensehq", "greenhouse", "lever", "smartrecruiters", "docs", "google", "hugedomains", "sedo", "godaddy"]:
                     if len(part) >= 3:
                         company = part.capitalize()
                         break
-        if not company or len(company) < 2:
+        if not company or len(company) < 2 or company.lower() in invalid_companies:
             company = "Verified Recruiter"
 
     # 2. EXTRACT ROLE / POSITION
@@ -3156,14 +3177,23 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
 
             # Resolve redirects & unwrap direct ATS/career links
             final_url = bypass_blog_redirect(job_link)
-            if is_social_or_promo_link(final_url):
-                print(f"[Scraper] Resolved link is a promo/social URL ({final_url}) — skipping.")
+            if not final_url or is_social_or_promo_link(final_url):
+                print(f"[Scraper] Resolved link is empty or a promo/parked URL ({final_url}) — skipping.")
+                applied_jobs.add(job_link)
+                save_applied_job(job_link)
                 continue
 
             print(f"[Scraper] Resolved Direct Link: {final_url}")
 
             # Structured Details Extraction & India / Tamil Nadu check
             details = extract_structured_channel_job_details(message_text, job_link, final_url, channel_name)
+
+            # Skip if company is invalid or default placeholder with no real info
+            if details["company"] in ["Verified Recruiter", "Hugedomains"] and details["role"] == "Software Developer / Fresher Engineer" and "http" not in final_url:
+                print(f"[Scraper] Skipping generic/unparseable job post.")
+                applied_jobs.add(job_link)
+                save_applied_job(job_link)
+                continue
 
             # Strict Location Filter: Reject foreign onsite locations
             if not details["is_valid_india"]:
@@ -3190,37 +3220,38 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                 log_job(final_url, message_text, False, f"AI Rejected: {job_summary[:80]}")
                 continue
 
-            # ✅ Job matched — send ultra-detailed executive card to Telegram
+            # ✅ Job matched — send ultra-detailed executive HTML card to Telegram
             if bot and active_chat_id:
                 try:
+                    import html
                     channel_post_url = f"https://t.me/s/{channel_name}"
                     
-                    tn_header = "🌟 *[TAMIL NADU PRIORITY OPPORTUNITY]*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if details["is_tamil_nadu"] else ""
-                    work_info = f"🛠️ *Work Mode / Type:* `{details['work_mode']}`\n" if details.get('work_mode') else ""
-                    desc_info = f"📋 *Job Highlights & Responsibilities:*\n_{details['description_summary']}_\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if details.get('description_summary') else ""
+                    tn_header = "🌟 <b>[TAMIL NADU PRIORITY OPPORTUNITY]</b>\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if details["is_tamil_nadu"] else ""
+                    work_info = f"🛠️ <b>Work Mode / Type:</b> <code>{html.escape(str(details['work_mode']))}</code>\n" if details.get('work_mode') else ""
+                    desc_info = f"\n📋 <b>Job Summary & Highlights:</b>\n<i>{html.escape(str(details['description_summary']))}</i>\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if details.get('description_summary') else ""
 
                     notification = (
-                        f"🎯 *New Verified Job Opening Detected!*\n"
-                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"🎯 <b>New Verified Job Opening Detected!</b>\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
                         f"{tn_header}"
-                        f"🏢 *Company:* `{details['company']}`\n"
-                        f"💼 *Role / Position:* *{details['role']}*\n"
-                        f"📍 *Job Location:* `{details['location']}`\n"
-                        f"🎓 *Batch / Eligibility:* `{details['batch']}`\n"
-                        f"💰 *Salary / CTC:* `{details['salary']}`\n"
+                        f"🏢 <b>Company:</b> <code>{html.escape(str(details['company']))}</code>\n"
+                        f"💼 <b>Role / Position:</b> <b>{html.escape(str(details['role']))}</b>\n"
+                        f"📍 <b>Job Location:</b> <code>{html.escape(str(details['location']))}</code>\n"
+                        f"🎓 <b>Batch / Eligibility:</b> <code>{html.escape(str(details['batch']))}</code>\n"
+                        f"💰 <b>Salary / CTC:</b> <code>{html.escape(str(details['salary']))}</code>\n"
                         f"{work_info}"
-                        f"📡 *Source Channel:* [@{channel_name}]({channel_post_url})\n\n"
-                        f"🔗 *Verified Direct Apply:* [Apply Directly on Official Portal]({final_url})\n"
-                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"📡 <b>Source Channel:</b> <a href=\"{html.escape(str(channel_post_url))}\">@{html.escape(str(channel_name))}</a>\n\n"
+                        f"🔗 <b>Verified Direct Apply:</b> <a href=\"{html.escape(str(final_url))}\">Apply on Official Portal</a>\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
                         f"{desc_info}"
-                        f"👉 *Tap the button below to apply directly on the official portal!*"
+                        f"👉 <b>Tap the button below to apply directly on the official portal!</b>"
                     )
                     markup = InlineKeyboardMarkup()
                     markup.row(
                         InlineKeyboardButton("🚀 Direct Apply (Official)", url=final_url),
                         InlineKeyboardButton("📢 View Channel Post", url=channel_post_url)
                     )
-                    bot.send_message(active_chat_id, notification, parse_mode=None, disable_web_page_preview=True, reply_markup=markup)
+                    bot.send_message(active_chat_id, notification, parse_mode="HTML", disable_web_page_preview=True, reply_markup=markup)
                     print(f"[Scraper] Sent direct job alert to Telegram: {details['company']} - {details['role']}")
                 except Exception as notif_e:
                     print(f"[Scraper] Failed to send job summary: {notif_e}")
