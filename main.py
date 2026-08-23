@@ -3974,6 +3974,96 @@ def api_download_log():
         return send_file(csv_file, as_attachment=True)
     return {"status": "error", "message": "No log file found! The bot needs to apply to at least one job first."}
 
+# ── TELEGRAM MINI-APP ENDPOINTS ──────────────────────────────────────
+@app.route("/miniapp")
+@app.route("/app")
+def serve_miniapp():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    template_path = os.path.join(base_dir, "templates", "miniapp.html")
+    if not os.path.exists(template_path):
+        template_path = os.path.join(base_dir, "miniapp.html")
+    if os.path.exists(template_path):
+        with open(template_path, "r", encoding="utf-8") as f:
+            return f.read(), 200, {'Content-Type': 'text/html; charset=utf-8'}
+    return "Mini-App template not found", 404
+
+@app.route("/api/miniapp/jobs")
+def api_miniapp_jobs():
+    from job_radar import classify_location, TAMIL_NADU_LOCATIONS
+    jobs = []
+    seen_urls = set()
+
+    # 1. Load from applied_jobs_log.csv
+    csv_file = "applied_jobs_log.csv"
+    if os.path.exists(csv_file):
+        try:
+            import csv as csv_mod
+            with open(csv_file, "r", encoding="utf-8") as cf:
+                rows = list(csv_mod.reader(cf))
+                for idx, row in enumerate(reversed(rows[1:])):
+                    if len(row) >= 4:
+                        date_str, title_str, url_str, status_str = row[0], row[1], row[2], row[3]
+                        notes = row[4] if len(row) > 4 else ""
+                        if url_str in seen_urls or not url_str.startswith("http") or is_social_or_promo_link(url_str):
+                            continue
+                        seen_urls.add(url_str)
+
+                        is_valid, tier, loc_tag, is_tn = classify_location("", f"{title_str} {notes}")
+                        company_guess = "Verified Recruiter"
+                        role_guess = title_str
+                        if " - " in title_str:
+                            parts = title_str.split(" - ", 1)
+                            company_guess, role_guess = parts[0].strip(), parts[1].strip()
+
+                        jobs.append({
+                            "id": f"csv-{idx}",
+                            "company": company_guess,
+                            "role": role_guess,
+                            "location": loc_tag if loc_tag else "India (PAN India) 🇮🇳",
+                            "is_tamil_nadu": is_tn,
+                            "salary": "As per Industry Standard",
+                            "batch": "2024 / 2025 / 2026 Batch | Freshers",
+                            "work_mode": "Full-time / Fresher",
+                            "link": url_str,
+                            "source": "@Radar",
+                            "status": status_str,
+                            "date": date_str,
+                            "summary": notes if notes and len(notes) > 5 else "Verified engineering opportunity matching your profile."
+                        })
+        except Exception as e:
+            print(f"[MiniApp] CSV parse error: {e}")
+
+    # 2. Load from radar_jobs.json if present
+    if os.path.exists("radar_jobs.json"):
+        try:
+            with open("radar_jobs.json", "r", encoding="utf-8") as rf:
+                rdata = json.load(rf)
+                for idx, rj in enumerate(rdata.get("jobs", [])):
+                    link = rj.get("link", "")
+                    if link and link not in seen_urls and not is_social_or_promo_link(link):
+                        seen_urls.add(link)
+                        jobs.append({
+                            "id": f"radar-{idx}",
+                            "company": rj.get("company", "Verified Recruiter"),
+                            "role": rj.get("title", "Software Developer"),
+                            "location": rj.get("location", "India"),
+                            "is_tamil_nadu": rj.get("is_tamil_nadu", False) or rj.get("priority_tier") == 1,
+                            "salary": rj.get("salary", "As per Industry Standard"),
+                            "batch": rj.get("batch", "Freshers (0-2 Yrs)"),
+                            "work_mode": rj.get("work_mode", "Full-time"),
+                            "link": link,
+                            "source": rj.get("source", "@Radar"),
+                            "status": "Alerted",
+                            "date": rj.get("date_posted", datetime.now().strftime("%Y-%m-%d")),
+                            "summary": rj.get("description", "Verified job post.")[:200]
+                        })
+        except Exception as e:
+            print(f"[MiniApp] Radar JSON parse error: {e}")
+
+    # Sort Tamil Nadu jobs to the top
+    jobs.sort(key=lambda j: 0 if j.get("is_tamil_nadu") else 1)
+    return jsonify({"status": "success", "total": len(jobs), "jobs": jobs})
+
 from flask import request, send_file, jsonify
 
 import subprocess
@@ -4283,15 +4373,47 @@ if bot:
             "Use the interactive buttons below to control your automation empire instantly.",
             parse_mode=None, reply_markup=markup)
 
+    @bot.message_handler(commands=['app', 'jobs', 'miniapp', 'radar'])
+    def send_miniapp_button(message):
+        save_chat_id(message.chat.id)
+        from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+        miniapp_url = os.getenv("MINI_APP_URL", "https://gokuuc-myjob-bot.hf.space/miniapp")
+        
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("🚀 Launch Job Radar Mini-App", web_app=WebAppInfo(url=miniapp_url))
+        )
+        bot.send_message(
+            message.chat.id,
+            "📱 *MyJob AI Radar — Visual Mini-App*\n\n"
+            "Tap below to open your interactive Job Hub right inside Telegram!\n\n"
+            "✨ *Features:*\n"
+            "• 🌟 Filter Tamil Nadu & Pan-India Jobs\n"
+            "• 🔍 Instant live search by skill & role\n"
+            "• 🚀 1-Click Direct Apply to official career portals\n"
+            "• ⭐ Save favorite jobs & track applied status",
+            parse_mode="Markdown",
+            reply_markup=markup
+        )
+
     @bot.message_handler(commands=['start'])
     def send_welcome(message):
         save_chat_id(message.chat.id)
-        bot.reply_to(message,
-            "👋 Welcome to *Elite Job Auto-Apply Bot!*\n\n"
-            "🤖 I am now locked to your Chat ID and scanning jobs 24/7!\n\n"
-            "📱 Use `/dashboard` or `/menu` to open your Interactive Command Center.\n\n"
-            "Type `/help` to see all available text commands.",
-            parse_mode=None)
+        from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+        miniapp_url = os.getenv("MINI_APP_URL", "https://gokuuc-myjob-bot.hf.space/miniapp")
+        
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("🚀 Launch Job Radar Mini-App", web_app=WebAppInfo(url=miniapp_url))
+        )
+        bot.send_message(
+            message.chat.id,
+            "👋 Welcome to *MyJob AI Radar Bot!*\n\n"
+            "🤖 Locked to your Chat ID and scanning 47+ verified channels 24/7!\n\n"
+            "📱 *New:* Tap below to open your interactive Job Mini-App inside Telegram!",
+            parse_mode="Markdown",
+            reply_markup=markup
+        )
 
     @bot.message_handler(commands=['help'])
     def send_help(message):
