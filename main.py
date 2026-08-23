@@ -187,7 +187,7 @@ if TELEGRAM_TOKEN:
 else:
     bot = None
 # Handle multiple Gemini API keys
-GEMINI_API_KEYS = [k.strip() for k in str(os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip()]
+GEMINI_API_KEYS = [k.strip() for k in str(os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip() and k.strip().startswith("AIza")]
 current_gemini_key_index = 0
 
 def get_gemini_client():
@@ -1105,19 +1105,9 @@ def log_job(url, job_text, success, reason="", is_failed=False):
         status = "Failed" if is_failed else ("Applied" if success else "Skipped")
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Send skipped jobs with official links to Telegram
-        if status == "Skipped" and url and "http" in url:
-            try:
-                chat_id = load_chat_id()
-                if bot and chat_id:
-                    msg = f"⏭ *SKIPPED JOB*\n\n*Title:* `{title}`\n*Reason:* {reason}\n*Link:* {url}"
-                    try:
-                        bot.send_message(chat_id, msg, parse_mode=None, disable_web_page_preview=True)
-                    except:
-                        msg_plain = f"⏭ SKIPPED JOB\n\nTitle: {title}\nReason: {reason}\nLink: {url}"
-                        bot.send_message(chat_id, msg_plain, disable_web_page_preview=True)
-            except Exception as e:
-                print(f"[Tracker] Error sending skipped job to TG: {e}")
+        # Log skipped jobs to console/tracker only (no Telegram chat spam)
+        if status == "Skipped":
+            print(f"[Tracker] Skipped job: {title} | Reason: {reason}")
         
         # 1. Google Sheets Webhook (Easier setup via Make/Zapier/Apps Script)
         webhook_url = os.getenv("GOOGLE_SHEET_WEBHOOK_URL")
@@ -3007,13 +2997,16 @@ def is_social_or_promo_link(url):
         return True
     u = url.lower().strip()
     
-    # Exclude social media profiles, chat groups, channel promos & parked domains
+    # Exclude social media profiles, chat groups, channel promos, share widgets & parked domains
     promo_domains = [
         "t.me", "telegram.org", "telegram.dog", "whatsapp.com", "wa.me",
         "instagram.com", "facebook.com", "fb.com", "twitter.com", "x.com",
         "youtube.com", "youtu.be", "pinterest.com", "threads.net",
         "linktr.ee", "bio.link", "campsite.bio", "taplink.cc", "beacons.ai",
         "play.google.com", "apps.apple.com", "aratt.ai",
+        # Social sharing / blog widgets
+        "addtoany.com", "addthis.com", "sharethis.com", "disqus.com", "gravatar.com",
+        "blogger.com", "feedburner.com", "wordpress.com", "w3.org",
         # Expired / Parked / Squatter domains
         "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com",
         "namecheap.com", "domainmarket.com", "parklogic.com", "parkingcrew.com",
@@ -3058,14 +3051,14 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
             company = m_comp_after.group(1).strip()
 
     company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
-    invalid_companies = ["verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan", "afternic", "domain", "admin", "unknown"]
+    invalid_companies = ["verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan", "afternic", "domain", "admin", "unknown", "addtoany", "addthis", "sharethis", "blogger", "wordpress", "disqus"]
     if not company or len(company) < 2 or company.lower() in invalid_companies:
         # Fallback from direct URL domain
         if final_url and "http" in final_url and not is_social_or_promo_link(final_url):
             from urllib.parse import urlparse
             netloc = urlparse(final_url).netloc.lower()
             for part in netloc.split('.'):
-                if part not in ["www", "com", "in", "io", "co", "careers", "jobs", "apply", "wd3", "myworkdayjobs", "sensehq", "greenhouse", "lever", "smartrecruiters", "docs", "google", "hugedomains", "sedo", "godaddy"]:
+                if part not in ["www", "com", "in", "io", "co", "careers", "jobs", "apply", "wd3", "myworkdayjobs", "sensehq", "greenhouse", "lever", "smartrecruiters", "docs", "google", "hugedomains", "sedo", "godaddy", "addtoany", "addthis", "sharethis"]:
                     if len(part) >= 3:
                         company = part.capitalize()
                         break
@@ -3235,7 +3228,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
             details = extract_structured_channel_job_details(message_text, job_link, final_url, channel_name)
 
             # Skip if company is invalid or default placeholder with no real info
-            if details["company"] in ["Verified Recruiter", "Hugedomains"] and details["role"] == "Software Developer / Fresher Engineer" and "http" not in final_url:
+            if details["company"] in ["Verified Recruiter", "Hugedomains", "Addtoany"] and details["role"] == "Software Developer / Fresher Engineer" and "http" not in final_url:
                 print(f"[Scraper] Skipping generic/unparseable job post.")
                 applied_jobs.add(job_link)
                 save_applied_job(job_link)
@@ -3266,31 +3259,50 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                 log_job(final_url, message_text, False, f"AI Rejected: {job_summary[:80]}")
                 continue
 
-            # ✅ Job matched — send ultra-detailed executive HTML card to Telegram
+            # ✅ Job matched — send ultra-spacious, executive HTML card to Telegram
             if bot and active_chat_id:
                 try:
                     import html
                     channel_post_url = f"https://t.me/s/{channel_name}"
                     
-                    tn_header = "🌟 <b>[TAMIL NADU PRIORITY OPPORTUNITY]</b>\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if details["is_tamil_nadu"] else ""
-                    work_info = f"🛠️ <b>Work Mode / Type:</b> <code>{html.escape(str(details['work_mode']))}</code>\n" if details.get('work_mode') else ""
-                    desc_info = f"\n📋 <b>Job Summary & Highlights:</b>\n<i>{html.escape(str(details['description_summary']))}</i>\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if details.get('description_summary') else ""
+                    tn_header = (
+                        "🌟 <b>TAMIL NADU PRIORITY OPPORTUNITY</b> ⭐\n"
+                        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                    ) if details["is_tamil_nadu"] else ""
+                    
+                    work_info = f"🛠️ <b>Work Mode / Type:</b>\n   <code>{html.escape(str(details['work_mode']))}</code>\n\n" if details.get('work_mode') else ""
+                    
+                    desc_section = ""
+                    if details.get('description_summary') and len(details['description_summary']) > 15:
+                        desc_section = (
+                            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                            "📋 <b>Key Highlights & Responsibilities:</b>\n"
+                            f"<i>{html.escape(str(details['description_summary']))}</i>\n\n"
+                        )
 
                     notification = (
-                        f"🎯 <b>New Verified Job Opening Detected!</b>\n"
-                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        "🎯 <b>NEW VERIFIED JOB ALERT</b>\n"
+                        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
                         f"{tn_header}"
-                        f"🏢 <b>Company:</b> <code>{html.escape(str(details['company']))}</code>\n"
-                        f"💼 <b>Role / Position:</b> <b>{html.escape(str(details['role']))}</b>\n"
-                        f"📍 <b>Job Location:</b> <code>{html.escape(str(details['location']))}</code>\n"
-                        f"🎓 <b>Batch / Eligibility:</b> <code>{html.escape(str(details['batch']))}</code>\n"
-                        f"💰 <b>Salary / CTC:</b> <code>{html.escape(str(details['salary']))}</code>\n"
+                        f"🏢 <b>COMPANY:</b>\n"
+                        f"   <code>{html.escape(str(details['company']))}</code>\n\n"
+                        f"💼 <b>ROLE / POSITION:</b>\n"
+                        f"   <b>{html.escape(str(details['role']))}</b>\n\n"
+                        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"📍 <b>Job Location:</b>\n"
+                        f"   <code>{html.escape(str(details['location']))}</code>\n\n"
                         f"{work_info}"
-                        f"📡 <b>Source Channel:</b> <a href=\"{html.escape(str(channel_post_url))}\">@{html.escape(str(channel_name))}</a>\n\n"
-                        f"🔗 <b>Verified Direct Apply:</b> <a href=\"{html.escape(str(final_url))}\">Apply on Official Portal</a>\n"
-                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-                        f"{desc_info}"
-                        f"👉 <b>Tap the button below to apply directly on the official portal!</b>"
+                        f"🎓 <b>Batch & Eligibility:</b>\n"
+                        f"   <code>{html.escape(str(details['batch']))}</code>\n\n"
+                        f"💰 <b>Salary / Expected CTC:</b>\n"
+                        f"   <code>{html.escape(str(details['salary']))}</code>\n\n"
+                        f"📡 <b>Channel Source:</b>\n"
+                        f"   <a href=\"{html.escape(str(channel_post_url))}\">@{html.escape(str(channel_name))}</a>\n\n"
+                        f"{desc_section}"
+                        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"🚀 <b>Direct Application:</b>\n"
+                        f"<a href=\"{html.escape(str(final_url))}\">👉 Click here to Apply on Official Portal 👈</a>\n\n"
+                        "👇 <b>Tap the buttons below to open directly:</b>"
                     )
                     markup = InlineKeyboardMarkup()
                     markup.row(

@@ -295,6 +295,9 @@ def is_social_or_promo_link(url):
         "youtube.com", "youtu.be", "pinterest.com", "threads.net",
         "linktr.ee", "bio.link", "campsite.bio", "taplink.cc", "beacons.ai",
         "play.google.com", "apps.apple.com", "aratt.ai",
+        # Social sharing / blog widgets
+        "addtoany.com", "addthis.com", "sharethis.com", "disqus.com", "gravatar.com",
+        "blogger.com", "feedburner.com", "wordpress.com", "w3.org",
         # Expired / Parked / Squatter domains
         "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com",
         "namecheap.com", "domainmarket.com", "parklogic.com", "parkingcrew.com",
@@ -419,7 +422,8 @@ def _scan_single_channel_radar(ch):
                 if m_hiring:
                     company = m_hiring.group(1).strip()
             company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
-            if not company or len(company) < 2:
+            invalid_companies = ["verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan", "afternic", "domain", "admin", "unknown", "addtoany", "addthis", "sharethis", "blogger", "wordpress", "disqus"]
+            if not company or len(company) < 2 or company.lower() in invalid_companies:
                 company = "Verified Recruiter"
 
             # Robust Role Extraction
