@@ -426,7 +426,9 @@ def _scan_single_channel_radar(ch):
                 "verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan",
                 "afternic", "domain", "admin", "unknown", "addtoany", "addthis", "sharethis",
                 "blogger", "wordpress", "disqus", "telegram", "telegram.org", "telegram.dog",
-                "freshershunt", "foundthejob", "jobopenings", "jobopenings_india", "tech_jobs_india"
+                "freshershunt", "foundthejob", "jobopenings", "jobopenings_india", "tech_jobs_india",
+                "indiawalkinjobs", "walkinjobs", "meganaukri", "dailyjobalerts", "sarkariprep",
+                "freejobalert", "freshersvoice", "naukriauto", "jobalertshub", "placementdrive", "allindiajobs"
             ]
             if not company or len(company) < 2 or company.lower() in invalid_companies:
                 company = "Verified Recruiter"
@@ -446,6 +448,16 @@ def _scan_single_channel_radar(ch):
             role = re.sub(r'[^\w\s.,&/\(\)\-]', '', role).strip()
             if not role or len(role) < 2:
                 role = "Software Developer / Engineer Trainee"
+
+            # Strict Non-Engineering / BPO / Medical Billing Filter
+            non_eng_keywords = [
+                "medical billing", "medical coder", "medical coding", "bpo", "telecaller", "telecalling",
+                "data entry", "voice process", "non-voice", "non voice", "customer care", "customer support executive",
+                "telesales", "insurance agent", "sales executive", "front desk", "receptionist", "security guard",
+                "delivery boy", "delivery partner", "pharma sales", "retail sales"
+            ]
+            if any(k in role.lower() for k in non_eng_keywords):
+                continue
 
             direct_link = unwrap_radar_direct_link(raw_link)
             if is_social_or_promo_link(direct_link):
