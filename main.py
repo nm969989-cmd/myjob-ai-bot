@@ -187,7 +187,7 @@ if TELEGRAM_TOKEN:
 else:
     bot = None
 # Handle multiple Gemini API keys
-GEMINI_API_KEYS = [k.strip() for k in str(os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip() and k.strip().startswith("AIza")]
+GEMINI_API_KEYS = [k.strip() for k in str(os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip()]
 current_gemini_key_index = 0
 
 def get_gemini_client():
