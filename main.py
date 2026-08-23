@@ -185,31 +185,22 @@ if TELEGRAM_TOKEN:
     apihelper.RETRY_TIMEOUT = 2
     bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=True, num_threads=30)
     try:
-        from telebot.types import BotCommand, MenuButtonWebApp, WebAppInfo
-        miniapp_url = os.getenv("MINI_APP_URL", "https://nm969989-cmd.github.io/myjob-ai-bot/")
+        from telebot.types import BotCommand, MenuButtonDefault
         commands = [
-            BotCommand("app", "🚀 Launch Visual Job Radar Mini-App"),
-            BotCommand("jobs", "📱 Browse Latest Verified Jobs"),
-            BotCommand("start", "⚡ Restart Bot & Check Status"),
-            BotCommand("help", "📖 View All Bot Commands"),
+            BotCommand("start", "⚡ Restart Bot & Activate Alerts"),
+            BotCommand("help", "📖 View All Bot Commands & Guide"),
             BotCommand("status", "🩺 Bot Engine & Channels Health"),
-            BotCommand("pause", "🛑 Pause Channel Scanner"),
-            BotCommand("resume", "🟢 Resume Channel Scanner"),
-            BotCommand("dashboard", "💻 Open Web Dashboard"),
-            BotCommand("notion", "📋 Open Notion CRM Board"),
+            BotCommand("pause", "🛑 Pause Scanning Channels"),
+            BotCommand("resume", "🟢 Resume Scanning Channels"),
+            BotCommand("notion", "📋 Open Notion CRM Tracker"),
+            BotCommand("history", "🕒 View Recent Applied/Matched Jobs"),
             BotCommand("download", "📥 Export Jobs CSV Log")
         ]
         bot.set_my_commands(commands)
-        bot.set_chat_menu_button(
-            menu_button=MenuButtonWebApp(
-                type="web_app",
-                text="🚀 Open App",
-                web_app=WebAppInfo(url=miniapp_url)
-            )
-        )
-        print("[Telegram] Registered commands & Mini-App Menu Button with Telegram!")
+        bot.set_chat_menu_button(menu_button=MenuButtonDefault(type="default"))
+        print("[Telegram] Registered standard bot commands and reset Menu Button to default!")
     except Exception as e:
-        print(f"[Telegram] Menu button setup warning: {e}")
+        print(f"[Telegram] Menu setup warning: {e}")
 else:
     bot = None
 # Handle multiple Gemini API keys
@@ -4399,46 +4390,17 @@ if bot:
             "Use the interactive buttons below to control your automation empire instantly.",
             parse_mode=None, reply_markup=markup)
 
-    @bot.message_handler(commands=['app', 'jobs', 'miniapp', 'radar'])
-    def send_miniapp_button(message):
-        save_chat_id(message.chat.id)
-        from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-        miniapp_url = os.getenv("MINI_APP_URL", "https://nm969989-cmd.github.io/myjob-ai-bot/")
-        
-        markup = InlineKeyboardMarkup()
-        markup.row(
-            InlineKeyboardButton("🚀 Launch Job Radar Mini-App", web_app=WebAppInfo(url=miniapp_url))
-        )
-        bot.send_message(
-            message.chat.id,
-            "📱 *MyJob AI Radar — Visual Mini-App*\n\n"
-            "Tap below to open your interactive Job Hub right inside Telegram!\n\n"
-            "✨ *Features:*\n"
-            "• 🌟 Filter Tamil Nadu & Pan-India Jobs\n"
-            "• 🔍 Instant live search by skill & role\n"
-            "• 🚀 1-Click Direct Apply to official career portals\n"
-            "• ⭐ Save favorite jobs & track applied status",
-            parse_mode="Markdown",
-            reply_markup=markup
-        )
-
     @bot.message_handler(commands=['start'])
     def send_welcome(message):
         save_chat_id(message.chat.id)
-        from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-        miniapp_url = os.getenv("MINI_APP_URL", "https://nm969989-cmd.github.io/myjob-ai-bot/")
-        
-        markup = InlineKeyboardMarkup()
-        markup.row(
-            InlineKeyboardButton("🚀 Launch Job Radar Mini-App", web_app=WebAppInfo(url=miniapp_url))
-        )
-        bot.send_message(
-            message.chat.id,
-            "👋 Welcome to *MyJob AI Radar Bot!*\n\n"
-            "🤖 Locked to your Chat ID and scanning 47+ verified channels 24/7!\n\n"
-            "📱 *New:* Tap below to open your interactive Job Mini-App inside Telegram!",
-            parse_mode="Markdown",
-            reply_markup=markup
+        bot.reply_to(
+            message,
+            "👋 <b>Welcome to MyJob AI Radar Bot!</b>\n\n"
+            "🤖 <b>Status:</b> Locked to your Chat ID and actively scanning 47+ verified channels!\n\n"
+            "🌟 <b>Target:</b> Freshers & Entry-Level Engineering Roles in India (Tamil Nadu ⭐ Priority).\n"
+            "🔗 <b>Mode:</b> Verified Search & Direct ATS Link Extraction (No auto-apply, 100% manual review).\n\n"
+            "Type <code>/help</code> or tap the menu to see all available commands.",
+            parse_mode="HTML"
         )
 
     @bot.message_handler(commands=['help'])
