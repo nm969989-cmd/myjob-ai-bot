@@ -75,9 +75,9 @@ except Exception as e:
     print(f"⚠️ Radar Scan error: {e}")
 
 # -------------------------------------------------------------
-# STEP 2: Telegram Channel Scrape & Playwright Auto-Apply
+# STEP 2: Telegram Channel Scrape & Direct Link Extraction
 # -------------------------------------------------------------
-print("\n📢 [2/3] Scraping Telegram Channels & Auto-Applying...")
+print("\n📢 [2/3] Scraping Telegram Channels & Extracting Direct Links...")
 try:
     from main import scrape_single_channel, load_applied_jobs, TARGET_CHANNELS
     
@@ -86,7 +86,7 @@ try:
     channels_to_scan = list(dict.fromkeys([target_channel_env] + list(TARGET_CHANNELS)))
     
     for ch in channels_to_scan:
-        # Check time budget: if remaining time is low, exit early to allow logs and notifications
+        # Check time budget
         elapsed = time.time() - START_TIME
         if elapsed > MAX_EXECUTION_SECONDS:
             print(f"⏱️ Time budget reached ({int(elapsed)}s). Concluding channel scans gracefully.")
@@ -96,13 +96,10 @@ try:
             clean_ch = ch.replace("@", "").strip()
             print(f"  🔍 Checking @{clean_ch}...")
             try:
-                found, attempts = scrape_single_channel(clean_ch, applied_jobs, chat_id, max_jobs=1)
+                found, attempts = scrape_single_channel(clean_ch, applied_jobs, chat_id, max_jobs=2)
                 channels_scanned += 1
                 channel_jobs_found += (found or 0)
                 channel_attempts += (attempts or 0)
-                if channel_attempts >= 2:
-                    print("  🎯 Reached max applications limit for this cycle. Moving to summary.")
-                    break
             except Exception as ch_err:
                 print(f"  ⚠️ Error scanning @{clean_ch}: {ch_err}")
                 
@@ -156,7 +153,7 @@ except Exception as e:
 # STEP 4: Cloud Status Update to Telegram (Always sent!)
 # -------------------------------------------------------------
 total_elapsed = int(time.time() - START_TIME)
-print(f"\n📊 Cycle summary: Duration={total_elapsed}s, Radar={radar_jobs_count}, Channels={channels_scanned}, New={channel_jobs_found}, Applied={channel_attempts}")
+print(f"\n📊 Cycle summary: Duration={total_elapsed}s, Radar={radar_jobs_count}, Channels={channels_scanned}, Direct Alerts={channel_jobs_found}")
 
 try:
     tn_radar_count = sum(1 for j in new_radar_jobs if j.get('is_tamil_nadu', False)) if new_radar_jobs else 0
@@ -168,10 +165,10 @@ try:
         f"📡 Radar Jobs (India): *{radar_jobs_count}*\n"
         f"🌟 Tamil Nadu Priority: *{tn_radar_count}* jobs\n"
         f"📢 Channels Scanned: *{channels_scanned}*\n"
-        f"🎯 Auto-Applied Attempts: *{channel_attempts}*\n"
+        f"🚀 Direct Job Alerts Sent: *{channel_jobs_found}*\n"
         f"👻 7-Day Follow-ups: *{follow_up_count}*\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"🟢 _100% Cloud Autonomous (No PC Required)_"
+        f"🟢 _Search & Direct Link Extraction Mode Active_"
     )
     bot.send_message(chat_id, status_msg, parse_mode="Markdown", disable_web_page_preview=True)
     print("✅ Status summary sent to Telegram.")

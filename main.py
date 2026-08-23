@@ -3097,94 +3097,13 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                 log_job(final_url, message_text, False, f"Filtered: Non-India location ({details['raw_location']})")
                 continue
 
-            # ─── BUG FIX 1: Detect Government / Registration-Only Portals ───
-            GOVT_REGISTRATION_DOMAINS = [
-                "bhel.in", "nmdc.co.in", "rites.com", "ongcindia.com", "indianoil.in",
-                "ntpc.co.in", "powergridindia.com", "gailonline.com", "nalcoindia.com",
-                "sail.co.in", "hindustancopper.com", "meclindia.com", "npcil.nic.in",
-                "ireda.gov.in", "recpdcl.in", "thdcil.co.in",
-                "indianrailways.gov.in", "rrcb.in", "rrcnr.org", "rrcer.com", "rrcpryj.org",
-                "rrcecr.gov.in", "rrcnwr.com", "rrcaldiengg.com", "scr.indianrailways",
-                "joinindianarmy.nic.in", "joinindiannavy.gov.in", "careerindianairforce.cdac.in",
-                "agnipathvayu.cdac.in", "ssbcrpf.gov.in", "bsf.gov.in", "cisf.gov.in",
-                "ssc.nic.in", "ssconline.nic.in", "upsc.gov.in", "upsconline.nic.in",
-                "tnpsc.gov.in", "mpsconline.gov.in", "kpsc.kar.nic.in",
-                "ibps.in", "sbi.co.in", "rbi.org.in", "nabard.org",
-                "apprenticeshipindia.org", "apprenticeship.gov.in", "mhrdnats.gov.in",
-                "nats.education.gov.in", "boat-srp.com", ".nic.in", ".gov.in",
-            ]
-            is_govt_portal = any(domain in final_url.lower() for domain in GOVT_REGISTRATION_DOMAINS)
-            if is_govt_portal:
-                print(f"[Scraper] ⚠️ Government/Registration portal detected — skipping auto-apply: {final_url}")
-                applied_jobs.add(job_link)
-                save_applied_job(job_link)
-                if bot and active_chat_id:
-                    try:
-                        channel_post_url = f"https://t.me/s/{channel_name}"
-                        post_preview = message_text[:600].strip()
-                        if len(message_text) > 600:
-                            post_preview += "..."
-                        manual_msg = (
-                            f"🏛️ *Government / Registration Portal Detected!*\n"
-                            f"━━━━━━━━━━━━━━━━━━━━\n"
-                            f"📡 *Channel:* [@{channel_name}]({channel_post_url})\n\n"
-                            f"📋 *Post Content:*\n{post_preview}\n\n"
-                            f"━━━━━━━━━━━━━━━━━━━━\n"
-                            f"⚠️ _This portal requires manual registration (Aadhaar/OTP/fee). Auto-apply skipped to avoid fake submissions._\n\n"
-                            f"👉 *Please register manually at the official link below.*"
-                        )
-                        markup = InlineKeyboardMarkup()
-                        markup.row(
-                            InlineKeyboardButton("🏛️ Open Registration Portal", url=final_url),
-                            InlineKeyboardButton("🔗 View Channel Post", url=channel_post_url)
-                        )
-                        bot.send_message(active_chat_id, manual_msg, parse_mode=None,
-                                         disable_web_page_preview=True, reply_markup=markup)
-                    except Exception as govt_e:
-                        print(f"[Scraper] Failed to send govt portal alert: {govt_e}")
-                log_job(final_url, message_text, False, "Government registration portal — manual apply required")
-                continue
-
-            # Skip unsupported platforms
-            if any(domain in final_url.lower() for domain in UNSUPPORTED_DOMAINS):
-                print(f"[Scraper] Skipping unsupported platform: {final_url}")
-                applied_jobs.add(job_link)
-                save_applied_job(job_link)
-                if bot and active_chat_id:
-                    try:
-                        channel_post_url = f"https://t.me/s/{channel_name}"
-                        post_preview = message_text[:500].strip()
-                        if len(message_text) > 500:
-                            post_preview += "..."
-                        unsup_msg = (
-                            f"🔗 *Job Link from @{channel_name}*\n"
-                            f"━━━━━━━━━━━━━━━━━━━━\n"
-                            f"📋 *Post:*\n{post_preview}\n\n"
-                            f"━━━━━━━━━━━━━━━━━━━━\n"
-                            f"⏭️ _Platform requires manual apply (LinkedIn/Naukri/etc.)_"
-                        )
-                        markup = InlineKeyboardMarkup()
-                        markup.row(
-                            InlineKeyboardButton("🌐 Apply Manually", url=final_url),
-                            InlineKeyboardButton("🔗 Channel Post", url=channel_post_url)
-                        )
-                        bot.send_message(active_chat_id, unsup_msg, parse_mode=None,
-                                         disable_web_page_preview=True, reply_markup=markup)
-                    except Exception as unsup_e:
-                        print(f"[Scraper] Failed to send unsupported link alert: {unsup_e}")
-                log_job(final_url, message_text, False, "Unsupported platform")
-                continue
-
             # Smart Filter — strict fresher+engineering check
             try:
                 is_match, job_summary = check_job_match(message_text, profile)
-                time.sleep(random.uniform(4.5, 6.0))
+                time.sleep(random.uniform(1.0, 2.0))
             except Exception as filter_e:
                 if "GEMINI_RATE_LIMIT" in str(filter_e):
                     print("[Scraper] Rate limit in filter. Stopping cycle.")
-                    if bot and active_chat_id:
-                        try: bot.send_message(active_chat_id, "⏳ *API Cooldown Activated*\n\n_Speed limit hit while filtering jobs. Sleeping 15 min. Jobs are safe!_", parse_mode=None)
-                        except: pass
                     raise Exception("GEMINI_RATE_LIMIT")
                 is_match, job_summary = True, str(filter_e)
 
@@ -3195,7 +3114,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                 log_job(final_url, message_text, False, f"AI Rejected: {job_summary[:80]}")
                 continue
 
-            # ✅ Job matched — send rich structured summary card to Telegram BEFORE applying
+            # ✅ Job matched — send rich structured direct apply alert to Telegram
             if bot and active_chat_id:
                 try:
                     channel_post_url = f"https://t.me/s/{channel_name}"
@@ -3220,7 +3139,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         f"📝 *Channel Job Details:*\n"
                         f"_{post_preview}_\n\n"
                         f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                        f"🚀 *Status:* Auto-applying with Playwright..."
+                        f"👉 *Tap the button below to apply directly on the official portal!*"
                     )
                     markup = InlineKeyboardMarkup()
                     markup.row(
@@ -3228,102 +3147,35 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         InlineKeyboardButton("📢 View Channel Post", url=channel_post_url)
                     )
                     bot.send_message(active_chat_id, notification, parse_mode=None, disable_web_page_preview=True, reply_markup=markup)
+                    print(f"[Scraper] Sent direct job alert to Telegram: {details['company']} - {details['role']}")
                 except Exception as notif_e:
                     print(f"[Scraper] Failed to send job summary: {notif_e}")
-                    
-            # ✅ Sync to Notion immediately so user sees it in CRM even if application fails
+
+            # Mark as processed & log
+            applied_jobs.add(job_link)
+            save_applied_job(job_link)
+            log_job(final_url, message_text, True, "Alerted to user (Direct apply)")
+            new_jobs_found += 1
+            attempts_this_cycle += 1
+            ch_status[channel_name]["jobs_found"] = ch_status[channel_name].get("jobs_found", 0) + 1
+            wk = load_weekly_stats()
+            wk["applied"] = wk.get("applied", 0) + 1
+            save_weekly_stats(wk)
+
+            # Sync to Notion (if configured)
             try:
                 gc = get_gemini_client()
-                # Attempt to extract exact company from the message (usually line 1 starts with "Title:" or "Company:")
-                extracted_company = None
-                first_line = message_text.split('\n')[0]
-                if "Hiring" in first_line or "Recruitment" in first_line:
-                    # Remove emojis
-                    clean_line = re.sub(r'[^\w\s.,&-]', '', first_line).strip()
-                    # Example: "Title: NTT DATA Hiring Freshers 2026" -> "NTT DATA"
-                    extracted_company = clean_line.replace('Title', '').replace(':', '').split('Hiring')[0].split('Recruitment')[0].strip()
-                    if len(extracted_company) < 2: extracted_company = None
-                
-                sync_to_notion(final_url, message_text, "Found (Pending)", gc, override_company=extracted_company, groq_client=groq_client)
+                sync_to_notion(final_url, message_text, "Alerted", gc, override_company=details['company'], groq_client=groq_client)
             except Exception as e:
-                print(f"[Scraper] Failed to sync initial job to Notion: {e}")
+                pass
 
-            # Save last job BEFORE applying
+            # Save last job
             save_last_job({
                 "channel": channel_name, "url": final_url,
-                "summary": job_summary,
+                "summary": f"{details['company']} - {details['role']}",
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "status": "⏳ Attempting..."
+                "status": "📢 Alerted"
             })
-
-            # Apply!
-            attempts_this_cycle += 1
-            try:
-                success = run_playwright_apply(final_url, message_text)
-                applied_jobs.add(job_link)
-                save_applied_job(job_link)
-                # Update last job with result
-                result_status = "✅ Applied" if success else "❌ Failed"
-                save_last_job({
-                    "channel": channel_name, "url": final_url,
-                    "summary": job_summary,
-                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "status": result_status
-                })
-                if success:
-                    log_job(final_url, message_text, True, "Auto applied")
-                    new_jobs_found += 1
-                    ch_status[channel_name]["jobs_found"] = ch_status[channel_name].get("jobs_found", 0) + 1
-                    wk = load_weekly_stats(); wk["applied"] += 1; save_weekly_stats(wk)
-                    # Update Notion status to Applied
-                    try:
-                        gc = get_gemini_client()
-                        sync_to_notion(final_url, message_text, "Applied", gc, groq_client=groq_client)
-                    except: pass
-                else:
-                    log_job(final_url, message_text, False, "Failed", is_failed=True)
-                    retry_queue = load_retry_queue()
-                    if final_url not in retry_queue:
-                        retry_queue[final_url] = {"timestamp": time.time(), "attempts": 1}
-                        save_retry_queue(retry_queue)
-                    wk = load_weekly_stats(); wk["failed"] += 1; save_weekly_stats(wk)
-                    # Notify user about failure WITH screenshot
-                    if bot and active_chat_id:
-                        try:
-                            fail_msg = f"❌ *Application Failed*\n🔗 {final_url}\n\n_Job added to retry queue. You can apply manually._"
-                            screenshot_path = "after_submit.png"
-                            if os.path.exists(screenshot_path):
-                                with open(screenshot_path, "rb") as photo:
-                                    bot.send_photo(active_chat_id, photo, caption=fail_msg, parse_mode=None)
-                            else:
-                                bot.send_message(active_chat_id, fail_msg, parse_mode=None, disable_web_page_preview=True)
-                        except: pass
-                time.sleep(random.uniform(30, 60))
-            except Exception as apply_e:
-                if "GEMINI_RATE_LIMIT" in str(apply_e):
-                    print("[Scraper] Rate limit during application. Stopping cycle.")
-                    if bot and active_chat_id:
-                        try: bot.send_message(active_chat_id, "⏳ *API Cooldown Activated*\n\n_Speed limit hit while applying. Sleeping 15 min. Jobs are safe!_", parse_mode=None)
-                        except: pass
-                    raise Exception("GEMINI_RATE_LIMIT")
-                else:
-                    err_str = str(apply_e)
-                    print(f"[Scraper] Error applying: {err_str}")
-                    applied_jobs.add(job_link)
-                    save_applied_job(job_link)
-                    log_job(final_url, message_text, False, f"Error: {err_str}")
-                    # Send error notification to Telegram WITH screenshot
-                    if bot and active_chat_id:
-                        try:
-                            err_msg = f"⚠️ *Application Error*\n🔗 {final_url}\n\n*Error:* `{err_str[:200]}`\n\n_Job saved. Try manually if needed._"
-                            screenshot_path = "after_submit.png"
-                            if os.path.exists(screenshot_path):
-                                with open(screenshot_path, "rb") as photo:
-                                    bot.send_photo(active_chat_id, photo, caption=err_msg[:1024], parse_mode=None)
-                            else:
-                                bot.send_message(active_chat_id, err_msg, parse_mode=None, disable_web_page_preview=True)
-                        except: pass
-                    time.sleep(random.uniform(30, 60))
 
             # BUG FIX 2: Raised per-channel cap from 2 to 5 so more jobs are processed
             if new_jobs_found >= 5 or attempts_this_cycle >= 5:
@@ -3334,7 +3186,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
             break
 
     ch_status[channel_name]["last_scan"] = datetime.now().strftime("%H:%M")
-    ch_status[channel_name]["status"] = f"✅ {new_jobs_found} applied"
+    ch_status[channel_name]["status"] = f"✅ {new_jobs_found} alerted"
     save_channel_status(ch_status)
     return new_jobs_found, attempts_this_cycle
 
