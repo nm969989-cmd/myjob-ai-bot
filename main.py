@@ -184,10 +184,36 @@ if TELEGRAM_TOKEN:
     apihelper.MAX_RETRIES = 5
     apihelper.RETRY_TIMEOUT = 2
     bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=True, num_threads=30)
+    try:
+        from telebot.types import BotCommand, MenuButtonWebApp, WebAppInfo
+        miniapp_url = os.getenv("MINI_APP_URL", "https://gokuuc-myjob-bot.hf.space/miniapp")
+        commands = [
+            BotCommand("app", "🚀 Launch Visual Job Radar Mini-App"),
+            BotCommand("jobs", "📱 Browse Latest Verified Jobs"),
+            BotCommand("start", "⚡ Restart Bot & Check Status"),
+            BotCommand("help", "📖 View All Bot Commands"),
+            BotCommand("status", "🩺 Bot Engine & Channels Health"),
+            BotCommand("pause", "🛑 Pause Channel Scanner"),
+            BotCommand("resume", "🟢 Resume Channel Scanner"),
+            BotCommand("dashboard", "💻 Open Web Dashboard"),
+            BotCommand("notion", "📋 Open Notion CRM Board"),
+            BotCommand("download", "📥 Export Jobs CSV Log")
+        ]
+        bot.set_my_commands(commands)
+        bot.set_chat_menu_button(
+            menu_button=MenuButtonWebApp(
+                type="web_app",
+                text="🚀 Open App",
+                web_app=WebAppInfo(url=miniapp_url)
+            )
+        )
+        print("[Telegram] Registered commands & Mini-App Menu Button with Telegram!")
+    except Exception as e:
+        print(f"[Telegram] Menu button setup warning: {e}")
 else:
     bot = None
 # Handle multiple Gemini API keys
-GEMINI_API_KEYS = [k.strip() for k in str(os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip() and k.strip().startswith("AIza")]
+GEMINI_API_KEYS = [k.strip() for k in str(os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip()]
 current_gemini_key_index = 0
 
 def get_gemini_client():
