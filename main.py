@@ -3051,14 +3051,19 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
             company = m_comp_after.group(1).strip()
 
     company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
-    invalid_companies = ["verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan", "afternic", "domain", "admin", "unknown", "addtoany", "addthis", "sharethis", "blogger", "wordpress", "disqus"]
+    invalid_companies = [
+        "verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan",
+        "afternic", "domain", "admin", "unknown", "addtoany", "addthis", "sharethis",
+        "blogger", "wordpress", "disqus", "telegram", "telegram.org", "telegram.dog",
+        "freshershunt", "foundthejob", "jobopenings", "jobopenings_india", "tech_jobs_india"
+    ]
     if not company or len(company) < 2 or company.lower() in invalid_companies:
         # Fallback from direct URL domain
         if final_url and "http" in final_url and not is_social_or_promo_link(final_url):
             from urllib.parse import urlparse
             netloc = urlparse(final_url).netloc.lower()
             for part in netloc.split('.'):
-                if part not in ["www", "com", "in", "io", "co", "careers", "jobs", "apply", "wd3", "myworkdayjobs", "sensehq", "greenhouse", "lever", "smartrecruiters", "docs", "google", "hugedomains", "sedo", "godaddy", "addtoany", "addthis", "sharethis"]:
+                if part not in ["www", "com", "in", "io", "co", "careers", "jobs", "apply", "wd3", "myworkdayjobs", "sensehq", "greenhouse", "lever", "smartrecruiters", "docs", "google", "hugedomains", "sedo", "godaddy", "addtoany", "addthis", "sharethis", "telegram", "t", "dog", "org", "freshershunt", "foundthejob"]:
                     if len(part) >= 3:
                         company = part.capitalize()
                         break

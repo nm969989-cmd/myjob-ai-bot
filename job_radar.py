@@ -422,7 +422,12 @@ def _scan_single_channel_radar(ch):
                 if m_hiring:
                     company = m_hiring.group(1).strip()
             company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
-            invalid_companies = ["verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan", "afternic", "domain", "admin", "unknown", "addtoany", "addthis", "sharethis", "blogger", "wordpress", "disqus"]
+            invalid_companies = [
+                "verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan",
+                "afternic", "domain", "admin", "unknown", "addtoany", "addthis", "sharethis",
+                "blogger", "wordpress", "disqus", "telegram", "telegram.org", "telegram.dog",
+                "freshershunt", "foundthejob", "jobopenings", "jobopenings_india", "tech_jobs_india"
+            ]
             if not company or len(company) < 2 or company.lower() in invalid_companies:
                 company = "Verified Recruiter"
 
