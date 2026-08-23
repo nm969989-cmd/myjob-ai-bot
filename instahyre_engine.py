@@ -569,5 +569,6 @@ def run_instahyre_mass_apply(skills="Software Engineer Fresher", max_application
             browser.close()
 
 if __name__ == "__main__":
-    run_instahyre_mass_apply(None, None, 'Software Engineer Fresher', 1)
+    # Use keyword args so values map to the correct parameters.
+    run_instahyre_mass_apply(skills='Software Engineer Fresher', max_applications=1)
     pass

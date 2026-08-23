@@ -73,6 +73,7 @@ TARGET_CHANNEL = os.getenv("TARGET_CHANNEL", "JobSkull")  # Primary channel (kep
 # All channels to monitor (from env as comma-separated list, or use defaults)
 _channels_env = os.getenv("TARGET_CHANNELS", "")
 TARGET_CHANNELS = [c.strip().lstrip("@") for c in _channels_env.split(",") if c.strip()] if _channels_env else [
+    # Top Pan-India Engineering & Fresher Job Channels
     "JobSkull",
     "KickCharm",
     "OffCampusJobs4u",
@@ -84,9 +85,44 @@ TARGET_CHANNELS = [c.strip().lstrip("@") for c in _channels_env.split(",") if c.
     "fresheroffcampus",
     "workfromhomejobs1",
     "offcampusphodenge",
-    "veagance",           # Remote Jobs [PAN INDIA]
-    "DailyJobs4You",      # DailyJobs4You
-    "Foundthejob",        # Work From Home JOBS with Foundthejob
+    "veagance",
+    "DailyJobs4You",
+    "Foundthejob",
+    # Tamil Nadu & South India High Priority Channels
+    "chennaijobs2025",
+    "chennaijobsofficial",
+    "tamilnadujob",
+    "tamilnadujobsalert",
+    "TamilNadu_Govt_Private_Jobs",
+    "chennai_it_jobs",
+    "coimbatore_jobs",
+    "tn_job_alert",
+    "bangalore_chennai_jobs",
+    "tamil_tech_jobs",
+    "chennai_walkins",
+    "tamilnadu_freshers",
+    "tn_fresher_jobs",
+    # Tech & Placement Update Channels
+    "offcampus_freshers",
+    "freshers_jobs_india",
+    "tech_jobs_india",
+    "internships_freshers",
+    "naukri_fresher_jobs",
+    "allindiafreshersjobs",
+    "it_jobs_freshers",
+    "placement_season",
+    "offcampushire",
+    "freshersvoice",
+    "jobopenings_india",
+    "techfreshers",
+    "jobsforyou_india",
+    "freshers_drive",
+    "engineering_jobs_india",
+    "software_jobs_india",
+    "campus_placement_prep",
+    "india_remote_jobs",
+    "fresher_engineer_jobs",
+    "fresher_it_openings",
 ]
 
 # Files
@@ -397,29 +433,48 @@ def load_profile():
     }
     return safe_load_json(PROFILE_FILE, default_profile)
 
+def clean_tracking_params(url):
+    """Strips Google Analytics/Social Media tracking parameters to keep URLs clean and direct."""
+    if not url:
+        return url
+    from urllib.parse import urlparse, parse_qs, urlunparse, urlencode
+    try:
+        parsed = urlparse(url)
+        qs = parse_qs(parsed.query)
+        tracking_keys = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "fbclid", "gclid", "ref", "source", "ref_id"]
+        filtered_qs = {k: v for k, v in qs.items() if k.lower() not in tracking_keys}
+        clean_query = urlencode(filtered_qs, doseq=True)
+        return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, clean_query, parsed.fragment))
+    except Exception:
+        return url
+
 # --- 2. WEBPAGE REDIRECT BYPASSER ---
 def bypass_blog_redirect(blog_url):
     """
     Intelligently finds the real company application link inside ad-heavy blogger/shortener pages.
-    Step 1: Follow HTTP redirects (handles URL shorteners like pdlink.in, bit.ly, etc.)
-    Step 2: Deep HTML scraping for the actual apply link
+    Step 1: Follow HTTP redirects (handles URL shorteners like pdlink.in, bit.ly, tinyurl, etc.)
+    Step 2: Deep container HTML scraping for the actual ATS/careers apply link
     Step 3: Playwright JS-rendering fallback for dynamic pages
     """
     from urllib.parse import urlparse, parse_qs, unquote
 
-    # If the URL is already a direct job board/form, return it immediately without fetching
+    if not blog_url:
+        return blog_url
+
+    # If the URL is already a direct job board/ATS/form, return it immediately without fetching
     direct_domains = [
-        "docs.google.com", "greenhouse.io", "lever.co", "workdayjobs.com",
-        "smartrecruiters.com", "joinsuperset.com", "myworkdayjobs.com",
+        "docs.google.com/forms", "forms.gle", "greenhouse.io", "lever.co", "workdayjobs.com",
+        "smartrecruiters.com", "joinsuperset.com", "myworkdayjobs.com", "sensehq.com",
         "oraclecloud.com", "successfactors", "icims.com", "ashbyhq.com",
         "bamboohr.com", "jobs.lever.co", "taleo.net", "breezy.hr",
         "recruitee.com", "freshteam.com", "zohorecruit.com", "wellfound.com",
         "angel.co", "workingnomads.com", "weworkremotely.com", "hired.com",
-        "triplebyte.com", "ycombinator.com/companies",
+        "triplebyte.com", "ycombinator.com/companies", "darwinbox.com", "keka.com",
+        "unstop.com", "internshala.com", "foundit.in", "naukri.com", "hirist.com",
     ]
     if any(domain in blog_url.lower() for domain in direct_domains):
         print(f"[Bypasser] URL is already a direct job page: {blog_url}")
-        return blog_url
+        return clean_tracking_params(blog_url)
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
@@ -436,7 +491,7 @@ def bypass_blog_redirect(blog_url):
         # If the redirect itself landed on a known job platform, return immediately
         if any(domain in final_url_after_redirect.lower() for domain in direct_domains):
             print(f"[Bypasser] Redirect resolved to direct job page: {final_url_after_redirect}")
-            return final_url_after_redirect
+            return clean_tracking_params(final_url_after_redirect)
 
         # If redirect changed the URL significantly (e.g. shortener resolved), use the final URL
         parsed_original = urlparse(blog_url)
@@ -450,6 +505,14 @@ def bypass_blog_redirect(blog_url):
 
         soup = BeautifulSoup(response.text, "html.parser")
 
+        # Focus search on post article container to avoid header/footer/sidebar clutter
+        container = (
+            soup.find("div", class_=lambda c: c and any(k in str(c) for k in ["post-body", "entry-content", "article-body", "article-content", "post-content"])) or
+            soup.find("article") or
+            soup.find("div", id=lambda i: i and any(k in str(i) for k in ["post-body", "content", "main-content"])) or
+            soup
+        )
+
         # Priority 0: Check <meta http-equiv="refresh"> redirect tags
         meta_refresh = soup.find("meta", attrs={"http-equiv": re.compile(r"refresh", re.I)})
         if meta_refresh:
@@ -459,21 +522,32 @@ def bypass_blog_redirect(blog_url):
                 meta_url = url_match.group(1)
                 if meta_url.startswith("http") and blog_domain not in meta_url:
                     print(f"[Bypasser] Found meta refresh redirect: {meta_url}")
-                    return meta_url
+                    return clean_tracking_params(meta_url)
 
-        # Priority 1: Look for <a> links with "Apply" keywords in their text
-        apply_keywords = [
-            "apply", "register", "fill", "submit", "application", "apply now",
-            "click here to apply", "apply online", "apply for this job", "start application",
-            "apply here", "external apply", "apply on company", "apply directly",
-            "official link", "career page", "company website",
-        ]
         skip_domains = [
-            "newsletter", "instagram", "youtube", "whatsapp", "telegram",
-            "facebook", "twitter", "x.com", "pinterest", "reddit",
-            "play.google.com", "apps.apple.com",
+            "newsletter", "instagram.com", "youtube.com", "youtu.be", "whatsapp.com", "telegram.org",
+            "t.me", "telegram.dog", "facebook.com", "twitter.com", "x.com", "pinterest.com", "reddit.com",
+            "play.google.com", "apps.apple.com", "aratt.ai", "wa.me",
         ]
-        for link in soup.find_all("a", href=True):
+
+        # Priority 1: Direct ATS / Job board links inside container
+        for link in container.find_all("a", href=True):
+            href = link["href"].strip()
+            if not href.startswith("http"):
+                continue
+            if any(domain in href.lower() for domain in direct_domains):
+                if blog_domain not in href and not any(x in href.lower() for x in skip_domains):
+                    print(f"[Bypasser] Found direct ATS link: {href}")
+                    return clean_tracking_params(href)
+
+        # Priority 2: Look for <a> links with "Apply" / "Registration" keywords in text
+        apply_keywords = [
+            "apply online", "click here to apply", "apply for this job", "start application",
+            "apply link", "direct apply", "official apply link", "official link", "registration link",
+            "apply now", "register now", "apply here", "external apply", "apply on company",
+            "career page", "company website", "job link",
+        ]
+        for link in container.find_all("a", href=True):
             href = link["href"].strip()
             link_text = link.get_text(separator=" ").strip().lower()
             if not href.startswith("http"):
@@ -481,31 +555,10 @@ def bypass_blog_redirect(blog_url):
             if any(word in link_text for word in apply_keywords):
                 if blog_domain not in href and not any(x in href.lower() for x in skip_domains):
                     print(f"[Bypasser] Found apply link by text keyword: {href}")
-                    return href
-
-        # Priority 2: Look for direct external job platforms in any link href
-        job_platform_domains = [
-            "docs.google.com/forms", "greenhouse.io", "lever.co", "instahyre.com",
-            "linkedin.com/jobs", "workday.com", "smartrecruiters.com", "joinsuperset.com",
-            "ashbyhq.com", "bamboohr.com", "breezy.hr", "recruitee.com",
-            "freshteam.com", "zohorecruit.com", "wellfound.com",
-            "taleo.net", "icims.com", "successfactors",
-            # Career page patterns
-            "careers.", "jobs.", "apply.", "hire.", "recruit.",
-            "/careers/", "/jobs/", "/apply/", "/hiring/", "/openings/",
-            "/job-opening/", "/vacancies/", "/positions/",
-        ]
-        for link in soup.find_all("a", href=True):
-            href = link["href"].strip()
-            if not href.startswith("http"):
-                continue
-            if any(domain in href.lower() for domain in job_platform_domains):
-                if blog_domain not in href and not any(x in href.lower() for x in skip_domains):
-                    print(f"[Bypasser] Found job platform link: {href}")
-                    return href
+                    return clean_tracking_params(href)
 
         # Priority 3: Check query parameters in links for redirect targets
-        for link in soup.find_all("a", href=True):
+        for link in container.find_all("a", href=True):
             href = link["href"]
             if any(param in href for param in ["target=", "url=", "redirect=", "goto=", "link=", "dest=", "next=", "redir="]):
                 try:
@@ -514,9 +567,9 @@ def bypass_blog_redirect(blog_url):
                     for key in ["target", "url", "redirect", "goto", "link", "dest", "next", "redir"]:
                         if key in qs:
                             real_url = unquote(qs[key][0])
-                            if real_url.startswith("http"):
+                            if real_url.startswith("http") and not any(x in real_url.lower() for x in skip_domains):
                                 print(f"[Bypasser] Found redirect param link: {real_url}")
-                                return real_url
+                                return clean_tracking_params(real_url)
                 except Exception:
                     pass
 
@@ -533,46 +586,43 @@ def bypass_blog_redirect(blog_url):
                 match = re.search(pattern, script_text)
                 if match:
                     js_url = match.group(1)
-                    if js_url.startswith("http") and blog_domain not in js_url:
+                    if js_url.startswith("http") and blog_domain not in js_url and not any(x in js_url.lower() for x in skip_domains):
                         print(f"[Bypasser] Found JS redirect link: {js_url}")
-                        return js_url
+                        return clean_tracking_params(js_url)
 
-        # Priority 5: Look for any external link that looks like a company website
-        # (not blog/social media) — using heuristics
+        # Priority 5: Look for any external link matching career/jobs paths
         all_external_links = []
-        for link in soup.find_all("a", href=True):
+        for link in container.find_all("a", href=True):
             href = link["href"].strip()
             if href.startswith("http") and blog_domain not in href:
                 if not any(x in href.lower() for x in skip_domains):
                     all_external_links.append(href)
         
-        # Prefer links with career/jobs keywords in the URL itself
         for ext_link in all_external_links:
-            if any(kw in ext_link.lower() for kw in ["/career", "/job", "/apply", "/opening", "/hiring", "/recruit"]):
+            if any(kw in ext_link.lower() for kw in ["/career", "/job", "/apply", "/opening", "/hiring", "/recruit", "careers.", "jobs."]):
                 print(f"[Bypasser] Found career page URL pattern: {ext_link}")
-                return ext_link
+                return clean_tracking_params(ext_link)
 
         # Priority 6: Check for button onclick handlers
-        for btn in soup.find_all(["button", "a", "div"], onclick=True):
+        for btn in container.find_all(["button", "a", "div"], onclick=True):
             onclick = btn.get("onclick", "")
             url_match = re.search(r'["\']?(https?://[^"\';\s]+)', onclick)
             if url_match:
                 btn_url = url_match.group(1)
                 if blog_domain not in btn_url and not any(x in btn_url.lower() for x in skip_domains):
                     print(f"[Bypasser] Found onclick URL: {btn_url}")
-                    return btn_url
+                    return clean_tracking_params(btn_url)
 
-        # If we have external links but none matched career patterns, return the first non-social one
         if all_external_links:
             print(f"[Bypasser] Using first external link: {all_external_links[0]}")
-            return all_external_links[0]
+            return clean_tracking_params(all_external_links[0])
 
-        # Fallback: return the final URL after redirect resolution (better than original shortener)
+        # Fallback: return the final URL after redirect resolution
         print(f"[Bypasser] No apply link found in HTML. Using final resolved URL: {blog_url}")
-        return blog_url
+        return clean_tracking_params(blog_url)
     except Exception as e:
         print(f"[Bypasser] Error resolving redirect for {blog_url}: {e}")
-        return blog_url
+        return clean_tracking_params(blog_url)
 
 # --- 2.9 AI PAGE VERIFICATION HELPER ---
 def verify_page_with_ai(page, screenshot_bytes, context_msg=""):
@@ -818,6 +868,12 @@ def check_job_match(job_text, profile_data):
                        "10+ years", "8 years", "9 years", "6 years"]
     if any(kw in job_lower for kw in senior_keywords):
         return False, "⏩ Fast-Filtered: Senior/experienced role detected — skipped instantly"
+
+    # Location Filter: Strictly reject non-India locations
+    from job_radar import classify_location
+    is_valid_loc, tier, loc_tag, is_tn = classify_location("", job_text)
+    if not is_valid_loc:
+        return False, "⏩ Fast-Filtered: Non-India location detected — skipped instantly"
     
     # Hard accept if clearly a fresher role (skip Gemini entirely to save time)
     fresher_keywords = ["fresher", "fresh graduate", "0 year", "0-1 year", "entry level", 
@@ -825,11 +881,12 @@ def check_job_match(job_text, profile_data):
                         "junior", "associate developer", "no experience", "intern", "internship", "off campus", "off-campus"]
     if any(kw in job_lower for kw in fresher_keywords):
         # Build a quick summary without Gemini (instant!)
+        tn_badge = " 🌟 [TN Priority]" if is_tn else ""
         quick_summary = (
             f"🏢 *Job Found*\n"
-            f"💼 *Type:* Fresher/Entry Level\n"
-            f"🤖 *AI Score:* 9/10 — Keyword-matched instantly (no AI delay)\n"
-            f"_Full analysis skipped for speed_"
+            f"💼 *Type:* Fresher/Entry Level{tn_badge}\n"
+            f"📍 *Location:* {loc_tag}\n"
+            f"🤖 *AI Score:* 9/10 — Keyword-matched instantly (no AI delay)"
         )
         return True, quick_summary
     
@@ -2883,6 +2940,68 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
             except Exception:
                 pass
 
+def extract_structured_channel_job_details(message_text, raw_link, final_url, channel_name):
+    """
+    Parses channel message text and direct URL to extract structured job metadata.
+    Returns: dict with (company, role, location, batch, salary, direct_url, is_tamil_nadu, priority_tier, is_valid_india)
+    """
+    from job_radar import classify_location
+    lines = [l.strip() for l in message_text.split('\n') if l.strip()]
+    first_line = lines[0] if lines else ""
+
+    # 1. Extract Company
+    company = "Company"
+    if "is Hiring" in first_line:
+        company = first_line.split("is Hiring")[0]
+    elif "Recruitment" in first_line:
+        company = first_line.split("Recruitment")[0]
+    elif "Hiring" in first_line:
+        company = first_line.split("Hiring")[0]
+    else:
+        comp_m = re.search(r'(?:Company|Organisation|Org)\s*[:\-]\s*([A-Za-z0-9\s.,&-]+)', message_text, re.I)
+        if comp_m:
+            company = comp_m.group(1).split('\n')[0]
+    company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
+    if not company or len(company) < 2:
+        company = "Verified Recruiter"
+
+    # 2. Extract Role / Position
+    role = "Software Developer / Engineer Trainee"
+    role_m = re.search(r'(?:Post|Role|Position|Profile|Job Title|Designation)\s*[:\-]\s*([A-Za-z0-9\s.,&/\(\)\-]+)', message_text, re.I)
+    if role_m:
+        role = role_m.group(1).split('\n')[0].strip()
+    elif "Hiring" in first_line:
+        rest = first_line.split("Hiring")[-1].replace("(", "").replace(")", "").strip()
+        if rest and len(rest) > 3:
+            role = rest
+    role = re.sub(r'^[▪️👉•\-:\s]+', '', role).strip()
+
+    # 3. Location & Tamil Nadu Verification
+    loc_m = re.search(r'(?:Location|Job Location|Place)\s*[:\-]\s*([A-Za-z0-9\s.,&/\(\)\-]+)', message_text, re.I)
+    raw_loc = loc_m.group(1).split('\n')[0].strip() if loc_m else ""
+    is_valid_loc, tier, loc_tag, is_tn = classify_location(raw_loc, message_text)
+
+    # 4. Batch / Eligibility
+    batch_m = re.search(r'(?:Batch|Eligibility|Qualification|Passout|Year of Passing)\s*[:\-]\s*([A-Za-z0-9\s.,&/\(\)\-]+)', message_text, re.I)
+    batch = batch_m.group(1).split('\n')[0].strip() if batch_m else "2024 / 2025 / 2026 Batch | Freshers"
+
+    # 5. Salary / CTC
+    sal_m = re.search(r'(?:Salary|CTC|Package|Pay|Stipend)\s*[:\-]\s*([A-Za-z0-9\s.,&/\(\)₹$LPAkpm\-]+)', message_text, re.I)
+    salary = sal_m.group(1).split('\n')[0].strip() if sal_m else "As per Industry Standard"
+
+    return {
+        "company": company[:40],
+        "role": role[:60],
+        "location": loc_tag if loc_tag else "India (PAN India) 🇮🇳",
+        "raw_location": raw_loc,
+        "batch": batch[:50],
+        "salary": salary[:40],
+        "direct_url": final_url,
+        "is_tamil_nadu": is_tn,
+        "priority_tier": tier,
+        "is_valid_india": is_valid_loc,
+    }
+
 # --- 5. TELEGRAM CHANNEL SCRAPER (PUBLIC WEB PREVIEW) ---
 def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2):
     """
@@ -2926,13 +3045,11 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
 
         # --- IMPROVED LINK EXTRACTION ---
         # Method 1: Extract hrefs from actual <a> tags in the HTML (most reliable)
-        # Telegram web preview wraps links in <a> elements - this catches them properly
-        # Domains to skip during extraction (social media, not real job links)
         _skip_link_domains = [
             "t.me", "telegram.org", "whatsapp.com", "wa.me",
             "youtube.com", "youtu.be", "instagram.com", "facebook.com",
             "twitter.com", "x.com", "pinterest.com", "linktr.ee",
-            "github.com",
+            "github.com", "aratt.ai",
         ]
         urls_found = []
         for a_tag in msg.find_all("a", href=True):
@@ -2940,7 +3057,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
             if href.startswith("http") and not any(d in href.lower() for d in _skip_link_domains):
                 urls_found.append(href)
 
-        # Method 2: Regex fallback on raw text (catches links not wrapped in <a> tags)
+        # Method 2: Regex fallback on raw text
         regex_urls = re.findall(r'(https?://[^\s<>"]+)', message_text)
         for u in regex_urls:
             u = u.rstrip(").,!*'\"")
@@ -2965,46 +3082,45 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
 
             print(f"[Scraper] @{channel_name} -> New link: {job_link}")
 
-            # Resolve redirects
+            # Resolve redirects & unwrap direct ATS/career links
             final_url = bypass_blog_redirect(job_link)
-            print(f"[Scraper] Resolved: {final_url}")
+            print(f"[Scraper] Resolved Direct Link: {final_url}")
+
+            # Structured Details Extraction & India / Tamil Nadu check
+            details = extract_structured_channel_job_details(message_text, job_link, final_url, channel_name)
+
+            # Strict Location Filter: Reject foreign onsite locations
+            if not details["is_valid_india"]:
+                print(f"[Scraper] Filtered out non-India location: {details['raw_location']}")
+                applied_jobs.add(job_link)
+                save_applied_job(job_link)
+                log_job(final_url, message_text, False, f"Filtered: Non-India location ({details['raw_location']})")
+                continue
 
             # ─── BUG FIX 1: Detect Government / Registration-Only Portals ───
-            # These sites require manual registration (Aadhaar, OTP, fee payment etc.)
-            # Auto-applying here would result in fake/incomplete submissions.
             GOVT_REGISTRATION_DOMAINS = [
-                # Central govt recruiters
                 "bhel.in", "nmdc.co.in", "rites.com", "ongcindia.com", "indianoil.in",
                 "ntpc.co.in", "powergridindia.com", "gailonline.com", "nalcoindia.com",
                 "sail.co.in", "hindustancopper.com", "meclindia.com", "npcil.nic.in",
                 "ireda.gov.in", "recpdcl.in", "thdcil.co.in",
-                # Railways
                 "indianrailways.gov.in", "rrcb.in", "rrcnr.org", "rrcer.com", "rrcpryj.org",
                 "rrcecr.gov.in", "rrcnwr.com", "rrcaldiengg.com", "scr.indianrailways",
-                # Defence / Police
                 "joinindianarmy.nic.in", "joinindiannavy.gov.in", "careerindianairforce.cdac.in",
                 "agnipathvayu.cdac.in", "ssbcrpf.gov.in", "bsf.gov.in", "cisf.gov.in",
-                # SSC / UPSC / State PSC
                 "ssc.nic.in", "ssconline.nic.in", "upsc.gov.in", "upsconline.nic.in",
                 "tnpsc.gov.in", "mpsconline.gov.in", "kpsc.kar.nic.in",
-                # Banking
                 "ibps.in", "sbi.co.in", "rbi.org.in", "nabard.org",
-                # State Govt / Apprentice portals
                 "apprenticeshipindia.org", "apprenticeship.gov.in", "mhrdnats.gov.in",
-                "nats.education.gov.in", "boat-srp.com",
-                # Generic govt TLDs patterns
-                ".nic.in", ".gov.in",
+                "nats.education.gov.in", "boat-srp.com", ".nic.in", ".gov.in",
             ]
             is_govt_portal = any(domain in final_url.lower() for domain in GOVT_REGISTRATION_DOMAINS)
             if is_govt_portal:
                 print(f"[Scraper] ⚠️ Government/Registration portal detected — skipping auto-apply: {final_url}")
                 applied_jobs.add(job_link)
                 save_applied_job(job_link)
-                # Send a dedicated manual-apply alert to Telegram
                 if bot and active_chat_id:
                     try:
                         channel_post_url = f"https://t.me/s/{channel_name}"
-                        # Truncate channel post text to 600 chars for readability
                         post_preview = message_text[:600].strip()
                         if len(message_text) > 600:
                             post_preview += "..."
@@ -3028,14 +3144,12 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         print(f"[Scraper] Failed to send govt portal alert: {govt_e}")
                 log_job(final_url, message_text, False, "Government registration portal — manual apply required")
                 continue
-            # ──────────────────────────────────────────────────────────────────
 
             # Skip unsupported platforms
             if any(domain in final_url.lower() for domain in UNSUPPORTED_DOMAINS):
                 print(f"[Scraper] Skipping unsupported platform: {final_url}")
                 applied_jobs.add(job_link)
                 save_applied_job(job_link)
-                # Send unsupported platform link to Telegram so user can apply manually
                 if bot and active_chat_id:
                     try:
                         channel_post_url = f"https://t.me/s/{channel_name}"
@@ -3061,10 +3175,10 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                 log_job(final_url, message_text, False, "Unsupported platform")
                 continue
 
-            # AI Smart Filter — strict fresher+engineering check
+            # Smart Filter — strict fresher+engineering check
             try:
                 is_match, job_summary = check_job_match(message_text, profile)
-                time.sleep(random.uniform(4.5, 6.0))  # Respect RPM limit
+                time.sleep(random.uniform(4.5, 6.0))
             except Exception as filter_e:
                 if "GEMINI_RATE_LIMIT" in str(filter_e):
                     print("[Scraper] Rate limit in filter. Stopping cycle.")
@@ -3081,20 +3195,27 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                 log_job(final_url, message_text, False, f"AI Rejected: {job_summary[:80]}")
                 continue
 
-            # ✅ Job matched — send summary card to Telegram BEFORE applying
-            # BUG FIX 3: Include full channel post text so user sees what the channel posted
+            # ✅ Job matched — send rich structured summary card to Telegram BEFORE applying
             if bot and active_chat_id:
                 try:
                     channel_post_url = f"https://t.me/s/{channel_name}"
-                    # Truncate channel post to 400 chars to keep message clean
                     post_preview = message_text[:400].strip()
                     if len(message_text) > 400:
                         post_preview += "..."
+
+                    tn_header = "🌟 *[TAMIL NADU PRIORITY OPPORTUNITY]*\n━━━━━━━━━━━━━━━━━━━━━━━━\n" if details["is_tamil_nadu"] else ""
+
                     notification = (
                         f"🎯 *New Job Opportunity Detected!*\n"
                         f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"{tn_header}"
+                        f"🏢 *Company:* `{details['company']}`\n"
+                        f"💼 *Role:* *{details['role']}*\n"
+                        f"📍 *Location:* `{details['location']}`\n"
+                        f"🎓 *Batch / Exp:* `{details['batch']}`\n"
+                        f"💰 *Salary:* `{details['salary']}`\n"
                         f"📡 *Source:* [@{channel_name}]({channel_post_url})\n\n"
-                        f"{job_summary}\n\n"
+                        f"🔗 *Direct Apply Link:* [Apply Directly Here]({final_url})\n"
                         f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
                         f"📝 *Channel Job Details:*\n"
                         f"_{post_preview}_\n\n"
@@ -3103,8 +3224,8 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     )
                     markup = InlineKeyboardMarkup()
                     markup.row(
-                        InlineKeyboardButton("🏢 Apply Manually", url=final_url),
-                        InlineKeyboardButton("🔗 View in Channel", url=channel_post_url)
+                        InlineKeyboardButton("🚀 Direct Apply (Official)", url=final_url),
+                        InlineKeyboardButton("📢 View Channel Post", url=channel_post_url)
                     )
                     bot.send_message(active_chat_id, notification, parse_mode=None, disable_web_page_preview=True, reply_markup=markup)
                 except Exception as notif_e:

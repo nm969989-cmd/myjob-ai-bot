@@ -14,6 +14,7 @@ def get_latest_otp(bot_email, bot_password, search_term, timeout=60):
     start_time = time.time()
     
     while time.time() - start_time < timeout:
+        mail = None
         try:
             mail = imaplib.IMAP4_SSL("imap.gmail.com")
             mail.login(bot_email, bot_password)
@@ -49,11 +50,15 @@ def get_latest_otp(bot_email, bot_password, search_term, timeout=60):
                                         content_type = part.get_content_type()
                                         if content_type == "text/plain" or content_type == "text/html":
                                             try:
-                                                body = part.get_payload(decode=True).decode()
-                                            except:
+                                                payload = part.get_payload(decode=True)
+                                                if payload:
+                                                    body = payload.decode(errors="ignore")
+                                            except Exception:
                                                 pass
                                 else:
-                                    body = msg.get_payload(decode=True).decode()
+                                    payload = msg.get_payload(decode=True)
+                                    if payload:
+                                        body = payload.decode(errors="ignore")
                                 
                                 # Clean HTML tags if present to make regex more accurate
                                 # We can do a simple replace or just rely on regex, but removing tags helps.
@@ -85,6 +90,12 @@ def get_latest_otp(bot_email, bot_password, search_term, timeout=60):
             mail.logout()
         except Exception as e:
             print(f"[IMAP] Error reading email: {e}")
+            # Ensure the IMAP socket is always released, even on the error path.
+            if mail is not None:
+                try:
+                    mail.logout()
+                except Exception:
+                    pass
             
         # Wait 5 seconds before checking again
         time.sleep(5)
@@ -98,81 +109,93 @@ def scan_for_interview_invites():
     load_dotenv(override=True)
     
     bot_email = os.getenv("BOT_EMAIL")
-    bot_password = os.getenv("BOT_PASSWORD")
+    # Match the env var name used everywhere else (main.py, GitHub Actions secret).
+    # Fall back to BOT_PASSWORD for backwards compatibility.
+    bot_password = os.getenv("BOT_EMAIL_PASSWORD") or os.getenv("BOT_PASSWORD")
     if not bot_email or not bot_password:
-        raise Exception("BOT_EMAIL or BOT_PASSWORD not set in .env")
+        raise Exception("BOT_EMAIL or BOT_EMAIL_PASSWORD not set in .env")
         
     mail = imaplib.IMAP4_SSL("imap.gmail.com")
     mail.login(bot_email, bot_password)
     mail.select("inbox")
     
-    # Search for UNSEEN emails
-    status, messages = mail.search(None, "UNSEEN")
-    email_ids = messages[0].split()
-    
     results = []
-    
-    if not email_ids:
-        mail.logout()
-        return results
+    try:
+        # Search for UNSEEN emails
+        status, messages = mail.search(None, "UNSEEN")
+        email_ids = messages[0].split()
         
-    for e_id in reversed(email_ids): # Process newest first
-        res, msg_data = mail.fetch(e_id, "(RFC822)")
-        for response_part in msg_data:
-            if isinstance(response_part, tuple):
-                msg = email.message_from_bytes(response_part[1])
-                
-                subject, encoding = decode_header(msg["Subject"])[0]
-                if isinstance(subject, bytes):
-                    subject = subject.decode(encoding if encoding else "utf-8")
-                
-                sender = msg.get("From", "")
-                subj_lower = subject.lower()
-                
-                # We are looking for interviews OR rejections
-                is_interview = any(k in subj_lower for k in ["interview", "next steps", "assessment", "calendly", "invitation"])
-                is_rejection = any(k in subj_lower for k in ["update on your application", "unfortunately", "not moving forward", "status of your application"])
-                
-                if is_interview or is_rejection:
-                    body = ""
-                    if msg.is_multipart():
-                        for part in msg.walk():
-                            if part.get_content_type() == "text/plain":
-                                try: body = part.get_payload(decode=True).decode()
-                                except: pass
-                                break
-                    else:
-                        try: body = msg.get_payload(decode=True).decode()
-                        except: pass
+        if not email_ids:
+            return results
+            
+        for e_id in reversed(email_ids): # Process newest first
+            res, msg_data = mail.fetch(e_id, "(RFC822)")
+            for response_part in msg_data:
+                if isinstance(response_part, tuple):
+                    msg = email.message_from_bytes(response_part[1])
                     
-                    if not body: continue
+                    subject, encoding = decode_header(msg["Subject"])[0]
+                    if isinstance(subject, bytes):
+                        subject = subject.decode(encoding if encoding else "utf-8", errors="ignore")
                     
-                    # Determine status
-                    if is_interview: new_status = "Interview"
-                    elif "unfortunately" in body.lower() or "not moving forward" in body.lower(): new_status = "Rejected"
-                    else: continue # False positive
+                    sender = msg.get("From", "")
+                    subj_lower = subject.lower()
                     
-                    # Extract company name using Gemini
-                    from main import get_gemini_client
-                    client = get_gemini_client()
-                    company_name = sender.split("@")[-1].split(".")[0].title() # fallback
-                    if client:
-                        try:
-                            prompt = f"Extract the company name from this email. Reply ONLY with the company name, nothing else. Email From: {sender}\nSubject: {subject}\nBody: {body[:1000]}"
-                            resp = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
-                            company_name = resp.text.strip()
-                        except: pass
+                    # We are looking for interviews OR rejections
+                    is_interview = any(k in subj_lower for k in ["interview", "next steps", "assessment", "calendly", "invitation"])
+                    is_rejection = any(k in subj_lower for k in ["update on your application", "unfortunately", "not moving forward", "status of your application"])
+                    
+                    if is_interview or is_rejection:
+                        body = ""
+                        if msg.is_multipart():
+                            for part in msg.walk():
+                                if part.get_content_type() == "text/plain":
+                                    try:
+                                        payload = part.get_payload(decode=True)
+                                        if payload:
+                                            body = payload.decode(errors="ignore")
+                                    except Exception:
+                                        pass
+                                    break
+                        else:
+                            try:
+                                payload = msg.get_payload(decode=True)
+                                if payload:
+                                    body = payload.decode(errors="ignore")
+                            except Exception:
+                                pass
                         
-                    results.append({"company": company_name, "status": new_status, "subject": subject})
-                    
-                    # Update Notion CRM
-                    from bot_features import sync_to_notion
-                    sync_to_notion("", f"Update from email: {subject}", new_status, client, override_company=company_name)
-                    
-                    mail.store(e_id, '+FLAGS', '\\Seen')
-                    
-        # Limit to 20 emails per scan
-        if len(results) >= 20: break
-        
-    mail.logout()
+                        if not body: continue
+                        
+                        # Determine status
+                        if is_interview: new_status = "Interview"
+                        elif "unfortunately" in body.lower() or "not moving forward" in body.lower(): new_status = "Rejected"
+                        else: continue # False positive
+                        
+                        # Extract company name using Gemini
+                        from main import get_gemini_client
+                        client = get_gemini_client()
+                        company_name = sender.split("@")[-1].split(".")[0].title() # fallback
+                        if client:
+                            try:
+                                prompt = f"Extract the company name from this email. Reply ONLY with the company name, nothing else. Email From: {sender}\nSubject: {subject}\nBody: {body[:1000]}"
+                                resp = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+                                company_name = resp.text.strip()
+                            except Exception: pass
+                            
+                        results.append({"company": company_name, "status": new_status, "subject": subject})
+                        
+                        # Update Notion CRM
+                        from bot_features import sync_to_notion
+                        sync_to_notion("", f"Update from email: {subject}", new_status, client, override_company=company_name)
+                        
+                        mail.store(e_id, '+FLAGS', '\\Seen')
+                        
+            # Limit to 20 emails per scan
+            if len(results) >= 20: break
+    finally:
+        try:
+            mail.logout()
+        except Exception:
+            pass
     return results

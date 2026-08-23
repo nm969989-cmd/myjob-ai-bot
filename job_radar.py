@@ -1,62 +1,149 @@
 """
-📡 JOB RADAR — Multi-Platform Job Finder (v2 - Fixed APIs)
-================================================================
-Optimized for Unicorn Developer Profile (Tamil Nadu & Remote)
-Uses free public APIs that don't require registration.
+📡 JOB RADAR — Multi-Platform Job Finder (India & Tamil Nadu Priority Engine)
+=============================================================================
+Strictly filters for India-based jobs & Global Remote jobs open to India.
+Prioritizes Tamil Nadu (Chennai, Coimbatore, Madurai, Trichy, Salem, etc.) at the top.
+Deeply scrapes all major Telegram job channels and extracts direct apply links.
 """
 
 import os
 import json
 import time
 import random
-import requests
+import re
+import urllib.parse
 from datetime import datetime
+import requests
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
 # ──────────────────────────────────────────────────
-# 🎯  FILTER CONFIGURATION  (Unicorn Profile)
+# 🎯  FILTER & LOCATION CONFIGURATION
 # ──────────────────────────────────────────────────
 
 RADAR_KEYWORDS = [
-    # Software / Engineering
+    # Software / Engineering / Trainee
     "Software Developer", "Software Engineer", "Junior Software Engineer",
-    "Graduate Engineer Trainee", "Software Development Engineer", "SDE-1",
-    "Associate Developer", "Systems Engineer Trainee",
-    # Frontend / UI
-    "Frontend Developer", "React Developer", "Web Developer",
-    "Application Developer", "UI Engineer",
-    # Design / UX
-    "UI/UX Designer", "Product Designer", "Interface Designer", "UX Researcher",
+    "Graduate Engineer Trainee", "GET", "Software Development Engineer", "SDE", "SDE-1", "SDE 1",
+    "Associate Developer", "Associate Software Engineer", "Systems Engineer Trainee",
+    "Programmer Analyst", "Trainee Engineer", "Engineer Trainee", "Junior Developer",
+    # Frontend / UI / Web
+    "Frontend Developer", "Front End Developer", "React Developer", "Web Developer",
+    "Application Developer", "UI Engineer", "UI/UX Designer", "Product Designer",
     # Backend / Full-Stack
-    "Backend Developer", "Full-Stack Developer", "Full Stack", "Java Developer",
-    "Java Engineer", "Spring Boot", "Oracle APEX Developer",
-    # Other tech
-    "Python Developer", "Node", "Angular", "Vue",
-    # 2025 Specific
-    "2025 Batch", "2025 Passout", "2025 Graduate",
+    "Backend Developer", "Back End Developer", "Full-Stack Developer", "Full Stack Developer",
+    "Full Stack", "Java Developer", "Java Engineer", "Spring Boot", "Python Developer",
+    "Node", "Node.js Developer", "Angular", "Vue", "Oracle APEX Developer",
+    # Data / AI / Cloud
+    "Data Analyst", "Data Engineer", "AI Engineer", "Machine Learning", "DevOps Engineer",
+    "Cloud Engineer", "QA Engineer", "Software Test Engineer", "Quality Analyst",
+    # Operations / Support / Fresher Non-Tech Roles
+    "Customer Success", "Customer Support", "Technical Support", "Operations Associate",
+    # Batch Specifics
+    "2024 Batch", "2025 Batch", "2026 Batch", "Fresher", "Freshers", "0-1 Year", "0-2 Years",
+    "Off Campus", "Campus Hiring", "Entry Level",
 ]
 
-PREFERRED_LOCATIONS = [
-    "Tiruvannamalai", "Tiruppur", "Chennai", "Coimbatore",
-    "Madurai", "Tiruchirappalli", "Trichy", "Salem", "Tirunelveli", "Vellore", "Erode",
-    "Tamil Nadu", "Tamilnadu", "TN",
-    "Remote", "Work from Home", "WFH", "Worldwide", "Global",
+TAMIL_NADU_LOCATIONS = [
+    "chennai", "coimbatore", "madurai", "tiruchirappalli", "trichy", "salem",
+    "tirunelveli", "vellore", "erode", "tiruppur", "tiruvannamalai", "hosur",
+    "thanjavur", "dindigul", "kanchipuram", "nagercoil", "tuticorin", "thoothukudi",
+    "karur", "cuddalore", "neyveli", "kumbakonam", "sivakasi", "ranipet",
+    "tamil nadu", "tamilnadu", "tn",
+]
+
+INDIA_OTHER_LOCATIONS = [
+    "bengaluru", "bangalore", "hyderabad", "pune", "mumbai", "delhi", "new delhi",
+    "noida", "gurgaon", "gurugram", "kolkata", "ahmedabad", "kochi", "cochin",
+    "trivandrum", "thiruvananthapuram", "chandigarh", "jaipur", "indore", "bhubaneswar",
+    "mysuru", "mysore", "nagpur", "visakhapatnam", "vizag", "pan india", "india",
+]
+
+EXCLUDED_FOREIGN_LOCATIONS = [
+    "usa", "united states", "us", "uk", "united kingdom", "london", "germany",
+    "berlin", "munich", "canada", "toronto", "vancouver", "australia", "sydney",
+    "melbourne", "singapore", "netherlands", "amsterdam", "france", "paris",
+    "europe", "emea", "latam", "california", "new york", "texas", "seattle",
+    "austin", "san francisco", "boston", "ireland", "dublin", "poland", "sweden",
+    "switzerland", "brazil", "spain", "italy", "japan", "tokyo", "philippines",
+    "new zealand", "dubai", "uae", "mexico",
+]
+
+EXCLUDED_REMOTE_RESTRICTIONS = [
+    "us only", "usa only", "uk only", "europe only", "eu only", "north america only",
+    "canada only", "latam only", "apac only (excluding india)", "us/canada only",
 ]
 
 # Only show jobs from 2025 onwards
 FILTER_YEAR = 2025
 
-# How many results max per source (Increased to find more jobs)
-MAX_PER_SOURCE = 30
+# Max jobs per individual source
+MAX_PER_SOURCE = 35
 
-# Memory so the same job isn't sent twice
-SEEN_JOBS_FILE   = "radar_seen_jobs.txt"
-RESULTS_JSON     = "radar_results.json"   # Dashboard reads this
+# Memory and tracking files
+SEEN_JOBS_FILE = "radar_seen_jobs.txt"
+RESULTS_JSON   = "radar_results.json"
 
 # ──────────────────────────────────────────────────
-# 🥷  STEALTH ENGINE
+# 📡 COMPREHENSIVE TELEGRAM CHANNELS DATABASE
+# ──────────────────────────────────────────────────
+
+RADAR_TELEGRAM_CHANNELS = [
+    # Top Pan-India Engineering & Fresher Job Channels
+    "JobSkull",
+    "KickCharm",
+    "OffCampusJobs4u",
+    "offcampusjobss",
+    "Freshershunt",
+    "job4freshers",
+    "placementjobs",
+    "jobsinternshipplacement",
+    "fresheroffcampus",
+    "workfromhomejobs1",
+    "offcampusphodenge",
+    "veagance",
+    "DailyJobs4You",
+    "Foundthejob",
+    # Tamil Nadu & South India High Priority Channels
+    "chennaijobs2025",
+    "chennaijobsofficial",
+    "tamilnadujob",
+    "tamilnadujobsalert",
+    "TamilNadu_Govt_Private_Jobs",
+    "chennai_it_jobs",
+    "coimbatore_jobs",
+    "tn_job_alert",
+    "bangalore_chennai_jobs",
+    "tamil_tech_jobs",
+    "chennai_walkins",
+    "tamilnadu_freshers",
+    "tn_fresher_jobs",
+    # Tech & Placement Update Channels
+    "offcampus_freshers",
+    "freshers_jobs_india",
+    "tech_jobs_india",
+    "internships_freshers",
+    "naukri_fresher_jobs",
+    "allindiafreshersjobs",
+    "it_jobs_freshers",
+    "placement_season",
+    "offcampushire",
+    "freshersvoice",
+    "jobopenings_india",
+    "techfreshers",
+    "jobsforyou_india",
+    "freshers_drive",
+    "engineering_jobs_india",
+    "software_jobs_india",
+    "campus_placement_prep",
+    "india_remote_jobs",
+    "fresher_engineer_jobs",
+    "fresher_it_openings",
+]
+
+# ──────────────────────────────────────────────────
+# 🥷  STEALTH ENGINE & HELPERS
 # ──────────────────────────────────────────────────
 
 USER_AGENTS = [
@@ -65,34 +152,38 @@ USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0",
 ]
 
-def _api_request(url, max_retries=2):
-    """Simple JSON API request — uses minimal headers to avoid gzip/encoding issues."""
+def _api_request(url, headers_extra=None, max_retries=2, timeout=20):
+    """Robust HTTP request helper."""
     headers = {
-        "User-Agent": "Mozilla/5.0 (compatible; JobRadarBot/1.0)",
-        "Accept": "application/json",
+        "User-Agent": random.choice(USER_AGENTS),
+        "Accept": "application/json, text/html, */*",
         "Accept-Encoding": "identity",
     }
+    if headers_extra:
+        headers.update(headers_extra)
     for attempt in range(max_retries):
         try:
-            resp = requests.get(url, headers=headers, timeout=20)
+            resp = requests.get(url, headers=headers, timeout=timeout)
             if resp.status_code == 200:
                 return resp
             if resp.status_code in [429, 503]:
-                print(f"  [API] Rate limited on {url}, waiting...")
-                time.sleep(5 * (attempt + 1))
+                time.sleep(3 * (attempt + 1))
                 continue
-            print(f"  [API] Got {resp.status_code} for {url}")
-        except Exception as e:
-            print(f"  [API Request] Error: {e}")
-            time.sleep(3)
+        except Exception:
+            time.sleep(2)
     return None
 
-def human_jitter(min_sec=1.0, max_sec=3.0):
-    time.sleep(random.uniform(min_sec, max_sec))
+def clean_html(raw_html):
+    if not raw_html:
+        return ""
+    clean_text = re.sub(r'<[^>]+>', '', raw_html)
+    clean_text = re.sub(r'\s+', ' ', clean_text).strip()
+    return clean_text[:160] + "..." if len(clean_text) > 160 else clean_text
 
-# ──────────────────────────────────────────────────
-# 🔧  HELPERS
-# ──────────────────────────────────────────────────
+def escape_md(text):
+    if not text:
+        return ""
+    return str(text).replace("*", "").replace("_", " ").replace("[", "(").replace("]", ")").replace("`", "")
 
 def load_seen_jobs():
     if os.path.exists(SEEN_JOBS_FILE):
@@ -116,266 +207,280 @@ def _keyword_match(text):
     text_lower = text.lower()
     return any(kw.lower() in text_lower for kw in RADAR_KEYWORDS)
 
-def _location_match(text):
-    text_lower = text.lower()
-    return any(loc.lower() in text_lower for loc in PREFERRED_LOCATIONS)
+# ──────────────────────────────────────────────────
+# 📍 STRICT LOCATION CLASSIFIER & TAMIL NADU PRIORITIZER
+# ──────────────────────────────────────────────────
 
-import re
+def classify_location(location_str, context_text=""):
+    """
+    Evaluates a location string and surrounding text context.
+    Returns: (is_valid, priority_tier, formatted_location_string, is_tamil_nadu)
+      - Priority 1: Tamil Nadu (Chennai, Coimbatore, Madurai, Trichy, Salem, etc.)
+      - Priority 2: Other India (Bangalore, Hyderabad, Pune, Mumbai, Delhi, PAN India)
+      - Priority 3: Remote (India / Worldwide open)
+      - Rejected: Outside India (USA, UK, London, Europe, etc.) -> (False, 99, "", False)
+    """
+    loc_clean = str(location_str or "").strip()
+    loc_lower = loc_clean.lower()
+    ctx_lower = str(context_text or "").lower()
+    combined = f"{loc_lower} {ctx_lower}"
 
-def clean_html(raw_html):
-    if not raw_html:
-        return ""
-    # Strip HTML tags
-    clean_text = re.sub(r'<[^>]+>', '', raw_html)
-    # Replace multiple spaces/newlines
-    clean_text = re.sub(r'\s+', ' ', clean_text).strip()
-    return clean_text[:120] + "..." if len(clean_text) > 120 else clean_text
+    # 1. Check for explicit foreign exclusion
+    for foreign in EXCLUDED_FOREIGN_LOCATIONS:
+        if re.search(rf"\b{re.escape(foreign)}\b", loc_lower):
+            # Check if it also explicitly says India
+            if not ("india" in loc_lower or any(tn in loc_lower for tn in TAMIL_NADU_LOCATIONS)):
+                return False, 99, "", False
 
-def _make_job(title, company, link, location, source, date_posted="", description=""):
+    # Check for remote restrictions (e.g., "US Only")
+    for restriction in EXCLUDED_REMOTE_RESTRICTIONS:
+        if restriction in combined:
+            return False, 99, "", False
+
+    # 2. Check for Tamil Nadu (Highest Priority — Tier 1)
+    for tn_loc in TAMIL_NADU_LOCATIONS:
+        if re.search(rf"\b{re.escape(tn_loc)}\b", loc_lower) or re.search(rf"\b{re.escape(tn_loc)}\b", ctx_lower):
+            matched_name = tn_loc.title() if tn_loc not in ["tn", "tamilnadu"] else "Tamil Nadu"
+            if loc_clean and loc_clean.lower() != "india" and not any(f in loc_lower for f in EXCLUDED_FOREIGN_LOCATIONS):
+                display = f"{loc_clean} ⭐"
+            else:
+                display = f"{matched_name}, Tamil Nadu ⭐"
+            return True, 1, display, True
+
+    # 3. Check for Other India Tech Hubs (Tier 2)
+    for in_loc in INDIA_OTHER_LOCATIONS:
+        if re.search(rf"\b{re.escape(in_loc)}\b", loc_lower) or re.search(rf"\b{re.escape(in_loc)}\b", ctx_lower):
+            display = loc_clean if loc_clean else f"{in_loc.title()}, India"
+            if "india" not in display.lower():
+                display += ", India 🇮🇳"
+            return True, 2, display, False
+
+    # 4. Check for Remote / Work from Home / Worldwide
+    remote_keywords = ["remote", "work from home", "wfh", "worldwide", "global", "anywhere", "telecommute"]
+    if any(rk in loc_lower for rk in remote_keywords):
+        return True, 3, "Remote (India / Global) 🌐", False
+
+    # If location field is empty or says "India", accept as Tier 2
+    if not loc_clean or loc_lower in ["in", "ind", "india", "pan india"]:
+        return True, 2, "India (PAN India) 🇮🇳", False
+
+    # Otherwise, reject unknown or foreign location
+    return False, 99, "", False
+
+def _make_job(title, company, link, location, source, date_posted="", description="", priority_tier=2, is_tn=False, direct_link=""):
     if not date_posted:
         date_posted = datetime.now().strftime("%Y-%m-%d")
     return {
-        "title":       title.strip(),
-        "company":     company.strip(),
-        "link":        link.strip(),
-        "location":    location.strip(),
-        "source":      source,
-        "date_posted": date_posted,
-        "description": description.strip(),
-        "found_at":    datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "title":          title.strip(),
+        "company":        company.strip(),
+        "link":           direct_link.strip() if direct_link else link.strip(),
+        "raw_link":       link.strip(),
+        "location":       location.strip(),
+        "source":         source,
+        "date_posted":    date_posted,
+        "description":    description.strip(),
+        "priority_tier":  priority_tier,
+        "is_tamil_nadu":  is_tn,
+        "found_at":       datetime.now().strftime("%Y-%m-%d %H:%M"),
     }
 
 # ──────────────────────────────────────────────────
-# 🕷️  SCRAPER 1 — Remotive API (Free, No Key Needed)
+# 🔗 DIRECT LINK UNWRAPPER FOR RADAR
 # ──────────────────────────────────────────────────
 
-def scrape_remotive():
-    """Queries the free Remotive.com public API for remote tech jobs."""
-    print("[Radar] Scanning Remotive API...")
+def unwrap_radar_direct_link(url):
+    """
+    Unwraps URL shorteners and extracts direct application links from job blogs.
+    """
+    if not url or not url.startswith("http"):
+        return url
+    
+    direct_domains = [
+        "greenhouse.io", "lever.co", "workdayjobs.com", "myworkdayjobs.com",
+        "smartrecruiters.com", "joinsuperset.com", "docs.google.com/forms",
+        "forms.gle", "sensehq.com", "ashbyhq.com", "bamboohr.com", "taleo.net",
+        "zohorecruit.com", "recruitee.com", "freshteam.com", "darwinbox.com",
+        "keka.com", "unstop.com", "internshala.com", "foundit.in", "naukri.com",
+    ]
+    if any(d in url.lower() for d in direct_domains):
+        return url
+
+    try:
+        resp = _api_request(url, max_retries=1, timeout=8)
+        if not resp:
+            return url
+        
+        final_url = resp.url
+        if any(d in final_url.lower() for d in direct_domains):
+            return final_url
+        
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(resp.text, "html.parser")
+        
+        container = soup.find("div", class_=lambda c: c and any(x in str(c) for x in ["post-body", "entry-content", "article", "content"])) or soup
+        
+        # Priority 1: Known ATS / job boards
+        for a in container.find_all("a", href=True):
+            href = a["href"].strip()
+            if any(d in href.lower() for d in direct_domains):
+                return href
+        
+        # Priority 2: Text matching "Apply", "Registration"
+        apply_kws = ["apply online", "click here to apply", "apply link", "apply now", "official link", "direct apply", "registration link"]
+        skip_domains = ["youtube", "instagram", "whatsapp", "telegram", "t.me", "facebook", "twitter", "x.com"]
+        for a in container.find_all("a", href=True):
+            href = a["href"].strip()
+            txt = a.get_text(strip=True).lower()
+            if any(k in txt for k in apply_kws):
+                if href.startswith("http") and not any(s in href.lower() for s in skip_domains):
+                    return href
+        
+        return final_url
+    except Exception:
+        return url
+
+def _scan_single_channel_radar(ch):
+    """Scrapes a single Telegram channel for the Job Radar."""
+    ch_clean = ch.replace("@", "").strip()
+    url = f"https://telegram.dog/s/{ch_clean}"
     jobs_found = []
+    try:
+        resp = _api_request(url, timeout=8)
+        if not resp or resp.status_code != 200:
+            return []
 
-    for kw in ["software engineer", "frontend developer", "react developer", "python developer"]:
-        try:
-            import urllib.parse
-            url = f"https://remotive.com/api/remote-jobs?search={urllib.parse.quote(kw)}&limit=20"
-            resp = _api_request(url)
-            if not resp:
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(resp.text, "html.parser")
+        messages = soup.find_all("div", class_="tgme_widget_message_text")
+        if not messages:
+            return []
+
+        for msg in reversed(messages[-6:]):
+            text = msg.get_text(separator=" ").strip()
+            if not text or len(text) < 30:
                 continue
-            data = resp.json()
-            for job in data.get("jobs", []):
-                title   = job.get("title", "")
-                company = job.get("company_name", "Unknown")
-                link    = job.get("url", "")
-                full_date = str(job.get("publication_date", "2025-01-01T"))
-                pub_year = full_date[:4]
-                tags    = " ".join(job.get("tags", []))
 
-                if not link:
-                    continue
+            if not _keyword_match(text):
+                continue
+
+            is_valid_loc, tier, loc_tag, is_tn = classify_location("", text)
+            if not is_valid_loc:
+                continue
+
+            urls = []
+            for a in msg.find_all("a", href=True):
+                href = a["href"].strip()
+                if href.startswith("http") and not any(s in href.lower() for s in ["t.me", "telegram.org", "whatsapp", "instagram", "youtube", "aratt.ai"]):
+                    urls.append(href)
+            if not urls:
+                regex_urls = re.findall(r'(https?://[^\s<>"]+)', text)
+                for u in regex_urls:
+                    u = u.rstrip(").,!*'\"")
+                    if not any(s in u.lower() for s in ["t.me", "telegram.org", "whatsapp", "instagram", "youtube", "aratt.ai"]):
+                        urls.append(u)
+
+            if not urls:
+                continue
+
+            raw_link = urls[0]
+
+            lines = [l.strip() for l in text.split("\n") if l.strip()]
+            first_line = lines[0] if lines else "Tech Job Opening"
+            
+            clean_title = re.sub(r'[^\w\s.,&-]', '', first_line).strip()
+            company = "Hiring Company"
+            if "is Hiring" in first_line:
+                company = first_line.split("is Hiring")[0].replace("🔴", "").replace("📢", "").replace("#ad", "").strip()
+            elif "Recruitment" in first_line:
+                company = first_line.split("Recruitment")[0].replace("🔴", "").replace("📢", "").replace("#ad", "").strip()
+            elif "Hiring" in first_line:
+                company = first_line.split("Hiring")[0].replace("🔴", "").replace("📢", "").replace("#ad", "").strip()
+
+            title = clean_title[:70] if clean_title else "Software Engineer / Fresher"
+            direct_link = unwrap_radar_direct_link(raw_link)
+
+            desc = clean_html(text)
+            src_name = f"Telegram @{ch_clean} 📢"
+            if is_tn:
+                src_name = f"Telegram @{ch_clean} 🌟"
+
+            jobs_found.append(_make_job(
+                title=title,
+                company=company,
+                link=direct_link,
+                location=loc_tag,
+                source=src_name,
+                description=desc,
+                priority_tier=tier,
+                is_tn=is_tn,
+                direct_link=direct_link
+            ))
+
+    except Exception:
+        pass
+    return jobs_found
+
+# ──────────────────────────────────────────────────
+# 📢 SCRAPER 1 — Telegram Channels Radar (45+ Channels)
+# ──────────────────────────────────────────────────
+
+def scrape_telegram_channels_radar():
+    """Scrapes all public Telegram job channels concurrently and extracts verified Indian tech fresher jobs."""
+    print("[Radar] Scanning 45+ Telegram Channels concurrently for India & Tamil Nadu Jobs...")
+    all_channel_jobs = []
+    seen_links = set()
+
+    import concurrent.futures
+    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+        future_to_ch = {executor.submit(_scan_single_channel_radar, ch): ch for ch in RADAR_TELEGRAM_CHANNELS}
+        try:
+            for future in concurrent.futures.as_completed(future_to_ch, timeout=25):
                 try:
-                    if int(pub_year) < FILTER_YEAR:
-                        continue
+                    res = future.result()
+                    if res:
+                        for job in res:
+                            lnk = job.get("link") or job.get("raw_link")
+                            if lnk and lnk not in seen_links:
+                                seen_links.add(lnk)
+                                all_channel_jobs.append(job)
                 except Exception:
                     pass
+        except concurrent.futures.TimeoutError:
+            print("  [Telegram Radar] Channel scan timeout reached. Continuing.")
 
-                if not _keyword_match(title + " " + tags):
-                    continue
-
-                desc = clean_html(job.get("description", ""))
-                jobs_found.append(_make_job(title, company, link, "Remote 🌍", "Remotive 🚀", full_date[:10], desc))
-                if len(jobs_found) >= MAX_PER_SOURCE:
-                    break
-
-            if len(jobs_found) >= MAX_PER_SOURCE:
-                break
-
-        except Exception as e:
-            print(f"  [Remotive] Error for '{kw}': {e}")
-
-        time.sleep(1.5)
-
-    print(f"  [Remotive] Found {len(jobs_found)} jobs.")
-    return jobs_found
-
+    print(f"  [Telegram Radar] Found {len(all_channel_jobs)} India/TN jobs across channels.")
+    return all_channel_jobs
 
 # ──────────────────────────────────────────────────
-# 🕷️  SCRAPER 2 — Jobicy API (Free, No Key)
-# ──────────────────────────────────────────────────
-
-def scrape_jobicy():
-    """Queries the free Jobicy public API for remote tech jobs."""
-    print("[Radar] Scanning Jobicy API...")
-    jobs_found = []
-
-    try:
-        url = "https://jobicy.com/api/v2/remote-jobs?count=50&industry=engineering"
-        resp = _api_request(url)
-        if not resp:
-            print("  [Jobicy] No response")
-            return []
-
-        data = resp.json()
-        for job in data.get("jobs", []):
-            title    = job.get("jobTitle", "")
-            company  = job.get("companyName", "Unknown")
-            link     = job.get("url", "")
-            location = job.get("jobGeo", "Remote")
-            full_date = str(job.get("pubDate", "2025-01-01T"))
-            pub_year = full_date[:4]
-            tags     = " ".join(job.get("jobIndustry", []))
-
-            if not link:
-                continue
-            try:
-                if int(pub_year) < FILTER_YEAR:
-                    continue
-            except Exception:
-                pass
-
-            if not _keyword_match(title + " " + tags):
-                continue
-
-            desc = clean_html(job.get("jobDescription", job.get("description", "")))
-            jobs_found.append(_make_job(title, company, link, location or "Remote", "Jobicy 💼", full_date[:10], desc))
-            if len(jobs_found) >= MAX_PER_SOURCE:
-                break
-
-    except Exception as e:
-        print(f"  [Jobicy] Error: {e}")
-
-    print(f"  [Jobicy] Found {len(jobs_found)} jobs.")
-    return jobs_found
-
-
-# ──────────────────────────────────────────────────
-# 🕷️  SCRAPER 3 — Arbeitnow API (Free, No Key)
-# ──────────────────────────────────────────────────
-
-def scrape_arbeitnow():
-    """Queries the free Arbeitnow public API — works very reliably."""
-    print("[Radar] Scanning Arbeitnow API...")
-    jobs_found = []
-
-    try:
-        url = "https://www.arbeitnow.com/api/job-board-api?page=1"
-        resp = _api_request(url)
-        if not resp:
-            print("  [Arbeitnow] No response")
-            return []
-
-        data = resp.json()
-        for job in data.get("data", []):
-            title    = job.get("title", "")
-            company  = job.get("company_name", "Unknown")
-            link     = job.get("url", "")
-            location = job.get("location", "Remote")
-            remote   = job.get("remote", False)
-            tags     = " ".join(job.get("tags", []))
-            full_date = str(job.get("created_at", "2025-01-01T"))
-
-            if not link:
-                continue
-
-            # Accept remote jobs OR keyword-matching roles
-            if not (remote or _keyword_match(title + " " + tags)):
-                continue
-
-            loc_str = "Remote 🌍" if remote else location
-            desc = clean_html(job.get("description", ""))
-            jobs_found.append(_make_job(title, company, link, loc_str, "Arbeitnow 🌐", full_date[:10], desc))
-            if len(jobs_found) >= MAX_PER_SOURCE:
-                break
-
-    except Exception as e:
-        print(f"  [Arbeitnow] Error: {e}")
-
-    print(f"  [Arbeitnow] Found {len(jobs_found)} jobs.")
-    return jobs_found
-
-
-# ──────────────────────────────────────────────────
-# 🕷️  SCRAPER 4 — RemoteOK API (Fixed headers)
-# ──────────────────────────────────────────────────
-
-def scrape_remoteok():
-    print("[Radar] Scanning RemoteOK API...")
-    jobs_found = []
-
-    try:
-        resp = _api_request("https://remoteok.com/api")
-        if not resp:
-            print("  [RemoteOK] No response")
-            return []
-
-        data = resp.json()
-        for job in data[1:]:  # First item is metadata, skip it
-            title   = job.get("position", "")
-            company = job.get("company", "Unknown")
-            link    = job.get("url", "")
-            tags    = " ".join(job.get("tags", []))
-            full_date = str(job.get("date", "2025-01-01T"))
-            date_year = full_date[:4]
-
-            if not link:
-                continue
-            try:
-                if int(date_year) < FILTER_YEAR:
-                    continue
-            except Exception:
-                pass
-
-            if not _keyword_match(title + " " + tags):
-                continue
-
-            desc = clean_html(job.get("description", ""))
-            jobs_found.append(_make_job(title, company, link, "Remote 🌍", "RemoteOK 🌏", full_date[:10], desc))
-            if len(jobs_found) >= MAX_PER_SOURCE:
-                break
-
-    except Exception as e:
-        print(f"  [RemoteOK] Error: {e}")
-
-    print(f"  [RemoteOK] Found {len(jobs_found)} jobs.")
-    return jobs_found
-
-
-# ──────────────────────────────────────────────────
-# 📤  TELEGRAM SENDER
-# ──────────────────────────────────────────────────
-
-# NOTE: send_radar_telegram function is defined below (after all scrapers)
-
-# ──────────────────────────────────────────────────
-#   MAIN RUNNER
-# ──────────────────────────────────────────────────
-
-# ──────────────────────────────────────────────────
-# 🇮🇳  SCRAPER 5 — Adzuna India (Free API, Real Indian Jobs)
-# Adzuna has a generous free tier — sign up at api.adzuna.com
+# 🇮🇳  SCRAPER 2 — Adzuna India (Tamil Nadu & India Tech)
 # ──────────────────────────────────────────────────
 
 def scrape_adzuna_india():
-    """Queries Adzuna India API for fresher tech jobs. Get free keys at api.adzuna.com"""
-    print("[Radar] Scanning Adzuna India...")
+    """Queries Adzuna India API with focus on Tamil Nadu and India tech roles."""
+    print("[Radar] Scanning Adzuna India (Tamil Nadu & Tech)...")
     jobs_found = []
 
     app_id  = os.getenv("ADZUNA_APP_ID", "")
     app_key = os.getenv("ADZUNA_APP_KEY", "")
 
     if not app_id or not app_key:
-        print("  [Adzuna] Skipped — set ADZUNA_APP_ID and ADZUNA_APP_KEY in .env (free at api.adzuna.com)")
+        print("  [Adzuna] Skipped — set ADZUNA_APP_ID and ADZUNA_APP_KEY in .env")
         return []
 
-    import urllib.parse
-    # Broader keywords to find more jobs
-    for kw in ["software engineer", "react developer", "python developer", "frontend developer"]:
+    queries = [
+        ("software engineer", "Tamil Nadu"),
+        ("frontend developer", "Chennai"),
+        ("python developer", "Coimbatore"),
+        ("full stack developer", "India"),
+    ]
+
+    for kw, where in queries:
         try:
-            # Sort by date so it shows days, then weeks, then months
             url = (
                 f"https://api.adzuna.com/v1/api/jobs/in/search/1"
                 f"?app_id={app_id}&app_key={app_key}"
-                f"&what={urllib.parse.quote(kw)}&where=Tamil+Nadu"
-                f"&results_per_page=30&content-type=application/json"
+                f"&what={urllib.parse.quote(kw)}&where={urllib.parse.quote(where)}"
+                f"&results_per_page=20&content-type=application/json"
                 f"&sort_by=date"
             )
             resp = _api_request(url)
@@ -387,188 +492,67 @@ def scrape_adzuna_india():
                 title   = job.get("title", "")
                 company = job.get("company", {}).get("display_name", "Unknown")
                 link    = job.get("redirect_url", "")
-                location = job.get("location", {}).get("display_name", "India")
+                raw_loc = job.get("location", {}).get("display_name", where)
                 full_created = str(job.get("created", "2025-01-01T"))
 
                 if not link or not _keyword_match(title):
                     continue
 
+                is_valid, tier, loc_tag, is_tn = classify_location(raw_loc, where)
+                if not is_valid:
+                    continue
+
                 desc = clean_html(job.get("description", ""))
-                jobs_found.append(_make_job(title, company, link, location, "Adzuna India 🇮🇳", full_created[:10], desc))
+                jobs_found.append(_make_job(
+                    title=title, company=company, link=link, location=loc_tag,
+                    source="Adzuna India 🇮🇳", date_posted=full_created[:10],
+                    description=desc, priority_tier=tier, is_tn=is_tn
+                ))
                 if len(jobs_found) >= MAX_PER_SOURCE:
                     break
 
-            if len(jobs_found) >= MAX_PER_SOURCE:
-                break
         except Exception as e:
-            print(f"  [Adzuna] Error: {e}")
-        # Wait longer between requests to satisfy the 1-2 minute search request and avoid rate limits
-        time.sleep(5.0)
+            print(f"  [Adzuna] Error for '{kw}': {e}")
+        time.sleep(2.0)
 
     print(f"  [Adzuna India] Found {len(jobs_found)} jobs.")
     return jobs_found
 
-
 # ──────────────────────────────────────────────────
-# 🇮🇳  SCRAPER 6 — Internshala via Playwright (JavaScript Rendered)
-# Only runs if Playwright is available
-# ──────────────────────────────────────────────────
-
-def scrape_internshala():
-    """Uses Playwright to render Internshala (JS-heavy site)."""
-    print("[Radar] Scanning Internshala (Playwright)...")
-    jobs_found = []
-
-    try:
-        from playwright.sync_api import sync_playwright
-        from bs4 import BeautifulSoup
-
-        urls_to_scan = [
-            "https://internshala.com/jobs/fresher-jobs/",
-            "https://internshala.com/jobs/work-from-home-jobs/",
-        ]
-
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page(
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0.0.0 Safari/537.36"
-            )
-
-            for url in urls_to_scan:
-                try:
-                    page.goto(url, timeout=20000, wait_until="domcontentloaded")
-                    page.wait_for_timeout(3000)  # Let JS render
-                    html = page.content()
-                    soup = BeautifulSoup(html, "html.parser")
-
-                    # Try multiple selectors
-                    cards = (
-                        soup.find_all("div", class_="individual_internship") or
-                        soup.find_all("div", class_=lambda c: c and "internship_meta" in str(c)) or
-                        soup.find_all("div", attrs={"data-internship_id": True})
-                    )
-
-                    for card in cards:
-                        try:
-                            title_tag   = card.find("h3") or card.find("h2")
-                            company_tag = card.find("a", class_="link_display_like_text") or card.find("p", class_="company-name")
-                            link_tag    = card.find("a", href=True)
-
-                            if not title_tag or not link_tag:
-                                continue
-
-                            title   = title_tag.get_text(strip=True)
-                            company = company_tag.get_text(strip=True) if company_tag else "See Link"
-                            href    = link_tag["href"]
-                            link    = href if href.startswith("http") else "https://internshala.com" + href
-
-                            if not _keyword_match(title):
-                                continue
-
-                            jobs_found.append(_make_job(title, company, link, "India", "Internshala 🎓"))
-                            if len(jobs_found) >= MAX_PER_SOURCE:
-                                break
-                        except Exception:
-                            continue
-
-                    if len(jobs_found) >= MAX_PER_SOURCE:
-                        break
-
-                except Exception as e:
-                    print(f"  [Internshala] Page error: {e}")
-
-            browser.close()
-
-    except ImportError:
-        print("  [Internshala] Playwright not available — skipping")
-    except Exception as e:
-        print(f"  [Internshala] Error: {e}")
-
-    print(f"  [Internshala] Found {len(jobs_found)} jobs.")
-    return jobs_found
-
-
-# ──────────────────────────────────────────────────
-# 🇮🇳  SCRAPER 7 — Foundit India (Monster India) — JSON API
-# ──────────────────────────────────────────────────
-
-def scrape_foundit():
-    """Queries Foundit (formerly Monster India) for fresher jobs."""
-    print("[Radar] Scanning Foundit (Monster India)...")
-    jobs_found = []
-
-    try:
-        # Foundit has a public search endpoint
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0.0.0 Safari/537.36",
-            "Accept": "application/json, text/plain, */*",
-            "Referer": "https://www.foundit.in/",
-            "Origin": "https://www.foundit.in",
-        }
-        url = "https://www.foundit.in/middleware/jobsearch/v2/search?query=software+engineer+fresher&location=Tamil+Nadu&experience=0-1&limit=20&sort=1"
-        resp = requests.get(url, headers=headers, timeout=15)
-
-        if resp.status_code != 200:
-            print(f"  [Foundit] Got {resp.status_code}")
-            return []
-
-        data = resp.json()
-        for job in data.get("jobSearchResponse", {}).get("data", []) or data.get("data", []):
-            title    = job.get("designation", "") or job.get("title", "")
-            company  = job.get("companyName", "Unknown")
-            link     = job.get("jdURL", "") or job.get("applyUrl", "")
-            location = job.get("location", "India")
-
-            if not title or not link:
-                continue
-
-            full_link = link if link.startswith("http") else "https://www.foundit.in" + link
-
-            if not _keyword_match(title):
-                continue
-
-            desc = clean_html(job.get("description", job.get("jobDescription", "")))
-            jobs_found.append(_make_job(title, company, full_link, location, "Foundit 🔍", description=desc))
-            if len(jobs_found) >= MAX_PER_SOURCE:
-                break
-
-    except Exception as e:
-        print(f"  [Foundit] Error: {e}")
-
-    print(f"  [Foundit] Found {len(jobs_found)} jobs.")
-    return jobs_found
-
-
-# ──────────────────────────────────────────────────
-# 🇮🇳  SCRAPER 8 — Unstop (Campus Hiring)
+# 🇮🇳  SCRAPER 3 — Unstop (India Campus & Fresher Hiring)
 # ──────────────────────────────────────────────────
 
 def scrape_unstop():
-    """Queries Unstop public job listings API for fresher campus roles."""
-    print("[Radar] Scanning Unstop...")
+    """Queries Unstop public job listings API for Indian fresher campus roles."""
+    print("[Radar] Scanning Unstop India...")
     jobs_found = []
     try:
-        url = "https://unstop.com/api/public/opportunity/search-result?opportunity=jobs&per_page=20&oppstatus=open"
+        url = "https://unstop.com/api/public/opportunity/search-result?opportunity=jobs&per_page=30&oppstatus=open"
         resp = _api_request(url)
         if not resp:
-            print("  [Unstop] No response")
             return []
         data = resp.json()
-        items = (data.get("data", {}).get("data", [])
-                 if isinstance(data.get("data"), dict)
-                 else data.get("data", []))
+        items = (data.get("data", {}).get("data", []) if isinstance(data.get("data"), dict) else data.get("data", []))
         for job in items:
             title   = job.get("title", "")
             org     = job.get("organisation", {})
             company = org.get("name", "Unknown") if isinstance(org, dict) else "Unknown"
             slug    = job.get("public_url", "") or job.get("slug", "")
             link    = slug if slug.startswith("http") else f"https://unstop.com/{slug}"
-            if not title or not slug:
+            raw_loc = job.get("job_location", "") or "India"
+
+            if not title or not slug or not _keyword_match(title):
                 continue
-            if not _keyword_match(title):
+
+            is_valid, tier, loc_tag, is_tn = classify_location(raw_loc, title)
+            if not is_valid:
                 continue
+
             desc = clean_html(job.get("description", ""))
-            jobs_found.append(_make_job(title, company, link, "India", "Unstop 🏆", description=desc))
+            jobs_found.append(_make_job(
+                title=title, company=company, link=link, location=loc_tag,
+                source="Unstop India 🏆", description=desc, priority_tier=tier, is_tn=is_tn
+            ))
             if len(jobs_found) >= MAX_PER_SOURCE:
                 break
     except Exception as e:
@@ -576,92 +560,299 @@ def scrape_unstop():
     print(f"  [Unstop] Found {len(jobs_found)} jobs.")
     return jobs_found
 
+# ──────────────────────────────────────────────────
+# 🇮🇳  SCRAPER 4 — Foundit India (Monster India API)
+# ──────────────────────────────────────────────────
+
+def scrape_foundit():
+    """Queries Foundit India for fresher software roles in Tamil Nadu & India."""
+    print("[Radar] Scanning Foundit India...")
+    jobs_found = []
+    try:
+        headers = {
+            "User-Agent": random.choice(USER_AGENTS),
+            "Accept": "application/json, text/plain, */*",
+            "Referer": "https://www.foundit.in/",
+            "Origin": "https://www.foundit.in",
+        }
+        url = "https://www.foundit.in/middleware/jobsearch/v2/search?query=software+engineer+fresher&location=Tamil+Nadu&experience=0-1&limit=25&sort=1"
+        resp = requests.get(url, headers=headers, timeout=15)
+        if resp.status_code != 200:
+            return []
+
+        data = resp.json()
+        items = data.get("jobSearchResponse", {}).get("data", []) or data.get("data", [])
+        for job in items:
+            title    = job.get("designation", "") or job.get("title", "")
+            company  = job.get("companyName", "Unknown")
+            link     = job.get("jdURL", "") or job.get("applyUrl", "")
+            raw_loc  = job.get("location", "Tamil Nadu, India")
+
+            if not title or not link or not _keyword_match(title):
+                continue
+
+            full_link = link if link.startswith("http") else "https://www.foundit.in" + link
+            is_valid, tier, loc_tag, is_tn = classify_location(raw_loc, title)
+            if not is_valid:
+                continue
+
+            desc = clean_html(job.get("description", job.get("jobDescription", "")))
+            jobs_found.append(_make_job(
+                title=title, company=company, link=full_link, location=loc_tag,
+                source="Foundit India 🔍", description=desc, priority_tier=tier, is_tn=is_tn
+            ))
+            if len(jobs_found) >= MAX_PER_SOURCE:
+                break
+    except Exception as e:
+        print(f"  [Foundit] Error: {e}")
+    print(f"  [Foundit] Found {len(jobs_found)} jobs.")
+    return jobs_found
 
 # ──────────────────────────────────────────────────
-# 🔵  SCRAPER 9 — LinkedIn + Indeed via JobSpy
-# python-jobspy handles LinkedIn stealth automatically
+# 🌐  SCRAPER 5 — Remotive API (Strict India & Worldwide Remote Only)
+# ──────────────────────────────────────────────────
+
+def scrape_remotive():
+    """Queries Remotive API — strictly filtering for India & unrestricted Worldwide Remote."""
+    print("[Radar] Scanning Remotive (India/Global Remote)...")
+    jobs_found = []
+
+    for kw in ["software engineer", "frontend developer", "python developer"]:
+        try:
+            url = f"https://remotive.com/api/remote-jobs?search={urllib.parse.quote(kw)}&limit=20"
+            resp = _api_request(url)
+            if not resp:
+                continue
+            data = resp.json()
+            for job in data.get("jobs", []):
+                title     = job.get("title", "")
+                company   = job.get("company_name", "Unknown")
+                link      = job.get("url", "")
+                geo       = job.get("candidate_required_location", "")
+                full_date = str(job.get("publication_date", "2025-01-01T"))
+                tags      = " ".join(job.get("tags", []))
+
+                if not link or not _keyword_match(title + " " + tags):
+                    continue
+
+                is_valid, tier, loc_tag, is_tn = classify_location(geo, title + " " + tags)
+                if not is_valid:
+                    continue
+
+                desc = clean_html(job.get("description", ""))
+                jobs_found.append(_make_job(
+                    title=title, company=company, link=link, location=loc_tag,
+                    source="Remotive 🚀", date_posted=full_date[:10],
+                    description=desc, priority_tier=tier, is_tn=is_tn
+                ))
+                if len(jobs_found) >= MAX_PER_SOURCE:
+                    break
+        except Exception as e:
+            print(f"  [Remotive] Error: {e}")
+        time.sleep(1.5)
+
+    print(f"  [Remotive] Found {len(jobs_found)} jobs.")
+    return jobs_found
+
+# ──────────────────────────────────────────────────
+# 🌐  SCRAPER 6 — Jobicy API (Strict India & Worldwide Remote Only)
+# ──────────────────────────────────────────────────
+
+def scrape_jobicy():
+    """Queries Jobicy API — strictly filtering for India & unrestricted Worldwide Remote."""
+    print("[Radar] Scanning Jobicy (India/Global Remote)...")
+    jobs_found = []
+    try:
+        url = "https://jobicy.com/api/v2/remote-jobs?count=40&industry=engineering"
+        resp = _api_request(url)
+        if not resp:
+            return []
+        data = resp.json()
+        for job in data.get("jobs", []):
+            title     = job.get("jobTitle", "")
+            company   = job.get("companyName", "Unknown")
+            link      = job.get("url", "")
+            geo       = job.get("jobGeo", "")
+            full_date = str(job.get("pubDate", "2025-01-01T"))
+            tags      = " ".join(job.get("jobIndustry", []))
+
+            if not link or not _keyword_match(title + " " + tags):
+                continue
+
+            is_valid, tier, loc_tag, is_tn = classify_location(geo, title)
+            if not is_valid:
+                continue
+
+            desc = clean_html(job.get("jobDescription", job.get("description", "")))
+            jobs_found.append(_make_job(
+                title=title, company=company, link=link, location=loc_tag,
+                source="Jobicy 💼", date_posted=full_date[:10],
+                description=desc, priority_tier=tier, is_tn=is_tn
+            ))
+            if len(jobs_found) >= MAX_PER_SOURCE:
+                break
+    except Exception as e:
+        print(f"  [Jobicy] Error: {e}")
+    print(f"  [Jobicy] Found {len(jobs_found)} jobs.")
+    return jobs_found
+
+# ──────────────────────────────────────────────────
+# 🌐  SCRAPER 7 — Arbeitnow API (India / Worldwide Remote Only)
+# ──────────────────────────────────────────────────
+
+def scrape_arbeitnow():
+    """Queries Arbeitnow API — strictly filtering for India & unrestricted Worldwide Remote."""
+    print("[Radar] Scanning Arbeitnow (India/Global Remote)...")
+    jobs_found = []
+    try:
+        url = "https://www.arbeitnow.com/api/job-board-api?page=1"
+        resp = _api_request(url)
+        if not resp:
+            return []
+        data = resp.json()
+        for job in data.get("data", []):
+            title     = job.get("title", "")
+            company   = job.get("company_name", "Unknown")
+            link      = job.get("url", "")
+            raw_loc   = job.get("location", "")
+            remote    = job.get("remote", False)
+            tags      = " ".join(job.get("tags", []))
+            full_date = str(job.get("created_at", "2025-01-01T"))
+
+            if not link or not _keyword_match(title + " " + tags):
+                continue
+
+            loc_check = "Remote" if remote else raw_loc
+            is_valid, tier, loc_tag, is_tn = classify_location(loc_check, title)
+            if not is_valid:
+                continue
+
+            desc = clean_html(job.get("description", ""))
+            jobs_found.append(_make_job(
+                title=title, company=company, link=link, location=loc_tag,
+                source="Arbeitnow 🌐", date_posted=full_date[:10],
+                description=desc, priority_tier=tier, is_tn=is_tn
+            ))
+            if len(jobs_found) >= MAX_PER_SOURCE:
+                break
+    except Exception as e:
+        print(f"  [Arbeitnow] Error: {e}")
+    print(f"  [Arbeitnow] Found {len(jobs_found)} jobs.")
+    return jobs_found
+
+# ──────────────────────────────────────────────────
+# 🌐  SCRAPER 8 — RemoteOK API (India / Worldwide Remote Only)
+# ──────────────────────────────────────────────────
+
+def scrape_remoteok():
+    """Queries RemoteOK API — strictly filtering for India & unrestricted Worldwide Remote."""
+    print("[Radar] Scanning RemoteOK (India/Global Remote)...")
+    jobs_found = []
+    try:
+        resp = _api_request("https://remoteok.com/api")
+        if not resp:
+            return []
+        data = resp.json()
+        for job in data[1:]:
+            title     = job.get("position", "")
+            company   = job.get("company", "Unknown")
+            link      = job.get("url", "")
+            geo       = job.get("location", "")
+            tags      = " ".join(job.get("tags", []))
+            full_date = str(job.get("date", "2025-01-01T"))
+
+            if not link or not _keyword_match(title + " " + tags):
+                continue
+
+            is_valid, tier, loc_tag, is_tn = classify_location(geo, title + " " + tags)
+            if not is_valid:
+                continue
+
+            desc = clean_html(job.get("description", ""))
+            jobs_found.append(_make_job(
+                title=title, company=company, link=link, location=loc_tag,
+                source="RemoteOK 🌏", date_posted=full_date[:10],
+                description=desc, priority_tier=tier, is_tn=is_tn
+            ))
+            if len(jobs_found) >= MAX_PER_SOURCE:
+                break
+    except Exception as e:
+        print(f"  [RemoteOK] Error: {e}")
+    print(f"  [RemoteOK] Found {len(jobs_found)} jobs.")
+    return jobs_found
+
+# ──────────────────────────────────────────────────
+# 🔵  SCRAPER 9 — LinkedIn & Indeed India via JobSpy
 # ──────────────────────────────────────────────────
 
 def scrape_linkedin_indeed():
-    """Uses python-jobspy to scrape LinkedIn and Indeed India jobs."""
-    print("[Radar] Scanning LinkedIn + Indeed (JobSpy)...")
+    """Uses python-jobspy for Chennai, Coimbatore, Tamil Nadu & Bangalore India jobs."""
+    print("[Radar] Scanning LinkedIn + Indeed India (JobSpy)...")
     jobs_found = []
-
     try:
         from jobspy import scrape_jobs
-
-        search_queries = [
-            "software engineer fresher",
-            "react developer fresher",
-            "frontend developer",
+        queries = [
+            ("software engineer fresher", "Chennai, Tamil Nadu, India"),
+            ("frontend developer", "Coimbatore, Tamil Nadu, India"),
+            ("full stack developer fresher", "Bangalore, Karnataka, India"),
         ]
-
-        for query in search_queries:
+        for query, loc in queries:
             try:
                 df = scrape_jobs(
                     site_name=["linkedin", "indeed"],
                     search_term=query,
-                    location="Chennai, Tamil Nadu, India",
-                    results_wanted=5,
-                    hours_old=72,           # Only last 3 days
+                    location=loc,
+                    results_wanted=6,
+                    hours_old=72,
                     country_indeed="India",
-                    linkedin_fetch_description=False,  # Faster
+                    linkedin_fetch_description=False,
                     verbose=0,
                 )
-
                 if df is None or df.empty:
                     continue
 
                 for _, row in df.iterrows():
-                    title   = str(row.get("title", ""))
-                    company = str(row.get("company", "Unknown"))
-                    link    = str(row.get("job_url", ""))
-                    location = str(row.get("location", "India"))
-                    site    = str(row.get("site", "linkedin")).title()
+                    title    = str(row.get("title", ""))
+                    company  = str(row.get("company", "Unknown"))
+                    link     = str(row.get("job_url", ""))
+                    location = str(row.get("location", loc))
+                    site     = str(row.get("site", "linkedin")).title()
 
-                    if not link or link == "nan":
+                    if not link or link == "nan" or not _keyword_match(title):
                         continue
-                    if not _keyword_match(title):
+
+                    is_valid, tier, loc_tag, is_tn = classify_location(location, loc)
+                    if not is_valid:
                         continue
 
                     source = f"LinkedIn 🔵" if "linkedin" in site.lower() else f"Indeed India 🟢"
                     desc_val = str(row.get("description", ""))
                     desc = clean_html(desc_val) if desc_val and desc_val != "nan" else ""
-                    jobs_found.append(_make_job(title, company, link, location, source, description=desc))
+                    jobs_found.append(_make_job(
+                        title=title, company=company, link=link, location=loc_tag,
+                        source=source, description=desc, priority_tier=tier, is_tn=is_tn
+                    ))
                     if len(jobs_found) >= MAX_PER_SOURCE:
                         break
-
             except Exception as e:
                 print(f"  [JobSpy] Error for '{query}': {e}")
-
-            time.sleep(2.0)   # Avoid LinkedIn rate-limit
-
-            if len(jobs_found) >= MAX_PER_SOURCE:
-                break
-
+            time.sleep(2.0)
     except ImportError:
-        print("  [JobSpy] python-jobspy not installed. Run: pip install python-jobspy")
+        pass
     except Exception as e:
         print(f"  [LinkedIn/Indeed] Error: {e}")
-
     print(f"  [LinkedIn + Indeed] Found {len(jobs_found)} jobs.")
     return jobs_found
 
-
-
-
-def escape_md(text):
-    if not text:
-        return ""
-    return str(text).replace("*", "").replace("_", " ").replace("[", "(").replace("]", ")").replace("`", "")
+# ──────────────────────────────────────────────────
+# 📤  TELEGRAM SENDER (WITH TAMIL NADU PRIORITY DISPLAY)
+# ──────────────────────────────────────────────────
 
 def send_radar_telegram(new_jobs):
-    """Sends ALL found jobs in a single consolidated Telegram message — no separate Apply buttons."""
+    """Sends consolidated Telegram messages with Tamil Nadu opportunities prioritized at the top."""
     try:
         import telebot
-        from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
         
-        # Load bot token with sanitization
         _raw_token = os.getenv("TELEGRAM_TOKEN", "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4")
         bot_token = str(_raw_token).strip().strip('"').strip("'")
         if bot_token.lower().startswith("bot"):
@@ -676,53 +867,37 @@ def send_radar_telegram(new_jobs):
                 with open("chat_id.json", "r") as f:
                     data = json.load(f)
                     chat_id = str(data.get("chat_id", "7607565831")).strip()
-            except: pass
+            except Exception:
+                pass
         if not chat_id:
             chat_id = "7607565831"
-        
-        if not bot_token or not chat_id:
-            print("[Radar] Telegram not configured. Skipping instant notification.")
-            return
-        
+
         radar_bot = telebot.TeleBot(bot_token, parse_mode=None)
-        
-        # Build source breakdown summary
-        source_counts = {}
-        for job in new_jobs:
-            src = job.get("source", "Unknown")
-            source_counts[src] = source_counts.get(src, 0) + 1
-        
-        source_summary = "\n".join([f"  {escape_md(src)}: *{cnt}* jobs" for src, cnt in source_counts.items()])
-        
+
+        tn_jobs = [j for j in new_jobs if j.get("is_tamil_nadu", False) or j.get("priority_tier") == 1]
+        india_jobs = [j for j in new_jobs if not j.get("is_tamil_nadu", False) and j.get("priority_tier") == 2]
+        remote_jobs = [j for j in new_jobs if j.get("priority_tier") == 3]
+
         total = len(new_jobs)
         now_str = datetime.now().strftime('%I:%M %p, %d %b %Y')
-        
-        # Build jobs grouped by source
-        grouped_jobs = {}
-        for job in new_jobs:
-            src = job.get("source", "Unknown")
-            grouped_jobs.setdefault(src, []).append(job)
-            
-        job_lines = []
-        global_idx = 1
-        
+
         job_entries = []
         global_idx = 1
-        
-        for src, jobs in grouped_jobs.items():
-            section_header = f"📡 *{escape_md(src)}*\n━━━━━━━━━━━━━━━━━━━━━━"
-            job_entries.append(section_header)
-            for job in jobs:
+
+        def _format_section(title_header, job_list):
+            nonlocal global_idx
+            if not job_list:
+                return
+            job_entries.append(title_header)
+            for job in job_list:
                 title   = escape_md(job.get("title", "Unknown Role"))[:60]
                 company = escape_md(job.get("company", "Unknown Company"))[:35]
-                loc     = escape_md(job.get("location", "Remote / PAN India"))[:35]
+                loc     = escape_md(job.get("location", "India"))[:40]
                 link    = job.get("link", "").strip()
                 date_str = job.get("date_posted", "")
-                desc    = escape_md(clean_html(job.get("description", "")))[:110]
-                if desc:
-                    desc = desc.replace("\n", " ").strip()
-                
-                # Time display
+                desc    = escape_md(clean_html(job.get("description", "")))[:120]
+                src     = escape_md(job.get("source", "Radar"))
+
                 time_tag = "🟢 Today"
                 if date_str and len(date_str) >= 10:
                     try:
@@ -734,25 +909,37 @@ def send_radar_telegram(new_jobs):
                         else: time_tag = f"📆 {date_str[:10]}"
                     except Exception:
                         time_tag = "🟢 Recent"
-                
-                # Rich multi-line job card with location and work detail
+
                 entry = (
                     f"*{global_idx}.* [{title}]({link})\n"
                     f"   🏢 *Company:* _{company}_\n"
                     f"   📍 *Location:* `{loc}`\n"
+                    f"   📡 *Source:* _{src}_\n"
                     f"   🕒 *Posted:* {time_tag}"
                 )
                 if desc and len(desc) > 15:
                     entry += f"\n   📝 *Work Detail:* _{desc}_"
-                
+
                 job_entries.append(entry)
                 global_idx += 1
-        
-        # Split into smart character-length chunks (Telegram max 4096 chars)
+
+        # 1. TAMIL NADU HIGH PRIORITY SECTION
+        if tn_jobs:
+            _format_section(f"🌟 *TAMIL NADU OPPORTUNITIES ({len(tn_jobs)} JOBS — TOP PRIORITY)*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", tn_jobs)
+
+        # 2. OTHER INDIA TECH HUBS SECTION
+        if india_jobs:
+            _format_section(f"🇮🇳 *INDIA TECH OPPORTUNITIES ({len(india_jobs)} JOBS)*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", india_jobs)
+
+        # 3. REMOTE / GLOBAL SECTION
+        if remote_jobs:
+            _format_section(f"🌐 *REMOTE TECH OPPORTUNITIES ({len(remote_jobs)} JOBS)*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", remote_jobs)
+
+        # Split into chunks of under 3500 chars
         chunks = []
         current_chunk = []
         current_len = 0
-        
+
         for item in job_entries:
             item_len = len(item) + 2
             if current_len + item_len > 3400 and current_chunk:
@@ -764,110 +951,115 @@ def send_radar_telegram(new_jobs):
                 current_len += item_len
         if current_chunk:
             chunks.append("\n\n".join(current_chunk))
-        
-        # Header
+
         header = (
-            f"📡 *JOB RADAR REPORT*\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🆕 Found *{total}* New Opportunities!\n"
+            f"📡 *JOB RADAR REPORT (INDIA & TN PRIORITY)*\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🆕 Found *{total}* Verified Opportunities!\n"
+            f"🌟 *Tamil Nadu Priority:* *{len(tn_jobs)}* jobs\n"
+            f"🇮🇳 *Pan-India:* *{len(india_jobs)}* jobs | 🌐 *Remote:* *{len(remote_jobs)}* jobs\n"
             f"🕒 {now_str}\n"
-            f"📊 *Sources:*\n{source_summary}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         )
-        
+
         for idx, chunk in enumerate(chunks):
             if idx == 0:
                 msg = header + chunk
             else:
                 msg = f"📡 *Opportunities (Part {idx+1}/{len(chunks)})*\n\n" + chunk
-            
-            # Add footer to the last chunk
+
             if idx == len(chunks) - 1:
                 msg += (
-                    f"\n\n━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"📊 *Total:* {total} jobs across {len(source_counts)} sources\n"
+                    f"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"📊 *Total:* {total} jobs filtered strictly for India & TN\n"
                     f"⏰ Next scan in 1 hour (24/7 Cloud)\n"
-                    f"🟢 = Today | 🟡 = Yesterday | 📅 = This week\n"
-                    f"_Tap any job title link to view & apply directly!_"
+                    f"👉 _Tap any job title link to view & apply directly!_"
                 )
-            
+
             try:
                 radar_bot.send_message(chat_id, msg, parse_mode="Markdown", disable_web_page_preview=True)
                 if idx < len(chunks) - 1:
-                    time.sleep(0.6)  # Small delay between chunks
+                    time.sleep(0.6)
             except Exception as msg_e:
-                print(f"[Radar] Failed to send chunk #{idx+1}: {msg_e}")
-                # Fallback: try without Markdown if formatting fails
                 try:
                     plain_msg = msg.replace("*", "").replace("_", "").replace("`", "")
                     radar_bot.send_message(chat_id, plain_msg[:4096], parse_mode=None, disable_web_page_preview=True)
-                except: pass
-                
+                except Exception:
+                    pass
+
     except Exception as e:
         print(f"[Radar] Telegram notification failed: {e}")
 
+# ──────────────────────────────────────────────────
+# 🚀  MAIN RADAR RUNNER
+# ──────────────────────────────────────────────────
 
 def run_radar():
-    print("\n" + "=" * 50)
-    print("[Radar] JOB RADAR STARTING SCAN")
-    print(f"   Global   : Remotive, Jobicy, Arbeitnow, RemoteOK")
-    print(f"   India    : LinkedIn, Indeed, Adzuna, Internshala, Unstop")
-    print(f"   Locations: Tamil Nadu + Remote")
-    print(f"   Year     : {FILTER_YEAR}+")
-    print("=" * 50 + "\n")
+    print("\n" + "=" * 60)
+    print("[Radar] JOB RADAR STARTING SCAN — INDIA & TAMIL NADU ENGINE")
+    print(f"   Priority 1: Tamil Nadu (Chennai, Coimbatore, Madurai, Trichy, etc.)")
+    print(f"   Priority 2: India Tech Hubs (Bangalore, Hyderabad, Pune, etc.)")
+    print(f"   Priority 3: Global Remote open to India")
+    print(f"   Channels  : {len(RADAR_TELEGRAM_CHANNELS)} Telegram Job Channels")
+    print(f"   Foreign   : Strictly Filtered Out (USA/UK/Europe onsite rejected)")
+    print("=" * 60 + "\n")
 
     seen_jobs = load_seen_jobs()
     all_jobs  = []
 
-    # Run all scrapers concurrently using a ThreadPoolExecutor
     import concurrent.futures
     scrapers = {
+        "Telegram Channels": scrape_telegram_channels_radar,
+        "Adzuna India": scrape_adzuna_india,
+        "Unstop India": scrape_unstop,
+        "Foundit India": scrape_foundit,
+        "LinkedIn/Indeed": scrape_linkedin_indeed,
         "Remotive": scrape_remotive,
         "Jobicy": scrape_jobicy,
         "Arbeitnow": scrape_arbeitnow,
         "RemoteOK": scrape_remoteok,
-        "LinkedIn/Indeed": scrape_linkedin_indeed,
-        "Adzuna": scrape_adzuna_india,
-        "Internshala": scrape_internshala,
-        "Unstop": scrape_unstop,
     }
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(scrapers)) as executor:
         future_to_name = {executor.submit(func): name for name, func in scrapers.items()}
         try:
-            for future in concurrent.futures.as_completed(future_to_name, timeout=35):
+            for future in concurrent.futures.as_completed(future_to_name, timeout=40):
                 name = future_to_name[future]
                 try:
                     res = future.result()
                     if res:
                         all_jobs.extend(res)
                 except Exception as e:
-                    print(f"  [Radar Concurrent] Scraper '{name}' raised exception: {e}")
+                    print(f"  [Radar] Scraper '{name}' error: {e}")
         except concurrent.futures.TimeoutError:
-            print("  [Radar] ThreadPool timeout (35s) reached. Proceeding with collected jobs.")
+            print("  [Radar] Scrapers timeout reached. Proceeding with collected jobs.")
 
     new_jobs = []
     for job in all_jobs:
-        link = job["link"]
+        link = job.get("link") or job.get("raw_link")
         if link and link not in seen_jobs:
             new_jobs.append(job)
             mark_seen(link)
             seen_jobs.add(link)
 
-    # Sort newest-posted first. date_posted is normally "YYYY-MM-DD" but some
-    # sources pass a full ISO timestamp; take the first 10 chars and fall back
-    # to an empty string (sorts last) if it can't be parsed.
-    def _posted_key(job):
-        raw = str(job.get("date_posted", ""))[:10]
+    # 🎯 SORTING ENGINE: Tamil Nadu (Tier 1) FIRST, then India (Tier 2), then Remote (Tier 3)
+    def _priority_sort_key(job):
+        tier = job.get("priority_tier", 2)
+        raw_date = str(job.get("date_posted", ""))[:10]
         try:
-            return datetime.strptime(raw, "%Y-%m-%d")
+            dt = datetime.strptime(raw_date, "%Y-%m-%d")
         except Exception:
-            return datetime.min
-    new_jobs.sort(key=_posted_key, reverse=True)
+            dt = datetime.min
+        # Sort by tier ascending (1 first), then date descending (newest first)
+        return (tier, -dt.timestamp())
 
-    print(f"\n[Radar] Total new unique jobs: {len(new_jobs)}")
+    new_jobs.sort(key=_priority_sort_key)
 
-    # Load previous jobs so dashboard always has data to show
+    print(f"\n[Radar] Total new unique India/TN jobs: {len(new_jobs)}")
+    tn_count = sum(1 for j in new_jobs if j.get("is_tamil_nadu", False))
+    print(f"[Radar] 🌟 Tamil Nadu Priority Jobs: {tn_count}")
+
+    # Retain existing data if empty
     existing_data = {}
     try:
         if os.path.exists(RESULTS_JSON):
@@ -882,7 +1074,7 @@ def run_radar():
     if new_jobs:
         send_radar_telegram(new_jobs)
     else:
-        print("[Radar] No new jobs this cycle. Previous results retained on dashboard.")
+        print("[Radar] No new jobs this cycle. Previous results retained.")
 
     print("[Radar] Scan complete.\n")
     return new_jobs

@@ -159,12 +159,14 @@ total_elapsed = int(time.time() - START_TIME)
 print(f"\n📊 Cycle summary: Duration={total_elapsed}s, Radar={radar_jobs_count}, Channels={channels_scanned}, New={channel_jobs_found}, Applied={channel_attempts}")
 
 try:
+    tn_radar_count = sum(1 for j in new_radar_jobs if j.get('is_tamil_nadu', False)) if new_radar_jobs else 0
     status_msg = (
         f"☁️ *GitHub Actions Cloud Cycle Complete*\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"🕒 Time: {datetime.now().strftime('%d %b %Y, %I:%M %p UTC')}\n"
         f"⏱️ Duration: *{total_elapsed}s*\n"
-        f"📡 Radar Jobs Found: *{radar_jobs_count}*\n"
+        f"📡 Radar Jobs (India): *{radar_jobs_count}*\n"
+        f"🌟 Tamil Nadu Priority: *{tn_radar_count}* jobs\n"
         f"📢 Channels Scanned: *{channels_scanned}*\n"
         f"🎯 Auto-Applied Attempts: *{channel_attempts}*\n"
         f"👻 7-Day Follow-ups: *{follow_up_count}*\n"
