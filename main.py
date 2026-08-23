@@ -242,6 +242,23 @@ def rotate_groq_key():
 
 groq_client = get_groq_client()
 
+# TokenRouter / OpenAI-Compatible Client
+TOKENROUTER_API_KEY = str(os.getenv("TOKENROUTER_API_KEY", "")).strip()
+TOKENROUTER_BASE_URL = str(os.getenv("TOKENROUTER_BASE_URL", "https://api.tokenrouter.com/v1")).strip()
+TOKENROUTER_MODEL = str(os.getenv("TOKENROUTER_MODEL", "openai/gpt-4o-mini")).strip()
+
+def get_tokenrouter_client():
+    if not TOKENROUTER_API_KEY:
+        return None
+    try:
+        from openai import OpenAI
+        return OpenAI(api_key=TOKENROUTER_API_KEY, base_url=TOKENROUTER_BASE_URL, timeout=15.0)
+    except Exception as e:
+        print(f"[TokenRouter] Init error: {e}")
+        return None
+
+tokenrouter_client = get_tokenrouter_client()
+
 # Global pause flag
 BOT_PAUSED = False
 ghost_mode_chats = set()
@@ -995,8 +1012,37 @@ def check_job_match(job_text, profile_data):
         except Exception as e2:
             print(f"[AI Filter] Rotated Gemini key also failed: {e2}")
 
-    # ── ALL GEMINI KEYS FAILED → FALLBACK TO GROQ ──────────────────────
-    print("[Groq] All Gemini keys failed for AI Filter. Falling back to Groq...")
+    # ── ALL GEMINI KEYS FAILED → FALLBACK TO TOKENROUTER ────────────────
+    if tokenrouter_client:
+        print("[TokenRouter] Gemini keys unavailable/failed. Falling back to TokenRouter...")
+        try:
+            completion = tokenrouter_client.chat.completions.create(
+                model=TOKENROUTER_MODEL,
+                messages=[
+                    {"role": "system", "content": "You are an AI job filter. Reply ONLY in raw JSON."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0
+            )
+            result = _parse_response(completion.choices[0].message.content)
+            score = result.get("score", 5)
+            reason = result.get("reason", "")
+            summary = (
+                f"🏢 *{result.get('company', 'Unknown')}*\n"
+                f"💼 *Position:* {result.get('position', 'N/A')}\n"
+                f"📍 *Location:* {result.get('location', 'N/A')}\n"
+                f"💰 *Salary:* {result.get('salary', 'Not Mentioned')}\n"
+                f"🎓 *Experience:* {result.get('experience', 'N/A')}\n"
+                f"📋 *Type:* {result.get('type', 'N/A')}\n"
+                f"🤖 *AI Score (TokenRouter):* {score}/10 — {reason}"
+            )
+            print("[TokenRouter] AI Filter fallback successful!")
+            return score >= 7, summary
+        except Exception as tr_e:
+            print(f"[TokenRouter] Fallback failed: {tr_e}")
+
+    # ── FALLBACK TO GROQ ───────────────────────────────────────────────
+    print("[Groq] Falling back to Groq...")
     if groq_client:
         try:
             completion = groq_client.chat.completions.create(
