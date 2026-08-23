@@ -284,6 +284,25 @@ def _make_job(title, company, link, location, source, date_posted="", descriptio
         "found_at":       datetime.now().strftime("%Y-%m-%d %H:%M"),
     }
 
+def is_social_or_promo_link(url):
+    """Detects if a URL is a social media link, channel promo, or non-job page."""
+    if not url or not isinstance(url, str):
+        return True
+    u = url.lower().strip()
+    promo_domains = [
+        "t.me", "telegram.org", "telegram.dog", "whatsapp.com", "wa.me",
+        "instagram.com", "facebook.com", "fb.com", "twitter.com", "x.com",
+        "youtube.com", "youtu.be", "pinterest.com", "threads.net",
+        "linktr.ee", "bio.link", "campsite.bio", "taplink.cc", "beacons.ai",
+        "play.google.com", "apps.apple.com", "aratt.ai"
+    ]
+    if any(d in u for d in promo_domains):
+        return True
+    if "linkedin.com" in u:
+        if any(p in u for p in ["/company/", "/in/", "/feed/", "/posts/", "/groups/", "/pulse/", "/school/"]):
+            return True
+    return False
+
 # ──────────────────────────────────────────────────
 # 🔗 DIRECT LINK UNWRAPPER FOR RADAR
 # ──────────────────────────────────────────────────
@@ -292,7 +311,7 @@ def unwrap_radar_direct_link(url):
     """
     Unwraps URL shorteners and extracts direct application links from job blogs.
     """
-    if not url or not url.startswith("http"):
+    if not url or not url.startswith("http") or is_social_or_promo_link(url):
         return url
     
     direct_domains = [
@@ -322,20 +341,19 @@ def unwrap_radar_direct_link(url):
         # Priority 1: Known ATS / job boards
         for a in container.find_all("a", href=True):
             href = a["href"].strip()
-            if any(d in href.lower() for d in direct_domains):
+            if any(d in href.lower() for d in direct_domains) and not is_social_or_promo_link(href):
                 return href
         
         # Priority 2: Text matching "Apply", "Registration"
         apply_kws = ["apply online", "click here to apply", "apply link", "apply now", "official link", "direct apply", "registration link"]
-        skip_domains = ["youtube", "instagram", "whatsapp", "telegram", "t.me", "facebook", "twitter", "x.com"]
         for a in container.find_all("a", href=True):
             href = a["href"].strip()
             txt = a.get_text(strip=True).lower()
             if any(k in txt for k in apply_kws):
-                if href.startswith("http") and not any(s in href.lower() for s in skip_domains):
+                if href.startswith("http") and not is_social_or_promo_link(href):
                     return href
         
-        return final_url
+        return final_url if not is_social_or_promo_link(final_url) else url
     except Exception:
         return url
 
@@ -370,43 +388,63 @@ def _scan_single_channel_radar(ch):
             urls = []
             for a in msg.find_all("a", href=True):
                 href = a["href"].strip()
-                if href.startswith("http") and not any(s in href.lower() for s in ["t.me", "telegram.org", "whatsapp", "instagram", "youtube", "aratt.ai"]):
+                if href.startswith("http") and not is_social_or_promo_link(href):
                     urls.append(href)
             if not urls:
                 regex_urls = re.findall(r'(https?://[^\s<>"]+)', text)
                 for u in regex_urls:
                     u = u.rstrip(").,!*'\"")
-                    if not any(s in u.lower() for s in ["t.me", "telegram.org", "whatsapp", "instagram", "youtube", "aratt.ai"]):
+                    if not is_social_or_promo_link(u):
                         urls.append(u)
 
             if not urls:
                 continue
 
             raw_link = urls[0]
-
             lines = [l.strip() for l in text.split("\n") if l.strip()]
-            first_line = lines[0] if lines else "Tech Job Opening"
-            
-            clean_title = re.sub(r'[^\w\s.,&-]', '', first_line).strip()
-            company = "Hiring Company"
-            if "is Hiring" in first_line:
-                company = first_line.split("is Hiring")[0].replace("🔴", "").replace("📢", "").replace("#ad", "").strip()
-            elif "Recruitment" in first_line:
-                company = first_line.split("Recruitment")[0].replace("🔴", "").replace("📢", "").replace("#ad", "").strip()
-            elif "Hiring" in first_line:
-                company = first_line.split("Hiring")[0].replace("🔴", "").replace("📢", "").replace("#ad", "").strip()
+            first_line = lines[0] if lines else ""
 
-            title = clean_title[:70] if clean_title else "Software Engineer / Fresher"
+            # Robust Company Extraction
+            company = ""
+            comp_m = re.search(r'(?:🏢\s*Company|Company|Organisation|Org|Organization)\s*[:\-]\s*([^\n📍💼🛠️💰📝👉🔗|]+)', text, re.I)
+            if comp_m:
+                company = comp_m.group(1).strip()
+            if not company or len(company) < 2:
+                m_hiring = re.search(r'^[^\w\s]*\s*([A-Za-z0-9\s.,&-]+?)\s+(?:is\s+Hiring|is\s+Recruiting|Recruitment\s+20\d\d|Recruitment|Off\s*Campus\s+Drive|Off\s*Campus|Mega\s+Drive|Drive|Hiring|Walkin|Walk-in)', first_line, re.I)
+                if m_hiring:
+                    company = m_hiring.group(1).strip()
+            company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
+            if not company or len(company) < 2:
+                company = "Verified Recruiter"
+
+            # Robust Role Extraction
+            role = ""
+            role_m = re.search(r'(?:(?:🚀\s*)?Hiring\s+Now|Role|Position|Job\s*Title|Profile|Post|Designation)\s*[:\-]\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)', text, re.I)
+            if role_m:
+                role = role_m.group(1).strip()
+            if not role or len(role) < 2:
+                if "is Hiring" in first_line:
+                    after_hiring = first_line.split("is Hiring")[-1].strip()
+                    after_hiring = re.sub(r'[^\w\s.,&-]', '', after_hiring).strip()
+                    if len(after_hiring) > 3:
+                        role = after_hiring
+            role = re.sub(r'^[▪️👉•\-:\s]+', '', role).strip()
+            role = re.sub(r'[^\w\s.,&/\(\)\-]', '', role).strip()
+            if not role or len(role) < 2:
+                role = "Software Developer / Engineer Trainee"
+
             direct_link = unwrap_radar_direct_link(raw_link)
+            if is_social_or_promo_link(direct_link):
+                continue
 
-            desc = clean_html(text)
+            desc = clean_html(text)[:200]
             src_name = f"Telegram @{ch_clean} 📢"
             if is_tn:
                 src_name = f"Telegram @{ch_clean} 🌟"
 
             jobs_found.append(_make_job(
-                title=title,
-                company=company,
+                title=role[:65],
+                company=company[:45],
                 link=direct_link,
                 location=loc_tag,
                 source=src_name,

@@ -2940,62 +2940,141 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
             except Exception:
                 pass
 
+def is_social_or_promo_link(url):
+    """Detects if a URL is a social media link, channel promo, or non-job page."""
+    if not url or not isinstance(url, str):
+        return True
+    u = url.lower().strip()
+    
+    # Exclude social media profiles, chat groups & channel promos
+    promo_domains = [
+        "t.me", "telegram.org", "telegram.dog", "whatsapp.com", "wa.me",
+        "instagram.com", "facebook.com", "fb.com", "twitter.com", "x.com",
+        "youtube.com", "youtu.be", "pinterest.com", "threads.net",
+        "linktr.ee", "bio.link", "campsite.bio", "taplink.cc", "beacons.ai",
+        "play.google.com", "apps.apple.com", "aratt.ai"
+    ]
+    if any(d in u for d in promo_domains):
+        return True
+        
+    # LinkedIn company, personal profile, or feed pages are NOT direct job apply links
+    if "linkedin.com" in u:
+        if any(p in u for p in ["/company/", "/in/", "/feed/", "/posts/", "/groups/", "/pulse/", "/school/"]):
+            return True
+            
+    return False
+
 def extract_structured_channel_job_details(message_text, raw_link, final_url, channel_name):
     """
     Parses channel message text and direct URL to extract structured job metadata.
-    Returns: dict with (company, role, location, batch, salary, direct_url, is_tamil_nadu, priority_tier, is_valid_india)
+    Returns: dict with (company, role, location, batch, salary, work_mode, description_summary, direct_url, is_tamil_nadu, priority_tier, is_valid_india)
     """
     from job_radar import classify_location
-    lines = [l.strip() for l in message_text.split('\n') if l.strip()]
+
+    text_clean = message_text.strip()
+    lines = [l.strip() for l in text_clean.split('\n') if l.strip()]
     first_line = lines[0] if lines else ""
 
-    # 1. Extract Company
-    company = "Company"
-    if "is Hiring" in first_line:
-        company = first_line.split("is Hiring")[0]
-    elif "Recruitment" in first_line:
-        company = first_line.split("Recruitment")[0]
-    elif "Hiring" in first_line:
-        company = first_line.split("Hiring")[0]
-    else:
-        comp_m = re.search(r'(?:Company|Organisation|Org)\s*[:\-]\s*([A-Za-z0-9\s.,&-]+)', message_text, re.I)
-        if comp_m:
-            company = comp_m.group(1).split('\n')[0]
-    company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
+    # 1. EXTRACT COMPANY
+    company = ""
+    comp_m = re.search(r'(?:🏢\s*Company|Company|Organisation|Org|Organization)\s*[:\-]\s*([^\n📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
+    if comp_m:
+        company = comp_m.group(1).strip()
+    
     if not company or len(company) < 2:
-        company = "Verified Recruiter"
+        m_hiring = re.search(r'^[^\w\s]*\s*([A-Za-z0-9\s.,&-]+?)\s+(?:is\s+Hiring|is\s+Recruiting|Recruitment\s+20\d\d|Recruitment|Off\s*Campus\s+Drive|Off\s*Campus|Mega\s+Drive|Drive|Hiring|Walkin|Walk-in)', first_line, re.I)
+        if m_hiring:
+            company = m_hiring.group(1).strip()
 
-    # 2. Extract Role / Position
-    role = "Software Developer / Engineer Trainee"
-    role_m = re.search(r'(?:Post|Role|Position|Profile|Job Title|Designation)\s*[:\-]\s*([A-Za-z0-9\s.,&/\(\)\-]+)', message_text, re.I)
+    if not company or len(company) < 2:
+        m_comp_after = re.search(r'🏢\s*Company\s*:\s*([^\n📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
+        if m_comp_after:
+            company = m_comp_after.group(1).strip()
+
+    company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
+    if not company or len(company) < 2 or company.lower() in ["verified recruiter", "hiring", "job"]:
+        # Fallback from direct URL domain
+        if final_url and "http" in final_url:
+            from urllib.parse import urlparse
+            netloc = urlparse(final_url).netloc.lower()
+            for part in netloc.split('.'):
+                if part not in ["www", "com", "in", "io", "co", "careers", "jobs", "apply", "wd3", "myworkdayjobs", "sensehq", "greenhouse", "lever", "smartrecruiters", "docs", "google"]:
+                    if len(part) >= 3:
+                        company = part.capitalize()
+                        break
+        if not company or len(company) < 2:
+            company = "Verified Recruiter"
+
+    # 2. EXTRACT ROLE / POSITION
+    role = ""
+    role_m = re.search(r'(?:(?:🚀\s*)?Hiring\s+Now|Role|Position|Job\s*Title|Profile|Post|Designation)\s*[:\-]\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
     if role_m:
-        role = role_m.group(1).split('\n')[0].strip()
-    elif "Hiring" in first_line:
-        rest = first_line.split("Hiring")[-1].replace("(", "").replace(")", "").strip()
-        if rest and len(rest) > 3:
-            role = rest
+        role = role_m.group(1).strip()
+
+    if not role or len(role) < 2:
+        m_role_paren = re.search(r'is\s+Hiring\s*\(([^)]+)\)', first_line, re.I)
+        if m_role_paren:
+            role = m_role_paren.group(1).strip()
+
+    if not role or len(role) < 2:
+        if "is Hiring" in first_line:
+            after_hiring = first_line.split("is Hiring")[-1].strip()
+            after_hiring = re.sub(r'[^\w\s.,&-]', '', after_hiring).strip()
+            if len(after_hiring) > 3:
+                role = after_hiring
+
     role = re.sub(r'^[▪️👉•\-:\s]+', '', role).strip()
+    role = re.sub(r'[^\w\s.,&/\(\)\-]', '', role).strip()
+    if not role or len(role) < 2:
+        role = "Software Developer / Fresher Engineer"
 
-    # 3. Location & Tamil Nadu Verification
-    loc_m = re.search(r'(?:Location|Job Location|Place)\s*[:\-]\s*([A-Za-z0-9\s.,&/\(\)\-]+)', message_text, re.I)
-    raw_loc = loc_m.group(1).split('\n')[0].strip() if loc_m else ""
-    is_valid_loc, tier, loc_tag, is_tn = classify_location(raw_loc, message_text)
+    # 3. EXTRACT LOCATION
+    raw_loc = ""
+    loc_m = re.search(r'(?:📍\s*Location|Location|Job\s*Location|Work\s*Location|Place)\s*[:\-]\s*([^\n🏢💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
+    if loc_m:
+        raw_loc = loc_m.group(1).strip()
+    is_valid_loc, tier, loc_tag, is_tn = classify_location(raw_loc, text_clean)
 
-    # 4. Batch / Eligibility
-    batch_m = re.search(r'(?:Batch|Eligibility|Qualification|Passout|Year of Passing)\s*[:\-]\s*([A-Za-z0-9\s.,&/\(\)\-]+)', message_text, re.I)
-    batch = batch_m.group(1).split('\n')[0].strip() if batch_m else "2024 / 2025 / 2026 Batch | Freshers"
+    # 4. EXTRACT BATCH / ELIGIBILITY
+    batch = ""
+    batch_m = re.search(r'(?:🎓\s*Batch|Batch|Eligibility|Passout|Year\s*of\s*Passing|Qualification|Experience|Exp)\s*[:\-]\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
+    if batch_m:
+        batch = batch_m.group(1).strip()
+    if not batch:
+        batch = "2024 / 2025 / 2026 Batch | Freshers"
 
-    # 5. Salary / CTC
-    sal_m = re.search(r'(?:Salary|CTC|Package|Pay|Stipend)\s*[:\-]\s*([A-Za-z0-9\s.,&/\(\)₹$LPAkpm\-]+)', message_text, re.I)
-    salary = sal_m.group(1).split('\n')[0].strip() if sal_m else "As per Industry Standard"
+    # 5. EXTRACT SALARY / CTC
+    salary = ""
+    sal_m = re.search(r'(?:💰\s*(?:Expected\s*CTC|CTC)|Expected\s*CTC|CTC|Salary|Package|Pay|Stipend)\s*[:\-]\s*([^\n🏢📍💼🛠️📝👉🔗|]+)', text_clean, re.I)
+    if sal_m:
+        salary = sal_m.group(1).strip()
+    if not salary:
+        salary = "As per Industry Standard"
+
+    # 6. EXTRACT WORK STATUS / JOB TYPE
+    work_mode = ""
+    wm_m = re.search(r'(?:🛠️\s*Work\s*Status|Work\s*Status|💼\s*Job\s*Type|Job\s*Type|Work\s*Mode)\s*[:\-]\s*([^\n🏢📍💰📝👉🔗|]+)', text_clean, re.I)
+    if wm_m:
+        work_mode = wm_m.group(1).strip()
+        work_mode = re.sub(r'🛠️\s*Work\s*Status\s*:\s*', '| ', work_mode).strip()
+
+    # 7. EXTRACT JOB DESCRIPTION / SUMMARY
+    desc_summary = ""
+    desc_m = re.search(r'(?:📝\s*Job\s*Description|Job\s*Description|Description|Responsibilities|About\s*Role)\s*[:\-]\s*([^\n👉🔗]+)', text_clean, re.I)
+    if desc_m:
+        desc_summary = desc_m.group(1).strip()[:200]
+        if len(desc_m.group(1).strip()) > 200:
+            desc_summary += "..."
 
     return {
-        "company": company[:40],
-        "role": role[:60],
+        "company": company[:50],
+        "role": role[:65],
         "location": loc_tag if loc_tag else "India (PAN India) 🇮🇳",
         "raw_location": raw_loc,
         "batch": batch[:50],
         "salary": salary[:40],
+        "work_mode": work_mode[:40] if work_mode else "Full-time / Fresher",
+        "description_summary": desc_summary,
         "direct_url": final_url,
         "is_tamil_nadu": is_tn,
         "priority_tier": tier,
@@ -3044,24 +3123,17 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
         message_text = msg.get_text(separator=" ")
 
         # --- IMPROVED LINK EXTRACTION ---
-        # Method 1: Extract hrefs from actual <a> tags in the HTML (most reliable)
-        _skip_link_domains = [
-            "t.me", "telegram.org", "whatsapp.com", "wa.me",
-            "youtube.com", "youtu.be", "instagram.com", "facebook.com",
-            "twitter.com", "x.com", "pinterest.com", "linktr.ee",
-            "github.com", "aratt.ai",
-        ]
+        # Extract hrefs from <a> tags and raw text
         urls_found = []
         for a_tag in msg.find_all("a", href=True):
             href = a_tag["href"].strip()
-            if href.startswith("http") and not any(d in href.lower() for d in _skip_link_domains):
+            if href.startswith("http") and not is_social_or_promo_link(href):
                 urls_found.append(href)
 
-        # Method 2: Regex fallback on raw text
         regex_urls = re.findall(r'(https?://[^\s<>"]+)', message_text)
         for u in regex_urls:
             u = u.rstrip(").,!*'\"")
-            if u not in urls_found and not any(d in u.lower() for d in _skip_link_domains):
+            if u not in urls_found and not is_social_or_promo_link(u):
                 urls_found.append(u)
 
         if not urls_found:
@@ -3080,10 +3152,14 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                 continue
             _seen_this_cycle.add(job_link)
 
-            print(f"[Scraper] @{channel_name} -> New link: {job_link}")
+            print(f"[Scraper] @{channel_name} -> Candidate link: {job_link}")
 
             # Resolve redirects & unwrap direct ATS/career links
             final_url = bypass_blog_redirect(job_link)
+            if is_social_or_promo_link(final_url):
+                print(f"[Scraper] Resolved link is a promo/social URL ({final_url}) — skipping.")
+                continue
+
             print(f"[Scraper] Resolved Direct Link: {final_url}")
 
             # Structured Details Extraction & India / Tamil Nadu check
@@ -3114,31 +3190,29 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                 log_job(final_url, message_text, False, f"AI Rejected: {job_summary[:80]}")
                 continue
 
-            # ✅ Job matched — send rich structured direct apply alert to Telegram
+            # ✅ Job matched — send ultra-detailed executive card to Telegram
             if bot and active_chat_id:
                 try:
                     channel_post_url = f"https://t.me/s/{channel_name}"
-                    post_preview = message_text[:400].strip()
-                    if len(message_text) > 400:
-                        post_preview += "..."
-
-                    tn_header = "🌟 *[TAMIL NADU PRIORITY OPPORTUNITY]*\n━━━━━━━━━━━━━━━━━━━━━━━━\n" if details["is_tamil_nadu"] else ""
+                    
+                    tn_header = "🌟 *[TAMIL NADU PRIORITY OPPORTUNITY]*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if details["is_tamil_nadu"] else ""
+                    work_info = f"🛠️ *Work Mode / Type:* `{details['work_mode']}`\n" if details.get('work_mode') else ""
+                    desc_info = f"📋 *Job Highlights & Responsibilities:*\n_{details['description_summary']}_\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if details.get('description_summary') else ""
 
                     notification = (
-                        f"🎯 *New Job Opportunity Detected!*\n"
-                        f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"🎯 *New Verified Job Opening Detected!*\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
                         f"{tn_header}"
                         f"🏢 *Company:* `{details['company']}`\n"
-                        f"💼 *Role:* *{details['role']}*\n"
-                        f"📍 *Location:* `{details['location']}`\n"
-                        f"🎓 *Batch / Exp:* `{details['batch']}`\n"
-                        f"💰 *Salary:* `{details['salary']}`\n"
-                        f"📡 *Source:* [@{channel_name}]({channel_post_url})\n\n"
-                        f"🔗 *Direct Apply Link:* [Apply Directly Here]({final_url})\n"
-                        f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                        f"📝 *Channel Job Details:*\n"
-                        f"_{post_preview}_\n\n"
-                        f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"💼 *Role / Position:* *{details['role']}*\n"
+                        f"📍 *Job Location:* `{details['location']}`\n"
+                        f"🎓 *Batch / Eligibility:* `{details['batch']}`\n"
+                        f"💰 *Salary / CTC:* `{details['salary']}`\n"
+                        f"{work_info}"
+                        f"📡 *Source Channel:* [@{channel_name}]({channel_post_url})\n\n"
+                        f"🔗 *Verified Direct Apply:* [Apply Directly on Official Portal]({final_url})\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"{desc_info}"
                         f"👉 *Tap the button below to apply directly on the official portal!*"
                     )
                     markup = InlineKeyboardMarkup()
