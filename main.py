@@ -186,7 +186,7 @@ if TELEGRAM_TOKEN:
     bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=True, num_threads=30)
     try:
         from telebot.types import BotCommand, MenuButtonWebApp, WebAppInfo
-        miniapp_url = os.getenv("MINI_APP_URL", "https://gokuuc-myjob-bot.hf.space/miniapp")
+        miniapp_url = os.getenv("MINI_APP_URL", "https://manojprofessional007-myjob-bot.hf.space/miniapp")
         commands = [
             BotCommand("app", "🚀 Launch Visual Job Radar Mini-App"),
             BotCommand("jobs", "📱 Browse Latest Verified Jobs"),
@@ -3566,7 +3566,7 @@ def job_monitor_loop():
                     
                     markup.row(
                         InlineKeyboardButton("📋 Notion CRM", url=notion_link),
-                        InlineKeyboardButton("📱 Dashboard", url="https://gokuuc-myjob-bot.hf.space")
+                        InlineKeyboardButton("📱 Dashboard", url="https://manojprofessional007-myjob-bot.hf.space")
                     )
                     
                     bot.send_message(active_chat_id_local, briefing, parse_mode=None, reply_markup=markup)
@@ -3610,7 +3610,7 @@ def job_monitor_loop():
                     )
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("📋 Open Notion CRM", url=notion_link))
-                    markup.add(InlineKeyboardButton("📱 Open Dashboard", url="https://gokuuc-myjob-bot.hf.space"))
+                    markup.add(InlineKeyboardButton("📱 Open Dashboard", url="https://manojprofessional007-myjob-bot.hf.space"))
                     bot.send_message(active_chat_id_local, digest, parse_mode=None, reply_markup=markup)
                     
                     last_notion_digest_date = now.date()
@@ -4403,7 +4403,7 @@ if bot:
     def send_miniapp_button(message):
         save_chat_id(message.chat.id)
         from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-        miniapp_url = os.getenv("MINI_APP_URL", "https://gokuuc-myjob-bot.hf.space/miniapp")
+        miniapp_url = os.getenv("MINI_APP_URL", "https://manojprofessional007-myjob-bot.hf.space/miniapp")
         
         markup = InlineKeyboardMarkup()
         markup.row(
@@ -4426,7 +4426,7 @@ if bot:
     def send_welcome(message):
         save_chat_id(message.chat.id)
         from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-        miniapp_url = os.getenv("MINI_APP_URL", "https://gokuuc-myjob-bot.hf.space/miniapp")
+        miniapp_url = os.getenv("MINI_APP_URL", "https://manojprofessional007-myjob-bot.hf.space/miniapp")
         
         markup = InlineKeyboardMarkup()
         markup.row(
