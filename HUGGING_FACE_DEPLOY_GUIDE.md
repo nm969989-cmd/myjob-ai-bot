@@ -26,8 +26,8 @@ Make sure the following secrets are configured inside your Hugging Face Space:
 
 | Secret Name | Value | Description |
 | :--- | :--- | :--- |
-| `TELEGRAM_TOKEN` | `8697043742:AAHU...` | Bot token from @BotFather |
-| `TELEGRAM_CHAT_ID` | `7607565831` | Your personal Telegram chat ID |
+| `TELEGRAM_TOKEN` | `<YOUR_NEW_BOT_TOKEN>` | Bot token from @BotFather |
+| `TELEGRAM_CHAT_ID` | `<YOUR_TELEGRAM_CHAT_ID>` | Your personal Telegram chat ID |
 | `GEMINI_API_KEY` | `AIzaSy...` | Google Gemini API Key |
 | `TARGET_CHANNEL` | `JobSkull` | Primary Telegram job channel |
 | `GROQ_API_KEY` | `gsk_...` | (Optional) Groq fallback API key |

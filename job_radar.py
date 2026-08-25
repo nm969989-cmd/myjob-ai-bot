@@ -917,24 +917,26 @@ def send_radar_telegram(new_jobs):
     try:
         import telebot
         
-        _raw_token = os.getenv("TELEGRAM_TOKEN", "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4")
+        _raw_token = os.getenv("TELEGRAM_TOKEN", os.getenv("TELEGRAM_BOT_TOKEN", ""))
         bot_token = str(_raw_token).strip().strip('"').strip("'")
         if bot_token.lower().startswith("bot"):
             bot_token = bot_token[3:]
         if not bot_token:
-            bot_token = "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4"
+            print("[Radar Telegram] ⚠️ TELEGRAM_TOKEN missing. Skipping Telegram notification.")
+            return
 
-        _raw_chat = os.getenv("TELEGRAM_CHAT_ID", "7607565831")
+        _raw_chat = os.getenv("TELEGRAM_CHAT_ID", "")
         chat_id = str(_raw_chat).strip().strip('"').strip("'")
         if not chat_id and os.path.exists("chat_id.json"):
             try:
                 with open("chat_id.json", "r") as f:
                     data = json.load(f)
-                    chat_id = str(data.get("chat_id", "7607565831")).strip()
+                    chat_id = str(data.get("chat_id", "")).strip()
             except Exception:
                 pass
         if not chat_id:
-            chat_id = "7607565831"
+            print("[Radar Telegram] ⚠️ TELEGRAM_CHAT_ID missing. Skipping Telegram notification.")
+            return
 
         radar_bot = telebot.TeleBot(bot_token, parse_mode=None)
 

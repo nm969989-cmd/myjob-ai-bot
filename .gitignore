@@ -1,40 +1,60 @@
-# Secrets - never push these
+# Secrets & Credentials — NEVER commit these
 .env
+.env.*
+!.env.example
 chat_id.json
+vault.json
+instahyre_auth.json
+chrome_profile/
+chrome_profile_session/
+
+# Personal Profile & Application Logs
+profile.json
+applied_jobs.json
+applied_jobs_log.csv
+qa_memory.json
+checkpoints.json
+radar_results.json
+radar_seen_jobs.txt
+stats_daily.json
+weekly_stats.json
+channel_status.json
+last_job.json
+form_hash_cache.json
+retry_queue.json
+
+# Local scripts & runners
 DEPLOY.bat
 START_BOT.bat
 START_BACKGROUND.vbs
 STOP_BOT.bat
 deploy_helper.js
 
-# Python cache
+# Python cache & logs
 __pycache__/
 *.pyc
 *.pyo
-
-# Logs & debug
 debug.log
 *.log
 
-# Seen jobs memory (regenerated)
-radar_seen_jobs.txt
-
-# Test/scratch files
-test_*.py
-scratch_*.py
+# Media & screenshots
 *.png
 *.pdf
 !resume.pdf
 step_*.png
 resume_*.png
 after_submit.png
-test_after.png
-test_before.png
-test_final.png
+test_*.png
 error_screenshot.png
 temp_js.js
+videos/
 
-# Upgrade scripts (not needed in cloud)
+# Temporary fix / scratch / helper scripts
+test_*.py
+scratch_*.py
+fix_*.py
+safe_fix.py
+hardcode_secrets.py
 upgrade_*.py
 patch.py
 fix.py
@@ -43,7 +63,5 @@ extract.py
 save_session.py
 save_instahyre_session.py
 generate_sample_pdfs.py
-
-# Local chrome/browser profiles and configurations
-chrome_profile/
-chrome_profile_session/
+remove_inputs.py
+check_instahyre.py

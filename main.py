@@ -59,15 +59,15 @@ sys.stderr = sys.stdout
 print("--- NEW SERVER BOOT ---")
 
 # --- 1. CONFIGURATION & ENVIRONMENT VARIABLES ---
-_raw_token = os.getenv("TELEGRAM_TOKEN", "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4")
+_raw_token = os.getenv("TELEGRAM_TOKEN", os.getenv("TELEGRAM_BOT_TOKEN", ""))
 TELEGRAM_TOKEN = str(_raw_token).strip().strip('"').strip("'")
 if TELEGRAM_TOKEN.lower().startswith("bot"):
     TELEGRAM_TOKEN = TELEGRAM_TOKEN[3:]
 if not TELEGRAM_TOKEN:
-    TELEGRAM_TOKEN = "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4"
+    print("⚠️ [Security Warning] TELEGRAM_TOKEN is not set in environment or .env file!")
 
-_raw_chat = os.getenv("TELEGRAM_CHAT_ID", "7607565831")
-TELEGRAM_CHAT_ID = str(_raw_chat).strip().strip('"').strip("'") or "7607565831"
+_raw_chat = os.getenv("TELEGRAM_CHAT_ID", "")
+TELEGRAM_CHAT_ID = str(_raw_chat).strip().strip('"').strip("'")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 TARGET_CHANNEL = os.getenv("TARGET_CHANNEL", "JobSkull")  # Primary channel (kept for backward compat)
 # All channels to monitor (from env as comma-separated list, or use defaults)
@@ -164,13 +164,100 @@ def load_chat_id():
     if TELEGRAM_CHAT_ID:
         return TELEGRAM_CHAT_ID
     data = safe_load_json(CHAT_ID_FILE, {})
-    return data.get("chat_id", "7607565831")
+    return data.get("chat_id", "")
+
+def get_authorized_chat_ids():
+    """Returns all authorized admin Telegram IDs (from env, saved file, and memory)."""
+    ids = set()
+    raw_env_chat = str(os.getenv("TELEGRAM_CHAT_ID", "")).strip().strip('"').strip("'")
+    if raw_env_chat:
+        for cid in raw_env_chat.split(","):
+            if cid.strip():
+                ids.add(str(cid.strip()))
+    saved_data = safe_load_json(CHAT_ID_FILE, {})
+    saved_cid = str(saved_data.get("chat_id", "")).strip()
+    if saved_cid:
+        ids.add(saved_cid)
+    if TELEGRAM_CHAT_ID:
+        ids.add(str(TELEGRAM_CHAT_ID))
+    return ids
+
+def is_authorized(user_or_chat_id):
+    """Verifies whether the given Telegram User ID or Chat ID is an authorized admin."""
+    if not user_or_chat_id:
+        return False
+    allowed = get_authorized_chat_ids()
+    if not allowed:
+        # First-time initial setup: allow the owner to connect and lock the chat ID
+        return True
+    return str(user_or_chat_id) in allowed
 
 def save_chat_id(chat_id):
+    """Safely updates chat ID only if authorized or initializing for the first time."""
     global TELEGRAM_CHAT_ID
-    TELEGRAM_CHAT_ID = str(chat_id)
+    if not chat_id:
+        return
+    s_chat_id = str(chat_id).strip()
+    if not is_authorized(s_chat_id) and get_authorized_chat_ids():
+        print(f"[Security Warning] Blocked attempt to overwrite Chat ID from unauthorized sender: {s_chat_id}")
+        return
+    TELEGRAM_CHAT_ID = s_chat_id
     safe_save_json(CHAT_ID_FILE, {"chat_id": TELEGRAM_CHAT_ID})
-    print(f"[Auth] Saved Telegram chat ID dynamically: {TELEGRAM_CHAT_ID}")
+    print(f"[Auth] Verified Telegram chat ID locked: {TELEGRAM_CHAT_ID}")
+
+def admin_only(handler_func):
+    """Security Decorator: Rejects any command or callback from unauthorized Telegram users."""
+    def wrapper(event, *args, **kwargs):
+        user_id = None
+        chat_id = None
+        is_callback = False
+
+        if hasattr(event, 'from_user') and event.from_user:
+            user_id = str(event.from_user.id)
+        if hasattr(event, 'chat') and event.chat:
+            chat_id = str(event.chat.id)
+        elif hasattr(event, 'message') and event.message and hasattr(event.message, 'chat') and event.message.chat:
+            chat_id = str(event.message.chat.id)
+            is_callback = True
+
+        if not is_authorized(user_id) and not is_authorized(chat_id):
+            print(f"[Security Guard] ⛔ Blocked unauthorized access attempt from User ID: {user_id}, Chat ID: {chat_id}")
+            if is_callback and bot:
+                try:
+                    bot.answer_callback_query(event.id, "⛔ Access Denied: Private Admin Bot.", show_alert=True)
+                except Exception:
+                    pass
+            elif bot and chat_id:
+                try:
+                    bot.reply_to(event, "⛔ <b>Access Denied</b>\n\nThis is a private single-user AI job bot. You are not authorized to use this bot.", parse_mode="HTML")
+                except Exception:
+                    pass
+            return
+        return handler_func(event, *args, **kwargs)
+    return wrapper
+
+def enforce_bot_security_profile(tg_bot):
+    """Enforces verified bot metadata (description, short description, name, commands) on Telegram."""
+    try:
+        tg_bot.set_my_name("Myjob")
+        tg_bot.set_my_description("🚀 MyJob AI Radar — Automated pan-India fresher & engineering job intelligence bot.")
+        tg_bot.set_my_short_description("Automated Job Radar & Application Assistant")
+        from telebot.types import BotCommand, MenuButtonDefault
+        commands = [
+            BotCommand("start", "⚡ Restart Bot & Activate Alerts"),
+            BotCommand("help", "📖 View All Bot Commands & Guide"),
+            BotCommand("status", "🩺 Bot Engine & Channels Health"),
+            BotCommand("pause", "🛑 Pause Scanning Channels"),
+            BotCommand("resume", "🟢 Resume Scanning Channels"),
+            BotCommand("notion", "📋 Open Notion CRM Tracker"),
+            BotCommand("history", "🕒 View Recent Applied/Matched Jobs"),
+            BotCommand("download", "📥 Export Jobs CSV Log")
+        ]
+        tg_bot.set_my_commands(commands)
+        tg_bot.set_chat_menu_button(menu_button=MenuButtonDefault(type="default"))
+        print("[Telegram Security] Bot profile & description verified and locked!")
+    except Exception as e:
+        print(f"[Telegram Security] Profile setup warning: {e}")
 
 # Initialize APIs
 if TELEGRAM_TOKEN:
@@ -184,23 +271,7 @@ if TELEGRAM_TOKEN:
     apihelper.MAX_RETRIES = 5
     apihelper.RETRY_TIMEOUT = 2
     bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=True, num_threads=30)
-    try:
-        from telebot.types import BotCommand, MenuButtonDefault
-        commands = [
-            BotCommand("start", "⚡ Restart Bot & Activate Alerts"),
-            BotCommand("help", "📖 View All Bot Commands & Guide"),
-            BotCommand("status", "🩺 Bot Engine & Channels Health"),
-            BotCommand("pause", "🛑 Pause Scanning Channels"),
-            BotCommand("resume", "🟢 Resume Scanning Channels"),
-            BotCommand("notion", "📋 Open Notion CRM Tracker"),
-            BotCommand("history", "🕒 View Recent Applied/Matched Jobs"),
-            BotCommand("download", "📥 Export Jobs CSV Log")
-        ]
-        bot.set_my_commands(commands)
-        bot.set_chat_menu_button(menu_button=MenuButtonDefault(type="default"))
-        print("[Telegram] Registered standard bot commands and reset Menu Button to default!")
-    except Exception as e:
-        print(f"[Telegram] Menu setup warning: {e}")
+    enforce_bot_security_profile(bot)
 else:
     bot = None
 # Handle multiple Gemini API keys
@@ -4444,6 +4515,7 @@ def manual_radar_scan(chat_id):
 
 if bot:
     @bot.message_handler(commands=['dashboard', 'menu'])
+    @admin_only
     def send_dashboard(message):
         """Renders the epic interactive control panel inside Telegram."""
         save_chat_id(message.chat.id)
@@ -4480,6 +4552,7 @@ if bot:
             parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['start'])
+    @admin_only
     def send_welcome(message):
         save_chat_id(message.chat.id)
         bot.reply_to(
@@ -4493,6 +4566,7 @@ if bot:
         )
 
     @bot.message_handler(commands=['help'])
+    @admin_only
     def send_help(message):
         save_chat_id(message.chat.id)
         help_text = """
@@ -4526,6 +4600,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, help_text, parse_mode=None)
 
     @bot.message_handler(commands=['instahyre'])
+    @admin_only
     def trigger_instahyre(message):
         save_chat_id(message.chat.id)
         text = message.text.replace("/instahyre", "", 1).strip()
@@ -4549,6 +4624,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         Thread(target=run_engine, daemon=True).start()
 
     @bot.message_handler(commands=['notion'])
+    @admin_only
     def show_notion(message):
         save_chat_id(message.chat.id)
         raw_db_id = os.getenv('NOTION_DATABASE_ID', '')
@@ -4578,6 +4654,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, msg, parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['status'])
+    @admin_only
     def send_status(message):
         save_chat_id(message.chat.id)
         applied = load_applied_jobs()
@@ -4610,12 +4687,14 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, status_text, parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['profile'])
+    @admin_only
     def send_profile(message):
         save_chat_id(message.chat.id)
         profile = load_profile()
         bot.reply_to(message, f"📋 Profile details loaded:\n\n{json.dumps(profile, indent=2)}")
 
     @bot.message_handler(commands=['history'])
+    @admin_only
     def send_history(message):
         save_chat_id(message.chat.id)
         csv_file = "applied_jobs_log.csv"
@@ -4644,6 +4723,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             bot.reply_to(message, f"⚠️ Error reading log: {e}")
 
     @bot.message_handler(commands=['download'])
+    @admin_only
     def send_download(message):
         save_chat_id(message.chat.id)
         csv_file = "applied_jobs_log.csv"
@@ -4657,6 +4737,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             bot.reply_to(message, f"⚠️ Error sending file: {e}")
 
     @bot.message_handler(commands=['pause'])
+    @admin_only
     def pause_bot(message):
         save_chat_id(message.chat.id)
         global BOT_PAUSED
@@ -4666,6 +4747,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, "⏸️ *Bot Paused!*\n\nAuto job scanning is stopped.\nTap the button below to resume.", parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['resume'])
+    @admin_only
     def resume_bot(message):
         save_chat_id(message.chat.id)
         global BOT_PAUSED
@@ -4675,6 +4757,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, "▶️ *Bot Resumed!*\n\nAuto job scanning is now active! The bot will find and apply to jobs automatically.", parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['watch', 'ghost'])
+    @admin_only
     def toggle_ghost_mode(message):
         chat_id = message.chat.id
         save_chat_id(chat_id)
@@ -4686,6 +4769,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             bot.reply_to(message, "👻 *Ghost Mode ENABLED!*\n\nYou will now receive live visual updates while the bot fills out applications in real-time.", parse_mode=None)
 
     @bot.message_handler(commands=['scan_inbox', 'sync'])
+    @admin_only
     def command_scan_inbox(message):
         bot.reply_to(message, "📧 *Scanning Inbox for CRM Updates...*\nThis might take a few seconds.", parse_mode=None)
         import threading
@@ -4706,6 +4790,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         threading.Thread(target=_bg_scan).start()
 
     @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost"])
+    @admin_only
     def handle_button(call):
         global BOT_PAUSED
         chat_id = call.message.chat.id
@@ -4883,6 +4968,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             bot.send_message(chat_id, help_text, parse_mode=None)
 
     @bot.message_handler(commands=['setprofile'])
+    @admin_only
     def set_profile_field(message):
         save_chat_id(message.chat.id)
         # Format: /setprofile field | value
@@ -4908,6 +4994,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             bot.reply_to(message, f"⚠️ Error saving profile: {e}")
 
     @bot.message_handler(commands=['clearqa'])
+    @admin_only
     def clear_qa(message):
         save_chat_id(message.chat.id)
         text = message.text.replace("/clearqa", "", 1).strip()
@@ -4941,6 +5028,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
 
     # --- Inline button callback handler ---
     @bot.callback_query_handler(func=lambda call: call.data.startswith("qa_answer:"))
+    @admin_only
     def handle_qa_button(call):
         num = call.data.split(":", 1)[1]
         pending = load_pending_qa()
@@ -4968,6 +5056,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, f"✅ *Saved!*\n\n❓ {question}\n💬 *{answer}*\n\n_I'll use this automatically in all future applications!_", parse_mode=None)
 
     @bot.message_handler(commands=['answer'])
+    @admin_only
     def save_answer(message):
         save_chat_id(message.chat.id)
         text = message.text.replace("/answer", "", 1).strip()
@@ -5000,6 +5089,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, f"✅ *Saved!*\n\n❓ {question}\n💬 *{answer}*\n\n_I will use this answer automatically from now on!_", parse_mode=None)
 
     @bot.message_handler(commands=['qa'])
+    @admin_only
     def show_qa_memory(message):
         save_chat_id(message.chat.id)
         qa_memory = load_qa_memory()
@@ -5013,6 +5103,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, msg, parse_mode=None)
 
     @bot.message_handler(commands=['apply'])
+    @admin_only
     def manual_apply(message):
         save_chat_id(message.chat.id)
         
@@ -5057,6 +5148,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         Thread(target=run).start()
 
     @bot.message_handler(commands=['channels'])
+    @admin_only
     def show_channels(message):
         save_chat_id(message.chat.id)
         ch_status = load_channel_status()
@@ -5071,6 +5163,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, msg, parse_mode=None)
 
     @bot.message_handler(commands=['lastjob'])
+    @admin_only
     def show_last_job(message):
         save_chat_id(message.chat.id)
         job = load_last_job()
@@ -5088,10 +5181,12 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         bot.reply_to(message, msg, parse_mode=None, disable_web_page_preview=True)
 
     @bot.message_handler(commands=['ping'])
+    @admin_only
     def ping_test(message):
         bot.reply_to(message, "🏓 Pong! The cloud bot is alive and listening!")
 
     @bot.message_handler(commands=['radar', 'jobs'])
+    @admin_only
     def show_radar(message):
         save_chat_id(message.chat.id)
         bot.reply_to(message, "⏳ Loading latest Job Radar results...", parse_mode=None)
@@ -5199,6 +5294,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             bot.reply_to(message, f"❌ Error loading radar results: {e}")
 
     @bot.message_handler(regexp=r"^/apply_([a-zA-Z0-9]+)$")
+    @admin_only
     def handle_auto_apply(message):
         job_id = message.text.split("_")[1]
         

@@ -35,27 +35,22 @@ import telebot
 from job_radar import run_radar, escape_md
 
 # Load credentials with smart sanitization
-_raw_token = os.getenv("TELEGRAM_TOKEN", "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4")
+_raw_token = os.getenv("TELEGRAM_TOKEN", os.getenv("TELEGRAM_BOT_TOKEN", ""))
 token = str(_raw_token).strip().strip('"').strip("'")
 if token.lower().startswith("bot"):
     token = token[3:]
-if not token:
-    token = "8697043742:AAHU5HAJ0cit6ctZ-GqWZdvOW490K60Cky4"
 
-_raw_chat = os.getenv("TELEGRAM_CHAT_ID", "7607565831")
+_raw_chat = os.getenv("TELEGRAM_CHAT_ID", "")
 chat_id = str(_raw_chat).strip().strip('"').strip("'")
 if not chat_id and os.path.exists("chat_id.json"):
     try:
         with open("chat_id.json", "r") as f:
             data = json.load(f)
-            chat_id = str(data.get("chat_id", "7607565831")).strip()
+            chat_id = str(data.get("chat_id", "")).strip()
     except Exception:
         pass
 
-if not chat_id:
-    chat_id = "7607565831"
-
-bot = telebot.TeleBot(token, parse_mode=None)
+bot = telebot.TeleBot(token, parse_mode=None) if token else None
 
 radar_jobs_count = 0
 channels_scanned = 0
