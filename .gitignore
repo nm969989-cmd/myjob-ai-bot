@@ -12,7 +12,7 @@ chrome_profile_session/
 profile.json
 applied_jobs.json
 applied_jobs_log.csv
-qa_memory.json
+!qa_memory.json
 checkpoints.json
 radar_results.json
 radar_seen_jobs.txt
@@ -75,3 +75,4 @@ check_instahyre.py
 # Graphify local environment
 graphify-out/.graphify_*
 graphify-out/cache/
+graphify-out/20*

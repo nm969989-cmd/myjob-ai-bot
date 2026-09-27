@@ -29,7 +29,15 @@ import sys
 from bot_features import generate_dynamic_cover_letter, generate_interview_prep, send_cold_email_if_found, check_for_interviews, sync_to_notion, wait_for_otp
 from enterprise_adapters import execute_workday_adapter, execute_lever_adapter, execute_greenhouse_adapter
 from instahyre_engine import run_instahyre_mass_apply
-from bot_optimizer import minify_form_html, apply_regex_fallback, apply_rag_memory_fallback
+from bot_optimizer import (
+    minify_form_html,
+    apply_regex_fallback,
+    apply_rag_memory_fallback,
+    extract_job_salary,
+    extract_hr_email,
+    generate_linkedin_outreach_note,
+    record_learned_qa
+)
 
 class LoggerWriter:
     def __init__(self, filename):
@@ -2210,7 +2218,7 @@ def run_playwright_apply(job_url, job_description=""):
                 
                 print("[RAG Memory] Running Local Vector Semantic Search on form labels...")
                 qa_memory = load_qa_memory()
-                rag_filled = apply_rag_memory_fallback(page, qa_memory)
+                rag_filled = apply_rag_memory_fallback(page, qa_memory, profile)
                 
                 prefilled_selectors = {sel for sel, _ in prefilled} | {sel for sel, _ in rag_filled}
 
@@ -2352,6 +2360,10 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                             qa_memory = load_qa_memory()
                             qa_memory[question_label] = hallucinated_answer
                             save_qa_memory(qa_memory)
+                            try:
+                                record_learned_qa(question_label, hallucinated_answer)
+                            except Exception:
+                                pass
                             # Track this Q&A for the Telegram report
                             qa_report.append(f"🤖 *AI Answer*\n❓ {question_label}\n💬 {hallucinated_answer}")
                             
@@ -3360,11 +3372,19 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
     if batch_m:
         batch = batch_m.group(1).strip()
 
-    # 5. EXTRACT SALARY / CTC
-    salary = ""
-    sal_m = re.search(r'(?:(?:💰\s*)?(?:Expected\s*CTC|CTC)|Expected\s*CTC|CTC|Salary|Package|Pay|Stipend)\s*[:\-]\s*([^\n🏢📍💼🛠️📝👉🔗|]+)', text_clean, re.I)
-    if sal_m:
-        salary = sal_m.group(1).strip()
+    # 5. EXTRACT SALARY / CTC (High-Precision Indian Packages: LPA, CTC, Stipend)
+    salary = extract_job_salary(text_clean)
+    if not salary and page_meta.get("page_text"):
+        salary = extract_job_salary(page_meta["page_text"])
+    if not salary:
+        sal_m = re.search(r'(?:(?:💰\s*)?(?:Expected\s*CTC|CTC)|Expected\s*CTC|CTC|Salary|Package|Pay|Stipend)\s*[:\-]\s*([^\n🏢📍💼🛠️📝👉🔗|]+)', text_clean, re.I)
+        if sal_m:
+            salary = sal_m.group(1).strip()
+
+    # 5b. EXTRACT HR / RECRUITER EMAIL (Tier 2 Outreach Automation)
+    hr_email = extract_hr_email(text_clean)
+    if not hr_email and page_meta.get("page_text"):
+        hr_email = extract_hr_email(page_meta["page_text"])
 
     # 6. EXTRACT WORK STATUS / JOB TYPE
     work_mode = ""
@@ -3432,6 +3452,8 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
                 batch = str(ai_data["batch"]).strip()
             if not salary and ai_data.get("salary") and "null" not in str(ai_data["salary"]).lower():
                 salary = str(ai_data["salary"]).strip()
+            if not hr_email and ai_data.get("hr_email") and "null" not in str(ai_data["hr_email"]).lower():
+                hr_email = str(ai_data["hr_email"]).strip()
             if not work_mode and ai_data.get("work_mode") and "null" not in str(ai_data["work_mode"]).lower():
                 work_mode = str(ai_data["work_mode"]).strip()
             if not desc_summary and ai_data.get("key_highlights") and "null" not in str(ai_data["key_highlights"]).lower():
@@ -3467,6 +3489,7 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
         "raw_location": raw_loc,
         "batch": batch[:50],
         "salary": salary[:40],
+        "hr_email": hr_email[:80] if hr_email else "",
         "work_mode": work_mode[:40] if work_mode else "Full-time / Fresher",
         "description_summary": desc_summary,
         "direct_url": final_url,
@@ -3636,6 +3659,21 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                             f"<i>{html.escape(str(details['description_summary']))}</i>\n\n"
                         )
 
+                    hr_email_val = str(details.get("hr_email", "")).strip()
+                    hr_email_section = ""
+                    if hr_email_val:
+                        hr_email_section = f"📧 <b>HR Recruiter Email:</b>\n   <code>{html.escape(hr_email_val)}</code>\n\n"
+
+                    # Tier 2: AI Outreach Drafter (LinkedIn connection note)
+                    linkedin_note = generate_linkedin_outreach_note(details.get("company", ""), details.get("role", ""), profile)
+                    linkedin_section = ""
+                    if linkedin_note:
+                        linkedin_section = (
+                            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                            "💬 <b>1-Tap LinkedIn Outreach Note (Copy & Send):</b>\n"
+                            f"<pre><code>{html.escape(linkedin_note)}</code></pre>\n\n"
+                        )
+
                     notification = (
                         "🎯 <b>NEW VERIFIED JOB ALERT</b>\n"
                         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -3652,9 +3690,11 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         f"   <code>{html.escape(str(details['batch']))}</code>\n\n"
                         f"💰 <b>Salary / Expected CTC:</b>\n"
                         f"   <code>{html.escape(str(details['salary']))}</code>\n\n"
+                        f"{hr_email_section}"
                         f"📡 <b>Channel Source:</b>\n"
                         f"   <a href=\"{html.escape(str(channel_post_url))}\">@{html.escape(str(channel_name))}</a>\n\n"
                         f"{desc_section}"
+                        f"{linkedin_section}"
                         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
                         f"🚀 <b>Direct Application:</b>\n"
                         f"<a href=\"{html.escape(str(final_url))}\">👉 Click here to Apply on Official Portal 👈</a>\n\n"
@@ -3665,6 +3705,16 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         InlineKeyboardButton("🚀 Direct Apply (Official)", url=final_url),
                         InlineKeyboardButton("📢 View Channel Post", url=channel_post_url)
                     )
+                    if hr_email_val and "@" in hr_email_val:
+                        candidate_name = profile.get("name", "Applicant")
+                        job_role = details.get("role", "Engineering Role")
+                        company_name = details.get("company", "Company")
+                        mail_subject = urllib.parse.quote(f"Application for {job_role} - {candidate_name}")
+                        mail_body = urllib.parse.quote(f"Dear Hiring Team,\n\nI am writing to express my strong interest in the {job_role} opening at {company_name}. Please find my resume attached.\n\nBest regards,\n{candidate_name}")
+                        gmail_compose_url = f"https://mail.google.com/mail/?view=cm&fs=1&to={urllib.parse.quote(hr_email_val)}&su={mail_subject}&body={mail_body}"
+                        markup.row(
+                            InlineKeyboardButton("📧 Email Recruiter (Gmail)", url=gmail_compose_url)
+                        )
                     share_text = urllib.parse.quote(f"🚀 Job Alert: {details['company']} - {details['role']}\nApply Link: {final_url}")
                     share_url = f"https://t.me/share/url?url={urllib.parse.quote(final_url)}&text={share_text}"
                     markup.row(

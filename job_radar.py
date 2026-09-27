@@ -17,6 +17,8 @@ from datetime import datetime
 import requests
 from dotenv import load_dotenv
 
+from bot_optimizer import extract_job_salary, extract_hr_email
+
 if sys.platform == "win32":
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -315,9 +317,22 @@ def classify_location(location_str, context_text=""):
     # Otherwise, reject unknown or foreign location
     return False, 99, "", False
 
-def _make_job(title, company, link, location, source, date_posted="", description="", priority_tier=2, is_tn=False, direct_link=""):
+def _make_job(title, company, link, location, source, date_posted="", description="", priority_tier=2, is_tn=False, direct_link="", salary="", hr_email=""):
     if not date_posted:
         date_posted = datetime.now().strftime("%Y-%m-%d")
+
+    # Smart auto-extraction if not explicitly provided
+    if not salary and description:
+        try:
+            salary = extract_job_salary(description)
+        except Exception:
+            pass
+    if not hr_email and description:
+        try:
+            hr_email = extract_hr_email(description)
+        except Exception:
+            pass
+
     return {
         "title":          title.strip(),
         "company":        company.strip(),
@@ -329,6 +344,8 @@ def _make_job(title, company, link, location, source, date_posted="", descriptio
         "description":    description.strip(),
         "priority_tier":  priority_tier,
         "is_tamil_nadu":  is_tn,
+        "salary":         salary.strip() if salary else "",
+        "hr_email":       hr_email.strip() if hr_email else "",
         "found_at":       datetime.now().strftime("%Y-%m-%d %H:%M"),
     }
 
@@ -555,6 +572,9 @@ def _scan_single_channel_radar(ch, max_jobs=2):
             if is_tn:
                 src_name = f"Telegram @{ch_clean} 🌟"
 
+            sal = extract_job_salary(text)
+            hr_em = extract_hr_email(text)
+
             jobs_found.append(_make_job(
                 title=role[:65],
                 company=company[:45],
@@ -564,7 +584,9 @@ def _scan_single_channel_radar(ch, max_jobs=2):
                 description=desc,
                 priority_tier=tier,
                 is_tn=is_tn,
-                direct_link=direct_link
+                direct_link=direct_link,
+                salary=sal,
+                hr_email=hr_em
             ))
             if len(jobs_found) >= max_jobs:
                 break
@@ -1070,6 +1092,9 @@ def send_radar_telegram(new_jobs):
                     except Exception:
                         time_tag = "🟢 Recent"
 
+                sal = html.escape(str(job.get("salary", "")).strip())
+                hr_em = html.escape(str(job.get("hr_email", "")).strip())
+
                 entry = (
                     f"<b>{global_idx}.</b> <a href=\"{link}\"><b>{title}</b></a>\n"
                     f"   🏢 <b>Company:</b> <code>{company}</code>\n"
@@ -1077,6 +1102,10 @@ def send_radar_telegram(new_jobs):
                     f"   📡 <b>Source:</b> <i>{src}</i>\n"
                     f"   🕒 <b>Posted:</b> {time_tag}"
                 )
+                if sal:
+                    entry += f"\n   💰 <b>Package:</b> <code>{sal}</code>"
+                if hr_em:
+                    entry += f"\n   📧 <b>HR Email:</b> <code>{hr_em}</code>"
                 if desc and len(desc) > 15:
                     entry += f"\n   📝 <b>Work Detail:</b> <i>{desc}</i>"
 
