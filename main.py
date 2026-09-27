@@ -43,7 +43,10 @@ from bot_optimizer import (
     generate_market_analytics_report,
     get_national_drives,
     format_national_drives_report,
-    format_single_drive_detail
+    format_single_drive_detail,
+    get_all_drive_deadlines,
+    format_deadlines_radar_report,
+    get_urgent_deadlines_summary
 )
 
 # Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
@@ -5298,8 +5301,11 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                     InlineKeyboardButton("📋 Cognizant GenC", callback_data="drive_info:cognizant_genc")
                 )
                 markup.row(
-                    InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar"),
+                    InlineKeyboardButton("⏳ Mass Drive Deadlines", callback_data="deadlines"),
                     InlineKeyboardButton("📊 Market Analytics", callback_data="analytics")
+                )
+                markup.row(
+                    InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar")
                 )
                 for idx, chunk in enumerate(chunks):
                     is_last = (idx == len(chunks) - 1)
@@ -5311,10 +5317,40 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             except Exception as e:
                 bot.send_message(chat_id, f"⚠️ Drives error: {e}")
 
+        elif call.data.startswith("deadlines"):
+            try:
+                is_urgent = ("urgent" in call.data)
+                chunks = format_deadlines_radar_report(urgent_only=is_urgent)
+                markup = InlineKeyboardMarkup()
+                if is_urgent:
+                    markup.row(
+                        InlineKeyboardButton("📋 View All 18 Deadlines", callback_data="deadlines:all"),
+                        InlineKeyboardButton("📢 All Drives & Syllabus", callback_data="drives")
+                    )
+                else:
+                    markup.row(
+                        InlineKeyboardButton("🚨 Critical Only (≤ 4 Days)", callback_data="deadlines:urgent"),
+                        InlineKeyboardButton("📢 All Drives & Syllabus", callback_data="drives")
+                    )
+                markup.row(
+                    InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar"),
+                    InlineKeyboardButton("📊 Market Analytics", callback_data="analytics")
+                )
+                for idx, chunk in enumerate(chunks):
+                    is_last = (idx == len(chunks) - 1)
+                    try:
+                        bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                    except Exception:
+                        bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                    time.sleep(0.3)
+            except Exception as e:
+                bot.send_message(chat_id, f"⚠️ Deadlines error: {e}")
+
         elif call.data == "help":
             help_text = (
                 "🤖 *Command Reference*\n\n"
                 "📢 /drives — National mass off-campus hiring drives (e.g. /drives 2025)\n"
+                "⏳ /deadlines — Mass drive countdown & expiry radar (e.g. /deadlines urgent)\n"
                 "📊 /analytics — Live market intelligence & stats\n"
                 "📊 /status — Live bot status\n"
                 "⏸️ /pause — Stop auto-scanning\n"
@@ -5418,6 +5454,43 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                 InlineKeyboardButton("📋 Cognizant GenC", callback_data="drive_info:cognizant_genc")
             )
             markup.row(
+                InlineKeyboardButton("⏳ Drive Deadlines Radar", callback_data="deadlines"),
+                InlineKeyboardButton("📊 Market Analytics", callback_data="analytics")
+            )
+            markup.row(
+                InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar")
+            )
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.4)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ National Drives error: {e}")
+
+    @bot.message_handler(commands=['deadlines', 'countdown', 'cutoff'])
+    @admin_only
+    def send_mass_drives_deadlines(message):
+        chat_id = message.chat.id
+        save_chat_id(chat_id)
+        try:
+            cmd_args = message.text.lower().replace("/deadlines", "").replace("/countdown", "").replace("/cutoff", "").strip()
+            is_urgent = any(k in cmd_args for k in ["urgent", "soon", "critical", "close", "week", "7"])
+            chunks = format_deadlines_radar_report(urgent_only=is_urgent)
+            markup = InlineKeyboardMarkup()
+            if is_urgent:
+                markup.row(
+                    InlineKeyboardButton("📋 View All 18 Deadlines", callback_data="deadlines:all"),
+                    InlineKeyboardButton("📢 All Drives & Syllabus", callback_data="drives")
+                )
+            else:
+                markup.row(
+                    InlineKeyboardButton("🚨 Critical Only (≤ 4 Days)", callback_data="deadlines:urgent"),
+                    InlineKeyboardButton("📢 All Drives & Syllabus", callback_data="drives")
+                )
+            markup.row(
                 InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar"),
                 InlineKeyboardButton("📊 Market Analytics", callback_data="analytics")
             )
@@ -5429,7 +5502,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                     bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
                 time.sleep(0.4)
         except Exception as e:
-            bot.send_message(chat_id, f"⚠️ National Drives error: {e}")
+            bot.send_message(chat_id, f"⚠️ Deadlines command error: {e}")
 
     @bot.message_handler(commands=['setprofile'])
     @admin_only

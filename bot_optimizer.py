@@ -1513,6 +1513,256 @@ def format_single_drive_detail(drive_id: str, drives: list = None) -> tuple:
     )
     return card, link
 
+def parse_drive_deadline(drive: dict, ref_date=None) -> dict:
+    """
+    Parses a mass drive's deadline and computes days and hours remaining.
+    Categorizes the drive into an urgency tier:
+    - 'critical' (<= 4 days left) 🚨 🔴
+    - 'closing_soon' (5 to 10 days left) ⏳ 🟡
+    - 'active' (> 10 days left) 🟢
+    - 'rolling' (open all year / ongoing) ⚪
+    - 'past' (date elapsed) ⌛
+    """
+    import datetime
+    
+    if ref_date is None:
+        today = datetime.date.today()
+    elif isinstance(ref_date, str):
+        try:
+            today = datetime.date.fromisoformat(ref_date.strip())
+        except Exception:
+            today = datetime.date.today()
+    else:
+        today = ref_date
+
+    d_str = str(drive.get("deadline", "Open")).strip()
+    d_iso = drive.get("deadline_date")
+    target_date = None
+
+    if d_iso:
+        try:
+            target_date = datetime.date.fromisoformat(str(d_iso).strip())
+        except Exception:
+            pass
+
+    # Fallback: scan deadline string for YYYY-MM-DD
+    if not target_date:
+        import re
+        match = re.search(r'\b(202\d[-/]\d{1,2}[-/]\d{1,2})\b', d_str)
+        if match:
+            clean = match.group(1).replace('/', '-')
+            try:
+                parts = clean.split('-')
+                target_date = datetime.date(int(parts[0]), int(parts[1]), int(parts[2]))
+            except Exception:
+                pass
+
+    is_rolling = "rolling" in d_str.lower() or "all year" in d_str.lower() or "regular" in d_str.lower() or not target_date
+    
+    if is_rolling and not target_date:
+        return {
+            "id": drive.get("id", "drive"),
+            "name": drive.get("name", "Mass Drive"),
+            "company": drive.get("company", "Company"),
+            "package": drive.get("package", "Competitive Industry Standard"),
+            "batches": drive.get("batches", "All Batches"),
+            "link": drive.get("link", ""),
+            "deadline_str": d_str,
+            "deadline_date": None,
+            "days_left": 999,
+            "urgency_tier": "rolling",
+            "urgency_badge": "⚪ ROLLING (Year-Round Application)",
+            "urgency_color": "⚪"
+        }
+
+    days_left = (target_date - today).days
+
+    if days_left < 0:
+        urgency_tier = "past"
+        badge = "⌛ Cycle Concluded / Next Cohort Soon"
+        color = "⚪"
+    elif days_left <= 4:
+        urgency_tier = "critical"
+        badge = f"🚨 CRITICAL: {days_left} Day{'s' if days_left != 1 else ''} Left! Apply Now"
+        color = "🔴"
+    elif days_left <= 10:
+        urgency_tier = "closing_soon"
+        badge = f"⏳ CLOSING SOON: {days_left} Days Left"
+        color = "🟡"
+    else:
+        urgency_tier = "active"
+        badge = f"🟢 ACTIVE: {days_left} Days Left"
+        color = "🟢"
+
+    return {
+        "id": drive.get("id", "drive"),
+        "name": drive.get("name", "Mass Drive"),
+        "company": drive.get("company", "Company"),
+        "package": drive.get("package", "Competitive Industry Standard"),
+        "batches": drive.get("batches", "All Batches"),
+        "link": drive.get("link", ""),
+        "deadline_str": d_str,
+        "deadline_date": str(target_date) if target_date else None,
+        "days_left": days_left,
+        "urgency_tier": urgency_tier,
+        "urgency_badge": badge,
+        "urgency_color": color
+    }
+
+def get_all_drive_deadlines(drives: list = None, ref_date=None) -> list:
+    """
+    Parses and returns all mass drive deadlines sorted by urgency:
+    Critical (<=4 days) -> Closing Soon (5-10 days) -> Active (>10 days) -> Rolling.
+    """
+    if isinstance(drives, str):
+        drive_list = get_national_drives(drives)
+    elif isinstance(drives, list):
+        drive_list = drives
+    else:
+        drive_list = get_national_drives()
+        
+    parsed = [parse_drive_deadline(d, ref_date=ref_date) for d in drive_list]
+    tier_weight = {"critical": 0, "closing_soon": 1, "active": 2, "rolling": 3, "past": 4}
+    parsed.sort(key=lambda x: (tier_weight.get(x["urgency_tier"], 99), x["days_left"]))
+    return parsed
+
+def format_deadlines_radar_report(drives: list = None, urgent_only: bool = False, ref_date=None) -> list:
+    """
+    Generates Telegram-ready HTML cards for National Mass Drive deadlines with countdowns.
+    Returns chunked HTML list (each under 3,400 chars) ensuring safe delivery.
+    """
+    import html
+    import datetime
+    
+    if ref_date is None:
+        today = datetime.date.today()
+    elif isinstance(ref_date, str):
+        try:
+            today = datetime.date.fromisoformat(ref_date.strip())
+        except Exception:
+            today = datetime.date.today()
+    else:
+        today = ref_date
+
+    today_str = today.strftime("%d %b %Y")
+    parsed_drives = get_all_drive_deadlines(drives, ref_date=today)
+    
+    if urgent_only:
+        filtered = [d for d in parsed_drives if d["urgency_tier"] in ["critical", "closing_soon"]]
+        if not filtered:
+            return [(
+                f"⏳ <b>MASS DRIVE DEADLINE RADAR (URGENT ONLY)</b> ⏳\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"📅 <b>Today:</b> <code>{today_str}</code>\n\n"
+                f"🎉 <b>All Clear!</b> No national drives are closing within the next 10 days.\n"
+                f"All 18 active drives have comfortable application windows.\n\n"
+                f"<i>Type <code>/deadlines</code> to view all upcoming national cycles.</i>"
+            )]
+        parsed_drives = filtered
+
+    header = (
+        f"⏳ <b>NATIONAL MASS DRIVES DEADLINE RADAR</b> ⏳\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"🎯 <i>Live Application Cutoff & Expiry Tracker</i>\n"
+        f"📅 <b>Today:</b> <code>{today_str}</code> | 🏢 <b>Tracked:</b> <code>{len(parsed_drives)} Drives</code>\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    )
+
+    # Group by urgency
+    critical = [d for d in parsed_drives if d["urgency_tier"] == "critical"]
+    closing_soon = [d for d in parsed_drives if d["urgency_tier"] == "closing_soon"]
+    active = [d for d in parsed_drives if d["urgency_tier"] == "active"]
+    rolling = [d for d in parsed_drives if d["urgency_tier"] in ["rolling", "past"]]
+
+    chunks = []
+    current_chunk = header
+
+    def add_section(title, drive_items):
+        nonlocal current_chunk, chunks
+        if not drive_items:
+            return
+        section_header = f"{title}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        if len(current_chunk) + len(section_header) > 3300:
+            chunks.append(current_chunk.strip())
+            current_chunk = section_header
+        else:
+            current_chunk += section_header
+
+        for d in drive_items:
+            comp = html.escape(str(d.get("company", "Company")))
+            name = html.escape(str(d.get("name", "Mass Drive")))
+            pkg = html.escape(str(d.get("package", "Competitive")))
+            batches = html.escape(str(d.get("batches", "All Batches")))
+            deadline = html.escape(str(d.get("deadline_str", "Open")))
+            badge = html.escape(str(d.get("urgency_badge", "")))
+            color = d.get("urgency_color", "🔹")
+            link = d.get("link", "").strip()
+
+            entry = (
+                f"{color} <b>{name}</b>\n"
+                f"   🏢 <b>Company:</b> <code>{comp}</code>\n"
+                f"   ⏰ <b>Cutoff:</b> <b>{deadline}</b>\n"
+                f"   ⚡ <b>Countdown:</b> <code>{badge}</code>\n"
+                f"   💰 <b>Package:</b> {pkg}\n"
+                f"   🎓 <b>Batches:</b> <i>{batches}</i>\n"
+            )
+            if link:
+                entry += f"   👉 <a href=\"{link}\">Register on Official Portal</a>\n\n"
+            else:
+                entry += "\n"
+
+            if len(current_chunk) + len(entry) > 3300:
+                chunks.append(current_chunk.strip())
+                current_chunk = f"⏳ <b>MASS DRIVE DEADLINES (Contd.)</b>\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" + entry
+            else:
+                current_chunk += entry
+
+    add_section("🚨 <b>CRITICAL / CLOSING WITHIN 96 HOURS:</b>", critical)
+    add_section("🟡 <b>CLOSING THIS WEEK / NEXT 10 DAYS:</b>", closing_soon)
+    add_section("🟢 <b>ACTIVE REGISTRATION WINDOWS:</b>", active)
+    add_section("⚪ <b>ROLLING / CONTINUOUS YEAR-ROUND INGESTION:</b>", rolling)
+
+    if current_chunk.strip():
+        chunks.append(current_chunk.strip())
+
+    return chunks
+
+def get_urgent_deadlines_summary(drives: list = None, ref_date=None) -> str:
+    """
+    Returns a concise 1-screen summary of drives closing within 10 days for quick bot alerts.
+    """
+    import html
+    import datetime
+    
+    if ref_date is None:
+        today = datetime.date.today()
+    elif isinstance(ref_date, str):
+        try:
+            today = datetime.date.fromisoformat(ref_date.strip())
+        except Exception:
+            today = datetime.date.today()
+    else:
+        today = ref_date
+
+    parsed = get_all_drive_deadlines(drives, ref_date=today)
+    urgent = [d for d in parsed if d["urgency_tier"] in ["critical", "closing_soon"]]
+    
+    if not urgent:
+        return "🎉 <b>Good news!</b> No mass drives are closing within the next 10 days. All active drives have plenty of time remaining."
+
+    lines = [
+        "🚨 <b>URGENT MASS DRIVES CLOSING SOON!</b>",
+        f"📅 <i>As of {today.strftime('%d %b %Y')}:</i>\n"
+    ]
+    for d in urgent:
+        comp = html.escape(str(d.get("company", "Company")))
+        name = html.escape(str(d.get("name", "Drive")))
+        badge = html.escape(str(d.get("urgency_badge", "")))
+        link = d.get("link", "")
+        lines.append(f"{d['urgency_color']} <b>{comp}</b> – {name}\n   <code>{badge}</code>\n   👉 <a href=\"{link}\">Apply Now</a>")
+    
+    return "\n\n".join(lines)
+
 
 
 

@@ -95,6 +95,31 @@ def run_all_tests():
 
     print(f"✅ National Mass Drives Test: Verified {len(drives)} drives, batch filtering, and single-drive syllabus breakdown.")
 
+    # 7. Mass Drive Deadline & Countdown Radar Test
+    from bot_optimizer import parse_drive_deadline, get_all_drive_deadlines, format_deadlines_radar_report, get_urgent_deadlines_summary
+    sample_ref = "2026-09-27"
+    deadlines = get_all_drive_deadlines("national_drives.json", ref_date=sample_ref)
+    assert len(deadlines) >= 15
+    # Closest should be cognizant (Sep 30 -> 3 days) or mindgate (Oct 1 -> 4 days)
+    assert deadlines[0]["days_left"] <= 4
+    assert deadlines[0]["urgency_tier"] == "critical"
+    
+    # Urgent filter report
+    urgent_chunks = format_deadlines_radar_report("national_drives.json", urgent_only=True, ref_date=sample_ref)
+    assert len(urgent_chunks) >= 1
+    assert "CRITICAL" in urgent_chunks[0]
+
+    # Full report
+    all_chunks = format_deadlines_radar_report("national_drives.json", urgent_only=False, ref_date=sample_ref)
+    assert len(all_chunks) >= 1
+    assert "NATIONAL MASS DRIVES DEADLINE RADAR" in all_chunks[0]
+
+    # Summary
+    summary = get_urgent_deadlines_summary("national_drives.json", ref_date=sample_ref)
+    assert "URGENT" in summary
+
+    print(f"✅ Mass Drive Deadlines Radar Test: Verified {len(deadlines)} countdowns and urgency tiers.")
+
     print("\n🎉 ALL VERIFICATION CHECKS PASSED WITH ZERO ERRORS!\n")
 
 if __name__ == "__main__":
