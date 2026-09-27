@@ -193,15 +193,55 @@ def escape_md(text):
         return ""
     return str(text).replace("*", "").replace("_", " ").replace("[", "(").replace("]", ")").replace("`", "")
 
+def normalize_job_url(url):
+    """
+    Normalizes a job URL by removing tracking parameters (UTM, ref, fbclid),
+    anchors, and trailing slashes for rock-solid deduplication across channels.
+    """
+    if not url or not isinstance(url, str):
+        return ""
+    try:
+        url_str = url.strip()
+        if not url_str.startswith("http"):
+            return url_str
+        parsed = urllib.parse.urlparse(url_str)
+        tracking_keys = {
+            "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
+            "ref", "source", "fbclid", "gclid", "campaign", "trk", "trkinfo",
+            "affiliate", "sub_id"
+        }
+        query_pairs = urllib.parse.parse_qsl(parsed.query, keep_blank_values=False)
+        cleaned_pairs = [(k, v) for k, v in query_pairs if k.lower() not in tracking_keys]
+        new_query = urllib.parse.urlencode(cleaned_pairs)
+        cleaned = urllib.parse.urlunparse((
+            parsed.scheme.lower(),
+            parsed.netloc.lower(),
+            parsed.path.rstrip("/"),
+            parsed.params,
+            new_query,
+            ""
+        ))
+        return cleaned or url_str
+    except Exception:
+        return url
+
 def load_seen_jobs():
     if os.path.exists(SEEN_JOBS_FILE):
         with open(SEEN_JOBS_FILE, "r", encoding="utf-8") as f:
-            return set(f.read().splitlines())
+            seen = set()
+            for line in f.read().splitlines():
+                if line.strip():
+                    seen.add(line.strip())
+                    seen.add(normalize_job_url(line.strip()))
+            return seen
     return set()
 
 def mark_seen(link):
+    norm = normalize_job_url(link)
     with open(SEEN_JOBS_FILE, "a", encoding="utf-8") as f:
         f.write(link.strip() + "\n")
+        if norm and norm != link.strip():
+            f.write(norm + "\n")
 
 def save_results(jobs):
     with open(RESULTS_JSON, "w", encoding="utf-8") as f:
@@ -320,76 +360,106 @@ def is_social_or_promo_link(url):
     return False
 
 # ──────────────────────────────────────────────────
-# 🔗 DIRECT LINK UNWRAPPER FOR RADAR
+# 🔗 DIRECT LINK UNWRAPPER FOR RADAR (MULTI-HOP ENGINE)
 # ──────────────────────────────────────────────────
 
 def unwrap_radar_direct_link(url):
     """
-    Unwraps URL shorteners and extracts direct application links from job blogs.
+    Unwraps URL shorteners, follows redirects, decodes Base64 params,
+    and extracts direct application links from job blogs & aggregators.
     """
     if not url or not url.startswith("http") or is_social_or_promo_link(url):
         return url
     
-    direct_domains = [
-        "greenhouse.io", "lever.co", "workdayjobs.com", "myworkdayjobs.com",
+    direct_ats_domains = [
+        "greenhouse.io", "lever.co", "myworkdayjobs.com", "workdayjobs.com",
         "smartrecruiters.com", "joinsuperset.com", "docs.google.com/forms",
         "forms.gle", "sensehq.com", "ashbyhq.com", "bamboohr.com", "taleo.net",
         "zohorecruit.com", "recruitee.com", "freshteam.com", "darwinbox.com",
         "keka.com", "unstop.com", "internshala.com", "foundit.in", "naukri.com",
+        "rippling-ats.com", "breezy.hr", "workable.com"
     ]
-    if any(d in url.lower() for d in direct_domains):
-        return url
 
+    # Fast-path: Already a verified ATS or direct portal
+    if any(d in url.lower() for d in direct_ats_domains):
+        return normalize_job_url(url)
+
+    # Base64 quick unpack in query params
+    current_url = url.strip()
     try:
-        resp = _api_request(url, max_retries=1, timeout=8)
-        if not resp:
-            return url
-        
-        final_url = resp.url
-        if any(d in final_url.lower() for d in direct_domains):
-            return final_url
-        
-        from bs4 import BeautifulSoup
-        soup = BeautifulSoup(resp.text, "html.parser")
-        
-        container = soup.find("div", class_=lambda c: c and any(x in str(c) for x in ["post-body", "entry-content", "article", "content"])) or soup
-        
-        # Priority 1: Known ATS / job boards
-        for a in container.find_all("a", href=True):
-            href = a["href"].strip()
-            if any(d in href.lower() for d in direct_domains) and not is_social_or_promo_link(href):
-                return href
-        
-        # Priority 2: Text matching "Apply", "Registration"
-        apply_kws = ["apply online", "click here to apply", "apply link", "apply now", "official link", "direct apply", "registration link"]
-        for a in container.find_all("a", href=True):
-            href = a["href"].strip()
-            txt = a.get_text(strip=True).lower()
-            if any(k in txt for k in apply_kws):
-                if href.startswith("http") and not is_social_or_promo_link(href):
-                    return href
-        
-        return final_url if not is_social_or_promo_link(final_url) else url
+        parsed_q = urllib.parse.parse_qs(urllib.parse.urlparse(current_url).query)
+        for param in ["url", "target", "link", "redirect", "dest", "destination", "u"]:
+            if param in parsed_q:
+                val = parsed_q[param][0]
+                if val.startswith("http"):
+                    current_url = val
+                    break
+                elif len(val) > 20 and " " not in val:
+                    try:
+                        import base64
+                        decoded = base64.b64decode(val.encode()).decode("utf-8", errors="ignore")
+                        if decoded.startswith("http"):
+                            current_url = decoded
+                            break
+                    except Exception:
+                        pass
     except Exception:
-        return url
+        pass
 
-def _scan_single_channel_radar(ch):
+    if any(d in current_url.lower() for d in direct_ats_domains):
+        return normalize_job_url(current_url)
+
+    # Fast redirect resolution (single request with allow_redirects)
+    try:
+        headers = {"User-Agent": random.choice(USER_AGENTS)}
+        resp = requests.get(current_url, headers=headers, timeout=3.0, allow_redirects=True)
+        if resp and resp.url:
+            final_url = resp.url
+            if any(d in final_url.lower() for d in direct_ats_domains):
+                return normalize_job_url(final_url)
+            
+            # Check meta refresh
+            meta_m = re.search(r'<meta[^>]+http-equiv=["\']refresh["\'][^>]+content=["\']\d+;\s*url=([^"\']+)["\']', resp.text[:4000], re.I)
+            if meta_m:
+                redir = meta_m.group(1).strip()
+                if redir.startswith("http"):
+                    return normalize_job_url(redir)
+
+            # Check DOM for ATS links (first 50KB)
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(resp.text[:50000], "html.parser")
+            for a in soup.find_all("a", href=True):
+                href = a["href"].strip()
+                if any(d in href.lower() for d in direct_ats_domains) and not is_social_or_promo_link(href):
+                    return normalize_job_url(href)
+            
+            return normalize_job_url(final_url)
+    except Exception:
+        pass
+
+    return normalize_job_url(current_url)
+
+def _scan_single_channel_radar(ch, max_jobs=2):
     """Scrapes a single Telegram channel for the Job Radar."""
     ch_clean = ch.replace("@", "").strip()
     url = f"https://telegram.dog/s/{ch_clean}"
-    jobs_found = []
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
     try:
-        resp = _api_request(url, timeout=8)
+        resp = requests.get(url, headers=headers, timeout=8)
         if not resp or resp.status_code != 200:
             return []
+    except Exception:
+        return []
 
+    jobs_found = []
+    try:
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(resp.text, "html.parser")
         messages = soup.find_all("div", class_="tgme_widget_message_text")
         if not messages:
             return []
 
-        for msg in reversed(messages[-6:]):
+        for msg in reversed(messages[-5:]):
             text = msg.get_text(separator=" ").strip()
             if not text or len(text) < 30:
                 continue
@@ -420,26 +490,35 @@ def _scan_single_channel_radar(ch):
             lines = [l.strip() for l in text.split("\n") if l.strip()]
             first_line = lines[0] if lines else ""
 
-            # Robust Company Extraction
+            # Robust Multi-Line Company Extraction
             company = ""
-            comp_m = re.search(r'(?:🏢\s*Company|Company|Organisation|Org|Organization)\s*[:\-]\s*([^\n📍💼🛠️💰📝👉🔗|]+)', text, re.I)
-            if comp_m:
-                company = comp_m.group(1).strip()
-            if not company or len(company) < 2:
-                m_hiring = re.search(r'^[^\w\s]*\s*([A-Za-z0-9\s.,&-]+?)\s+(?:is\s+Hiring|is\s+Recruiting|Recruitment\s+20\d\d|Recruitment|Off\s*Campus\s+Drive|Off\s*Campus|Mega\s+Drive|Drive|Hiring|Walkin|Walk-in)', first_line, re.I)
-                if m_hiring:
-                    company = m_hiring.group(1).strip()
-            company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
-            invalid_companies = [
-                "verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan",
-                "afternic", "domain", "admin", "unknown", "addtoany", "addthis", "sharethis",
-                "blogger", "wordpress", "disqus", "telegram", "telegram.org", "telegram.dog",
-                "freshershunt", "foundthejob", "jobopenings", "jobopenings_india", "tech_jobs_india",
-                "indiawalkinjobs", "walkinjobs", "meganaukri", "dailyjobalerts", "sarkariprep",
-                "freejobalert", "freshersvoice", "naukriauto", "jobalertshub", "placementdrive", "allindiajobs"
+            invalid_companies = {
+                "bit", "bitly", "tinyurl", "cutt", "tco", "rbgy", "shorturl", "linktr", "biolink",
+                "verified recruiter", "hiring", "job", "jobs", "apply", "opening", "openings",
+                "hugedomains", "godaddy", "sedo", "dan", "afternic", "domain", "admin", "unknown",
+                "addtoany", "addthis", "sharethis", "blogger", "wordpress", "disqus", "telegram",
+                "telegram.org", "telegram.dog", "freshershunt", "foundthejob", "jobopenings",
+                "jobopenings_india", "tech_jobs_india", "indiawalkinjobs", "walkinjobs", "meganaukri",
+                "dailyjobalerts", "sarkariprep", "freejobalert", "freshersvoice", "naukriauto",
+                "jobalertshub", "placementdrive", "allindiajobs", "jobskull", "kickcharm", "offcampusjobs4u"
+            }
+
+            company_patterns = [
+                r'(?:🏢\s*Company|Company|Organisation|Org|Organization|Employer)\s*[:\-–]\s*([^\n📍💼🛠️💰📝👉🔗|]+)',
+                r'(?:hiring|recruiting)\s+(?:at|for|by)\s+([A-Za-z0-9\s&.,\'\-]+)',
+                r'^[^\w\s]*\s*([A-Za-z0-9\s.,&-]+?)\s+(?:is\s+Hiring|is\s+Recruiting|Recruitment\s+20\d\d|Recruitment|Off\s*Campus\s+Drive|Off\s*Campus|Mega\s+Drive|Drive|Hiring|Walkin|Walk-in)'
             ]
+            for pat in company_patterns:
+                m = re.search(pat, text, re.I)
+                if m:
+                    cand = m.group(1).strip()
+                    cand_clean = re.sub(r'[^\w\s.,&-]', '', cand).replace('Title', '').replace(':', '').strip()
+                    if cand_clean and len(cand_clean) >= 2 and cand_clean.lower() not in invalid_companies:
+                        company = cand_clean
+                        break
+
             if not company or len(company) < 2 or company.lower() in invalid_companies:
-                company = "Verified Recruiter"
+                company = "Verified Tech Recruiter"
 
             # Robust Role Extraction
             role = ""
@@ -487,6 +566,8 @@ def _scan_single_channel_radar(ch):
                 is_tn=is_tn,
                 direct_link=direct_link
             ))
+            if len(jobs_found) >= max_jobs:
+                break
 
     except Exception:
         pass
@@ -865,7 +946,10 @@ def scrape_linkedin_indeed():
         from jobspy import scrape_jobs
         queries = [
             ("software engineer fresher", "Chennai, Tamil Nadu, India"),
-            ("frontend developer", "Coimbatore, Tamil Nadu, India"),
+            ("frontend developer fresher", "Chennai, Tamil Nadu, India"),
+            ("python developer fresher", "Chennai, Tamil Nadu, India"),
+            ("junior software engineer", "Coimbatore, Tamil Nadu, India"),
+            ("data analyst fresher", "Chennai, Tamil Nadu, India"),
             ("full stack developer fresher", "Bangalore, Karnataka, India"),
         ]
         for query, loc in queries:
@@ -901,14 +985,14 @@ def scrape_linkedin_indeed():
                     desc_val = str(row.get("description", ""))
                     desc = clean_html(desc_val) if desc_val and desc_val != "nan" else ""
                     jobs_found.append(_make_job(
-                        title=title, company=company, link=link, location=loc_tag,
+                        title=title, company=company, link=normalize_job_url(link), location=loc_tag,
                         source=source, description=desc, priority_tier=tier, is_tn=is_tn
                     ))
                     if len(jobs_found) >= MAX_PER_SOURCE:
                         break
             except Exception as e:
-                print(f"  [JobSpy] Error for '{query}': {e}")
-            time.sleep(2.0)
+                print(f"  [JobSpy] Isolated error for '{query}': {e}")
+            time.sleep(1.5)
     except ImportError:
         pass
     except Exception as e:
@@ -1038,23 +1122,57 @@ def send_radar_telegram(new_jobs):
             f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         )
 
+        from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+        # Build rich interactive action keyboard for direct applying & sharing
+        radar_kb = InlineKeyboardMarkup(row_width=2)
+        kb_buttons = []
+
+        if tn_jobs:
+            top_tn = tn_jobs[0]
+            top_tn_link = (top_tn.get("link") or top_tn.get("raw_link") or "").strip()
+            top_tn_comp = top_tn.get("company", "Tamil Nadu")[:14]
+            if top_tn_link.startswith("http"):
+                kb_buttons.append(InlineKeyboardButton(text=f"🌟 Top TN ({top_tn_comp})", url=top_tn_link))
+
+        if india_jobs:
+            top_in = india_jobs[0]
+            top_in_link = (top_in.get("link") or top_in.get("raw_link") or "").strip()
+            top_in_comp = top_in.get("company", "India")[:14]
+            if top_in_link.startswith("http"):
+                kb_buttons.append(InlineKeyboardButton(text=f"🚀 Top India ({top_in_comp})", url=top_in_link))
+
+        share_text = urllib.parse.quote(f"🚀 Found {total} verified tech fresher jobs in Tamil Nadu & India! Check them out on JobPulse AI.")
+        share_url = f"https://t.me/share/url?url=https://t.me&text={share_text}"
+        kb_buttons.append(InlineKeyboardButton(text="📤 Share Radar Digest", url=share_url))
+
+        if kb_buttons:
+            radar_kb.add(*kb_buttons)
+
         for idx, chunk in enumerate(chunks):
             if idx == 0:
                 msg = header + chunk
             else:
                 msg = f"📡 <b>Opportunities (Part {idx+1}/{len(chunks)})</b>\n\n" + chunk
 
-            if idx == len(chunks) - 1:
+            is_last = (idx == len(chunks) - 1)
+            if is_last:
                 msg += (
                     f"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"📊 <b>Total:</b> {total} jobs filtered strictly for India & TN\n"
-                    f"⏰ Next scan in 1 hour (24/7 Cloud)\n"
-                    f"👉 <i>Tap any job title link to view & apply directly!</i>"
+                    f"📊 <b>Total:</b> {total} jobs strictly verified for India & TN\n"
+                    f"⏰ Next radar scan in 1 hour (24/7 Cloud)\n"
+                    f"👉 <i>Tap any numbered title link to view & apply directly!</i>"
                 )
 
             try:
-                radar_bot.send_message(chat_id, msg, parse_mode="HTML", disable_web_page_preview=True)
-                if idx < len(chunks) - 1:
+                radar_bot.send_message(
+                    chat_id,
+                    msg,
+                    parse_mode="HTML",
+                    disable_web_page_preview=True,
+                    reply_markup=radar_kb if is_last else None
+                )
+                if not is_last:
                     time.sleep(0.6)
             except Exception as msg_e:
                 try:
@@ -1112,11 +1230,13 @@ def run_radar():
 
     new_jobs = []
     for job in all_jobs:
-        link = job.get("link") or job.get("raw_link")
-        if link and link not in seen_jobs:
+        raw_link = (job.get("link") or job.get("raw_link") or "").strip()
+        norm_link = normalize_job_url(raw_link)
+        if norm_link and norm_link not in seen_jobs and raw_link not in seen_jobs:
             new_jobs.append(job)
-            mark_seen(link)
-            seen_jobs.add(link)
+            mark_seen(norm_link)
+            seen_jobs.add(norm_link)
+            seen_jobs.add(raw_link)
 
     # 🎯 SORTING ENGINE: Tamil Nadu (Tier 1) FIRST, then India (Tier 2), then Remote (Tier 3)
     def _priority_sort_key(job):
