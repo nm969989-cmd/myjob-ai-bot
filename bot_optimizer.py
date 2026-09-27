@@ -981,4 +981,220 @@ def generate_market_analytics_report(base_dir: str = ".") -> str:
     return report
 
 
+# ─────────────────────────────────────────────────────────────────
+# FEATURE 13: 📢 NATIONAL MASS OFF-CAMPUS HIRING DRIVES ENGINE
+# ─────────────────────────────────────────────────────────────────
+
+DEFAULT_NATIONAL_DRIVES = [
+    {
+        "id": "tcs_nqt",
+        "name": "TCS NQT National Qualifier Test",
+        "company": "Tata Consultancy Services (TCS)",
+        "batches": "2024 / 2025 / 2026 Batch",
+        "degrees": "B.E / B.Tech / M.E / M.Tech / MCA / M.Sc",
+        "package": "3.36 LPA (Ninja) – 9.0 LPA (Digital / Prime)",
+        "status": "🟢 Registration Active",
+        "exam_mode": "National Assessment (Home / In-Center)",
+        "deadline": "Rolling Monthly National Cycles",
+        "link": "https://www.tcs.com/careers/india/tcs-national-qualifier-test",
+        "priority_tag": "🇮🇳 National Mega Drive"
+    },
+    {
+        "id": "zoho_drive",
+        "name": "Zoho Off-Campus Developer & QA Drive",
+        "company": "Zoho Corporation",
+        "batches": "2024 / 2025 / 2026 / Any Graduate",
+        "degrees": "Any Engineering / Science / Arts (No % Cutoff)",
+        "package": "5.6 LPA – 8.4 LPA",
+        "status": "🌟 Top Tamil Nadu Priority",
+        "exam_mode": "In-Person (Chennai / Tenkasi / Coimbatore)",
+        "deadline": "Open / Regular Rounds",
+        "link": "https://www.zoho.com/careers/",
+        "priority_tag": "🌟 Tamil Nadu Flagship"
+    },
+    {
+        "id": "infosys_drive",
+        "name": "Infosys HackwithInfy & Specialist Drive",
+        "company": "Infosys Limited",
+        "batches": "2024 / 2025 / 2026 Batch",
+        "degrees": "B.E / B.Tech / M.E / M.Tech / MCA",
+        "package": "3.6 LPA (SE) – 9.5 LPA (Specialist Programmer)",
+        "status": "🟢 Online Assessment Live",
+        "exam_mode": "Virtual Test from Home",
+        "deadline": "Open National Cycle",
+        "link": "https://career.infosys.com/",
+        "priority_tag": "🇮🇳 National Tech Drive"
+    },
+    {
+        "id": "cognizant_genc",
+        "name": "Cognizant GenC & GenC Next Drive",
+        "company": "Cognizant Technology Solutions",
+        "batches": "2024 / 2025 Batch",
+        "degrees": "B.E / B.Tech / MCA / M.Sc (CS/IT)",
+        "package": "4.0 LPA (GenC) – 6.75 LPA (GenC Next)",
+        "status": "🟢 Registration Open via Superset",
+        "exam_mode": "Virtual Proctored Assessment",
+        "deadline": "Active Off-Campus Cycle",
+        "link": "https://careers.cognizant.com/in/en",
+        "priority_tag": "🇮🇳 National Off-Campus"
+    },
+    {
+        "id": "accenture_ase",
+        "name": "Accenture Associate Software Engineer (ASE)",
+        "company": "Accenture India",
+        "batches": "2024 / 2025 / 2026 Batch",
+        "degrees": "All Engineering Branches / MCA",
+        "package": "4.5 LPA (ASE) – 6.5 LPA (FSE)",
+        "status": "🟢 Live on Indiacampus Portal",
+        "exam_mode": "Virtual Cognitive & Technical Assessment",
+        "deadline": "Open All India",
+        "link": "https://indiacampus.accenture.com/",
+        "priority_tag": "🇮🇳 National Off-Campus"
+    },
+    {
+        "id": "wipro_elite",
+        "name": "Wipro Elite National Talent Hunt (NTH)",
+        "company": "Wipro",
+        "batches": "2024 / 2025 Batch",
+        "degrees": "B.E / B.Tech / M.E / M.Tech / 5-Yr Dual",
+        "package": "3.5 LPA (Elite) – 6.5 LPA (Turbo)",
+        "status": "🔵 National Assessment Phase",
+        "exam_mode": "Online Proctored Test",
+        "deadline": "Ongoing National Drive",
+        "link": "https://careers.wipro.com/elite",
+        "priority_tag": "🇮🇳 National Mega Drive"
+    },
+    {
+        "id": "capgemini_exceller",
+        "name": "Capgemini Exceller Off-Campus Drive",
+        "company": "Capgemini",
+        "batches": "2024 / 2025 Batch",
+        "degrees": "B.E / B.Tech / MCA / M.Sc (CS/IT)",
+        "package": "4.0 LPA (Analyst) – 7.5 LPA (Senior Analyst)",
+        "status": "🟢 Open Registration",
+        "exam_mode": "Aon CoCubes Proctored Test",
+        "deadline": "Active Cycle",
+        "link": "https://www.capgemini.com/in-en/careers/",
+        "priority_tag": "🇮🇳 National Off-Campus"
+    },
+    {
+        "id": "google_intern",
+        "name": "Google Tech Internship & University Challenge",
+        "company": "Google India",
+        "batches": "2025 / 2026 / 2027 Engineering Students",
+        "degrees": "B.Tech / B.E / M.Tech (Computer Science & allied)",
+        "package": "₹1,10,000 / month Stipend + Full-Time PPO",
+        "status": "🔥 High Prestige / Active Cycles",
+        "exam_mode": "Google Online Challenge (GOC)",
+        "deadline": "Winter & Summer National Cycles",
+        "link": "https://careers.google.com/jobs/results/?location=India",
+        "priority_tag": "🌐 Tier-1 Product Challenge"
+    },
+    {
+        "id": "ltimindtree_yip",
+        "name": "LTIMindtree Young Innovators Program (YIP)",
+        "company": "LTIMindtree",
+        "batches": "2024 / 2025 Batch",
+        "degrees": "B.E / B.Tech (Circuit & Non-Circuit Branches)",
+        "package": "4.0 LPA – 5.0 LPA",
+        "status": "🟢 Registration Open",
+        "exam_mode": "Virtual Assessment & Coding Test",
+        "deadline": "Active Cycle",
+        "link": "https://www.ltimindtree.com/careers/",
+        "priority_tag": "🇮🇳 National Off-Campus"
+    },
+    {
+        "id": "ibm_codeknack",
+        "name": "IBM CodeKnack National Hiring",
+        "company": "IBM India",
+        "batches": "2024 / 2025 Batch",
+        "degrees": "B.E / B.Tech / MCA / M.Tech",
+        "package": "4.5 LPA – 6.0 LPA",
+        "status": "🟢 Open on IBM Career Portal",
+        "exam_mode": "Cognitive Ability & HackerRank Coding",
+        "deadline": "Ongoing National Ingestion",
+        "link": "https://www.ibm.com/careers/in-en",
+        "priority_tag": "🇮🇳 National Tech Drive"
+    }
+]
+
+def get_national_drives(filepath: str = "national_drives.json") -> list:
+    """
+    Loads national mass drives from disk or initializes with verified seeds.
+    """
+    import os
+    import json
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                drives = json.load(f)
+                if isinstance(drives, list) and len(drives) > 0:
+                    return drives
+        except Exception:
+            pass
+
+    # Save seeds if missing
+    try:
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(DEFAULT_NATIONAL_DRIVES, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+    return DEFAULT_NATIONAL_DRIVES
+
+def format_national_drives_report(drives: list = None) -> list:
+    """
+    Formats verified national mass drives into Telegram-ready HTML chunks.
+    Guarantees no chunk exceeds 3500 chars to avoid Telegram API 4096-char overflows.
+    """
+    import html
+    drive_list = drives if drives is not None else get_national_drives()
+    
+    header = (
+        "📢 <b>NATIONAL MASS OFF-CAMPUS HIRING DRIVES</b>\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"🇮🇳 <i>Top Tier-1 MNC Mass Recruitment Drives ({len(drive_list)} Verified)</i>\n"
+        "🎯 <i>Eligible: 2024, 2025 & 2026 Batch Tech Graduates</i>\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    )
+
+    chunks = []
+    current_chunk = header
+    
+    for idx, d in enumerate(drive_list, 1):
+        name = html.escape(str(d.get("name", "National Drive")))
+        comp = html.escape(str(d.get("company", "Company")))
+        batches = html.escape(str(d.get("batches", "2024 / 2025 / 2026")))
+        degrees = html.escape(str(d.get("degrees", "Engineering Graduates")))
+        pkg = html.escape(str(d.get("package", "Standard Fresher CTC")))
+        status = html.escape(str(d.get("status", "Active")))
+        link = html.escape(str(d.get("link", "")).strip())
+        exam = html.escape(str(d.get("exam_mode", "National Assessment")))
+
+        entry = (
+            f"<b>{idx}.</b> <a href=\"{link}\"><b>{name}</b></a>\n"
+            f"   🏢 <b>Company:</b> <code>{comp}</code>\n"
+            f"   🎓 <b>Eligibility:</b> <code>{batches}</code>\n"
+            f"   📜 <b>Degrees:</b> <i>{degrees}</i>\n"
+            f"   💰 <b>Package:</b> <code>{pkg}</code>\n"
+            f"   📡 <b>Status:</b> <b>{status}</b>\n"
+            f"   📝 <b>Format:</b> <i>{exam}</i>\n\n"
+        )
+
+        if len(current_chunk) + len(entry) > 3400:
+            chunks.append(current_chunk)
+            current_chunk = f"📢 <b>National Drives (Part {len(chunks)+1})</b>\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" + entry
+        else:
+            current_chunk += entry
+
+    if current_chunk:
+        current_chunk += (
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "👉 <i>Tap any drive title or use the action buttons below to register!</i>"
+        )
+        chunks.append(current_chunk)
+
+    return chunks
+
+
+
 

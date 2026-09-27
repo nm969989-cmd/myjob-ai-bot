@@ -40,7 +40,9 @@ from bot_optimizer import (
     calculate_skill_match_score,
     is_job_link_alive,
     generate_fast_interview_cheat_sheet,
-    generate_market_analytics_report
+    generate_market_analytics_report,
+    get_national_drives,
+    format_national_drives_report
 )
 
 # Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
@@ -271,6 +273,7 @@ def enforce_bot_security_profile(tg_bot):
             BotCommand("status", "🩺 Bot Engine & Channels Health"),
             BotCommand("analytics", "📊 Live Market & Career Analytics"),
             BotCommand("radar", "📡 Run Radar Scan (TN & India)"),
+            BotCommand("drives", "📢 National Mass Off-Campus Drives"),
             BotCommand("pause", "🛑 Pause Scanning Channels"),
             BotCommand("resume", "🟢 Resume Scanning Channels"),
             BotCommand("notion", "📋 Open Notion CRM Tracker"),
@@ -5098,7 +5101,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                 bot.send_message(message.chat.id, f"⚠️ *Error scanning inbox:* {e}", parse_mode=None)
         threading.Thread(target=_bg_scan).start()
 
-    @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost", "analytics"])
+    @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost", "analytics", "drives"])
     @admin_only
     def handle_button(call):
         global BOT_PAUSED
@@ -5277,9 +5280,30 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             except Exception as e:
                 bot.send_message(chat_id, f"⚠️ Analytics error: {e}")
 
+        elif call.data == "drives":
+            try:
+                chunks = format_national_drives_report()
+                markup = InlineKeyboardMarkup(row_width=2)
+                markup.row(
+                    InlineKeyboardButton("🚀 TCS NQT Portal", url="https://www.tcs.com/careers/india/tcs-national-qualifier-test"),
+                    InlineKeyboardButton("🌟 Zoho Careers", url="https://www.zoho.com/careers/")
+                )
+                markup.row(
+                    InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar"),
+                    InlineKeyboardButton("📊 Market Analytics", callback_data="analytics")
+                )
+                for chunk in chunks:
+                    try:
+                        bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
+                    except Exception:
+                        bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
+            except Exception as e:
+                bot.send_message(chat_id, f"⚠️ Drives error: {e}")
+
         elif call.data == "help":
             help_text = (
                 "🤖 *Command Reference*\n\n"
+                "📢 /drives — National mass off-campus hiring drives\n"
                 "📊 /analytics — Live market intelligence & stats\n"
                 "📊 /status — Live bot status\n"
                 "⏸️ /pause — Stop auto-scanning\n"
@@ -5336,6 +5360,32 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                 bot.send_message(chat_id, re.sub(r'<[^>]+>', '', report), parse_mode=None, reply_markup=markup)
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Analytics error: {e}")
+
+    @bot.message_handler(commands=['drives', 'offcampus', 'massdrives'])
+    @admin_only
+    def send_national_drives(message):
+        chat_id = message.chat.id
+        save_chat_id(chat_id)
+        try:
+            chunks = format_national_drives_report()
+            markup = InlineKeyboardMarkup(row_width=2)
+            markup.row(
+                InlineKeyboardButton("🚀 TCS NQT Portal", url="https://www.tcs.com/careers/india/tcs-national-qualifier-test"),
+                InlineKeyboardButton("🌟 Zoho Careers", url="https://www.zoho.com/careers/")
+            )
+            markup.row(
+                InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar"),
+                InlineKeyboardButton("📊 Market Analytics", callback_data="analytics")
+            )
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.4)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ National Drives error: {e}")
 
     @bot.message_handler(commands=['setprofile'])
     @admin_only
@@ -5808,6 +5858,7 @@ def run_telegram_polling():
             BotCommand("lastjob",    "💼 See the last application attempt"),
             BotCommand("history",    "📅 View last 10 applications"),
             BotCommand("radar",      "📡 View latest multi-platform jobs"),
+            BotCommand("drives",     "📢 National Mass Off-Campus Drives"),
             BotCommand("instahyre",  "🚀 Trigger Instahyre mass-apply"),
             BotCommand("apply",      "🎯 Manually apply to a job URL"),
             BotCommand("pause",      "⏸️ Pause auto-scanning"),

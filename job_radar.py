@@ -1188,29 +1188,34 @@ def send_radar_telegram(new_jobs):
         from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
         # Build rich interactive action keyboard for direct applying & sharing
-        radar_kb = InlineKeyboardMarkup(row_width=2)
-        kb_buttons = []
+        radar_kb = InlineKeyboardMarkup()
+        top_row = []
 
         if tn_jobs:
             top_tn = tn_jobs[0]
             top_tn_link = (top_tn.get("link") or top_tn.get("raw_link") or "").strip()
             top_tn_comp = top_tn.get("company", "Tamil Nadu")[:14]
             if top_tn_link.startswith("http"):
-                kb_buttons.append(InlineKeyboardButton(text=f"🌟 Top TN ({top_tn_comp})", url=top_tn_link))
+                top_row.append(InlineKeyboardButton(text=f"🌟 Top TN ({top_tn_comp})", url=top_tn_link))
 
         if india_jobs:
             top_in = india_jobs[0]
             top_in_link = (top_in.get("link") or top_in.get("raw_link") or "").strip()
             top_in_comp = top_in.get("company", "India")[:14]
             if top_in_link.startswith("http"):
-                kb_buttons.append(InlineKeyboardButton(text=f"🚀 Top India ({top_in_comp})", url=top_in_link))
+                top_row.append(InlineKeyboardButton(text=f"🚀 Top India ({top_in_comp})", url=top_in_link))
+
+        if top_row:
+            radar_kb.row(*top_row)
+
+        radar_kb.row(
+            InlineKeyboardButton(text="📢 National Drives", callback_data="drives"),
+            InlineKeyboardButton(text="📊 Live Analytics", callback_data="analytics")
+        )
 
         share_text = urllib.parse.quote(f"🚀 Found {total} verified tech fresher jobs in Tamil Nadu & India! Check them out on JobPulse AI.")
         share_url = f"https://t.me/share/url?url=https://t.me&text={share_text}"
-        kb_buttons.append(InlineKeyboardButton(text="📤 Share Radar Digest", url=share_url))
-
-        if kb_buttons:
-            radar_kb.add(*kb_buttons)
+        radar_kb.row(InlineKeyboardButton(text="📤 Share Radar Digest", url=share_url))
 
         for idx, chunk in enumerate(chunks):
             if idx == 0:

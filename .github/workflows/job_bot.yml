@@ -80,7 +80,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add applied_jobs.json applied_jobs_log.csv radar_seen_jobs.txt chat_id.json channel_status.json last_job.json qa_memory.json 2>/dev/null || true
+          git add applied_jobs.json applied_jobs_log.csv radar_seen_jobs.txt chat_id.json channel_status.json last_job.json qa_memory.json national_drives.json 2>/dev/null || true
           git commit -m "🤖 Cloud Run: Auto-updated applied jobs, state & seen radar [skip ci]" || echo "No changes to commit"
           git pull --rebase origin main || git pull --rebase origin master || true
           git push origin main || git push origin master || echo "Push completed or already up to date"
