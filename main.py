@@ -36,8 +36,15 @@ from bot_optimizer import (
     extract_job_salary,
     extract_hr_email,
     generate_linkedin_outreach_note,
-    record_learned_qa
+    record_learned_qa,
+    calculate_skill_match_score,
+    is_job_link_alive,
+    generate_fast_interview_cheat_sheet,
+    generate_market_analytics_report
 )
+
+# Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
+_INTERVIEW_PREP_CACHE = {}
 
 class LoggerWriter:
     def __init__(self, filename):
@@ -45,12 +52,16 @@ class LoggerWriter:
         self.original_stdout = sys.__stdout__  # Use the real original stdout
     def write(self, message):
         try:
-            # Encode to ASCII-safe for Windows console, then decode back
-            safe_msg = message.encode('utf-8', errors='replace').decode('utf-8', errors='replace')
+            enc = getattr(self.original_stdout, "encoding", "utf-8") or "utf-8"
+            safe_msg = message.encode(enc, errors='replace').decode(enc, errors='replace')
             self.original_stdout.write(safe_msg)
             self.original_stdout.flush()
         except Exception:
-            pass
+            try:
+                self.original_stdout.write(message.encode("ascii", errors="replace").decode("ascii"))
+                self.original_stdout.flush()
+            except Exception:
+                pass
         try:
             with open(self.filename, "a", encoding="utf-8", errors="replace") as f:
                 f.write(message)
@@ -258,6 +269,8 @@ def enforce_bot_security_profile(tg_bot):
             BotCommand("start", "⚡ Restart Bot & Activate Alerts"),
             BotCommand("help", "📖 View All Bot Commands & Guide"),
             BotCommand("status", "🩺 Bot Engine & Channels Health"),
+            BotCommand("analytics", "📊 Live Market & Career Analytics"),
+            BotCommand("radar", "📡 Run Radar Scan (TN & India)"),
             BotCommand("pause", "🛑 Pause Scanning Channels"),
             BotCommand("resume", "🟢 Resume Scanning Channels"),
             BotCommand("notion", "📋 Open Notion CRM Tracker"),
@@ -3501,6 +3514,9 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
 
     is_valid_loc, tier, loc_tag, is_tn = classify_location(raw_loc, context_for_loc)
 
+    # Compute ATS-style skill match score against candidate profile
+    match_data = calculate_skill_match_score(f"{text_clean} {role} {company}", load_profile())
+
     return {
         "company": company[:50],
         "role": role[:65],
@@ -3515,6 +3531,7 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
         "is_tamil_nadu": is_tn,
         "priority_tier": tier,
         "is_valid_india": is_valid_loc,
+        "match_data": match_data,
     }
 
 # --- 5. TELEGRAM CHANNEL SCRAPER (PUBLIC WEB PREVIEW) ---
@@ -3596,6 +3613,14 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                 print(f"[Scraper] Resolved link is empty or a promo/parked URL ({final_url}) — skipping.")
                 applied_jobs.add(job_link)
                 save_applied_job(job_link)
+                continue
+
+            # Fast Dead Link & Expired ATS Probe (Feature 10)
+            if not is_job_link_alive(final_url, timeout=3.5):
+                print(f"[Scraper] Filtered out expired/closed job link ({final_url[:60]}) — skipping.")
+                applied_jobs.add(job_link)
+                save_applied_job(job_link)
+                log_job(final_url, message_text, False, "Filtered: Dead/Expired ATS Opening")
                 continue
 
             print(f"[Scraper] Resolved Direct Link: {final_url}")
@@ -3693,6 +3718,19 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                             f"<pre><code>{html.escape(linkedin_note)}</code></pre>\n\n"
                         )
 
+                    # Feature 9: AI Skill Match Score & Resume Fit Analyzer
+                    match_data = details.get("match_data") or calculate_skill_match_score(f"{message_text} {details.get('role', '')}", profile)
+                    match_badge = match_data.get("badge", "🟢 85% Fresher Fit")
+                    matched_list = match_data.get("matched", [])
+                    missing_list = match_data.get("missing", [])
+
+                    skill_section = f"🎯 <b>Candidate Fit:</b> <code>{html.escape(match_badge)}</code>\n"
+                    if matched_list:
+                        skill_section += f"   ✅ <b>Matched:</b> <code>{html.escape(', '.join(matched_list[:5]))}</code>\n"
+                    if missing_list:
+                        skill_section += f"   💡 <b>To Highlight:</b> <code>{html.escape(', '.join(missing_list[:3]))}</code>\n"
+                    skill_section += "\n"
+
                     notification = (
                         "🎯 <b>NEW VERIFIED JOB ALERT</b>\n"
                         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -3704,6 +3742,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
                         f"📍 <b>Job Location:</b>\n"
                         f"   <code>{html.escape(str(details['location']))}</code>\n\n"
+                        f"{skill_section}"
                         f"{work_info}"
                         f"🎓 <b>Batch & Eligibility:</b>\n"
                         f"   <code>{html.escape(str(details['batch']))}</code>\n\n"
@@ -3719,10 +3758,26 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         f"<a href=\"{html.escape(str(final_url))}\">👉 Click here to Apply on Official Portal 👈</a>\n\n"
                         "👇 <b>Tap the buttons below to open directly:</b>"
                     )
+
+                    # Feature 11: 1-Tap Interview Prep Callback Cache
+                    import hashlib
+                    prep_hash = hashlib.md5(f"{details.get('company','')}_{details.get('role','')}".encode()).hexdigest()[:8]
+                    _INTERVIEW_PREP_CACHE[prep_hash] = {
+                        "company": details.get("company", "Hiring Organization"),
+                        "role": details.get("role", "Software Engineer"),
+                        "skills": matched_list or match_data.get("job_skills", [])
+                    }
+                    if len(_INTERVIEW_PREP_CACHE) > 500:
+                        _INTERVIEW_PREP_CACHE.pop(next(iter(_INTERVIEW_PREP_CACHE)))
+
                     markup = InlineKeyboardMarkup()
                     markup.row(
                         InlineKeyboardButton("🚀 Direct Apply (Official)", url=final_url),
-                        InlineKeyboardButton("📢 View Channel Post", url=channel_post_url)
+                        InlineKeyboardButton("💡 1-Tap Interview Prep", callback_data=f"prep:{prep_hash}")
+                    )
+                    markup.row(
+                        InlineKeyboardButton("📢 View Channel Post", url=channel_post_url),
+                        InlineKeyboardButton("📤 Share Job Alert", url=share_url)
                     )
                     if hr_email_val and "@" in hr_email_val:
                         candidate_name = profile.get("name", "Applicant")
@@ -3736,9 +3791,6 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         )
                     share_text = urllib.parse.quote(f"🚀 Job Alert: {details['company']} - {details['role']}\nApply Link: {final_url}")
                     share_url = f"https://t.me/share/url?url={urllib.parse.quote(final_url)}&text={share_text}"
-                    markup.row(
-                        InlineKeyboardButton("📤 Share Job Alert", url=share_url)
-                    )
                     if len(notification) > 3900:
                         notification = notification[:3850] + "\n...</i>\n\n👇 <b>Tap below to apply:</b>"
 
@@ -5046,7 +5098,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                 bot.send_message(message.chat.id, f"⚠️ *Error scanning inbox:* {e}", parse_mode=None)
         threading.Thread(target=_bg_scan).start()
 
-    @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost"])
+    @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost", "analytics"])
     @admin_only
     def handle_button(call):
         global BOT_PAUSED
@@ -5210,19 +5262,80 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             except Exception as e:
                 bot.send_message(chat_id, f"⚠️ Error: {e}")
 
+        elif call.data == "analytics":
+            try:
+                report = generate_market_analytics_report(".")
+                markup = InlineKeyboardMarkup(row_width=2)
+                markup.row(
+                    InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar"),
+                    InlineKeyboardButton("🩺 Bot Status", callback_data="status")
+                )
+                markup.row(
+                    InlineKeyboardButton("📱 Open Web Dashboard", url="https://gokuuc-myjob-bot.hf.space")
+                )
+                bot.send_message(chat_id, report, parse_mode="HTML", reply_markup=markup)
+            except Exception as e:
+                bot.send_message(chat_id, f"⚠️ Analytics error: {e}")
+
         elif call.data == "help":
             help_text = (
                 "🤖 *Command Reference*\n\n"
+                "📊 /analytics — Live market intelligence & stats\n"
                 "📊 /status — Live bot status\n"
                 "⏸️ /pause — Stop auto-scanning\n"
                 "▶️ /resume — Start auto-scanning\n"
                 "👻 /watch — Toggle Live Ghost Mode\n"
                 "🕒 /history — Last 10 applications\n"
                 "📋 /profile — View your profile\n"
-                "🎯 /apply \<url\> — Apply to specific job\n"
+                "🎯 /apply <url> — Apply to specific job\n"
                 "📥 /download — Export CSV log"
             )
             bot.send_message(chat_id, help_text, parse_mode=None)
+
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("prep:"))
+    def handle_interview_prep_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        try:
+            bot.answer_callback_query(call.id, text="⚡ Generating Interview Prep...")
+        except Exception:
+            pass
+
+        try:
+            prep_key = call.data.split(":", 1)[1]
+            prep_info = _INTERVIEW_PREP_CACHE.get(prep_key, {})
+            company = prep_info.get("company", "Target Company")
+            role = prep_info.get("role", "Software Engineer")
+            skills = prep_info.get("skills", [])
+            sheet = generate_fast_interview_cheat_sheet(company, role, skills, gemini_client, groq_client)
+            try:
+                bot.send_message(chat_id, sheet, parse_mode="HTML")
+            except Exception:
+                bot.send_message(chat_id, re.sub(r'<[^>]+>', '', sheet), parse_mode=None)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ Unable to generate interview cheat sheet: {e}")
+
+    @bot.message_handler(commands=['analytics', 'metrics'])
+    @admin_only
+    def send_career_analytics(message):
+        chat_id = message.chat.id
+        save_chat_id(chat_id)
+        try:
+            report = generate_market_analytics_report(".")
+            markup = InlineKeyboardMarkup(row_width=2)
+            markup.row(
+                InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar"),
+                InlineKeyboardButton("🩺 Bot Status", callback_data="status")
+            )
+            markup.row(
+                InlineKeyboardButton("📱 Open Web Dashboard", url="https://gokuuc-myjob-bot.hf.space")
+            )
+            try:
+                bot.send_message(chat_id, report, parse_mode="HTML", reply_markup=markup)
+            except Exception:
+                bot.send_message(chat_id, re.sub(r'<[^>]+>', '', report), parse_mode=None, reply_markup=markup)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ Analytics error: {e}")
 
     @bot.message_handler(commands=['setprofile'])
     @admin_only
@@ -5689,6 +5802,7 @@ def run_telegram_polling():
             BotCommand("start",      "❤️ Wake up & lock your Chat ID"),
             BotCommand("help",       "📖 Full guide & all commands"),
             BotCommand("status",     "🚑 Bot health, API & stats"),
+            BotCommand("analytics",  "📊 Live Market & Career Analytics"),
             BotCommand("notion",     "📋 Open Notion Job Tracker"),
             BotCommand("channels",   "📡 View all monitored channels"),
             BotCommand("lastjob",    "💼 See the last application attempt"),

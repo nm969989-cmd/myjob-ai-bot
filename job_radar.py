@@ -1125,6 +1125,7 @@ def send_radar_telegram(new_jobs):
 
                 sal = html.escape(str(job.get("salary", "")).strip())
                 hr_em = html.escape(str(job.get("hr_email", "")).strip())
+                fit_badge = html.escape(str(job.get("fit_badge", "")).strip())
 
                 entry = (
                     f"<b>{global_idx}.</b> <a href=\"{link}\"><b>{title}</b></a>\n"
@@ -1133,6 +1134,8 @@ def send_radar_telegram(new_jobs):
                     f"   📡 <b>Source:</b> <i>{src}</i>\n"
                     f"   🕒 <b>Posted:</b> {time_tag}"
                 )
+                if fit_badge:
+                    entry += f"\n   🎯 <b>Fit:</b> {fit_badge}"
                 if sal:
                     entry += f"\n   💰 <b>Package:</b> <code>{sal}</code>"
                 if hr_em:
@@ -1288,11 +1291,43 @@ def run_radar():
         except concurrent.futures.TimeoutError:
             print("  [Radar] Scrapers timeout reached. Proceeding with collected jobs.")
 
+    from bot_optimizer import (
+        calculate_skill_match_score,
+        is_job_link_alive,
+        extract_job_salary,
+        extract_hr_email
+    )
+    profile_data = {}
+    if os.path.exists("profile.json"):
+        try:
+            with open("profile.json", "r", encoding="utf-8") as pf:
+                profile_data = json.load(pf)
+        except Exception:
+            pass
+
     new_jobs = []
     for job in all_jobs:
         raw_link = (job.get("link") or job.get("raw_link") or "").strip()
         norm_link = normalize_job_url(raw_link)
         if norm_link and norm_link not in seen_jobs and raw_link not in seen_jobs:
+            # 1. Non-blocking dead-link probe (Feature 10)
+            if not is_job_link_alive(norm_link, timeout=2.5):
+                seen_jobs.add(norm_link)
+                seen_jobs.add(raw_link)
+                continue
+
+            # 2. Enrich salary and HR email if not present
+            text_bundle = f"{job.get('title', '')} {job.get('company', '')} {job.get('description', '')}"
+            if not job.get("salary"):
+                job["salary"] = extract_job_salary(text_bundle)
+            if not job.get("hr_email"):
+                job["hr_email"] = extract_hr_email(text_bundle)
+
+            # 3. Compute ATS skill fit badge (Feature 9)
+            match_res = calculate_skill_match_score(text_bundle, profile_data)
+            job["fit_badge"] = match_res.get("badge", "")
+            job["matched_skills"] = match_res.get("matched", [])
+
             new_jobs.append(job)
             mark_seen(norm_link)
             seen_jobs.add(norm_link)
