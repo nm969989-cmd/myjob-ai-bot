@@ -77,7 +77,7 @@
       "file_type": "code",
       "norm_label": "api_add_channel()",
       "source_file": "main.py",
-      "source_location": "L4589"
+      "source_location": "L4598"
     },
     {
       "id": "main_api_debug_bot",
@@ -89,7 +89,7 @@
       "file_type": "code",
       "norm_label": "api_debug_bot()",
       "source_file": "main.py",
-      "source_location": "L4168"
+      "source_location": "L4177"
     },
     {
       "id": "main_api_download_log",
@@ -101,7 +101,7 @@
       "file_type": "code",
       "norm_label": "api_download_log()",
       "source_file": "main.py",
-      "source_location": "L4396"
+      "source_location": "L4405"
     },
     {
       "id": "main_api_download_profile",
@@ -113,7 +113,7 @@
       "file_type": "code",
       "norm_label": "api_download_profile()",
       "source_file": "main.py",
-      "source_location": "L4583"
+      "source_location": "L4592"
     },
     {
       "id": "main_api_download_qa",
@@ -125,7 +125,7 @@
       "file_type": "code",
       "norm_label": "api_download_qa()",
       "source_file": "main.py",
-      "source_location": "L4576"
+      "source_location": "L4585"
     },
     {
       "id": "main_api_force_scan",
@@ -137,7 +137,7 @@
       "file_type": "code",
       "norm_label": "api_force_scan()",
       "source_file": "main.py",
-      "source_location": "L4202"
+      "source_location": "L4211"
     },
     {
       "id": "main_api_health_check",
@@ -149,7 +149,7 @@
       "file_type": "code",
       "norm_label": "api_health_check()",
       "source_file": "main.py",
-      "source_location": "L4554"
+      "source_location": "L4563"
     },
     {
       "id": "main_api_instahyre",
@@ -161,7 +161,7 @@
       "file_type": "code",
       "norm_label": "api_instahyre()",
       "source_file": "main.py",
-      "source_location": "L4213"
+      "source_location": "L4222"
     },
     {
       "id": "main_api_manual_apply",
@@ -173,7 +173,7 @@
       "file_type": "code",
       "norm_label": "api_manual_apply()",
       "source_file": "main.py",
-      "source_location": "L4497"
+      "source_location": "L4506"
     },
     {
       "id": "main_api_mark_crm",
@@ -185,7 +185,7 @@
       "file_type": "code",
       "norm_label": "api_mark_crm()",
       "source_file": "main.py",
-      "source_location": "L4639"
+      "source_location": "L4648"
     },
     {
       "id": "main_api_miniapp_jobs",
@@ -197,7 +197,7 @@
       "file_type": "code",
       "norm_label": "api_miniapp_jobs()",
       "source_file": "main.py",
-      "source_location": "L4416"
+      "source_location": "L4425"
     },
     {
       "id": "main_api_pause",
@@ -209,7 +209,7 @@
       "file_type": "code",
       "norm_label": "api_pause()",
       "source_file": "main.py",
-      "source_location": "L4373"
+      "source_location": "L4382"
     },
     {
       "id": "main_api_radar",
@@ -221,7 +221,7 @@
       "file_type": "code",
       "norm_label": "api_radar()",
       "source_file": "main.py",
-      "source_location": "L4141"
+      "source_location": "L4150"
     },
     {
       "id": "main_api_regenerate_resume",
@@ -233,7 +233,7 @@
       "file_type": "code",
       "norm_label": "api_regenerate_resume()",
       "source_file": "main.py",
-      "source_location": "L4535"
+      "source_location": "L4544"
     },
     {
       "id": "main_api_reset_history",
@@ -245,7 +245,7 @@
       "file_type": "code",
       "norm_label": "api_reset_history()",
       "source_file": "main.py",
-      "source_location": "L4543"
+      "source_location": "L4552"
     },
     {
       "id": "main_api_resume",
@@ -257,7 +257,7 @@
       "file_type": "code",
       "norm_label": "api_resume()",
       "source_file": "main.py",
-      "source_location": "L4380"
+      "source_location": "L4389"
     },
     {
       "id": "main_api_rotate_key",
@@ -269,7 +269,7 @@
       "file_type": "code",
       "norm_label": "api_rotate_key()",
       "source_file": "main.py",
-      "source_location": "L4389"
+      "source_location": "L4398"
     },
     {
       "id": "main_api_run_radar",
@@ -281,7 +281,7 @@
       "file_type": "code",
       "norm_label": "api_run_radar()",
       "source_file": "main.py",
-      "source_location": "L4151"
+      "source_location": "L4160"
     },
     {
       "id": "main_api_scan_inbox",
@@ -293,7 +293,7 @@
       "file_type": "code",
       "norm_label": "api_scan_inbox()",
       "source_file": "main.py",
-      "source_location": "L4626"
+      "source_location": "L4635"
     },
     {
       "id": "main_api_telegram_test",
@@ -305,7 +305,7 @@
       "file_type": "code",
       "norm_label": "api_telegram_test()",
       "source_file": "main.py",
-      "source_location": "L4190"
+      "source_location": "L4199"
     },
     {
       "id": "main_api_update_profile",
@@ -317,7 +317,7 @@
       "file_type": "code",
       "norm_label": "api_update_profile()",
       "source_file": "main.py",
-      "source_location": "L4518"
+      "source_location": "L4527"
     },
     {
       "id": "main_api_upload_auth",
@@ -329,7 +329,7 @@
       "file_type": "code",
       "norm_label": "api_upload_auth()",
       "source_file": "main.py",
-      "source_location": "L4614"
+      "source_location": "L4623"
     },
     {
       "id": "main_api_upload_resume",
@@ -341,7 +341,7 @@
       "file_type": "code",
       "norm_label": "api_upload_resume()",
       "source_file": "main.py",
-      "source_location": "L4602"
+      "source_location": "L4611"
     },
     {
       "id": "main_bypass_blog_redirect",
@@ -437,7 +437,7 @@
       "file_type": "code",
       "norm_label": "home()",
       "source_file": "main.py",
-      "source_location": "L4247"
+      "source_location": "L4256"
     },
     {
       "id": "main_live_action",
@@ -449,7 +449,7 @@
       "file_type": "code",
       "norm_label": "live_action()",
       "source_file": "main.py",
-      "source_location": "L4111"
+      "source_location": "L4120"
     },
     {
       "id": "main_live_handoff",
@@ -461,7 +461,7 @@
       "file_type": "code",
       "norm_label": "live_handoff()",
       "source_file": "main.py",
-      "source_location": "L4042"
+      "source_location": "L4051"
     },
     {
       "id": "main_live_resume",
@@ -473,7 +473,7 @@
       "file_type": "code",
       "norm_label": "live_resume()",
       "source_file": "main.py",
-      "source_location": "L4125"
+      "source_location": "L4134"
     },
     {
       "id": "main_live_screenshot",
@@ -485,7 +485,7 @@
       "file_type": "code",
       "norm_label": "live_screenshot()",
       "source_file": "main.py",
-      "source_location": "L4101"
+      "source_location": "L4110"
     },
     {
       "id": "main_load_chat_id",
@@ -545,7 +545,7 @@
       "file_type": "code",
       "norm_label": "serve_miniapp()",
       "source_file": "main.py",
-      "source_location": "L4405"
+      "source_location": "L4414"
     },
     {
       "id": "main_serve_screenshot",
@@ -557,7 +557,7 @@
       "file_type": "code",
       "norm_label": "serve_screenshot()",
       "source_file": "main.py",
-      "source_location": "L4163"
+      "source_location": "L4172"
     },
     {
       "id": "main_view_logs",
@@ -569,7 +569,7 @@
       "file_type": "code",
       "norm_label": "view_logs()",
       "source_file": "main.py",
-      "source_location": "L4131"
+      "source_location": "L4140"
     },
     {
       "id": "job_radar_api_request",
@@ -581,7 +581,7 @@
       "file_type": "code",
       "norm_label": "_api_request()",
       "source_file": "job_radar.py",
-      "source_location": "L165"
+      "source_location": "L180"
     },
     {
       "id": "job_radar_classify_location",
@@ -593,7 +593,7 @@
       "file_type": "code",
       "norm_label": "classify_location()",
       "source_file": "job_radar.py",
-      "source_location": "L264"
+      "source_location": "L277"
     },
     {
       "id": "job_radar_clean_html",
@@ -605,7 +605,7 @@
       "file_type": "code",
       "norm_label": "clean_html()",
       "source_file": "job_radar.py",
-      "source_location": "L186"
+      "source_location": "L201"
     },
     {
       "id": "job_radar_escape_md",
@@ -617,7 +617,7 @@
       "file_type": "code",
       "norm_label": "escape_md()",
       "source_file": "job_radar.py",
-      "source_location": "L193"
+      "source_location": "L208"
     },
     {
       "id": "job_radar_is_social_or_promo_link",
@@ -629,7 +629,7 @@
       "file_type": "code",
       "norm_label": "is_social_or_promo_link()",
       "source_file": "job_radar.py",
-      "source_location": "L352"
+      "source_location": "L362"
     },
     {
       "id": "job_radar_keyword_match",
@@ -641,7 +641,7 @@
       "file_type": "code",
       "norm_label": "_keyword_match()",
       "source_file": "job_radar.py",
-      "source_location": "L256"
+      "source_location": "L268"
     },
     {
       "id": "job_radar_load_seen_jobs",
@@ -653,7 +653,7 @@
       "file_type": "code",
       "norm_label": "load_seen_jobs()",
       "source_file": "job_radar.py",
-      "source_location": "L230"
+      "source_location": "L242"
     },
     {
       "id": "job_radar_make_job",
@@ -665,7 +665,7 @@
       "file_type": "code",
       "norm_label": "_make_job()",
       "source_file": "job_radar.py",
-      "source_location": "L320"
+      "source_location": "L330"
     },
     {
       "id": "job_radar_mark_seen",
@@ -677,7 +677,7 @@
       "file_type": "code",
       "norm_label": "mark_seen()",
       "source_file": "job_radar.py",
-      "source_location": "L241"
+      "source_location": "L253"
     },
     {
       "id": "job_radar_normalize_job_url",
@@ -689,7 +689,7 @@
       "file_type": "code",
       "norm_label": "normalize_job_url()",
       "source_file": "job_radar.py",
-      "source_location": "L198"
+      "source_location": "L214"
     },
     {
       "id": "job_radar_run_radar",
@@ -701,7 +701,7 @@
       "file_type": "code",
       "norm_label": "run_radar()",
       "source_file": "job_radar.py",
-      "source_location": "L1241"
+      "source_location": "L1251"
     },
     {
       "id": "job_radar_save_results",
@@ -713,7 +713,7 @@
       "file_type": "code",
       "norm_label": "save_results()",
       "source_file": "job_radar.py",
-      "source_location": "L248"
+      "source_location": "L260"
     },
     {
       "id": "job_radar_scan_single_channel_radar",
@@ -725,7 +725,7 @@
       "file_type": "code",
       "norm_label": "_scan_single_channel_radar()",
       "source_file": "job_radar.py",
-      "source_location": "L459"
+      "source_location": "L469"
     },
     {
       "id": "job_radar_scrape_adzuna_india",
@@ -737,7 +737,7 @@
       "file_type": "code",
       "norm_label": "scrape_adzuna_india()",
       "source_file": "job_radar.py",
-      "source_location": "L633"
+      "source_location": "L643"
     },
     {
       "id": "job_radar_scrape_arbeitnow",
@@ -749,7 +749,7 @@
       "file_type": "code",
       "norm_label": "scrape_arbeitnow()",
       "source_file": "job_radar.py",
-      "source_location": "L894"
+      "source_location": "L904"
     },
     {
       "id": "job_radar_scrape_foundit",
@@ -761,7 +761,7 @@
       "file_type": "code",
       "norm_label": "scrape_foundit()",
       "source_file": "job_radar.py",
-      "source_location": "L751"
+      "source_location": "L761"
     },
     {
       "id": "job_radar_scrape_jobicy",
@@ -773,7 +773,7 @@
       "file_type": "code",
       "norm_label": "scrape_jobicy()",
       "source_file": "job_radar.py",
-      "source_location": "L847"
+      "source_location": "L857"
     },
     {
       "id": "job_radar_scrape_linkedin_indeed",
@@ -785,7 +785,7 @@
       "file_type": "code",
       "norm_label": "scrape_linkedin_indeed()",
       "source_file": "job_radar.py",
-      "source_location": "L984"
+      "source_location": "L994"
     },
     {
       "id": "job_radar_scrape_remoteok",
@@ -797,7 +797,7 @@
       "file_type": "code",
       "norm_label": "scrape_remoteok()",
       "source_file": "job_radar.py",
-      "source_location": "L938"
+      "source_location": "L948"
     },
     {
       "id": "job_radar_scrape_remotive",
@@ -809,7 +809,7 @@
       "file_type": "code",
       "norm_label": "scrape_remotive()",
       "source_file": "job_radar.py",
-      "source_location": "L799"
+      "source_location": "L809"
     },
     {
       "id": "job_radar_scrape_telegram_channels_radar",
@@ -821,7 +821,7 @@
       "file_type": "code",
       "norm_label": "scrape_telegram_channels_radar()",
       "source_file": "job_radar.py",
-      "source_location": "L602"
+      "source_location": "L612"
     },
     {
       "id": "job_radar_scrape_unstop",
@@ -833,7 +833,7 @@
       "file_type": "code",
       "norm_label": "scrape_unstop()",
       "source_file": "job_radar.py",
-      "source_location": "L709"
+      "source_location": "L719"
     },
     {
       "id": "job_radar_send_radar_telegram",
@@ -845,7 +845,7 @@
       "file_type": "code",
       "norm_label": "send_radar_telegram()",
       "source_file": "job_radar.py",
-      "source_location": "L1050"
+      "source_location": "L1060"
     },
     {
       "id": "job_radar_unwrap_radar_direct_link",
@@ -857,7 +857,7 @@
       "file_type": "code",
       "norm_label": "unwrap_radar_direct_link()",
       "source_file": "job_radar.py",
-      "source_location": "L383"
+      "source_location": "L393"
     },
     {
       "id": "imap_test_test_email_connection",
@@ -1133,7 +1133,7 @@
       "file_type": "code",
       "norm_label": "clear_qa()",
       "source_file": "main.py",
-      "source_location": "L5246"
+      "source_location": "L5255"
     },
     {
       "id": "main_command_scan_inbox",
@@ -1145,7 +1145,7 @@
       "file_type": "code",
       "norm_label": "command_scan_inbox()",
       "source_file": "main.py",
-      "source_location": "L5021"
+      "source_location": "L5030"
     },
     {
       "id": "main_get_authorized_chat_ids",
@@ -1169,7 +1169,7 @@
       "file_type": "code",
       "norm_label": "handle_auto_apply()",
       "source_file": "main.py",
-      "source_location": "L5546"
+      "source_location": "L5555"
     },
     {
       "id": "main_handle_qa_button",
@@ -1181,7 +1181,7 @@
       "file_type": "code",
       "norm_label": "handle_qa_button()",
       "source_file": "main.py",
-      "source_location": "L5280"
+      "source_location": "L5289"
     },
     {
       "id": "main_is_authorized",
@@ -1229,7 +1229,7 @@
       "file_type": "code",
       "norm_label": "manual_apply()",
       "source_file": "main.py",
-      "source_location": "L5355"
+      "source_location": "L5364"
     },
     {
       "id": "main_pause_bot",
@@ -1241,7 +1241,7 @@
       "file_type": "code",
       "norm_label": "pause_bot()",
       "source_file": "main.py",
-      "source_location": "L4989"
+      "source_location": "L4998"
     },
     {
       "id": "main_ping_test",
@@ -1253,7 +1253,7 @@
       "file_type": "code",
       "norm_label": "ping_test()",
       "source_file": "main.py",
-      "source_location": "L5433"
+      "source_location": "L5442"
     },
     {
       "id": "main_resume_bot",
@@ -1265,7 +1265,7 @@
       "file_type": "code",
       "norm_label": "resume_bot()",
       "source_file": "main.py",
-      "source_location": "L4999"
+      "source_location": "L5008"
     },
     {
       "id": "main_save_answer",
@@ -1277,7 +1277,7 @@
       "file_type": "code",
       "norm_label": "save_answer()",
       "source_file": "main.py",
-      "source_location": "L5308"
+      "source_location": "L5317"
     },
     {
       "id": "main_save_chat_id",
@@ -1301,7 +1301,7 @@
       "file_type": "code",
       "norm_label": "_save_inline_answer()",
       "source_file": "main.py",
-      "source_location": "L5296"
+      "source_location": "L5305"
     },
     {
       "id": "main_save_qa_memory",
@@ -1325,7 +1325,7 @@
       "file_type": "code",
       "norm_label": "send_dashboard()",
       "source_file": "main.py",
-      "source_location": "L4767"
+      "source_location": "L4776"
     },
     {
       "id": "main_send_download",
@@ -1337,7 +1337,7 @@
       "file_type": "code",
       "norm_label": "send_download()",
       "source_file": "main.py",
-      "source_location": "L4975"
+      "source_location": "L4984"
     },
     {
       "id": "main_send_help",
@@ -1349,7 +1349,7 @@
       "file_type": "code",
       "norm_label": "send_help()",
       "source_file": "main.py",
-      "source_location": "L4818"
+      "source_location": "L4827"
     },
     {
       "id": "main_send_history",
@@ -1361,7 +1361,7 @@
       "file_type": "code",
       "norm_label": "send_history()",
       "source_file": "main.py",
-      "source_location": "L4946"
+      "source_location": "L4955"
     },
     {
       "id": "main_send_profile",
@@ -1373,7 +1373,7 @@
       "file_type": "code",
       "norm_label": "send_profile()",
       "source_file": "main.py",
-      "source_location": "L4939"
+      "source_location": "L4948"
     },
     {
       "id": "main_send_status",
@@ -1385,7 +1385,7 @@
       "file_type": "code",
       "norm_label": "send_status()",
       "source_file": "main.py",
-      "source_location": "L4906"
+      "source_location": "L4915"
     },
     {
       "id": "main_send_welcome",
@@ -1397,7 +1397,7 @@
       "file_type": "code",
       "norm_label": "send_welcome()",
       "source_file": "main.py",
-      "source_location": "L4804"
+      "source_location": "L4813"
     },
     {
       "id": "main_set_profile_field",
@@ -1409,7 +1409,7 @@
       "file_type": "code",
       "norm_label": "set_profile_field()",
       "source_file": "main.py",
-      "source_location": "L5220"
+      "source_location": "L5229"
     },
     {
       "id": "main_show_channels",
@@ -1421,7 +1421,7 @@
       "file_type": "code",
       "norm_label": "show_channels()",
       "source_file": "main.py",
-      "source_location": "L5400"
+      "source_location": "L5409"
     },
     {
       "id": "main_show_last_job",
@@ -1433,7 +1433,7 @@
       "file_type": "code",
       "norm_label": "show_last_job()",
       "source_file": "main.py",
-      "source_location": "L5415"
+      "source_location": "L5424"
     },
     {
       "id": "main_show_notion",
@@ -1445,7 +1445,7 @@
       "file_type": "code",
       "norm_label": "show_notion()",
       "source_file": "main.py",
-      "source_location": "L4876"
+      "source_location": "L4885"
     },
     {
       "id": "main_show_qa_memory",
@@ -1457,7 +1457,7 @@
       "file_type": "code",
       "norm_label": "show_qa_memory()",
       "source_file": "main.py",
-      "source_location": "L5341"
+      "source_location": "L5350"
     },
     {
       "id": "main_show_radar",
@@ -1469,7 +1469,7 @@
       "file_type": "code",
       "norm_label": "show_radar()",
       "source_file": "main.py",
-      "source_location": "L5438"
+      "source_location": "L5447"
     },
     {
       "id": "main_toggle_ghost_mode",
@@ -1481,7 +1481,7 @@
       "file_type": "code",
       "norm_label": "toggle_ghost_mode()",
       "source_file": "main.py",
-      "source_location": "L5009"
+      "source_location": "L5018"
     },
     {
       "id": "main_trigger_instahyre",
@@ -1493,7 +1493,7 @@
       "file_type": "code",
       "norm_label": "trigger_instahyre()",
       "source_file": "main.py",
-      "source_location": "L4852"
+      "source_location": "L4861"
     },
     {
       "id": "bot_features_check_for_interviews",
@@ -1517,7 +1517,7 @@
       "file_type": "code",
       "norm_label": "api_status()",
       "source_file": "main.py",
-      "source_location": "L4083"
+      "source_location": "L4092"
     },
     {
       "id": "main_daily_report_loop",
@@ -1529,7 +1529,7 @@
       "file_type": "code",
       "norm_label": "daily_report_loop()",
       "source_file": "main.py",
-      "source_location": "L5575"
+      "source_location": "L5584"
     },
     {
       "id": "main_handle_button",
@@ -1541,7 +1541,7 @@
       "file_type": "code",
       "norm_label": "handle_button()",
       "source_file": "main.py",
-      "source_location": "L5042"
+      "source_location": "L5051"
     },
     {
       "id": "main_is_sleep_time",
@@ -1565,7 +1565,7 @@
       "file_type": "code",
       "norm_label": "job_monitor_loop()",
       "source_file": "main.py",
-      "source_location": "L3855"
+      "source_location": "L3864"
     },
     {
       "id": "main_load_applied_jobs",
@@ -1673,7 +1673,7 @@
       "file_type": "code",
       "norm_label": "manual_radar_scan()",
       "source_file": "main.py",
-      "source_location": "L4668"
+      "source_location": "L4677"
     },
     {
       "id": "main_safe_load_json",
@@ -1793,7 +1793,7 @@
       "file_type": "code",
       "norm_label": "scrape_single_channel()",
       "source_file": "main.py",
-      "source_location": "L3512"
+      "source_location": "L3521"
     },
     {
       "id": "main_scrape_telegram_channel",
@@ -1805,7 +1805,7 @@
       "file_type": "code",
       "norm_label": "scrape_telegram_channel()",
       "source_file": "main.py",
-      "source_location": "L3787"
+      "source_location": "L3796"
     },
     {
       "id": "bot_optimizer_apply_rag_memory_fallback",
@@ -1913,7 +1913,7 @@
       "file_type": "code",
       "norm_label": "extract_structured_channel_job_details()",
       "source_file": "main.py",
-      "source_location": "L3283"
+      "source_location": "L3292"
     },
     {
       "id": "main_fetch_target_page_job_meta",
@@ -1925,7 +1925,7 @@
       "file_type": "code",
       "norm_label": "fetch_target_page_job_meta()",
       "source_file": "main.py",
-      "source_location": "L3170"
+      "source_location": "L3179"
     },
     {
       "id": "main_is_social_or_promo_link",
@@ -1937,7 +1937,7 @@
       "file_type": "code",
       "norm_label": "is_social_or_promo_link()",
       "source_file": "main.py",
-      "source_location": "L3138"
+      "source_location": "L3147"
     },
     {
       "id": "bot_features_sync_to_notion",
@@ -2009,7 +2009,7 @@
       "file_type": "code",
       "norm_label": "cleanup_system_resources()",
       "source_file": "main.py",
-      "source_location": "L5766"
+      "source_location": "L5775"
     },
     {
       "id": "main_get_gemini_client",
@@ -2033,7 +2033,7 @@
       "file_type": "code",
       "norm_label": "radar_loop()",
       "source_file": "main.py",
-      "source_location": "L5723"
+      "source_location": "L5732"
     },
     {
       "id": "main_run_telegram_polling",
@@ -2045,7 +2045,7 @@
       "file_type": "code",
       "norm_label": "run_telegram_polling()",
       "source_file": "main.py",
-      "source_location": "L5656"
+      "source_location": "L5665"
     },
     {
       "id": "main_thread_supervisor",
@@ -2057,7 +2057,7 @@
       "file_type": "code",
       "norm_label": "thread_supervisor()",
       "source_file": "main.py",
-      "source_location": "L5813"
+      "source_location": "L5822"
     },
     {
       "id": "enterprise_adapters_execute_greenhouse_adapter",
@@ -2294,7 +2294,7 @@
       "source_location": "L1320"
     },
     {
-      "id": "main_rationale_2425",
+      "id": "main_rationale_2434",
       "label": "# NOTE: json is already imported at top of file \u2014 do NOT re-import here",
       "_origin": "ast",
       "community": 0,
@@ -2302,7 +2302,7 @@
       "file_type": "rationale",
       "norm_label": "# note: json is already imported at top of file \u2014 do not re-import here",
       "source_file": "main.py",
-      "source_location": "L2425"
+      "source_location": "L2434"
     },
     {
       "id": "main_rationale_248",
@@ -2316,7 +2316,7 @@
       "source_location": "L248"
     },
     {
-      "id": "main_rationale_4142",
+      "id": "main_rationale_4151",
       "label": "Returns the last radar scan results from radar_results.json.",
       "_origin": "ast",
       "community": 0,
@@ -2324,10 +2324,10 @@
       "file_type": "rationale",
       "norm_label": "returns the last radar scan results from radar_results.json.",
       "source_file": "main.py",
-      "source_location": "L4142"
+      "source_location": "L4151"
     },
     {
-      "id": "main_rationale_4152",
+      "id": "main_rationale_4161",
       "label": "Triggers a fresh Job Radar scan in a background thread.",
       "_origin": "ast",
       "community": 0,
@@ -2335,10 +2335,10 @@
       "file_type": "rationale",
       "norm_label": "triggers a fresh job radar scan in a background thread.",
       "source_file": "main.py",
-      "source_location": "L4152"
+      "source_location": "L4161"
     },
     {
-      "id": "main_rationale_4191",
+      "id": "main_rationale_4200",
       "label": "Sends a test message to Telegram to verify bot connectivity.",
       "_origin": "ast",
       "community": 0,
@@ -2346,10 +2346,10 @@
       "file_type": "rationale",
       "norm_label": "sends a test message to telegram to verify bot connectivity.",
       "source_file": "main.py",
-      "source_location": "L4191"
+      "source_location": "L4200"
     },
     {
-      "id": "main_rationale_4203",
+      "id": "main_rationale_4212",
       "label": "Triggers an immediate Telegram channel scan.",
       "_origin": "ast",
       "community": 0,
@@ -2357,10 +2357,10 @@
       "file_type": "rationale",
       "norm_label": "triggers an immediate telegram channel scan.",
       "source_file": "main.py",
-      "source_location": "L4203"
+      "source_location": "L4212"
     },
     {
-      "id": "main_rationale_4214",
+      "id": "main_rationale_4223",
       "label": "Triggers the Instahyre mass-applier engine from the dashboard.",
       "_origin": "ast",
       "community": 0,
@@ -2368,7 +2368,7 @@
       "file_type": "rationale",
       "norm_label": "triggers the instahyre mass-applier engine from the dashboard.",
       "source_file": "main.py",
-      "source_location": "L4214"
+      "source_location": "L4223"
     },
     {
       "id": "main_rationale_566",
@@ -2448,7 +2448,7 @@
       "source_location": "L1"
     },
     {
-      "id": "job_radar_rationale_1051",
+      "id": "job_radar_rationale_1061",
       "label": "Sends consolidated Telegram messages with Tamil Nadu opportunities prioritized\u2026",
       "_origin": "ast",
       "community": 1,
@@ -2456,10 +2456,10 @@
       "file_type": "rationale",
       "norm_label": "sends consolidated telegram messages with tamil nadu opportunities prioritized...",
       "source_file": "job_radar.py",
-      "source_location": "L1051"
+      "source_location": "L1061"
     },
     {
-      "id": "job_radar_rationale_166",
+      "id": "job_radar_rationale_181",
       "label": "Robust HTTP request helper.",
       "_origin": "ast",
       "community": 1,
@@ -2467,10 +2467,10 @@
       "file_type": "rationale",
       "norm_label": "robust http request helper.",
       "source_file": "job_radar.py",
-      "source_location": "L166"
+      "source_location": "L181"
     },
     {
-      "id": "job_radar_rationale_199",
+      "id": "job_radar_rationale_215",
       "label": "Normalizes a job URL by removing tracking parameters (UTM, ref, fbclid),\u2026",
       "_origin": "ast",
       "community": 1,
@@ -2478,21 +2478,21 @@
       "file_type": "rationale",
       "norm_label": "normalizes a job url by removing tracking parameters (utm, ref, fbclid),...",
       "source_file": "job_radar.py",
-      "source_location": "L199"
+      "source_location": "L215"
     },
     {
-      "id": "job_radar_rationale_265",
-      "label": "Evaluates a location string and surrounding text context. Returns: (is_valid,\u2026",
+      "id": "job_radar_rationale_278",
+      "label": "Evaluates a location string and surrounding text context with pre-compiled\u2026",
       "_origin": "ast",
       "community": 1,
       "community_name": "job_radar.py",
       "file_type": "rationale",
-      "norm_label": "evaluates a location string and surrounding text context. returns: (is_valid,...",
+      "norm_label": "evaluates a location string and surrounding text context with pre-compiled...",
       "source_file": "job_radar.py",
-      "source_location": "L265"
+      "source_location": "L278"
     },
     {
-      "id": "job_radar_rationale_384",
+      "id": "job_radar_rationale_394",
       "label": "Unwraps URL shorteners, follows redirects, decodes Base64 params, and extracts\u2026",
       "_origin": "ast",
       "community": 1,
@@ -2500,10 +2500,10 @@
       "file_type": "rationale",
       "norm_label": "unwraps url shorteners, follows redirects, decodes base64 params, and extracts...",
       "source_file": "job_radar.py",
-      "source_location": "L384"
+      "source_location": "L394"
     },
     {
-      "id": "job_radar_rationale_460",
+      "id": "job_radar_rationale_470",
       "label": "Scrapes a single Telegram channel for the Job Radar.",
       "_origin": "ast",
       "community": 1,
@@ -2511,10 +2511,10 @@
       "file_type": "rationale",
       "norm_label": "scrapes a single telegram channel for the job radar.",
       "source_file": "job_radar.py",
-      "source_location": "L460"
+      "source_location": "L470"
     },
     {
-      "id": "job_radar_rationale_603",
+      "id": "job_radar_rationale_613",
       "label": "Scrapes all public Telegram job channels concurrently and extracts verified\u2026",
       "_origin": "ast",
       "community": 1,
@@ -2522,10 +2522,10 @@
       "file_type": "rationale",
       "norm_label": "scrapes all public telegram job channels concurrently and extracts verified...",
       "source_file": "job_radar.py",
-      "source_location": "L603"
+      "source_location": "L613"
     },
     {
-      "id": "job_radar_rationale_634",
+      "id": "job_radar_rationale_644",
       "label": "Queries Adzuna India API with focus on Tamil Nadu and India tech roles.",
       "_origin": "ast",
       "community": 1,
@@ -2533,10 +2533,10 @@
       "file_type": "rationale",
       "norm_label": "queries adzuna india api with focus on tamil nadu and india tech roles.",
       "source_file": "job_radar.py",
-      "source_location": "L634"
+      "source_location": "L644"
     },
     {
-      "id": "job_radar_rationale_710",
+      "id": "job_radar_rationale_720",
       "label": "Queries Unstop public job listings API for Indian fresher campus roles.",
       "_origin": "ast",
       "community": 1,
@@ -2544,10 +2544,10 @@
       "file_type": "rationale",
       "norm_label": "queries unstop public job listings api for indian fresher campus roles.",
       "source_file": "job_radar.py",
-      "source_location": "L710"
+      "source_location": "L720"
     },
     {
-      "id": "job_radar_rationale_752",
+      "id": "job_radar_rationale_762",
       "label": "Queries Foundit India for fresher software roles in Tamil Nadu & India.",
       "_origin": "ast",
       "community": 1,
@@ -2555,10 +2555,10 @@
       "file_type": "rationale",
       "norm_label": "queries foundit india for fresher software roles in tamil nadu & india.",
       "source_file": "job_radar.py",
-      "source_location": "L752"
+      "source_location": "L762"
     },
     {
-      "id": "job_radar_rationale_800",
+      "id": "job_radar_rationale_810",
       "label": "Queries Remotive API \u2014 strictly filtering for India & unrestricted Worldwide\u2026",
       "_origin": "ast",
       "community": 1,
@@ -2566,10 +2566,10 @@
       "file_type": "rationale",
       "norm_label": "queries remotive api \u2014 strictly filtering for india & unrestricted worldwide...",
       "source_file": "job_radar.py",
-      "source_location": "L800"
+      "source_location": "L810"
     },
     {
-      "id": "job_radar_rationale_848",
+      "id": "job_radar_rationale_858",
       "label": "Queries Jobicy API \u2014 strictly filtering for India & unrestricted Worldwide\u2026",
       "_origin": "ast",
       "community": 1,
@@ -2577,10 +2577,10 @@
       "file_type": "rationale",
       "norm_label": "queries jobicy api \u2014 strictly filtering for india & unrestricted worldwide...",
       "source_file": "job_radar.py",
-      "source_location": "L848"
+      "source_location": "L858"
     },
     {
-      "id": "job_radar_rationale_895",
+      "id": "job_radar_rationale_905",
       "label": "Queries Arbeitnow API \u2014 strictly filtering for India & unrestricted Worldwide\u2026",
       "_origin": "ast",
       "community": 1,
@@ -2588,10 +2588,10 @@
       "file_type": "rationale",
       "norm_label": "queries arbeitnow api \u2014 strictly filtering for india & unrestricted worldwide...",
       "source_file": "job_radar.py",
-      "source_location": "L895"
+      "source_location": "L905"
     },
     {
-      "id": "job_radar_rationale_939",
+      "id": "job_radar_rationale_949",
       "label": "Queries RemoteOK API \u2014 strictly filtering for India & unrestricted Worldwide\u2026",
       "_origin": "ast",
       "community": 1,
@@ -2599,10 +2599,10 @@
       "file_type": "rationale",
       "norm_label": "queries remoteok api \u2014 strictly filtering for india & unrestricted worldwide...",
       "source_file": "job_radar.py",
-      "source_location": "L939"
+      "source_location": "L949"
     },
     {
-      "id": "job_radar_rationale_985",
+      "id": "job_radar_rationale_995",
       "label": "Uses python-jobspy for Chennai, Coimbatore, Tamil Nadu & Bangalore India jobs.",
       "_origin": "ast",
       "community": 1,
@@ -2610,7 +2610,7 @@
       "file_type": "rationale",
       "norm_label": "uses python-jobspy for chennai, coimbatore, tamil nadu & bangalore india jobs.",
       "source_file": "job_radar.py",
-      "source_location": "L985"
+      "source_location": "L995"
     },
     {
       "id": "imap_test",
@@ -2899,7 +2899,7 @@
       "source_location": "L217"
     },
     {
-      "id": "main_rationale_4768",
+      "id": "main_rationale_4777",
       "label": "Renders the epic interactive control panel inside Telegram.",
       "_origin": "ast",
       "community": 3,
@@ -2907,7 +2907,7 @@
       "file_type": "rationale",
       "norm_label": "renders the epic interactive control panel inside telegram.",
       "source_file": "main.py",
-      "source_location": "L4768"
+      "source_location": "L4777"
     },
     {
       "id": "main_rationale_1218",
@@ -2921,7 +2921,7 @@
       "source_location": "L1218"
     },
     {
-      "id": "main_rationale_3513",
+      "id": "main_rationale_3522",
       "label": "Scrapes one Telegram public channel and triggers applications for new jobs.\u2026",
       "_origin": "ast",
       "community": 4,
@@ -2929,10 +2929,10 @@
       "file_type": "rationale",
       "norm_label": "scrapes one telegram public channel and triggers applications for new jobs....",
       "source_file": "main.py",
-      "source_location": "L3513"
+      "source_location": "L3522"
     },
     {
-      "id": "main_rationale_3788",
+      "id": "main_rationale_3797",
       "label": "Loops through all TARGET_CHANNELS and scrapes each one for new engineering\u2026",
       "_origin": "ast",
       "community": 4,
@@ -2940,10 +2940,10 @@
       "file_type": "rationale",
       "norm_label": "loops through all target_channels and scrapes each one for new engineering...",
       "source_file": "main.py",
-      "source_location": "L3788"
+      "source_location": "L3797"
     },
     {
-      "id": "main_rationale_4084",
+      "id": "main_rationale_4093",
       "label": "Live stats for dashboard widgets.",
       "_origin": "ast",
       "community": 4,
@@ -2951,10 +2951,10 @@
       "file_type": "rationale",
       "norm_label": "live stats for dashboard widgets.",
       "source_file": "main.py",
-      "source_location": "L4084"
+      "source_location": "L4093"
     },
     {
-      "id": "main_rationale_4669",
+      "id": "main_rationale_4678",
       "label": "Dedicated Radar Scan: 1. Scrapes the configured Telegram channel. 2. Fetches\u2026",
       "_origin": "ast",
       "community": 4,
@@ -2962,7 +2962,7 @@
       "file_type": "rationale",
       "norm_label": "dedicated radar scan: 1. scrapes the configured telegram channel. 2. fetches...",
       "source_file": "main.py",
-      "source_location": "L4669"
+      "source_location": "L4678"
     },
     {
       "id": "main_rationale_509",
@@ -2987,7 +2987,7 @@
       "source_location": "L536"
     },
     {
-      "id": "main_rationale_5576",
+      "id": "main_rationale_5585",
       "label": "Sends a daily summary at 9 AM and a weekly report every Monday.",
       "_origin": "ast",
       "community": 4,
@@ -2995,7 +2995,7 @@
       "file_type": "rationale",
       "norm_label": "sends a daily summary at 9 am and a weekly report every monday.",
       "source_file": "main.py",
-      "source_location": "L5576"
+      "source_location": "L5585"
     },
     {
       "id": "bot_optimizer",
@@ -3108,7 +3108,7 @@
       "source_location": "L602"
     },
     {
-      "id": "main_rationale_3139",
+      "id": "main_rationale_3148",
       "label": "Detects if a URL is a social media link, channel promo, parked domain, or non-\u2026",
       "_origin": "ast",
       "community": 5,
@@ -3116,10 +3116,10 @@
       "file_type": "rationale",
       "norm_label": "detects if a url is a social media link, channel promo, parked domain, or non-...",
       "source_file": "main.py",
-      "source_location": "L3139"
+      "source_location": "L3148"
     },
     {
-      "id": "main_rationale_3171",
+      "id": "main_rationale_3180",
       "label": "Fetches title, h1, and key meta from the actual destination webpage. Inspects\u2026",
       "_origin": "ast",
       "community": 5,
@@ -3127,10 +3127,10 @@
       "file_type": "rationale",
       "norm_label": "fetches title, h1, and key meta from the actual destination webpage. inspects...",
       "source_file": "main.py",
-      "source_location": "L3171"
+      "source_location": "L3180"
     },
     {
-      "id": "main_rationale_3284",
+      "id": "main_rationale_3293",
       "label": "Parses channel message text, target webpage, and direct URL to extract\u2026",
       "_origin": "ast",
       "community": 5,
@@ -3138,7 +3138,7 @@
       "file_type": "rationale",
       "norm_label": "parses channel message text, target webpage, and direct url to extract...",
       "source_file": "main.py",
-      "source_location": "L3284"
+      "source_location": "L3293"
     },
     {
       "id": "exception",
@@ -3185,7 +3185,7 @@
       "source_location": "L380"
     },
     {
-      "id": "main_rationale_5724",
+      "id": "main_rationale_5733",
       "label": "Background thread that runs the Job Radar scan every 6 hours and sends results\u2026",
       "_origin": "ast",
       "community": 6,
@@ -3193,10 +3193,10 @@
       "file_type": "rationale",
       "norm_label": "background thread that runs the job radar scan every 6 hours and sends results...",
       "source_file": "main.py",
-      "source_location": "L5724"
+      "source_location": "L5733"
     },
     {
-      "id": "main_rationale_5767",
+      "id": "main_rationale_5776",
       "label": "Kills orphaned browser processes and cleans cache to prevent resource leaks.",
       "_origin": "ast",
       "community": 6,
@@ -3204,10 +3204,10 @@
       "file_type": "rationale",
       "norm_label": "kills orphaned browser processes and cleans cache to prevent resource leaks.",
       "source_file": "main.py",
-      "source_location": "L5767"
+      "source_location": "L5776"
     },
     {
-      "id": "main_rationale_5814",
+      "id": "main_rationale_5823",
       "label": "Monitors and automatically restarts background threads if they crash.",
       "_origin": "ast",
       "community": 6,
@@ -3215,7 +3215,7 @@
       "file_type": "rationale",
       "norm_label": "monitors and automatically restarts background threads if they crash.",
       "source_file": "main.py",
-      "source_location": "L5814"
+      "source_location": "L5823"
     },
     {
       "id": "enterprise_adapters",
@@ -3601,7 +3601,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L237",
+      "source_location": "L249",
       "weight": 1.0
     },
     {
@@ -3613,7 +3613,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L327",
+      "source_location": "L337",
       "weight": 1.0
     },
     {
@@ -3625,7 +3625,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L332",
+      "source_location": "L342",
       "weight": 1.0
     },
     {
@@ -3637,7 +3637,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L242",
+      "source_location": "L254",
       "weight": 1.0
     },
     {
@@ -3649,7 +3649,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L1251",
+      "source_location": "L1261",
       "weight": 1.0
     },
     {
@@ -3661,7 +3661,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L1284",
+      "source_location": "L1294",
       "weight": 1.0
     },
     {
@@ -3673,7 +3673,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L1287",
+      "source_location": "L1297",
       "weight": 1.0
     },
     {
@@ -3685,7 +3685,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L1318",
+      "source_location": "L1328",
       "weight": 1.0
     },
     {
@@ -3697,36 +3697,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L1321",
+      "source_location": "L1331",
       "weight": 1.0
     },
     {
       "source": "job_radar_scan_single_channel_radar",
       "target": "job_radar_keyword_match",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "job_radar.py",
-      "source_location": "L484",
-      "weight": 1.0
-    },
-    {
-      "source": "job_radar_scan_single_channel_radar",
-      "target": "job_radar_classify_location",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "job_radar.py",
-      "source_location": "L487",
-      "weight": 1.0
-    },
-    {
-      "source": "job_radar_scan_single_channel_radar",
-      "target": "job_radar_is_social_or_promo_link",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3738,43 +3714,31 @@
     },
     {
       "source": "job_radar_scan_single_channel_radar",
+      "target": "job_radar_classify_location",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "job_radar.py",
+      "source_location": "L497",
+      "weight": 1.0
+    },
+    {
+      "source": "job_radar_scan_single_channel_radar",
+      "target": "job_radar_is_social_or_promo_link",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "job_radar.py",
+      "source_location": "L504",
+      "weight": 1.0
+    },
+    {
+      "source": "job_radar_scan_single_channel_radar",
       "target": "job_radar_unwrap_radar_direct_link",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "job_radar.py",
-      "source_location": "L566",
-      "weight": 1.0
-    },
-    {
-      "source": "job_radar_scan_single_channel_radar",
-      "target": "job_radar_clean_html",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "job_radar.py",
-      "source_location": "L570",
-      "weight": 1.0
-    },
-    {
-      "source": "job_radar_scan_single_channel_radar",
-      "target": "bot_optimizer_extract_job_salary",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "job_radar.py",
-      "source_location": "L575",
-      "weight": 1.0
-    },
-    {
-      "source": "job_radar_scan_single_channel_radar",
-      "target": "bot_optimizer_extract_hr_email",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -3786,6 +3750,42 @@
     },
     {
       "source": "job_radar_scan_single_channel_radar",
+      "target": "job_radar_clean_html",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "job_radar.py",
+      "source_location": "L580",
+      "weight": 1.0
+    },
+    {
+      "source": "job_radar_scan_single_channel_radar",
+      "target": "bot_optimizer_extract_job_salary",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "job_radar.py",
+      "source_location": "L585",
+      "weight": 1.0
+    },
+    {
+      "source": "job_radar_scan_single_channel_radar",
+      "target": "bot_optimizer_extract_hr_email",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "job_radar.py",
+      "source_location": "L586",
+      "weight": 1.0
+    },
+    {
+      "source": "job_radar_scan_single_channel_radar",
       "target": "job_radar_make_job",
       "relation": "calls",
       "_origin": "ast",
@@ -3793,7 +3793,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L578",
+      "source_location": "L588",
       "weight": 1.0
     },
     {
@@ -3805,7 +3805,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L661",
+      "source_location": "L671",
       "weight": 1.0
     },
     {
@@ -3817,7 +3817,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L673",
+      "source_location": "L683",
       "weight": 1.0
     },
     {
@@ -3829,7 +3829,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L676",
+      "source_location": "L686",
       "weight": 1.0
     },
     {
@@ -3841,7 +3841,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L680",
+      "source_location": "L690",
       "weight": 1.0
     },
     {
@@ -3853,7 +3853,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L689",
+      "source_location": "L699",
       "weight": 1.0
     },
     {
@@ -3865,7 +3865,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L900",
+      "source_location": "L910",
       "weight": 1.0
     },
     {
@@ -3877,7 +3877,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L913",
+      "source_location": "L923",
       "weight": 1.0
     },
     {
@@ -3889,7 +3889,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L917",
+      "source_location": "L927",
       "weight": 1.0
     },
     {
@@ -3901,7 +3901,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L921",
+      "source_location": "L931",
       "weight": 1.0
     },
     {
@@ -3913,7 +3913,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L922",
+      "source_location": "L932",
       "weight": 1.0
     },
     {
@@ -3925,7 +3925,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L775",
+      "source_location": "L785",
       "weight": 1.0
     },
     {
@@ -3937,7 +3937,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L779",
+      "source_location": "L789",
       "weight": 1.0
     },
     {
@@ -3949,7 +3949,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L783",
+      "source_location": "L793",
       "weight": 1.0
     },
     {
@@ -3961,7 +3961,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L784",
+      "source_location": "L794",
       "weight": 1.0
     },
     {
@@ -3973,7 +3973,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L853",
+      "source_location": "L863",
       "weight": 1.0
     },
     {
@@ -3985,7 +3985,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L865",
+      "source_location": "L875",
       "weight": 1.0
     },
     {
@@ -3997,7 +3997,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L868",
+      "source_location": "L878",
       "weight": 1.0
     },
     {
@@ -4009,7 +4009,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L872",
+      "source_location": "L882",
       "weight": 1.0
     },
     {
@@ -4021,48 +4021,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L877",
+      "source_location": "L887",
       "weight": 1.0
     },
     {
       "source": "job_radar_scrape_linkedin_indeed",
       "target": "job_radar_keyword_match",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "job_radar.py",
-      "source_location": "L1020",
-      "weight": 1.0
-    },
-    {
-      "source": "job_radar_scrape_linkedin_indeed",
-      "target": "job_radar_classify_location",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "job_radar.py",
-      "source_location": "L1023",
-      "weight": 1.0
-    },
-    {
-      "source": "job_radar_scrape_linkedin_indeed",
-      "target": "job_radar_clean_html",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "job_radar.py",
-      "source_location": "L1029",
-      "weight": 1.0
-    },
-    {
-      "source": "job_radar_scrape_linkedin_indeed",
-      "target": "job_radar_make_job",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4074,6 +4038,42 @@
     },
     {
       "source": "job_radar_scrape_linkedin_indeed",
+      "target": "job_radar_classify_location",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "job_radar.py",
+      "source_location": "L1033",
+      "weight": 1.0
+    },
+    {
+      "source": "job_radar_scrape_linkedin_indeed",
+      "target": "job_radar_clean_html",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "job_radar.py",
+      "source_location": "L1039",
+      "weight": 1.0
+    },
+    {
+      "source": "job_radar_scrape_linkedin_indeed",
+      "target": "job_radar_make_job",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "job_radar.py",
+      "source_location": "L1040",
+      "weight": 1.0
+    },
+    {
+      "source": "job_radar_scrape_linkedin_indeed",
       "target": "job_radar_normalize_job_url",
       "relation": "calls",
       "_origin": "ast",
@@ -4081,7 +4081,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L1031",
+      "source_location": "L1041",
       "weight": 1.0
     },
     {
@@ -4093,7 +4093,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L943",
+      "source_location": "L953",
       "weight": 1.0
     },
     {
@@ -4105,7 +4105,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L955",
+      "source_location": "L965",
       "weight": 1.0
     },
     {
@@ -4117,7 +4117,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L958",
+      "source_location": "L968",
       "weight": 1.0
     },
     {
@@ -4129,7 +4129,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L962",
+      "source_location": "L972",
       "weight": 1.0
     },
     {
@@ -4141,7 +4141,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L967",
+      "source_location": "L977",
       "weight": 1.0
     },
     {
@@ -4153,7 +4153,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L807",
+      "source_location": "L817",
       "weight": 1.0
     },
     {
@@ -4165,7 +4165,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L819",
+      "source_location": "L829",
       "weight": 1.0
     },
     {
@@ -4177,7 +4177,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L822",
+      "source_location": "L832",
       "weight": 1.0
     },
     {
@@ -4189,7 +4189,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L826",
+      "source_location": "L836",
       "weight": 1.0
     },
     {
@@ -4201,7 +4201,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L828",
+      "source_location": "L838",
       "weight": 1.0
     },
     {
@@ -4213,7 +4213,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L715",
+      "source_location": "L725",
       "weight": 1.0
     },
     {
@@ -4225,7 +4225,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L728",
+      "source_location": "L738",
       "weight": 1.0
     },
     {
@@ -4237,7 +4237,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L731",
+      "source_location": "L741",
       "weight": 1.0
     },
     {
@@ -4249,7 +4249,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L735",
+      "source_location": "L745",
       "weight": 1.0
     },
     {
@@ -4261,7 +4261,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L736",
+      "source_location": "L746",
       "weight": 1.0
     },
     {
@@ -4273,7 +4273,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L388",
+      "source_location": "L398",
       "weight": 1.0
     },
     {
@@ -4285,7 +4285,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "job_radar.py",
-      "source_location": "L402",
+      "source_location": "L412",
       "weight": 1.0
     },
     {
@@ -4333,7 +4333,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4184",
+      "source_location": "L4193",
       "weight": 1.0
     },
     {
@@ -4345,7 +4345,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4215",
+      "source_location": "L4224",
       "weight": 1.0
     },
     {
@@ -4357,7 +4357,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4503",
+      "source_location": "L4512",
       "weight": 1.0
     },
     {
@@ -4369,7 +4369,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4432",
+      "source_location": "L4441",
       "weight": 1.0
     },
     {
@@ -4381,7 +4381,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4436",
+      "source_location": "L4445",
       "weight": 1.0
     },
     {
@@ -4393,7 +4393,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4390",
+      "source_location": "L4399",
       "weight": 1.0
     },
     {
@@ -4405,7 +4405,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4086",
+      "source_location": "L4095",
       "weight": 1.0
     },
     {
@@ -4417,7 +4417,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4087",
+      "source_location": "L4096",
       "weight": 1.0
     },
     {
@@ -4429,7 +4429,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4192",
+      "source_location": "L4201",
       "weight": 1.0
     },
     {
@@ -4441,7 +4441,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4523",
+      "source_location": "L4532",
       "weight": 1.0
     },
     {
@@ -4537,7 +4537,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5247",
+      "source_location": "L5256",
       "weight": 1.0
     },
     {
@@ -4549,7 +4549,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5249",
+      "source_location": "L5258",
       "weight": 1.0
     },
     {
@@ -4561,7 +4561,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5265",
+      "source_location": "L5274",
       "weight": 1.0
     },
     {
@@ -4573,7 +4573,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5579",
+      "source_location": "L5588",
       "weight": 1.0
     },
     {
@@ -4585,7 +4585,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5582",
+      "source_location": "L5591",
       "weight": 1.0
     },
     {
@@ -4597,7 +4597,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5585",
+      "source_location": "L5594",
       "weight": 1.0
     },
     {
@@ -4609,7 +4609,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5640",
+      "source_location": "L5649",
       "weight": 1.0
     },
     {
@@ -4621,7 +4621,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3295",
+      "source_location": "L3304",
       "weight": 1.0
     },
     {
@@ -4633,7 +4633,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3386",
+      "source_location": "L3395",
       "weight": 1.0
     },
     {
@@ -4645,7 +4645,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3395",
+      "source_location": "L3404",
       "weight": 1.0
     },
     {
@@ -4657,7 +4657,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3417",
+      "source_location": "L3426",
       "weight": 1.0
     },
     {
@@ -4669,7 +4669,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3474",
+      "source_location": "L3483",
       "weight": 1.0
     },
     {
@@ -4681,7 +4681,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3493",
+      "source_location": "L3502",
       "weight": 1.0
     },
     {
@@ -4693,7 +4693,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3175",
+      "source_location": "L3184",
       "weight": 1.0
     },
     {
@@ -4729,7 +4729,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5045",
+      "source_location": "L5054",
       "weight": 1.0
     },
     {
@@ -4741,7 +4741,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5074",
+      "source_location": "L5083",
       "weight": 1.0
     },
     {
@@ -4753,7 +4753,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5075",
+      "source_location": "L5084",
       "weight": 1.0
     },
     {
@@ -4765,7 +4765,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5140",
+      "source_location": "L5149",
       "weight": 1.0
     },
     {
@@ -4777,7 +4777,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5160",
+      "source_location": "L5169",
       "weight": 1.0
     },
     {
@@ -4789,7 +4789,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5282",
+      "source_location": "L5291",
       "weight": 1.0
     },
     {
@@ -4801,7 +4801,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5294",
+      "source_location": "L5303",
       "weight": 1.0
     },
     {
@@ -4813,7 +4813,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4248",
+      "source_location": "L4257",
       "weight": 1.0
     },
     {
@@ -4825,7 +4825,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4249",
+      "source_location": "L4258",
       "weight": 1.0
     },
     {
@@ -4837,7 +4837,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4250",
+      "source_location": "L4259",
       "weight": 1.0
     },
     {
@@ -4849,7 +4849,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4252",
+      "source_location": "L4261",
       "weight": 1.0
     },
     {
@@ -4885,7 +4885,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3864",
+      "source_location": "L3873",
       "weight": 1.0
     },
     {
@@ -4897,7 +4897,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3871",
+      "source_location": "L3880",
       "weight": 1.0
     },
     {
@@ -4909,7 +4909,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3873",
+      "source_location": "L3882",
       "weight": 1.0
     },
     {
@@ -4921,7 +4921,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3896",
+      "source_location": "L3905",
       "weight": 1.0
     },
     {
@@ -4933,7 +4933,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3974",
+      "source_location": "L3983",
       "weight": 1.0
     },
     {
@@ -5101,7 +5101,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5356",
+      "source_location": "L5365",
       "weight": 1.0
     },
     {
@@ -5113,7 +5113,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4680",
+      "source_location": "L4689",
       "weight": 1.0
     },
     {
@@ -5125,7 +5125,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4686",
+      "source_location": "L4695",
       "weight": 1.0
     },
     {
@@ -5137,7 +5137,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4728",
+      "source_location": "L4737",
       "weight": 1.0
     },
     {
@@ -5149,7 +5149,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4990",
+      "source_location": "L4999",
       "weight": 1.0
     },
     {
@@ -5161,7 +5161,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5730",
+      "source_location": "L5739",
       "weight": 1.0
     },
     {
@@ -5173,7 +5173,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5734",
+      "source_location": "L5743",
       "weight": 1.0
     },
     {
@@ -5185,7 +5185,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5748",
+      "source_location": "L5757",
       "weight": 1.0
     },
     {
@@ -5197,7 +5197,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5751",
+      "source_location": "L5760",
       "weight": 1.0
     },
     {
@@ -5209,7 +5209,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5000",
+      "source_location": "L5009",
       "weight": 1.0
     },
     {
@@ -5293,7 +5293,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L1918",
+      "source_location": "L1927",
       "weight": 1.0
     },
     {
@@ -5305,7 +5305,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2043",
+      "source_location": "L2052",
       "weight": 1.0
     },
     {
@@ -5317,7 +5317,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2046",
+      "source_location": "L2055",
       "weight": 1.0
     },
     {
@@ -5329,7 +5329,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2052",
+      "source_location": "L2061",
       "weight": 1.0
     },
     {
@@ -5341,7 +5341,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2088",
+      "source_location": "L2097",
       "weight": 1.0
     },
     {
@@ -5353,7 +5353,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2089",
+      "source_location": "L2098",
       "weight": 1.0
     },
     {
@@ -5365,7 +5365,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2116",
+      "source_location": "L2125",
       "weight": 1.0
     },
     {
@@ -5377,7 +5377,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2218",
+      "source_location": "L2227",
       "weight": 1.0
     },
     {
@@ -5389,7 +5389,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2224",
+      "source_location": "L2233",
       "weight": 1.0
     },
     {
@@ -5401,7 +5401,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2227",
+      "source_location": "L2236",
       "weight": 1.0
     },
     {
@@ -5413,7 +5413,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2228",
+      "source_location": "L2237",
       "weight": 1.0
     },
     {
@@ -5425,7 +5425,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2237",
+      "source_location": "L2246",
       "weight": 1.0
     },
     {
@@ -5437,7 +5437,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2246",
+      "source_location": "L2255",
       "weight": 1.0
     },
     {
@@ -5449,7 +5449,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2250",
+      "source_location": "L2259",
       "weight": 1.0
     },
     {
@@ -5461,7 +5461,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2284",
+      "source_location": "L2293",
       "weight": 1.0
     },
     {
@@ -5473,7 +5473,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2369",
+      "source_location": "L2378",
       "weight": 1.0
     },
     {
@@ -5485,7 +5485,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2371",
+      "source_location": "L2380",
       "weight": 1.0
     },
     {
@@ -5497,7 +5497,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2471",
+      "source_location": "L2480",
       "weight": 1.0
     },
     {
@@ -5509,7 +5509,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2556",
+      "source_location": "L2565",
       "weight": 1.0
     },
     {
@@ -5521,7 +5521,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2626",
+      "source_location": "L2635",
       "weight": 1.0
     },
     {
@@ -5533,7 +5533,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2859",
+      "source_location": "L2868",
       "weight": 1.0
     },
     {
@@ -5545,7 +5545,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2962",
+      "source_location": "L2971",
       "weight": 1.0
     },
     {
@@ -5557,7 +5557,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2976",
+      "source_location": "L2985",
       "weight": 1.0
     },
     {
@@ -5569,7 +5569,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3055",
+      "source_location": "L3064",
       "weight": 1.0
     },
     {
@@ -5581,7 +5581,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3065",
+      "source_location": "L3074",
       "weight": 1.0
     },
     {
@@ -5593,7 +5593,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5309",
+      "source_location": "L5318",
       "weight": 1.0
     },
     {
@@ -5605,7 +5605,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5325",
+      "source_location": "L5334",
       "weight": 1.0
     },
     {
@@ -5617,7 +5617,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5333",
+      "source_location": "L5342",
       "weight": 1.0
     },
     {
@@ -5629,7 +5629,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5335",
+      "source_location": "L5344",
       "weight": 1.0
     },
     {
@@ -5713,7 +5713,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5301",
+      "source_location": "L5310",
       "weight": 1.0
     },
     {
@@ -5725,7 +5725,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5303",
+      "source_location": "L5312",
       "weight": 1.0
     },
     {
@@ -5809,7 +5809,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3523",
+      "source_location": "L3532",
       "weight": 1.0
     },
     {
@@ -5821,7 +5821,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3526",
+      "source_location": "L3535",
       "weight": 1.0
     },
     {
@@ -5833,7 +5833,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3536",
+      "source_location": "L3545",
       "weight": 1.0
     },
     {
@@ -5845,7 +5845,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3557",
+      "source_location": "L3566",
       "weight": 1.0
     },
     {
@@ -5857,7 +5857,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3585",
+      "source_location": "L3594",
       "weight": 1.0
     },
     {
@@ -5869,7 +5869,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3589",
+      "source_location": "L3598",
       "weight": 1.0
     },
     {
@@ -5881,7 +5881,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3595",
+      "source_location": "L3604",
       "weight": 1.0
     },
     {
@@ -5893,7 +5893,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3622",
+      "source_location": "L3631",
       "weight": 1.0
     },
     {
@@ -5905,7 +5905,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3628",
+      "source_location": "L3637",
       "weight": 1.0
     },
     {
@@ -5917,7 +5917,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3633",
+      "source_location": "L3642",
       "weight": 1.0
     },
     {
@@ -5929,7 +5929,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3678",
+      "source_location": "L3687",
       "weight": 1.0
     },
     {
@@ -5941,7 +5941,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3754",
+      "source_location": "L3763",
       "weight": 1.0
     },
     {
@@ -5953,7 +5953,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3756",
+      "source_location": "L3765",
       "weight": 1.0
     },
     {
@@ -5965,7 +5965,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3760",
+      "source_location": "L3769",
       "weight": 1.0
     },
     {
@@ -5977,7 +5977,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3761",
+      "source_location": "L3770",
       "weight": 1.0
     },
     {
@@ -5989,7 +5989,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3766",
+      "source_location": "L3775",
       "weight": 1.0
     },
     {
@@ -6001,7 +6001,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3797",
+      "source_location": "L3806",
       "weight": 1.0
     },
     {
@@ -6013,36 +6013,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3804",
+      "source_location": "L3813",
       "weight": 1.0
     },
     {
       "source": "main_scrape_telegram_channel",
       "target": "main_load_applied_jobs",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "main.py",
-      "source_location": "L3805",
-      "weight": 1.0
-    },
-    {
-      "source": "main_scrape_telegram_channel",
-      "target": "main_load_retry_queue",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "main.py",
-      "source_location": "L3808",
-      "weight": 1.0
-    },
-    {
-      "source": "main_scrape_telegram_channel",
-      "target": "main_run_playwright_apply",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -6054,7 +6030,7 @@
     },
     {
       "source": "main_scrape_telegram_channel",
-      "target": "main_log_job",
+      "target": "main_load_retry_queue",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -6066,6 +6042,30 @@
     },
     {
       "source": "main_scrape_telegram_channel",
+      "target": "main_run_playwright_apply",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "main.py",
+      "source_location": "L3823",
+      "weight": 1.0
+    },
+    {
+      "source": "main_scrape_telegram_channel",
+      "target": "main_log_job",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "main.py",
+      "source_location": "L3826",
+      "weight": 1.0
+    },
+    {
+      "source": "main_scrape_telegram_channel",
       "target": "main_save_retry_queue",
       "relation": "calls",
       "_origin": "ast",
@@ -6073,7 +6073,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3824",
+      "source_location": "L3833",
       "weight": 1.0
     },
     {
@@ -6085,7 +6085,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L3844",
+      "source_location": "L3853",
       "weight": 1.0
     },
     {
@@ -6097,7 +6097,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4769",
+      "source_location": "L4778",
       "weight": 1.0
     },
     {
@@ -6109,7 +6109,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4976",
+      "source_location": "L4985",
       "weight": 1.0
     },
     {
@@ -6121,7 +6121,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4819",
+      "source_location": "L4828",
       "weight": 1.0
     },
     {
@@ -6133,7 +6133,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4947",
+      "source_location": "L4956",
       "weight": 1.0
     },
     {
@@ -6145,7 +6145,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4940",
+      "source_location": "L4949",
       "weight": 1.0
     },
     {
@@ -6157,7 +6157,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4941",
+      "source_location": "L4950",
       "weight": 1.0
     },
     {
@@ -6169,7 +6169,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4907",
+      "source_location": "L4916",
       "weight": 1.0
     },
     {
@@ -6181,7 +6181,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4908",
+      "source_location": "L4917",
       "weight": 1.0
     },
     {
@@ -6193,7 +6193,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4909",
+      "source_location": "L4918",
       "weight": 1.0
     },
     {
@@ -6205,7 +6205,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4805",
+      "source_location": "L4814",
       "weight": 1.0
     },
     {
@@ -6217,7 +6217,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5221",
+      "source_location": "L5230",
       "weight": 1.0
     },
     {
@@ -6229,7 +6229,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5225",
+      "source_location": "L5234",
       "weight": 1.0
     },
     {
@@ -6241,7 +6241,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5401",
+      "source_location": "L5410",
       "weight": 1.0
     },
     {
@@ -6253,7 +6253,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5402",
+      "source_location": "L5411",
       "weight": 1.0
     },
     {
@@ -6265,7 +6265,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5403",
+      "source_location": "L5412",
       "weight": 1.0
     },
     {
@@ -6277,7 +6277,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5416",
+      "source_location": "L5425",
       "weight": 1.0
     },
     {
@@ -6289,7 +6289,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5417",
+      "source_location": "L5426",
       "weight": 1.0
     },
     {
@@ -6301,7 +6301,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4877",
+      "source_location": "L4886",
       "weight": 1.0
     },
     {
@@ -6313,7 +6313,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4883",
+      "source_location": "L4892",
       "weight": 1.0
     },
     {
@@ -6325,7 +6325,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5342",
+      "source_location": "L5351",
       "weight": 1.0
     },
     {
@@ -6337,7 +6337,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5343",
+      "source_location": "L5352",
       "weight": 1.0
     },
     {
@@ -6349,7 +6349,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5439",
+      "source_location": "L5448",
       "weight": 1.0
     },
     {
@@ -6361,7 +6361,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5841",
+      "source_location": "L5850",
       "weight": 1.0
     },
     {
@@ -6373,7 +6373,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L5011",
+      "source_location": "L5020",
       "weight": 1.0
     },
     {
@@ -6385,7 +6385,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4853",
+      "source_location": "L4862",
       "weight": 1.0
     },
     {
@@ -6397,7 +6397,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4588",
+      "source_location": "L4597",
       "weight": 1.0
     },
     {
@@ -6409,7 +6409,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4167",
+      "source_location": "L4176",
       "weight": 1.0
     },
     {
@@ -6421,7 +6421,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4395",
+      "source_location": "L4404",
       "weight": 1.0
     },
     {
@@ -6433,7 +6433,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4582",
+      "source_location": "L4591",
       "weight": 1.0
     },
     {
@@ -6445,7 +6445,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4575",
+      "source_location": "L4584",
       "weight": 1.0
     },
     {
@@ -6457,7 +6457,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4201",
+      "source_location": "L4210",
       "weight": 1.0
     },
     {
@@ -6469,7 +6469,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4553",
+      "source_location": "L4562",
       "weight": 1.0
     },
     {
@@ -6481,7 +6481,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4212",
+      "source_location": "L4221",
       "weight": 1.0
     },
     {
@@ -6493,7 +6493,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4496",
+      "source_location": "L4505",
       "weight": 1.0
     },
     {
@@ -6505,7 +6505,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4638",
+      "source_location": "L4647",
       "weight": 1.0
     },
     {
@@ -6517,7 +6517,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4415",
+      "source_location": "L4424",
       "weight": 1.0
     },
     {
@@ -6529,7 +6529,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4372",
+      "source_location": "L4381",
       "weight": 1.0
     },
     {
@@ -6541,7 +6541,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4140",
+      "source_location": "L4149",
       "weight": 1.0
     },
     {
@@ -6553,7 +6553,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4534",
+      "source_location": "L4543",
       "weight": 1.0
     },
     {
@@ -6565,7 +6565,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4542",
+      "source_location": "L4551",
       "weight": 1.0
     },
     {
@@ -6577,7 +6577,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4379",
+      "source_location": "L4388",
       "weight": 1.0
     },
     {
@@ -6589,7 +6589,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4388",
+      "source_location": "L4397",
       "weight": 1.0
     },
     {
@@ -6601,7 +6601,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4150",
+      "source_location": "L4159",
       "weight": 1.0
     },
     {
@@ -6613,7 +6613,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4625",
+      "source_location": "L4634",
       "weight": 1.0
     },
     {
@@ -6625,7 +6625,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4082",
+      "source_location": "L4091",
       "weight": 1.0
     },
     {
@@ -6637,7 +6637,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4189",
+      "source_location": "L4198",
       "weight": 1.0
     },
     {
@@ -6649,7 +6649,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4517",
+      "source_location": "L4526",
       "weight": 1.0
     },
     {
@@ -6661,7 +6661,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4613",
+      "source_location": "L4622",
       "weight": 1.0
     },
     {
@@ -6673,7 +6673,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4601",
+      "source_location": "L4610",
       "weight": 1.0
     },
     {
@@ -6685,7 +6685,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5244",
+      "source_location": "L5253",
       "weight": 1.0
     },
     {
@@ -6697,7 +6697,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5245",
+      "source_location": "L5254",
       "weight": 1.0
     },
     {
@@ -6709,7 +6709,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5019",
+      "source_location": "L5028",
       "weight": 1.0
     },
     {
@@ -6721,7 +6721,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5020",
+      "source_location": "L5029",
       "weight": 1.0
     },
     {
@@ -6733,7 +6733,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5544",
+      "source_location": "L5553",
       "weight": 1.0
     },
     {
@@ -6745,7 +6745,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5545",
+      "source_location": "L5554",
       "weight": 1.0
     },
     {
@@ -6757,7 +6757,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5040",
+      "source_location": "L5049",
       "weight": 1.0
     },
     {
@@ -6769,7 +6769,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5041",
+      "source_location": "L5050",
       "weight": 1.0
     },
     {
@@ -6781,7 +6781,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5278",
+      "source_location": "L5287",
       "weight": 1.0
     },
     {
@@ -6793,7 +6793,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5279",
+      "source_location": "L5288",
       "weight": 1.0
     },
     {
@@ -6805,7 +6805,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4246",
+      "source_location": "L4255",
       "weight": 1.0
     },
     {
@@ -6817,7 +6817,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4110",
+      "source_location": "L4119",
       "weight": 1.0
     },
     {
@@ -6829,7 +6829,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4041",
+      "source_location": "L4050",
       "weight": 1.0
     },
     {
@@ -6841,7 +6841,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4124",
+      "source_location": "L4133",
       "weight": 1.0
     },
     {
@@ -6853,7 +6853,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4100",
+      "source_location": "L4109",
       "weight": 1.0
     },
     {
@@ -6865,7 +6865,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5353",
+      "source_location": "L5362",
       "weight": 1.0
     },
     {
@@ -6877,7 +6877,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5354",
+      "source_location": "L5363",
       "weight": 1.0
     },
     {
@@ -6889,48 +6889,12 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4987",
+      "source_location": "L4996",
       "weight": 1.0
     },
     {
       "source": "main_pause_bot",
       "target": "main_admin_only",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "decorator",
-      "source_file": "main.py",
-      "source_location": "L4988",
-      "weight": 1.0
-    },
-    {
-      "source": "main_ping_test",
-      "target": "message_handler",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "decorator",
-      "source_file": "main.py",
-      "source_location": "L5431",
-      "weight": 1.0
-    },
-    {
-      "source": "main_ping_test",
-      "target": "main_admin_only",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "decorator",
-      "source_file": "main.py",
-      "source_location": "L5432",
-      "weight": 1.0
-    },
-    {
-      "source": "main_resume_bot",
-      "target": "message_handler",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -6941,6 +6905,42 @@
       "weight": 1.0
     },
     {
+      "source": "main_ping_test",
+      "target": "message_handler",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "decorator",
+      "source_file": "main.py",
+      "source_location": "L5440",
+      "weight": 1.0
+    },
+    {
+      "source": "main_ping_test",
+      "target": "main_admin_only",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "decorator",
+      "source_file": "main.py",
+      "source_location": "L5441",
+      "weight": 1.0
+    },
+    {
+      "source": "main_resume_bot",
+      "target": "message_handler",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "decorator",
+      "source_file": "main.py",
+      "source_location": "L5006",
+      "weight": 1.0
+    },
+    {
       "source": "main_resume_bot",
       "target": "main_admin_only",
       "relation": "references",
@@ -6949,7 +6949,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4998",
+      "source_location": "L5007",
       "weight": 1.0
     },
     {
@@ -6961,7 +6961,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5306",
+      "source_location": "L5315",
       "weight": 1.0
     },
     {
@@ -6973,7 +6973,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5307",
+      "source_location": "L5316",
       "weight": 1.0
     },
     {
@@ -6985,7 +6985,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4765",
+      "source_location": "L4774",
       "weight": 1.0
     },
     {
@@ -6997,7 +6997,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4766",
+      "source_location": "L4775",
       "weight": 1.0
     },
     {
@@ -7009,7 +7009,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4973",
+      "source_location": "L4982",
       "weight": 1.0
     },
     {
@@ -7021,7 +7021,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4974",
+      "source_location": "L4983",
       "weight": 1.0
     },
     {
@@ -7033,7 +7033,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4816",
+      "source_location": "L4825",
       "weight": 1.0
     },
     {
@@ -7045,7 +7045,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4817",
+      "source_location": "L4826",
       "weight": 1.0
     },
     {
@@ -7057,7 +7057,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4944",
+      "source_location": "L4953",
       "weight": 1.0
     },
     {
@@ -7069,7 +7069,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4945",
+      "source_location": "L4954",
       "weight": 1.0
     },
     {
@@ -7081,7 +7081,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4937",
+      "source_location": "L4946",
       "weight": 1.0
     },
     {
@@ -7093,7 +7093,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4938",
+      "source_location": "L4947",
       "weight": 1.0
     },
     {
@@ -7105,7 +7105,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4904",
+      "source_location": "L4913",
       "weight": 1.0
     },
     {
@@ -7117,7 +7117,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4905",
+      "source_location": "L4914",
       "weight": 1.0
     },
     {
@@ -7129,7 +7129,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4802",
+      "source_location": "L4811",
       "weight": 1.0
     },
     {
@@ -7141,7 +7141,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4803",
+      "source_location": "L4812",
       "weight": 1.0
     },
     {
@@ -7153,7 +7153,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4404",
+      "source_location": "L4413",
       "weight": 1.0
     },
     {
@@ -7165,7 +7165,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4162",
+      "source_location": "L4171",
       "weight": 1.0
     },
     {
@@ -7177,7 +7177,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5218",
+      "source_location": "L5227",
       "weight": 1.0
     },
     {
@@ -7189,7 +7189,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5219",
+      "source_location": "L5228",
       "weight": 1.0
     },
     {
@@ -7201,7 +7201,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5398",
+      "source_location": "L5407",
       "weight": 1.0
     },
     {
@@ -7213,7 +7213,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5399",
+      "source_location": "L5408",
       "weight": 1.0
     },
     {
@@ -7225,7 +7225,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5413",
+      "source_location": "L5422",
       "weight": 1.0
     },
     {
@@ -7237,7 +7237,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5414",
+      "source_location": "L5423",
       "weight": 1.0
     },
     {
@@ -7249,7 +7249,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4874",
+      "source_location": "L4883",
       "weight": 1.0
     },
     {
@@ -7261,7 +7261,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4875",
+      "source_location": "L4884",
       "weight": 1.0
     },
     {
@@ -7273,7 +7273,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5339",
+      "source_location": "L5348",
       "weight": 1.0
     },
     {
@@ -7285,7 +7285,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5340",
+      "source_location": "L5349",
       "weight": 1.0
     },
     {
@@ -7297,7 +7297,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5436",
+      "source_location": "L5445",
       "weight": 1.0
     },
     {
@@ -7309,7 +7309,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5437",
+      "source_location": "L5446",
       "weight": 1.0
     },
     {
@@ -7321,7 +7321,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5007",
+      "source_location": "L5016",
       "weight": 1.0
     },
     {
@@ -7333,7 +7333,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L5008",
+      "source_location": "L5017",
       "weight": 1.0
     },
     {
@@ -7345,7 +7345,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4850",
+      "source_location": "L4859",
       "weight": 1.0
     },
     {
@@ -7357,7 +7357,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4851",
+      "source_location": "L4860",
       "weight": 1.0
     },
     {
@@ -7369,7 +7369,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "main.py",
-      "source_location": "L4130",
+      "source_location": "L4139",
       "weight": 1.0
     },
     {
@@ -7457,30 +7457,6 @@
       "weight": 1.0
     },
     {
-      "source": "job_radar",
-      "target": "bot_optimizer_extract_hr_email",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "job_radar.py",
-      "source_location": "L20",
-      "weight": 1.0
-    },
-    {
-      "source": "job_radar",
-      "target": "bot_optimizer_extract_job_salary",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "job_radar.py",
-      "source_location": "L20",
-      "weight": 1.0
-    },
-    {
       "source": "main",
       "target": "job_radar_classify_location",
       "relation": "imports",
@@ -7494,90 +7470,6 @@
     },
     {
       "source": "main",
-      "target": "bot_optimizer_apply_rag_memory_fallback",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "main.py",
-      "source_location": "L32",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "bot_optimizer_apply_regex_fallback",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "main.py",
-      "source_location": "L32",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "bot_optimizer_extract_hr_email",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "main.py",
-      "source_location": "L32",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "bot_optimizer_extract_job_salary",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "main.py",
-      "source_location": "L32",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "bot_optimizer_generate_linkedin_outreach_note",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "main.py",
-      "source_location": "L32",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "bot_optimizer_minify_form_html",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "main.py",
-      "source_location": "L32",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "bot_optimizer_record_learned_qa",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "main.py",
-      "source_location": "L32",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
       "target": "job_radar_run_radar",
       "relation": "imports",
       "_origin": "ast",
@@ -7585,19 +7477,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "main.py",
-      "source_location": "L4155",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "bot_optimizer_get_seeded_qa_memory",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "main.py",
-      "source_location": "L472",
+      "source_location": "L4164",
       "weight": 1.0
     },
     {
@@ -7669,7 +7549,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "job_radar.py",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -8148,7 +8028,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L1050",
+      "source_location": "L1060",
       "weight": 1.0
     },
     {
@@ -8159,7 +8039,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L1241",
+      "source_location": "L1251",
       "weight": 1.0
     },
     {
@@ -8170,7 +8050,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L165",
+      "source_location": "L180",
       "weight": 1.0
     },
     {
@@ -8181,7 +8061,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L186",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -8192,7 +8072,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L193",
+      "source_location": "L208",
       "weight": 1.0
     },
     {
@@ -8203,7 +8083,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L198",
+      "source_location": "L214",
       "weight": 1.0
     },
     {
@@ -8214,7 +8094,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L230",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -8225,7 +8105,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L241",
+      "source_location": "L253",
       "weight": 1.0
     },
     {
@@ -8236,7 +8116,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L248",
+      "source_location": "L260",
       "weight": 1.0
     },
     {
@@ -8247,7 +8127,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L256",
+      "source_location": "L268",
       "weight": 1.0
     },
     {
@@ -8258,7 +8138,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L264",
+      "source_location": "L277",
       "weight": 1.0
     },
     {
@@ -8269,7 +8149,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L320",
+      "source_location": "L330",
       "weight": 1.0
     },
     {
@@ -8280,7 +8160,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L352",
+      "source_location": "L362",
       "weight": 1.0
     },
     {
@@ -8291,7 +8171,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L383",
+      "source_location": "L393",
       "weight": 1.0
     },
     {
@@ -8302,7 +8182,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L459",
+      "source_location": "L469",
       "weight": 1.0
     },
     {
@@ -8313,7 +8193,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L602",
+      "source_location": "L612",
       "weight": 1.0
     },
     {
@@ -8324,7 +8204,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L633",
+      "source_location": "L643",
       "weight": 1.0
     },
     {
@@ -8335,7 +8215,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L709",
+      "source_location": "L719",
       "weight": 1.0
     },
     {
@@ -8346,7 +8226,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L751",
+      "source_location": "L761",
       "weight": 1.0
     },
     {
@@ -8357,7 +8237,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L799",
+      "source_location": "L809",
       "weight": 1.0
     },
     {
@@ -8368,7 +8248,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L847",
+      "source_location": "L857",
       "weight": 1.0
     },
     {
@@ -8379,7 +8259,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L894",
+      "source_location": "L904",
       "weight": 1.0
     },
     {
@@ -8390,7 +8270,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L938",
+      "source_location": "L948",
       "weight": 1.0
     },
     {
@@ -8401,7 +8281,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L984",
+      "source_location": "L994",
       "weight": 1.0
     },
     {
@@ -8588,7 +8468,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3138",
+      "source_location": "L3147",
       "weight": 1.0
     },
     {
@@ -8599,7 +8479,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3170",
+      "source_location": "L3179",
       "weight": 1.0
     },
     {
@@ -8621,7 +8501,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3283",
+      "source_location": "L3292",
       "weight": 1.0
     },
     {
@@ -8643,7 +8523,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3512",
+      "source_location": "L3521",
       "weight": 1.0
     },
     {
@@ -8659,17 +8539,6 @@
     },
     {
       "source": "main",
-      "target": "main_scrape_telegram_channel",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "main.py",
-      "source_location": "L3787",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
       "target": "main_auto_bug_fixer",
       "relation": "contains",
       "_origin": "ast",
@@ -8681,13 +8550,24 @@
     },
     {
       "source": "main",
+      "target": "main_scrape_telegram_channel",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "main.py",
+      "source_location": "L3796",
+      "weight": 1.0
+    },
+    {
+      "source": "main",
       "target": "main_job_monitor_loop",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3855",
+      "source_location": "L3864",
       "weight": 1.0
     },
     {
@@ -8698,7 +8578,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4042",
+      "source_location": "L4051",
       "weight": 1.0
     },
     {
@@ -8709,7 +8589,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4083",
+      "source_location": "L4092",
       "weight": 1.0
     },
     {
@@ -8720,7 +8600,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4101",
+      "source_location": "L4110",
       "weight": 1.0
     },
     {
@@ -8731,7 +8611,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4111",
+      "source_location": "L4120",
       "weight": 1.0
     },
     {
@@ -8742,7 +8622,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4125",
+      "source_location": "L4134",
       "weight": 1.0
     },
     {
@@ -8753,18 +8633,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4131",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "main_api_radar",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "main.py",
-      "source_location": "L4141",
+      "source_location": "L4140",
       "weight": 1.0
     },
     {
@@ -8780,13 +8649,24 @@
     },
     {
       "source": "main",
+      "target": "main_api_radar",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "main.py",
+      "source_location": "L4150",
+      "weight": 1.0
+    },
+    {
+      "source": "main",
       "target": "main_api_run_radar",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4151",
+      "source_location": "L4160",
       "weight": 1.0
     },
     {
@@ -8797,7 +8677,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4163",
+      "source_location": "L4172",
       "weight": 1.0
     },
     {
@@ -8808,7 +8688,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4168",
+      "source_location": "L4177",
       "weight": 1.0
     },
     {
@@ -8819,7 +8699,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4190",
+      "source_location": "L4199",
       "weight": 1.0
     },
     {
@@ -8841,7 +8721,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4202",
+      "source_location": "L4211",
       "weight": 1.0
     },
     {
@@ -8852,7 +8732,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4213",
+      "source_location": "L4222",
       "weight": 1.0
     },
     {
@@ -8863,7 +8743,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4247",
+      "source_location": "L4256",
       "weight": 1.0
     },
     {
@@ -8885,7 +8765,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4373",
+      "source_location": "L4382",
       "weight": 1.0
     },
     {
@@ -8896,7 +8776,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4380",
+      "source_location": "L4389",
       "weight": 1.0
     },
     {
@@ -8907,7 +8787,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4389",
+      "source_location": "L4398",
       "weight": 1.0
     },
     {
@@ -8918,7 +8798,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4396",
+      "source_location": "L4405",
       "weight": 1.0
     },
     {
@@ -8929,7 +8809,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4405",
+      "source_location": "L4414",
       "weight": 1.0
     },
     {
@@ -8940,7 +8820,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4416",
+      "source_location": "L4425",
       "weight": 1.0
     },
     {
@@ -8962,7 +8842,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4497",
+      "source_location": "L4506",
       "weight": 1.0
     },
     {
@@ -8973,7 +8853,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4518",
+      "source_location": "L4527",
       "weight": 1.0
     },
     {
@@ -8984,7 +8864,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4535",
+      "source_location": "L4544",
       "weight": 1.0
     },
     {
@@ -8995,7 +8875,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4543",
+      "source_location": "L4552",
       "weight": 1.0
     },
     {
@@ -9006,18 +8886,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4554",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "main_api_download_qa",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "main.py",
-      "source_location": "L4576",
+      "source_location": "L4563",
       "weight": 1.0
     },
     {
@@ -9033,13 +8902,24 @@
     },
     {
       "source": "main",
+      "target": "main_api_download_qa",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "main.py",
+      "source_location": "L4585",
+      "weight": 1.0
+    },
+    {
+      "source": "main",
       "target": "main_api_download_profile",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4583",
+      "source_location": "L4592",
       "weight": 1.0
     },
     {
@@ -9050,7 +8930,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4589",
+      "source_location": "L4598",
       "weight": 1.0
     },
     {
@@ -9061,18 +8941,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4602",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "main_api_upload_auth",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "main.py",
-      "source_location": "L4614",
+      "source_location": "L4611",
       "weight": 1.0
     },
     {
@@ -9088,13 +8957,24 @@
     },
     {
       "source": "main",
+      "target": "main_api_upload_auth",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "main.py",
+      "source_location": "L4623",
+      "weight": 1.0
+    },
+    {
+      "source": "main",
       "target": "main_api_scan_inbox",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4626",
+      "source_location": "L4635",
       "weight": 1.0
     },
     {
@@ -9105,7 +8985,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4639",
+      "source_location": "L4648",
       "weight": 1.0
     },
     {
@@ -9116,7 +8996,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4668",
+      "source_location": "L4677",
       "weight": 1.0
     },
     {
@@ -9138,7 +9018,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4767",
+      "source_location": "L4776",
       "weight": 1.0
     },
     {
@@ -9154,17 +9034,6 @@
     },
     {
       "source": "main",
-      "target": "main_send_welcome",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "main.py",
-      "source_location": "L4804",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
       "target": "main_load_pending_qa",
       "relation": "contains",
       "_origin": "ast",
@@ -9176,13 +9045,24 @@
     },
     {
       "source": "main",
+      "target": "main_send_welcome",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "main.py",
+      "source_location": "L4813",
+      "weight": 1.0
+    },
+    {
+      "source": "main",
       "target": "main_send_help",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4818",
+      "source_location": "L4827",
       "weight": 1.0
     },
     {
@@ -9204,7 +9084,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4852",
+      "source_location": "L4861",
       "weight": 1.0
     },
     {
@@ -9226,7 +9106,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4876",
+      "source_location": "L4885",
       "weight": 1.0
     },
     {
@@ -9237,7 +9117,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4906",
+      "source_location": "L4915",
       "weight": 1.0
     },
     {
@@ -9248,7 +9128,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4939",
+      "source_location": "L4948",
       "weight": 1.0
     },
     {
@@ -9259,18 +9139,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4946",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "main_send_download",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "main.py",
-      "source_location": "L4975",
+      "source_location": "L4955",
       "weight": 1.0
     },
     {
@@ -9286,13 +9155,24 @@
     },
     {
       "source": "main",
+      "target": "main_send_download",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "main.py",
+      "source_location": "L4984",
+      "weight": 1.0
+    },
+    {
+      "source": "main",
       "target": "main_pause_bot",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4989",
+      "source_location": "L4998",
       "weight": 1.0
     },
     {
@@ -9303,18 +9183,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4999",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "main_toggle_ghost_mode",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "main.py",
-      "source_location": "L5009",
+      "source_location": "L5008",
       "weight": 1.0
     },
     {
@@ -9330,13 +9199,24 @@
     },
     {
       "source": "main",
+      "target": "main_toggle_ghost_mode",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "main.py",
+      "source_location": "L5018",
+      "weight": 1.0
+    },
+    {
+      "source": "main",
       "target": "main_command_scan_inbox",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5021",
+      "source_location": "L5030",
       "weight": 1.0
     },
     {
@@ -9358,7 +9238,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5042",
+      "source_location": "L5051",
       "weight": 1.0
     },
     {
@@ -9413,7 +9293,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5220",
+      "source_location": "L5229",
       "weight": 1.0
     },
     {
@@ -9435,7 +9315,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5246",
+      "source_location": "L5255",
       "weight": 1.0
     },
     {
@@ -9446,7 +9326,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5280",
+      "source_location": "L5289",
       "weight": 1.0
     },
     {
@@ -9457,18 +9337,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5296",
-      "weight": 1.0
-    },
-    {
-      "source": "main",
-      "target": "main_save_answer",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "main.py",
-      "source_location": "L5308",
+      "source_location": "L5305",
       "weight": 1.0
     },
     {
@@ -9484,13 +9353,13 @@
     },
     {
       "source": "main",
-      "target": "main_show_qa_memory",
+      "target": "main_save_answer",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5341",
+      "source_location": "L5317",
       "weight": 1.0
     },
     {
@@ -9506,13 +9375,24 @@
     },
     {
       "source": "main",
+      "target": "main_show_qa_memory",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "main.py",
+      "source_location": "L5350",
+      "weight": 1.0
+    },
+    {
+      "source": "main",
       "target": "main_manual_apply",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5355",
+      "source_location": "L5364",
       "weight": 1.0
     },
     {
@@ -9523,7 +9403,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5400",
+      "source_location": "L5409",
       "weight": 1.0
     },
     {
@@ -9534,7 +9414,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5415",
+      "source_location": "L5424",
       "weight": 1.0
     },
     {
@@ -9545,7 +9425,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5433",
+      "source_location": "L5442",
       "weight": 1.0
     },
     {
@@ -9556,7 +9436,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5438",
+      "source_location": "L5447",
       "weight": 1.0
     },
     {
@@ -9578,7 +9458,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5546",
+      "source_location": "L5555",
       "weight": 1.0
     },
     {
@@ -9589,7 +9469,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5575",
+      "source_location": "L5584",
       "weight": 1.0
     },
     {
@@ -9611,7 +9491,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5656",
+      "source_location": "L5665",
       "weight": 1.0
     },
     {
@@ -9622,7 +9502,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5723",
+      "source_location": "L5732",
       "weight": 1.0
     },
     {
@@ -9633,7 +9513,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5766",
+      "source_location": "L5775",
       "weight": 1.0
     },
     {
@@ -9655,7 +9535,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5813",
+      "source_location": "L5822",
       "weight": 1.0
     },
     {
@@ -10132,168 +10012,168 @@
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_1051",
+      "source": "job_radar_rationale_1061",
       "target": "job_radar_send_radar_telegram",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L1051",
+      "source_location": "L1061",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_166",
+      "source": "job_radar_rationale_181",
       "target": "job_radar_api_request",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L166",
+      "source_location": "L181",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_199",
+      "source": "job_radar_rationale_215",
       "target": "job_radar_normalize_job_url",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L199",
+      "source_location": "L215",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_265",
+      "source": "job_radar_rationale_278",
       "target": "job_radar_classify_location",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L265",
+      "source_location": "L278",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_384",
+      "source": "job_radar_rationale_394",
       "target": "job_radar_unwrap_radar_direct_link",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L384",
+      "source_location": "L394",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_460",
+      "source": "job_radar_rationale_470",
       "target": "job_radar_scan_single_channel_radar",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L460",
+      "source_location": "L470",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_603",
+      "source": "job_radar_rationale_613",
       "target": "job_radar_scrape_telegram_channels_radar",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L603",
+      "source_location": "L613",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_634",
+      "source": "job_radar_rationale_644",
       "target": "job_radar_scrape_adzuna_india",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L634",
+      "source_location": "L644",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_710",
+      "source": "job_radar_rationale_720",
       "target": "job_radar_scrape_unstop",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L710",
+      "source_location": "L720",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_752",
+      "source": "job_radar_rationale_762",
       "target": "job_radar_scrape_foundit",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L752",
+      "source_location": "L762",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_800",
+      "source": "job_radar_rationale_810",
       "target": "job_radar_scrape_remotive",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L800",
+      "source_location": "L810",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_848",
+      "source": "job_radar_rationale_858",
       "target": "job_radar_scrape_jobicy",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L848",
+      "source_location": "L858",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_895",
+      "source": "job_radar_rationale_905",
       "target": "job_radar_scrape_arbeitnow",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L895",
+      "source_location": "L905",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_939",
+      "source": "job_radar_rationale_949",
       "target": "job_radar_scrape_remoteok",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L939",
+      "source_location": "L949",
       "weight": 1.0
     },
     {
-      "source": "job_radar_rationale_985",
+      "source": "job_radar_rationale_995",
       "target": "job_radar_scrape_linkedin_indeed",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L985",
+      "source_location": "L995",
       "weight": 1.0
     },
     {
@@ -10429,14 +10309,14 @@
       "weight": 1.0
     },
     {
-      "source": "main_rationale_2425",
+      "source": "main_rationale_2434",
       "target": "main",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L2425",
+      "source_location": "L2434",
       "weight": 1.0
     },
     {
@@ -10451,69 +10331,69 @@
       "weight": 1.0
     },
     {
-      "source": "main_rationale_3139",
+      "source": "main_rationale_3148",
       "target": "job_radar_is_social_or_promo_link",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "job_radar.py",
-      "source_location": "L353",
+      "source_location": "L363",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_3139",
+      "source": "main_rationale_3148",
       "target": "main_is_social_or_promo_link",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3139",
+      "source_location": "L3148",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_3171",
+      "source": "main_rationale_3180",
       "target": "main_fetch_target_page_job_meta",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3171",
+      "source_location": "L3180",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_3284",
+      "source": "main_rationale_3293",
       "target": "main_extract_structured_channel_job_details",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3284",
+      "source_location": "L3293",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_3513",
+      "source": "main_rationale_3522",
       "target": "main_scrape_single_channel",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3513",
+      "source_location": "L3522",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_3788",
+      "source": "main_rationale_3797",
       "target": "main_scrape_telegram_channel",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L3788",
+      "source_location": "L3797",
       "weight": 1.0
     },
     {
@@ -10528,91 +10408,91 @@
       "weight": 1.0
     },
     {
-      "source": "main_rationale_4084",
+      "source": "main_rationale_4093",
       "target": "main_api_status",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4084",
+      "source_location": "L4093",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_4142",
+      "source": "main_rationale_4151",
       "target": "main_api_radar",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4142",
+      "source_location": "L4151",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_4152",
+      "source": "main_rationale_4161",
       "target": "main_api_run_radar",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4152",
+      "source_location": "L4161",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_4191",
+      "source": "main_rationale_4200",
       "target": "main_api_telegram_test",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4191",
+      "source_location": "L4200",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_4203",
+      "source": "main_rationale_4212",
       "target": "main_api_force_scan",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4203",
+      "source_location": "L4212",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_4214",
+      "source": "main_rationale_4223",
       "target": "main_api_instahyre",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4214",
+      "source_location": "L4223",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_4669",
+      "source": "main_rationale_4678",
       "target": "main_manual_radar_scan",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4669",
+      "source_location": "L4678",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_4768",
+      "source": "main_rationale_4777",
       "target": "main_send_dashboard",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L4768",
+      "source_location": "L4777",
       "weight": 1.0
     },
     {
@@ -10638,14 +10518,14 @@
       "weight": 1.0
     },
     {
-      "source": "main_rationale_5576",
+      "source": "main_rationale_5585",
       "target": "main_daily_report_loop",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5576",
+      "source_location": "L5585",
       "weight": 1.0
     },
     {
@@ -10660,36 +10540,25 @@
       "weight": 1.0
     },
     {
-      "source": "main_rationale_5724",
+      "source": "main_rationale_5733",
       "target": "main_radar_loop",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5724",
+      "source_location": "L5733",
       "weight": 1.0
     },
     {
-      "source": "main_rationale_5767",
+      "source": "main_rationale_5776",
       "target": "main_cleanup_system_resources",
       "relation": "rationale_for",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "main.py",
-      "source_location": "L5767",
-      "weight": 1.0
-    },
-    {
-      "source": "main_rationale_5814",
-      "target": "main_thread_supervisor",
-      "relation": "rationale_for",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "main.py",
-      "source_location": "L5814",
+      "source_location": "L5776",
       "weight": 1.0
     },
     {
@@ -10701,6 +10570,17 @@
       "confidence_score": 1.0,
       "source_file": "main.py",
       "source_location": "L582",
+      "weight": 1.0
+    },
+    {
+      "source": "main_rationale_5823",
+      "target": "main_thread_supervisor",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "main.py",
+      "source_location": "L5823",
       "weight": 1.0
     },
     {
@@ -10745,7 +10625,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "job_radar.py",
-      "source_location": "L610",
+      "source_location": "L620",
       "weight": 1.0
     },
     {
@@ -10757,7 +10637,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "main.py",
-      "source_location": "L5175",
+      "source_location": "L5184",
       "weight": 1.0
     },
     {
@@ -10793,7 +10673,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L4629",
+      "source_location": "L4638",
       "weight": 1.0
     },
     {
@@ -10805,7 +10685,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "main.py",
-      "source_location": "L2396",
+      "source_location": "L2405",
       "weight": 1.0
     },
     {
@@ -10817,7 +10697,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "job_radar.py",
-      "source_location": "L1256",
+      "source_location": "L1266",
       "weight": 1.0
     },
     {
@@ -10829,7 +10709,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "job_radar.py",
-      "source_location": "L1257",
+      "source_location": "L1267",
       "weight": 1.0
     },
     {
@@ -10841,7 +10721,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "job_radar.py",
-      "source_location": "L1258",
+      "source_location": "L1268",
       "weight": 1.0
     },
     {
@@ -10853,7 +10733,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "job_radar.py",
-      "source_location": "L1259",
+      "source_location": "L1269",
       "weight": 1.0
     },
     {
@@ -10865,7 +10745,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "job_radar.py",
-      "source_location": "L1260",
+      "source_location": "L1270",
       "weight": 1.0
     },
     {
@@ -10877,7 +10757,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "job_radar.py",
-      "source_location": "L1261",
+      "source_location": "L1271",
       "weight": 1.0
     },
     {
@@ -10889,7 +10769,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "job_radar.py",
-      "source_location": "L1262",
+      "source_location": "L1272",
       "weight": 1.0
     },
     {
@@ -10901,7 +10781,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "job_radar.py",
-      "source_location": "L1263",
+      "source_location": "L1273",
       "weight": 1.0
     },
     {
@@ -10913,7 +10793,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "job_radar.py",
-      "source_location": "L1264",
+      "source_location": "L1274",
       "weight": 1.0
     },
     {
@@ -10925,7 +10805,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "main.py",
-      "source_location": "L5818",
+      "source_location": "L5827",
       "weight": 1.0
     },
     {
@@ -10937,7 +10817,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "main.py",
-      "source_location": "L5819",
+      "source_location": "L5828",
       "weight": 1.0
     },
     {
@@ -10949,7 +10829,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "main.py",
-      "source_location": "L5820",
+      "source_location": "L5829",
       "weight": 1.0
     },
     {
@@ -10961,10 +10841,10 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "main.py",
-      "source_location": "L5823",
+      "source_location": "L5832",
       "weight": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "631556c1d4ca66417443280a35b1dbeb4947d2fb"
+  "built_at_commit": "8e4e196b4ed096bde2bcc6c7fbccbbb4b50b2a79"
 }

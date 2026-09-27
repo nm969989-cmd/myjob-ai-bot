@@ -4,12 +4,12 @@
 - cluster-only mode — file stats not available
 
 ## Summary
-- 286 nodes · 658 edges · 12 communities (9 shown, 2 thin omitted)
+- 286 nodes · 648 edges · 12 communities (9 shown, 2 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 19 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `631556c1`
+- Built from commit: `8e4e196b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -98,11 +98,11 @@ Nodes (4): build_resume(), FPDF, Generate a professional PDF resume from profile
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `run_radar()` connect `job_radar.py` to `main.py`, `get_gemini_client`?**
-  _High betweenness centrality (0.106) - this node is a cross-community bridge._
+  _High betweenness centrality (0.108) - this node is a cross-community bridge._
 - **Why does `run_playwright_apply()` connect `run_playwright_apply` to `main.py`, `admin_only`, `scrape_single_channel`, `bot_optimizer.py`, `get_gemini_client`, `enterprise_adapters.py`?**
-  _High betweenness centrality (0.079) - this node is a cross-community bridge._
+  _High betweenness centrality (0.103) - this node is a cross-community bridge._
 - **Why does `classify_location()` connect `job_radar.py` to `main.py`, `bot_optimizer.py`?**
-  _High betweenness centrality (0.069) - this node is a cross-community bridge._
+  _High betweenness centrality (0.080) - this node is a cross-community bridge._
 - **Should `main.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05875706214689266 - nodes in this community are weakly interconnected._
 - **Should `job_radar.py` be split into smaller, more focused modules?**

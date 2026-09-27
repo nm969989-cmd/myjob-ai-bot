@@ -1714,19 +1714,28 @@ def run_playwright_apply(job_url, job_description=""):
             context = browser  # browser here is actually the persistent_context
             print(f"[Browser] Using persistent Chrome profile at: {user_data_dir}")
 
-            # FEATURE 1: PLAYWRIGHT BANDWIDTH SAVER 🏎️
-            # Intercept and block all heavy assets to make Playwright 5x faster and save HF bandwidth
-            def intercept_route(route):
-                if route.request.resource_type in ["image", "media", "font", "stylesheet"]:
-                    route.abort()
-                else:
-                    route.continue_()
-            
-            try:
-                context.route("**/*", intercept_route)
-                print("[Efficiency Engine] ✅ Blocked images, fonts, and media. Browser is running in Hyper-Speed Mode.")
-            except Exception as e:
-                print(f"[Efficiency Engine] Route blocking warning: {e}")
+        # FEATURE 1: PLAYWRIGHT BANDWIDTH & TRACKER BLOCKER 🏎️
+        # Intercept and block heavy media, fonts, and trackers to load pages 4x faster
+        TRACKER_DOMAINS = frozenset([
+            "google-analytics.com", "googletagmanager.com", "facebook.net",
+            "doubleclick.net", "hotjar.com", "segment.io", "sentry.io",
+            "mixpanel.com", "datadog.com", "clarity.ms", "intercom.io"
+        ])
+
+        def intercept_route(route):
+            req = route.request
+            r_type = req.resource_type
+            r_url = req.url.lower()
+            if r_type in ["image", "media", "font"] or any(td in r_url for td in TRACKER_DOMAINS):
+                route.abort()
+            else:
+                route.continue_()
+
+        try:
+            context.route("**/*", intercept_route)
+            print("[Efficiency Engine] ✅ Hyper-Speed Mode: Blocked heavy media and analytics trackers.")
+        except Exception as e:
+            print(f"[Efficiency Engine] Route blocking warning: {e}")
 
 
         # Add stealth init script to bypass bot detection

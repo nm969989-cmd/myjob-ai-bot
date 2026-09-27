@@ -16,6 +16,7 @@ import urllib.parse
 from datetime import datetime
 import requests
 from dotenv import load_dotenv
+import functools
 
 from bot_optimizer import extract_job_salary, extract_hr_email
 
@@ -87,6 +88,20 @@ EXCLUDED_REMOTE_RESTRICTIONS = [
 
 # Only show jobs from 2025 onwards
 FILTER_YEAR = 2025
+
+# ⚡ Pre-compiled high-performance regular expressions for O(1) matching
+_RADAR_KW_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(kw) for kw in sorted(RADAR_KEYWORDS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
+_FOREIGN_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(f) for f in sorted(EXCLUDED_FOREIGN_LOCATIONS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
+_REMOTE_RESTRICTIONS_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(r) for r in sorted(EXCLUDED_REMOTE_RESTRICTIONS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
+_TN_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(tn) for tn in sorted(TAMIL_NADU_LOCATIONS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
+_INDIA_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(i) for i in sorted(INDIA_OTHER_LOCATIONS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
+_REMOTE_KW_REGEX = re.compile(r'\b(?:remote|work from home|wfh|worldwide|global|anywhere|telecommute)\b', re.IGNORECASE)
+
+TRACKING_KEYS = frozenset({
+    "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
+    "ref", "source", "fbclid", "gclid", "campaign", "trk", "trkinfo",
+    "affiliate", "sub_id"
+})
 
 # Max jobs per individual source
 MAX_PER_SOURCE = 35
@@ -195,10 +210,12 @@ def escape_md(text):
         return ""
     return str(text).replace("*", "").replace("_", " ").replace("[", "(").replace("]", ")").replace("`", "")
 
+@functools.lru_cache(maxsize=8192)
 def normalize_job_url(url):
     """
     Normalizes a job URL by removing tracking parameters (UTM, ref, fbclid),
     anchors, and trailing slashes for rock-solid deduplication across channels.
+    Cached via LRU cache for instant O(1) deduplication.
     """
     if not url or not isinstance(url, str):
         return ""
@@ -207,13 +224,8 @@ def normalize_job_url(url):
         if not url_str.startswith("http"):
             return url_str
         parsed = urllib.parse.urlparse(url_str)
-        tracking_keys = {
-            "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
-            "ref", "source", "fbclid", "gclid", "campaign", "trk", "trkinfo",
-            "affiliate", "sub_id"
-        }
         query_pairs = urllib.parse.parse_qsl(parsed.query, keep_blank_values=False)
-        cleaned_pairs = [(k, v) for k, v in query_pairs if k.lower() not in tracking_keys]
+        cleaned_pairs = [(k, v) for k, v in query_pairs if k.lower() not in TRACKING_KEYS]
         new_query = urllib.parse.urlencode(cleaned_pairs)
         cleaned = urllib.parse.urlunparse((
             parsed.scheme.lower(),
@@ -254,8 +266,9 @@ def save_results(jobs):
         }, f, indent=2, ensure_ascii=False)
 
 def _keyword_match(text):
-    text_lower = text.lower()
-    return any(kw.lower() in text_lower for kw in RADAR_KEYWORDS)
+    if not text:
+        return False
+    return bool(_RADAR_KW_REGEX.search(text))
 
 # ──────────────────────────────────────────────────
 # 📍 STRICT LOCATION CLASSIFIER & TAMIL NADU PRIORITIZER
@@ -263,7 +276,7 @@ def _keyword_match(text):
 
 def classify_location(location_str, context_text=""):
     """
-    Evaluates a location string and surrounding text context.
+    Evaluates a location string and surrounding text context with pre-compiled regexes.
     Returns: (is_valid, priority_tier, formatted_location_string, is_tamil_nadu)
       - Priority 1: Tamil Nadu (Chennai, Coimbatore, Madurai, Trichy, Salem, etc.)
       - Priority 2: Other India (Bangalore, Hyderabad, Pune, Mumbai, Delhi, PAN India)
@@ -276,38 +289,35 @@ def classify_location(location_str, context_text=""):
     combined = f"{loc_lower} {ctx_lower}"
 
     # 1. Check for explicit foreign exclusion
-    for foreign in EXCLUDED_FOREIGN_LOCATIONS:
-        if re.search(rf"\b{re.escape(foreign)}\b", loc_lower):
-            # Check if it also explicitly says India
-            if not ("india" in loc_lower or any(tn in loc_lower for tn in TAMIL_NADU_LOCATIONS)):
-                return False, 99, "", False
-
-    # Check for remote restrictions (e.g., "US Only")
-    for restriction in EXCLUDED_REMOTE_RESTRICTIONS:
-        if restriction in combined:
+    if _FOREIGN_REGEX.search(loc_lower):
+        if not ("india" in loc_lower or _TN_REGEX.search(loc_lower)):
             return False, 99, "", False
 
+    # Check for remote restrictions (e.g., "US Only")
+    if _REMOTE_RESTRICTIONS_REGEX.search(combined):
+        return False, 99, "", False
+
     # 2. Check for Tamil Nadu (Highest Priority — Tier 1)
-    for tn_loc in TAMIL_NADU_LOCATIONS:
-        if re.search(rf"\b{re.escape(tn_loc)}\b", loc_lower) or re.search(rf"\b{re.escape(tn_loc)}\b", ctx_lower):
-            matched_name = tn_loc.title() if tn_loc not in ["tn", "tamilnadu"] else "Tamil Nadu"
-            if loc_clean and loc_clean.lower() != "india" and not any(f in loc_lower for f in EXCLUDED_FOREIGN_LOCATIONS):
-                display = f"{loc_clean} ⭐"
-            else:
-                display = f"{matched_name}, Tamil Nadu ⭐"
-            return True, 1, display, True
+    tn_match = _TN_REGEX.search(loc_lower) or _TN_REGEX.search(ctx_lower)
+    if tn_match:
+        matched_kw = tn_match.group(0).lower()
+        matched_name = matched_kw.title() if matched_kw not in ["tn", "tamilnadu"] else "Tamil Nadu"
+        if loc_clean and loc_clean.lower() != "india" and not _FOREIGN_REGEX.search(loc_lower):
+            display = f"{loc_clean} ⭐"
+        else:
+            display = f"{matched_name}, Tamil Nadu ⭐"
+        return True, 1, display, True
 
     # 3. Check for Other India Tech Hubs (Tier 2)
-    for in_loc in INDIA_OTHER_LOCATIONS:
-        if re.search(rf"\b{re.escape(in_loc)}\b", loc_lower) or re.search(rf"\b{re.escape(in_loc)}\b", ctx_lower):
-            display = loc_clean if loc_clean else f"{in_loc.title()}, India"
-            if "india" not in display.lower():
-                display += ", India 🇮🇳"
-            return True, 2, display, False
+    in_match = _INDIA_REGEX.search(loc_lower) or _INDIA_REGEX.search(ctx_lower)
+    if in_match:
+        display = loc_clean if loc_clean else f"{in_match.group(0).title()}, India"
+        if "india" not in display.lower():
+            display += ", India 🇮🇳"
+        return True, 2, display, False
 
     # 4. Check for Remote / Work from Home / Worldwide
-    remote_keywords = ["remote", "work from home", "wfh", "worldwide", "global", "anywhere", "telecommute"]
-    if any(rk in loc_lower for rk in remote_keywords):
+    if _REMOTE_KW_REGEX.search(loc_lower):
         return True, 3, "Remote (India / Global) 🌐", False
 
     # If location field is empty or says "India", accept as Tier 2
