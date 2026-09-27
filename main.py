@@ -42,7 +42,8 @@ from bot_optimizer import (
     generate_fast_interview_cheat_sheet,
     generate_market_analytics_report,
     get_national_drives,
-    format_national_drives_report
+    format_national_drives_report,
+    format_single_drive_detail
 )
 
 # Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
@@ -5283,27 +5284,37 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         elif call.data == "drives":
             try:
                 chunks = format_national_drives_report()
-                markup = InlineKeyboardMarkup(row_width=2)
+                markup = InlineKeyboardMarkup()
                 markup.row(
-                    InlineKeyboardButton("🚀 TCS NQT Portal", url="https://www.tcs.com/careers/india/tcs-national-qualifier-test"),
-                    InlineKeyboardButton("🌟 Zoho Careers", url="https://www.zoho.com/careers/")
+                    InlineKeyboardButton("📋 TCS Syllabus", callback_data="drive_info:tcs_nqt"),
+                    InlineKeyboardButton("📋 Zoho Pattern", callback_data="drive_info:zoho_drive")
+                )
+                markup.row(
+                    InlineKeyboardButton("📋 Infosys Prep", callback_data="drive_info:infosys_drive"),
+                    InlineKeyboardButton("📋 Accenture Prep", callback_data="drive_info:accenture_ase")
+                )
+                markup.row(
+                    InlineKeyboardButton("📋 Google Intern", callback_data="drive_info:google_intern"),
+                    InlineKeyboardButton("📋 Cognizant GenC", callback_data="drive_info:cognizant_genc")
                 )
                 markup.row(
                     InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar"),
                     InlineKeyboardButton("📊 Market Analytics", callback_data="analytics")
                 )
-                for chunk in chunks:
+                for idx, chunk in enumerate(chunks):
+                    is_last = (idx == len(chunks) - 1)
                     try:
-                        bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
+                        bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
                     except Exception:
-                        bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
+                        bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                    time.sleep(0.3)
             except Exception as e:
                 bot.send_message(chat_id, f"⚠️ Drives error: {e}")
 
         elif call.data == "help":
             help_text = (
                 "🤖 *Command Reference*\n\n"
-                "📢 /drives — National mass off-campus hiring drives\n"
+                "📢 /drives — National mass off-campus hiring drives (e.g. /drives 2025)\n"
                 "📊 /analytics — Live market intelligence & stats\n"
                 "📊 /status — Live bot status\n"
                 "⏸️ /pause — Stop auto-scanning\n"
@@ -5315,6 +5326,29 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                 "📥 /download — Export CSV log"
             )
             bot.send_message(chat_id, help_text, parse_mode=None)
+
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("drive_info:"))
+    def handle_drive_detail_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        try:
+            bot.answer_callback_query(call.id, text="⚡ Loading Syllabus & Exam Pattern...")
+        except Exception:
+            pass
+        try:
+            drive_id = call.data.split(":", 1)[1]
+            card, apply_link = format_single_drive_detail(drive_id)
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("🚀 Direct Registration Portal", url=apply_link),
+                InlineKeyboardButton("📢 All National Drives", callback_data="drives")
+            )
+            try:
+                bot.send_message(chat_id, card, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
+            except Exception:
+                bot.send_message(chat_id, re.sub(r'<[^>]+>', '', card), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ Unable to load drive syllabus: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("prep:"))
     def handle_interview_prep_callback(call):
@@ -5367,11 +5401,21 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         chat_id = message.chat.id
         save_chat_id(chat_id)
         try:
-            chunks = format_national_drives_report()
-            markup = InlineKeyboardMarkup(row_width=2)
+            text_args = message.text.replace("/drives", "").replace("/offcampus", "").replace("/massdrives", "").strip()
+            query = text_args if text_args else None
+            chunks = format_national_drives_report(query=query)
+            markup = InlineKeyboardMarkup()
             markup.row(
-                InlineKeyboardButton("🚀 TCS NQT Portal", url="https://www.tcs.com/careers/india/tcs-national-qualifier-test"),
-                InlineKeyboardButton("🌟 Zoho Careers", url="https://www.zoho.com/careers/")
+                InlineKeyboardButton("📋 TCS Syllabus", callback_data="drive_info:tcs_nqt"),
+                InlineKeyboardButton("📋 Zoho Pattern", callback_data="drive_info:zoho_drive")
+            )
+            markup.row(
+                InlineKeyboardButton("📋 Infosys Prep", callback_data="drive_info:infosys_drive"),
+                InlineKeyboardButton("📋 Accenture Prep", callback_data="drive_info:accenture_ase")
+            )
+            markup.row(
+                InlineKeyboardButton("📋 Google Intern", callback_data="drive_info:google_intern"),
+                InlineKeyboardButton("📋 Cognizant GenC", callback_data="drive_info:cognizant_genc")
             )
             markup.row(
                 InlineKeyboardButton("📡 View Radar Jobs", callback_data="radar"),

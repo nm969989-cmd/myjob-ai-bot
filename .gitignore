@@ -58,6 +58,7 @@ videos/
 
 # Temporary fix / scratch / helper scripts
 test_*.py
+!test_features_verify.py
 scratch_*.py
 fix_*.py
 safe_fix.py
