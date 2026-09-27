@@ -1,52 +1,66 @@
-# 🚀 GitHub Actions 24/7 Cloud Automation Guide (Strategy A)
+# 🚀 GitHub Actions 24/7 Cloud Automation Guide
 
-This guide shows how to run your **Telegram Job Bot 24/7 on GitHub Actions** (16 GB RAM + 4 vCPUs per run) completely for free with **NO credit card required**.
-
----
-
-## 🛠️ Step 1: Create a GitHub Repository
-
-1. Go to **[GitHub.com](https://github.com/new)** and log in.
-2. Set:
-   * **Repository Name:** `telegram-job-bot`
-   * **Visibility:** **Public** (Gives **UNLIMITED free minutes**) or **Private** (Gives 2,000 min/month).
-     *(Note: Even on Public repos, your API keys in GitHub Secrets are 100% encrypted & hidden from everyone).*
-3. Click **Create repository**.
+Your **Telegram Job Bot** runs 24/7 on **GitHub Actions** (16 GB RAM + 4 vCPUs per run) completely for free with **NO credit card required**.
 
 ---
 
-## 🔑 Step 2: Add Encrypted Secrets to Your GitHub Repo
+## 📌 Repository Information
+- **Repository Remote:** `github https://github.com/nm969989-cmd/myjob-ai-bot.git`
+- **Workflow File:** `.github/workflows/job_bot.yml`
+- **Cloud Runner Entrypoint:** `cloud_runner.py`
+- **Schedule:** Runs automatically every 1 hour (`0 * * * *`) + 1-click manual trigger (`workflow_dispatch`).
 
-1. In your GitHub repository, click on **Settings** (top menu bar).
-2. On the left sidebar, click **Secrets and variables** ➔ **Actions**.
-3. Click the green button: **New repository secret**.
-4. Add these 4 secrets:
+---
 
-| Secret Name | Value | Description |
+## 🔑 Step 1: Set Up Encrypted Secrets on GitHub
+
+1. Open your repository on GitHub:
+   👉 **[https://github.com/nm969989-cmd/myjob-ai-bot](https://github.com/nm969989-cmd/myjob-ai-bot)**
+2. Click on **Settings** (top navigation bar).
+3. On the left sidebar, expand **Secrets and variables** ➔ Click **Actions**.
+4. Click the green **New repository secret** button for each secret below:
+
+| Secret Name | Recommended Value | Description |
 | :--- | :--- | :--- |
-| **`TELEGRAM_TOKEN`** | `YOUR_BOT_TOKEN` | Telegram Bot Token from @BotFather |
-| **`TELEGRAM_CHAT_ID`** | `YOUR_CHAT_ID` | Your Telegram Chat ID |
-| **`GEMINI_API_KEY`** | `YOUR_GEMINI_API_KEY` | Google Gemini API Key(s) |
-| **`TARGET_CHANNEL`** | `JobSkull` | Telegram Channel to monitor |
-| **`GROQ_API_KEY`** | `YOUR_GROQ_API_KEY` | (Optional) Groq fallback AI |
+| **`TELEGRAM_TOKEN`** | *Your Telegram Bot Token* | From [@BotFather](https://t.me/BotFather) |
+| **`TELEGRAM_CHAT_ID`** | *Your Personal Telegram ID* | Get from [@userinfobot](https://t.me/userinfobot) |
+| **`GEMINI_API_KEY`** | *Your Google Gemini API Key* | From [Google AI Studio](https://aistudio.google.com/) |
+| **`GROQ_API_KEY`** | *Your Groq API Key* | (Optional) High-speed fallback AI from [Groq Console](https://console.groq.com/) |
+| **`TARGET_CHANNEL`** | `jobopenings_india,JobSkull` | Channels to monitor (comma-separated) |
+| **`ADZUNA_APP_ID`** | *(Optional)* | For Adzuna India job search API |
+| **`ADZUNA_APP_KEY`** | *(Optional)* | For Adzuna India job search API |
+| **`NOTION_API_KEY`** | *(Optional)* | For syncing applied jobs to Notion CRM |
+| **`NOTION_DATABASE_ID`**| *(Optional)* | Notion Database ID |
+
+> 🔒 **Security Guarantee:** GitHub encrypts secrets using Libsodium sealed boxes. They are never exposed in logs or visible to anyone.
 
 ---
 
-## 🚀 Step 3: Push Your Code to GitHub
+## 🚀 Step 2: Push the Enhanced Code to GitHub
 
-Open a terminal or run in PowerShell inside `d:\insta gravity\Telegram_Job_Bot`:
+Run this command in your local PowerShell terminal:
 
 ```bash
-git remote add github https://github.com/YOUR_GITHUB_USERNAME/telegram-job-bot.git
-git push -u github main
+cd "D:\insta gravity\Telegram_Job_Bot"
+git add .
+git commit -m "🚀 Enhanced: Graphify architecture, AI extraction, and GitHub Actions optimizations"
+git push github main
 ```
 
 ---
 
-## ⚡ Step 4: Run Manually or Let the Schedule Automate
+## ⚡ Step 3: Trigger a Manual Test Run in GitHub Actions
 
-1. In your GitHub repository, click on the **Actions** tab.
-2. Select **`Telegram Job Bot Cloud Automation`** on the left.
-3. Click **Run workflow** ➔ **Run workflow** (green button).
-4. Watch the 16GB runner start up, scan Job Radar & Telegram channels, fill forms, send alerts to Telegram, and finish in ~60 seconds!
-5. After this, it will automatically run on schedule every single hour, 24/7/365!
+1. Go to your repository's **Actions** tab:
+   👉 **[https://github.com/nm969989-cmd/myjob-ai-bot/actions](https://github.com/nm969989-cmd/myjob-ai-bot/actions)**
+2. In the left sidebar, click **`Telegram Job Bot Cloud Automation`**.
+3. Click the **Run workflow** dropdown on the right ➔ click the green **Run workflow** button.
+4. Watch the runner:
+   - Sets up Python 3.11 with pip cache
+   - Restores cached Playwright browser binaries
+   - Executes `cloud_runner.py`
+   - Scans Job Radar & Telegram channels (`@jobopenings_india`, `@JobSkull`, etc.)
+   - Resolves direct apply links & unwraps shorteners (`bit.ly`, `tinyurl`, etc.)
+   - Dispatches VIP Job Alert cards with clickable apply buttons to Telegram
+   - Auto-commits updated seen job logs back to GitHub (`applied_jobs.json`, `applied_jobs_log.csv`)
+5. You will receive real-time job alerts and cycle summary directly on Telegram!

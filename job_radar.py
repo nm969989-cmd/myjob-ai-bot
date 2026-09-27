@@ -7,6 +7,7 @@ Deeply scrapes all major Telegram job channels and extracts direct apply links.
 """
 
 import os
+import sys
 import json
 import time
 import random
@@ -15,6 +16,13 @@ import urllib.parse
 from datetime import datetime
 import requests
 from dotenv import load_dotenv
+
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 
 load_dotenv(override=True)
 
@@ -866,7 +874,7 @@ def scrape_linkedin_indeed():
                     site_name=["linkedin", "indeed"],
                     search_term=query,
                     location=loc,
-                    results_wanted=6,
+                    results_wanted=3,
                     hours_old=72,
                     country_indeed="India",
                     linkedin_fetch_description=False,
@@ -950,19 +958,21 @@ def send_radar_telegram(new_jobs):
         job_entries = []
         global_idx = 1
 
+        import html
+
         def _format_section(title_header, job_list):
             nonlocal global_idx
             if not job_list:
                 return
             job_entries.append(title_header)
             for job in job_list:
-                title   = escape_md(job.get("title", "Unknown Role"))[:60]
-                company = escape_md(job.get("company", "Unknown Company"))[:35]
-                loc     = escape_md(job.get("location", "India"))[:40]
-                link    = job.get("link", "").strip()
-                date_str = job.get("date_posted", "")
-                desc    = escape_md(clean_html(job.get("description", "")))[:120]
-                src     = escape_md(job.get("source", "Radar"))
+                title   = html.escape(str(job.get("title", "Unknown Role"))[:60])
+                company = html.escape(str(job.get("company", "Unknown Company"))[:35])
+                loc     = html.escape(str(job.get("location", "India"))[:40])
+                link    = html.escape(str(job.get("link", "")).strip())
+                date_str = str(job.get("date_posted", ""))
+                desc    = html.escape(clean_html(job.get("description", "")))[:120]
+                src     = html.escape(str(job.get("source", "Radar")))
 
                 time_tag = "🟢 Today"
                 if date_str and len(date_str) >= 10:
@@ -977,29 +987,29 @@ def send_radar_telegram(new_jobs):
                         time_tag = "🟢 Recent"
 
                 entry = (
-                    f"*{global_idx}.* [{title}]({link})\n"
-                    f"   🏢 *Company:* _{company}_\n"
-                    f"   📍 *Location:* `{loc}`\n"
-                    f"   📡 *Source:* _{src}_\n"
-                    f"   🕒 *Posted:* {time_tag}"
+                    f"<b>{global_idx}.</b> <a href=\"{link}\"><b>{title}</b></a>\n"
+                    f"   🏢 <b>Company:</b> <code>{company}</code>\n"
+                    f"   📍 <b>Location:</b> <code>{loc}</code>\n"
+                    f"   📡 <b>Source:</b> <i>{src}</i>\n"
+                    f"   🕒 <b>Posted:</b> {time_tag}"
                 )
                 if desc and len(desc) > 15:
-                    entry += f"\n   📝 *Work Detail:* _{desc}_"
+                    entry += f"\n   📝 <b>Work Detail:</b> <i>{desc}</i>"
 
                 job_entries.append(entry)
                 global_idx += 1
 
         # 1. TAMIL NADU HIGH PRIORITY SECTION
         if tn_jobs:
-            _format_section(f"🌟 *TAMIL NADU OPPORTUNITIES ({len(tn_jobs)} JOBS — TOP PRIORITY)*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", tn_jobs)
+            _format_section(f"🌟 <b>TAMIL NADU OPPORTUNITIES ({len(tn_jobs)} JOBS — TOP PRIORITY)</b>\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", tn_jobs)
 
         # 2. OTHER INDIA TECH HUBS SECTION
         if india_jobs:
-            _format_section(f"🇮🇳 *INDIA TECH OPPORTUNITIES ({len(india_jobs)} JOBS)*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", india_jobs)
+            _format_section(f"🇮🇳 <b>INDIA TECH OPPORTUNITIES ({len(india_jobs)} JOBS)</b>\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", india_jobs)
 
         # 3. REMOTE / GLOBAL SECTION
         if remote_jobs:
-            _format_section(f"🌐 *REMOTE TECH OPPORTUNITIES ({len(remote_jobs)} JOBS)*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", remote_jobs)
+            _format_section(f"🌐 <b>REMOTE TECH OPPORTUNITIES ({len(remote_jobs)} JOBS)</b>\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", remote_jobs)
 
         # Split into chunks of under 3500 chars
         chunks = []
@@ -1019,11 +1029,11 @@ def send_radar_telegram(new_jobs):
             chunks.append("\n\n".join(current_chunk))
 
         header = (
-            f"📡 *JOB RADAR REPORT (INDIA & TN PRIORITY)*\n"
+            f"📡 <b>JOB RADAR REPORT (INDIA & TN PRIORITY)</b>\n"
             f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🆕 Found *{total}* Verified Opportunities!\n"
-            f"🌟 *Tamil Nadu Priority:* *{len(tn_jobs)}* jobs\n"
-            f"🇮🇳 *Pan-India:* *{len(india_jobs)}* jobs | 🌐 *Remote:* *{len(remote_jobs)}* jobs\n"
+            f"🆕 Found <b>{total}</b> Verified Opportunities!\n"
+            f"🌟 <b>Tamil Nadu Priority:</b> <b>{len(tn_jobs)}</b> jobs\n"
+            f"🇮🇳 <b>Pan-India:</b> <b>{len(india_jobs)}</b> jobs | 🌐 <b>Remote:</b> <b>{len(remote_jobs)}</b> jobs\n"
             f"🕒 {now_str}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
         )
@@ -1032,23 +1042,23 @@ def send_radar_telegram(new_jobs):
             if idx == 0:
                 msg = header + chunk
             else:
-                msg = f"📡 *Opportunities (Part {idx+1}/{len(chunks)})*\n\n" + chunk
+                msg = f"📡 <b>Opportunities (Part {idx+1}/{len(chunks)})</b>\n\n" + chunk
 
             if idx == len(chunks) - 1:
                 msg += (
                     f"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"📊 *Total:* {total} jobs filtered strictly for India & TN\n"
+                    f"📊 <b>Total:</b> {total} jobs filtered strictly for India & TN\n"
                     f"⏰ Next scan in 1 hour (24/7 Cloud)\n"
-                    f"👉 _Tap any job title link to view & apply directly!_"
+                    f"👉 <i>Tap any job title link to view & apply directly!</i>"
                 )
 
             try:
-                radar_bot.send_message(chat_id, msg, parse_mode="Markdown", disable_web_page_preview=True)
+                radar_bot.send_message(chat_id, msg, parse_mode="HTML", disable_web_page_preview=True)
                 if idx < len(chunks) - 1:
                     time.sleep(0.6)
             except Exception as msg_e:
                 try:
-                    plain_msg = msg.replace("*", "").replace("_", "").replace("`", "")
+                    plain_msg = re.sub(r'<[^>]+>', '', msg)
                     radar_bot.send_message(chat_id, plain_msg[:4096], parse_mode=None, disable_web_page_preview=True)
                 except Exception:
                     pass

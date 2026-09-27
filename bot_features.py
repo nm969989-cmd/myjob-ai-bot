@@ -57,17 +57,28 @@ def generate_dynamic_cover_letter(job_url, job_description, profile, gemini_clie
     }}
     """
     try:
+        text = None
         if groq_client:
-            print("[Groq] Using Groq for Cover Letter Generation...")
-            resp = groq_client.chat.completions.create(
-                model=GROQ_MODEL,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.5
-            )
-            text = resp.choices[0].message.content.strip()
-        else:
-            response = gemini_client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
-            text = response.text.strip()
+            try:
+                print("[Groq] Using Groq for Cover Letter Generation...")
+                resp = groq_client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.5
+                )
+                text = resp.choices[0].message.content.strip()
+            except Exception as ge:
+                print(f"[Groq] Cover Letter generation failed: {ge}. Trying Gemini...")
+
+        if not text and gemini_client:
+            try:
+                response = gemini_client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+                text = response.text.strip()
+            except Exception as me:
+                print(f"[Gemini] Cover Letter generation failed: {me}")
+
+        if not text:
+            raise RuntimeError("Both Groq and Gemini failed to generate cover letter.")
             
         if text.startswith("```"):
             text = re.sub(r"^```(?:json)?\n", "", text)
@@ -120,17 +131,29 @@ def generate_interview_prep(job_url, job_description, gemini_client, groq_client
     Format as clean Markdown list.
     """
     try:
+        text = None
         if groq_client:
-            print("[Groq] Using Groq for Interview Prep...")
-            resp = groq_client.chat.completions.create(
-                model=GROQ_MODEL,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.5
-            )
-            return resp.choices[0].message.content.strip()
-        else:
-            response = gemini_client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
-            return response.text.strip()
+            try:
+                print("[Groq] Using Groq for Interview Prep...")
+                resp = groq_client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.5
+                )
+                text = resp.choices[0].message.content.strip()
+            except Exception as ge:
+                print(f"[Groq] Interview Prep failed: {ge}. Trying Gemini...")
+
+        if not text and gemini_client:
+            try:
+                response = gemini_client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+                text = response.text.strip()
+            except Exception as me:
+                print(f"[Gemini] Interview Prep failed: {me}")
+
+        if text:
+            return text
+        return "Could not generate interview prep from available AI engines."
     except Exception as e:
         return f"Could not generate prep: {e}"
 
@@ -158,17 +181,28 @@ def send_cold_email_if_found(job_description, profile, resume_path, bot_email, b
     }}
     """
     try:
+        text = None
         if groq_client:
-            print("[Groq] Using Groq for Cold Email Generation...")
-            resp = groq_client.chat.completions.create(
-                model=GROQ_MODEL,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.7
-            )
-            text = resp.choices[0].message.content.strip()
-        else:
-            response = gemini_client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
-            text = response.text.strip()
+            try:
+                print("[Groq] Using Groq for Cold Email Generation...")
+                resp = groq_client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.7
+                )
+                text = resp.choices[0].message.content.strip()
+            except Exception as ge:
+                print(f"[Groq] Cold email generation failed: {ge}. Trying Gemini...")
+
+        if not text and gemini_client:
+            try:
+                response = gemini_client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+                text = response.text.strip()
+            except Exception as me:
+                print(f"[Gemini] Cold email generation failed: {me}")
+
+        if not text:
+            return False, "Both AI models failed to draft cold email."
             
         if text.startswith("```"): text = re.sub(r"^```(?:json)?\n", "", text)
         data = json.loads(text.replace("```",""))
@@ -381,9 +415,17 @@ def sync_to_notion(job_url, job_description, status, gemini_client, override_com
             
     if company == "Unknown Company" and job_url:
         try:
-            domain = job_url.split("://")[-1].split("/")[0]
-            company = domain.replace("www.", "").replace(".com", "").replace(".in", "").replace(".co", "").capitalize()
-        except: pass
+            domain = job_url.split("://")[-1].split("/")[0].lower().replace("www.", "")
+            shortener_or_board = any(bad in domain for bad in [
+                "bit.ly", "tinyurl", "cutt.ly", "t.co", "rb.gy", "shorturl", "forms.gle", "docs.google",
+                "telegram", "t.me", "linkedin", "indeed", "naukri", "foundit", "internshala", "unstop"
+            ])
+            if not shortener_or_board:
+                clean_name = domain.split(".")[0].capitalize()
+                if len(clean_name) > 2 and clean_name.lower() not in ["careers", "jobs", "apply"]:
+                    company = clean_name
+        except Exception:
+            pass
             
     import requests
     from datetime import datetime

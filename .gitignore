@@ -39,6 +39,11 @@ debug.log
 
 # Media & screenshots
 *.png
+*.jpg
+*.jpeg
+*.wav
+*.mp3
+*.mp4
 *.pdf
 !resume.pdf
 step_*.png
@@ -48,6 +53,7 @@ test_*.png
 error_screenshot.png
 temp_js.js
 videos/
+.bot_profile_set
 
 # Temporary fix / scratch / helper scripts
 test_*.py
@@ -65,3 +71,7 @@ save_instahyre_session.py
 generate_sample_pdfs.py
 remove_inputs.py
 check_instahyre.py
+
+# Graphify local environment
+graphify-out/.graphify_*
+graphify-out/cache/

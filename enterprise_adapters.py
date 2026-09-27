@@ -26,6 +26,29 @@ def generate_secure_password():
             any(c.isdigit() for c in pwd) and any(c in "!@#$%^&*" for c in pwd)):
             return pwd
 
+def resolve_resume_path(profile=None):
+    """
+    Finds the valid resume path across OS platforms, case variations, profile settings,
+    and environment variables.
+    """
+    candidates = []
+    if profile:
+        if profile.get("resume_path"):
+            candidates.append(profile.get("resume_path"))
+        if profile.get("resume"):
+            candidates.append(profile.get("resume"))
+    env_resume = os.environ.get("RESUME_FILE")
+    if env_resume:
+        candidates.append(env_resume)
+    candidates.extend([
+        "Resume.pdf", "resume.pdf", "Resume.PDF",
+        "Resume.docx", "resume.docx", "cv.pdf", "CV.pdf"
+    ])
+    for c in candidates:
+        if c and os.path.exists(c):
+            return os.path.abspath(c)
+    return None
+
 # ─────────────────────────────────────────────────────
 # FEATURE 3: IMAP OTP READER
 # ─────────────────────────────────────────────────────
@@ -107,13 +130,13 @@ def execute_lever_adapter(page, profile):
         # 2. Upload Resume
         resume_input = page.locator("input[type='file'][name='resume'], input[type='file']").first
         if resume_input.is_visible(timeout=2000):
-            resume_path = os.path.abspath("Resume.pdf")
-            if not os.path.exists(resume_path):
-                resume_path = os.environ.get("RESUME_FILE", "resume.pdf")
-            if os.path.exists(resume_path):
+            resume_path = resolve_resume_path(profile)
+            if resume_path:
                 print(f"[Lever Adapter] Uploading resume: {resume_path}")
                 resume_input.set_input_files(resume_path)
                 time.sleep(3.0)
+            else:
+                print("[Lever Adapter] ⚠️ Resume file not found.")
 
         # 3. Fill standard fields with React-compatible native setter
         def lever_fill(selector, value):
@@ -257,10 +280,8 @@ def execute_greenhouse_adapter(page, profile, bot_email=None, bot_password=None)
             try:
                 file_el = page.locator(resume_sel).first
                 if file_el.count() > 0:
-                    resume_path = os.path.abspath("Resume.pdf")
-                    if not os.path.exists(resume_path):
-                        resume_path = os.environ.get("RESUME_FILE", "resume.pdf")
-                    if os.path.exists(resume_path):
+                    resume_path = resolve_resume_path(profile)
+                    if resume_path:
                         # Force-unhide the element if hidden
                         try:
                             page.evaluate(f"document.querySelector('{resume_sel}').style.display='block'")
@@ -270,6 +291,8 @@ def execute_greenhouse_adapter(page, profile, bot_email=None, bot_password=None)
                         print(f"[Greenhouse Adapter] ✅ Resume uploaded via {resume_sel}")
                         time.sleep(2.5)
                         break
+                    else:
+                        print("[Greenhouse Adapter] ⚠️ Resume file not found.")
             except Exception:
                 continue
 

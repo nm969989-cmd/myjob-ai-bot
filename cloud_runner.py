@@ -75,29 +75,30 @@ except Exception as e:
 print("\n📢 [2/3] Scraping Telegram Channels & Extracting Direct Links...")
 try:
     from main import scrape_single_channel, load_applied_jobs, TARGET_CHANNELS
-    
+
     applied_jobs = load_applied_jobs()
-    target_channel_env = os.getenv("TARGET_CHANNEL", "JobSkull").strip()
-    channels_to_scan = list(dict.fromkeys([target_channel_env] + list(TARGET_CHANNELS)))
-    
+    raw_env_ch = os.getenv("TARGET_CHANNEL", "jobopenings_india,JobSkull").strip()
+    env_channels = [c.strip().lstrip("@") for c in raw_env_ch.split(",") if c.strip()]
+    priority_channels = ["jobopenings_india", "JobSkull", "KickCharm", "OffCampusJobs4u", "Freshershunt", "placementjobs"]
+    channels_to_scan = list(dict.fromkeys(env_channels + priority_channels + list(TARGET_CHANNELS)))
+
     for ch in channels_to_scan:
         # Check time budget
         elapsed = time.time() - START_TIME
         if elapsed > MAX_EXECUTION_SECONDS:
             print(f"⏱️ Time budget reached ({int(elapsed)}s). Concluding channel scans gracefully.")
             break
-            
+
         if ch:
             clean_ch = ch.replace("@", "").strip()
             print(f"  🔍 Checking @{clean_ch}...")
             try:
-                found, attempts = scrape_single_channel(clean_ch, applied_jobs, chat_id, max_jobs=2)
+                found, attempts = scrape_single_channel(clean_ch, applied_jobs, chat_id, max_jobs=3)
                 channels_scanned += 1
                 channel_jobs_found += (found or 0)
                 channel_attempts += (attempts or 0)
             except Exception as ch_err:
                 print(f"  ⚠️ Error scanning @{clean_ch}: {ch_err}")
-                
 except Exception as e:
     print(f"⚠️ Channel Scraper error: {e}")
 

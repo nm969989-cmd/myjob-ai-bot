@@ -13,6 +13,9 @@ on:
       - '**.md'
       - 'applied_jobs_log.csv'
       - 'radar_seen_jobs.txt'
+      - 'applied_jobs.json'
+      - 'channel_status.json'
+      - 'last_job.json'
 
 permissions:
   contents: write
@@ -24,11 +27,13 @@ concurrency:
 jobs:
   run-job-bot:
     runs-on: ubuntu-22.04
-    timeout-minutes: 30
+    timeout-minutes: 20
 
     steps:
       - name: 📥 Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: 🐍 Set up Python 3.11
         uses: actions/setup-python@v5
@@ -41,7 +46,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: 🌐 Cache Playwright Browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('requirements.txt') }}
+
       - name: 🌐 Install Playwright Chromium with System Dependencies
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: |
           python -m playwright install --with-deps chromium
 
@@ -52,7 +65,8 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          TARGET_CHANNEL: ${{ secrets.TARGET_CHANNEL || 'JobSkull' }}
+          GROQ_MODEL: ${{ secrets.GROQ_MODEL || 'openai/gpt-oss-120b' }}
+          TARGET_CHANNEL: ${{ secrets.TARGET_CHANNEL || 'jobopenings_india,JobSkull' }}
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           BOT_EMAIL: ${{ secrets.BOT_EMAIL }}
@@ -66,6 +80,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add applied_jobs_log.csv radar_seen_jobs.txt chat_id.json 2>/dev/null || true
-          git commit -m "🤖 Cloud Run: Auto-updated applied jobs & seen radar [skip ci]" || echo "No changes to commit"
-          git push || echo "Push failed or already up to date"
+          git add applied_jobs.json applied_jobs_log.csv radar_seen_jobs.txt chat_id.json channel_status.json last_job.json 2>/dev/null || true
+          git commit -m "🤖 Cloud Run: Auto-updated applied jobs, state & seen radar [skip ci]" || echo "No changes to commit"
+          git pull --rebase origin main || git pull --rebase origin master || true
+          git push origin main || git push origin master || echo "Push completed or already up to date"

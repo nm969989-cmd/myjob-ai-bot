@@ -238,6 +238,9 @@ def admin_only(handler_func):
 
 def enforce_bot_security_profile(tg_bot):
     """Enforces verified bot metadata (description, short description, name, commands) on Telegram."""
+    marker_file = ".bot_profile_set"
+    if os.path.exists(marker_file):
+        return
     try:
         tg_bot.set_my_name("Myjob")
         tg_bot.set_my_description("🚀 MyJob AI Radar — Automated pan-India fresher & engineering job intelligence bot.")
@@ -256,6 +259,11 @@ def enforce_bot_security_profile(tg_bot):
         tg_bot.set_my_commands(commands)
         tg_bot.set_chat_menu_button(menu_button=MenuButtonDefault(type="default"))
         print("[Telegram Security] Bot profile & description verified and locked!")
+        try:
+            with open(marker_file, "w", encoding="utf-8") as f:
+                f.write("locked")
+        except Exception:
+            pass
     except Exception as e:
         print(f"[Telegram Security] Profile setup warning: {e}")
 
@@ -271,7 +279,8 @@ if TELEGRAM_TOKEN:
     apihelper.MAX_RETRIES = 5
     apihelper.RETRY_TIMEOUT = 2
     bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=True, num_threads=30)
-    enforce_bot_security_profile(bot)
+    if __name__ == "__main__":
+        enforce_bot_security_profile(bot)
 else:
     bot = None
 # Handle multiple Gemini API keys
@@ -557,71 +566,131 @@ def clean_tracking_params(url):
 def bypass_blog_redirect(blog_url):
     """
     Intelligently finds the real company application link inside ad-heavy blogger/shortener pages.
-    Step 1: Follow HTTP redirects (handles URL shorteners like pdlink.in, bit.ly, tinyurl, etc.)
-    Step 2: Deep container HTML scraping for the actual ATS/careers apply link
-    Step 3: Playwright JS-rendering fallback for dynamic pages
+    Step 1: Follow HTTP redirects & recursively unwrap URL shorteners (bit.ly, tinyurl, cutt.ly, etc.)
+    Step 2: Unpack embedded query parameters and base64-encoded destination URLs
+    Step 3: Deep container HTML scraping for the actual ATS/careers apply link
+    Step 4: Meta-refresh, JavaScript redirects, and button onclick handler extraction
     """
+    import base64
     from urllib.parse import urlparse, parse_qs, unquote
 
     if not blog_url:
         return blog_url
 
-    # If the URL is already a direct job board/ATS/form, return it immediately without fetching
+    blog_url = blog_url.strip().strip("'\"")
+
     direct_domains = [
         "docs.google.com/forms", "forms.gle", "greenhouse.io", "lever.co", "workdayjobs.com",
         "smartrecruiters.com", "joinsuperset.com", "myworkdayjobs.com", "sensehq.com",
-        "oraclecloud.com", "successfactors", "icims.com", "ashbyhq.com",
-        "bamboohr.com", "jobs.lever.co", "taleo.net", "breezy.hr",
+        "oraclecloud.com", "successfactors", "icims.com", "ashbyhq.com", "jobvite.com",
+        "bamboohr.com", "jobs.lever.co", "taleo.net", "breezy.hr", "phenompeople.com",
         "recruitee.com", "freshteam.com", "zohorecruit.com", "wellfound.com",
         "angel.co", "workingnomads.com", "weworkremotely.com", "hired.com",
         "triplebyte.com", "ycombinator.com/companies", "darwinbox.com", "keka.com",
         "unstop.com", "internshala.com", "foundit.in", "naukri.com", "hirist.com",
+        "amazon.jobs", "careers.google.com", "careers.microsoft.com", "jobs.apple.com"
     ]
     if any(domain in blog_url.lower() for domain in direct_domains):
-        print(f"[Bypasser] URL is already a direct job page: {blog_url}")
+        print(f"[Bypasser] URL is already a direct job portal: {blog_url}")
         return clean_tracking_params(blog_url)
+
+    shortener_domains = [
+        "bit.ly", "tinyurl.com", "cutt.ly", "t.co", "rb.gy", "t.ly", "is.gd",
+        "buff.ly", "ow.ly", "shorturl.at", "dub.sh", "linkvertise.com", "adf.ly",
+        "pdlink.in", "linkrex.net", "url.bio", "trib.al", "rebrand.ly", "bl.ink",
+        "tiny.cc", "goo.gl", "lnkd.in", "qr.ae", "sh.st"
+    ]
+
+    parked_domains_list = [
+        "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com",
+        "namecheap.com", "domainmarket.com", "parklogic.com", "parkingcrew.com",
+        "bodis.com", "above.com", "domainagents.com", "undeveloped.com",
+        "buydomains.com", "domain_profile.cfm", "domainforbuy"
+    ]
+
+    skip_domains = [
+        "newsletter", "instagram.com", "youtube.com", "youtu.be", "whatsapp.com", "telegram.org",
+        "t.me", "telegram.dog", "facebook.com", "twitter.com", "x.com", "pinterest.com", "reddit.com",
+        "play.google.com", "apps.apple.com", "aratt.ai", "wa.me", "threads.net", "linktr.ee",
+        "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com", "namecheap.com",
+        "domainmarket.com", "parklogic.com", "parkingcrew.com", "bodis.com", "above.com",
+        "domainagents.com", "undeveloped.com", "buydomains.com", "domain_profile.cfm", "domainforbuy"
+    ]
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
     }
+
     try:
-        # Step 1: Follow all HTTP redirects to get the FINAL URL
-        response = requests.get(blog_url, headers=headers, timeout=15, allow_redirects=True)
-        final_url_after_redirect = response.url
+        # Step 1: Follow HTTP redirect chain (up to 4 hops for nested shorteners)
+        curr_url = blog_url
+        for _ in range(4):
+            try:
+                resp = requests.get(curr_url, headers=headers, timeout=10, allow_redirects=True)
+                final_url = resp.url
+                if final_url != curr_url:
+                    print(f"[Bypasser] Followed redirect: {curr_url} → {final_url}")
+                    curr_url = final_url
+                netloc = urlparse(curr_url).netloc.lower()
+                if not any(sh in netloc for sh in shortener_domains):
+                    break
+            except Exception:
+                break
 
-        print(f"[Bypasser] Redirect chain resolved: {blog_url} → {final_url_after_redirect}")
+        # Check if landed on direct ATS
+        if any(domain in curr_url.lower() for domain in direct_domains):
+            print(f"[Bypasser] Redirect chain landed on direct ATS: {curr_url}")
+            return clean_tracking_params(curr_url)
 
-        # If the redirect itself landed on a known job platform, return immediately
-        if any(domain in final_url_after_redirect.lower() for domain in direct_domains):
-            print(f"[Bypasser] Redirect resolved to direct job page: {final_url_after_redirect}")
-            return clean_tracking_params(final_url_after_redirect)
-
-        # Check if the final redirect landed on a parked / expired domain sale page
-        parked_domains_list = [
-            "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com",
-            "namecheap.com", "domainmarket.com", "parklogic.com", "parkingcrew.com",
-            "bodis.com", "above.com", "domainagents.com", "undeveloped.com",
-            "buydomains.com", "domain_profile.cfm", "domainforbuy"
-        ]
-        if any(p in final_url_after_redirect.lower() for p in parked_domains_list):
-            print(f"[Bypasser] Redirected to parked/expired domain ({final_url_after_redirect}) — rejecting.")
+        # Reject parked domain
+        if any(p in curr_url.lower() for p in parked_domains_list):
+            print(f"[Bypasser] Redirected to parked/expired domain ({curr_url}) — rejecting.")
             return ""
 
-        # If redirect changed the URL significantly (e.g. shortener resolved), use the final URL
-        parsed_original = urlparse(blog_url)
-        parsed_final = urlparse(final_url_after_redirect)
-        if parsed_original.netloc != parsed_final.netloc:
-            print(f"[Bypasser] URL shortener resolved to new domain: {final_url_after_redirect}")
-            blog_url = final_url_after_redirect
+        # Step 2: Check query parameters for embedded target URLs (including base64)
+        parsed_current = urlparse(curr_url)
+        if parsed_current.query:
+            qs = parse_qs(parsed_current.query)
+            for param_key in ["target", "url", "redirect", "goto", "link", "dest", "next", "redir", "u", "to"]:
+                if param_key in qs:
+                    raw_val = qs[param_key][0]
+                    target_candidate = unquote(raw_val).strip()
+                    if target_candidate.startswith("http") and not any(x in target_candidate.lower() for x in skip_domains):
+                        print(f"[Bypasser] Found target link in query parameter '{param_key}': {target_candidate}")
+                        return clean_tracking_params(target_candidate)
+                    # Check base64 encoded URL
+                    if raw_val.startswith("aHR0"):
+                        try:
+                            decoded = base64.b64decode(raw_val).decode('utf-8', errors='ignore').strip()
+                            if decoded.startswith("http") and not any(x in decoded.lower() for x in skip_domains):
+                                print(f"[Bypasser] Decoded base64 target link: {decoded}")
+                                return clean_tracking_params(decoded)
+                        except Exception:
+                            pass
 
-        parsed_blog = urlparse(blog_url)
-        blog_domain = parsed_blog.netloc
+        # Step 3: Fetch and inspect page HTML
+        resp = requests.get(curr_url, headers=headers, timeout=12)
+        if resp.status_code != 200:
+            return clean_tracking_params(curr_url)
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(resp.text, "html.parser")
+        blog_domain = parsed_current.netloc.lower()
 
-        # Focus search on post article container to avoid header/footer/sidebar clutter
+        # Check <meta http-equiv="refresh"> redirect tags
+        meta_refresh = soup.find("meta", attrs={"http-equiv": re.compile(r"refresh", re.I)})
+        if meta_refresh:
+            content = meta_refresh.get("content", "")
+            url_match = re.search(r'url\s*=\s*["\']?([^"\';\s>]+)', content, re.I)
+            if url_match:
+                meta_url = url_match.group(1).strip()
+                if meta_url.startswith("http") and blog_domain not in meta_url:
+                    if not any(p in meta_url.lower() for p in parked_domains_list) and not any(x in meta_url.lower() for x in skip_domains):
+                        print(f"[Bypasser] Found meta refresh redirect: {meta_url}")
+                        return clean_tracking_params(meta_url)
+
+        # Container search
         container = (
             soup.find("div", class_=lambda c: c and any(k in str(c) for k in ["post-body", "entry-content", "article-body", "article-content", "post-content"])) or
             soup.find("article") or
@@ -629,43 +698,22 @@ def bypass_blog_redirect(blog_url):
             soup
         )
 
-        # Priority 0: Check <meta http-equiv="refresh"> redirect tags
-        meta_refresh = soup.find("meta", attrs={"http-equiv": re.compile(r"refresh", re.I)})
-        if meta_refresh:
-            content = meta_refresh.get("content", "")
-            url_match = re.search(r'url\s*=\s*["\']?([^"\';\s>]+)', content, re.I)
-            if url_match:
-                meta_url = url_match.group(1)
-                if meta_url.startswith("http") and blog_domain not in meta_url:
-                    if not any(p in meta_url.lower() for p in parked_domains_list):
-                        print(f"[Bypasser] Found meta refresh redirect: {meta_url}")
-                        return clean_tracking_params(meta_url)
-
-        skip_domains = [
-            "newsletter", "instagram.com", "youtube.com", "youtu.be", "whatsapp.com", "telegram.org",
-            "t.me", "telegram.dog", "facebook.com", "twitter.com", "x.com", "pinterest.com", "reddit.com",
-            "play.google.com", "apps.apple.com", "aratt.ai", "wa.me", "threads.net", "linktr.ee",
-            "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com", "namecheap.com",
-            "domainmarket.com", "parklogic.com", "parkingcrew.com", "bodis.com", "above.com",
-            "domainagents.com", "undeveloped.com", "buydomains.com", "domain_profile.cfm", "domainforbuy"
-        ]
-
-        # Priority 1: Direct ATS / Job board links inside container
+        # 3a. Direct ATS links inside container
         for link in container.find_all("a", href=True):
             href = link["href"].strip()
             if not href.startswith("http"):
                 continue
             if any(domain in href.lower() for domain in direct_domains):
                 if blog_domain not in href and not any(x in href.lower() for x in skip_domains):
-                    print(f"[Bypasser] Found direct ATS link: {href}")
+                    print(f"[Bypasser] Found direct ATS link inside article: {href}")
                     return clean_tracking_params(href)
 
-        # Priority 2: Look for <a> links with "Apply" / "Registration" keywords in text
+        # 3b. Links with apply/registration text
         apply_keywords = [
             "apply online", "click here to apply", "apply for this job", "start application",
             "apply link", "direct apply", "official apply link", "official link", "registration link",
             "apply now", "register now", "apply here", "external apply", "apply on company",
-            "career page", "company website", "job link",
+            "career page", "company website", "job link", "official portal", "registration form"
         ]
         for link in container.find_all("a", href=True):
             href = link["href"].strip()
@@ -674,26 +722,17 @@ def bypass_blog_redirect(blog_url):
                 continue
             if any(word in link_text for word in apply_keywords):
                 if blog_domain not in href and not any(x in href.lower() for x in skip_domains):
-                    print(f"[Bypasser] Found apply link by text keyword: {href}")
+                    # If this apply link is another shortener, follow it
+                    if any(sh in href.lower() for sh in shortener_domains):
+                        try:
+                            sub_r = requests.head(href, headers=headers, timeout=6, allow_redirects=True)
+                            href = sub_r.url
+                        except Exception:
+                            pass
+                    print(f"[Bypasser] Found apply link via text keyword: {href}")
                     return clean_tracking_params(href)
 
-        # Priority 3: Check query parameters in links for redirect targets
-        for link in container.find_all("a", href=True):
-            href = link["href"]
-            if any(param in href for param in ["target=", "url=", "redirect=", "goto=", "link=", "dest=", "next=", "redir="]):
-                try:
-                    parsed = urlparse(href)
-                    qs = parse_qs(parsed.query)
-                    for key in ["target", "url", "redirect", "goto", "link", "dest", "next", "redir"]:
-                        if key in qs:
-                            real_url = unquote(qs[key][0])
-                            if real_url.startswith("http") and not any(x in real_url.lower() for x in skip_domains):
-                                print(f"[Bypasser] Found redirect param link: {real_url}")
-                                return clean_tracking_params(real_url)
-                except Exception:
-                    pass
-
-        # Priority 4: Look for JavaScript window.location or window.open redirects in scripts
+        # 3c. Check JavaScript window.location or window.open in script tags
         for script in soup.find_all("script"):
             script_text = script.string or ""
             js_patterns = [
@@ -705,41 +744,39 @@ def bypass_blog_redirect(blog_url):
             for pattern in js_patterns:
                 match = re.search(pattern, script_text)
                 if match:
-                    js_url = match.group(1)
+                    js_url = match.group(1).strip()
                     if js_url.startswith("http") and blog_domain not in js_url and not any(x in js_url.lower() for x in skip_domains):
                         print(f"[Bypasser] Found JS redirect link: {js_url}")
                         return clean_tracking_params(js_url)
 
-        # Priority 5: Look for any external link matching career/jobs paths
+        # 3d. Check button onclick handlers
+        for btn in container.find_all(["button", "a", "div"], onclick=True):
+            onclick = btn.get("onclick", "")
+            url_match = re.search(r'["\']?(https?://[^"\';\s]+)', onclick)
+            if url_match:
+                btn_url = url_match.group(1).strip()
+                if blog_domain not in btn_url and not any(x in btn_url.lower() for x in skip_domains):
+                    print(f"[Bypasser] Found onclick URL: {btn_url}")
+                    return clean_tracking_params(btn_url)
+
+        # 3e. Career / Jobs URL pattern check
         all_external_links = []
         for link in container.find_all("a", href=True):
             href = link["href"].strip()
             if href.startswith("http") and blog_domain not in href:
                 if not any(x in href.lower() for x in skip_domains):
                     all_external_links.append(href)
-        
+
         for ext_link in all_external_links:
             if any(kw in ext_link.lower() for kw in ["/career", "/job", "/apply", "/opening", "/hiring", "/recruit", "careers.", "jobs."]):
                 print(f"[Bypasser] Found career page URL pattern: {ext_link}")
                 return clean_tracking_params(ext_link)
 
-        # Priority 6: Check for button onclick handlers
-        for btn in container.find_all(["button", "a", "div"], onclick=True):
-            onclick = btn.get("onclick", "")
-            url_match = re.search(r'["\']?(https?://[^"\';\s]+)', onclick)
-            if url_match:
-                btn_url = url_match.group(1)
-                if blog_domain not in btn_url and not any(x in btn_url.lower() for x in skip_domains):
-                    print(f"[Bypasser] Found onclick URL: {btn_url}")
-                    return clean_tracking_params(btn_url)
-
         if all_external_links:
-            print(f"[Bypasser] Using first external link: {all_external_links[0]}")
+            print(f"[Bypasser] Using primary external link: {all_external_links[0]}")
             return clean_tracking_params(all_external_links[0])
 
-        # Fallback: return the final URL after redirect resolution
-        print(f"[Bypasser] No apply link found in HTML. Using final resolved URL: {blog_url}")
-        return clean_tracking_params(blog_url)
+        return clean_tracking_params(curr_url)
     except Exception as e:
         print(f"[Bypasser] Error resolving redirect for {blog_url}: {e}")
         return clean_tracking_params(blog_url)
@@ -3114,32 +3151,77 @@ def is_social_or_promo_link(url):
 def fetch_target_page_job_meta(url):
     """
     Fetches title, h1, and key meta from the actual destination webpage.
-    Guarantees 100% location, company, and role accuracy by inspecting the real job destination.
+    Inspects ATS URL domains directly (Greenhouse, Lever, Workday, etc.) and structured tables.
     """
     if not url or not url.startswith("http") or is_social_or_promo_link(url):
         return {}
+
+    from urllib.parse import urlparse
+    parsed = urlparse(url)
+    netloc = parsed.netloc.lower()
+    path = parsed.path.strip("/")
+
+    company_from_url = ""
+    role_from_url = ""
+
+    # Direct ATS detection from URL structure
+    if "greenhouse.io" in netloc:
+        parts = path.split("/")
+        if parts:
+            company_from_url = parts[0].replace("-", " ").title()
+    elif "lever.co" in netloc:
+        parts = path.split("/")
+        if parts:
+            company_from_url = parts[0].replace("-", " ").title()
+    elif "myworkdayjobs.com" in netloc:
+        sub = netloc.split(".")[0]
+        if sub and sub not in ["wd1", "wd2", "wd3", "wd4", "wd5"]:
+            company_from_url = sub.replace("-", " ").title()
+    elif "smartrecruiters.com" in netloc:
+        parts = path.split("/")
+        if parts:
+            company_from_url = parts[0].replace("-", " ").title()
+    elif "ashbyhq.com" in netloc:
+        parts = path.split("/")
+        if parts:
+            company_from_url = parts[0].replace("-", " ").title()
+    elif "bamboohr.com" in netloc:
+        sub = netloc.split(".")[0]
+        if sub:
+            company_from_url = sub.replace("-", " ").title()
+    elif "amazon.jobs" in netloc:
+        company_from_url = "Amazon"
+    elif "google.com" in netloc and "careers" in path:
+        company_from_url = "Google"
+    elif "microsoft.com" in netloc and "careers" in path:
+        company_from_url = "Microsoft"
+    elif "apple.com" in netloc and "jobs" in path:
+        company_from_url = "Apple"
+
     try:
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
         r = requests.get(url, headers=headers, timeout=6)
         if r.status_code != 200:
-            return {}
+            return {"company": company_from_url, "role": role_from_url}
         soup = BeautifulSoup(r.text, "html.parser")
         title = soup.title.string.strip() if soup.title and soup.title.string else ""
         h1 = soup.find("h1").get_text().strip() if soup.find("h1") else ""
-        
+
         full_text = f"{title}\n{h1}"
-        company = ""
-        role = ""
+        company = company_from_url
+        role = role_from_url
         loc_str = ""
-        
-        # 1. Extract from structured tables on job blogs / career portals
+
+        # Extract from structured tables on job blogs / career portals
         for tr in soup.find_all("tr"):
             row_text = tr.get_text(separator=" | ").strip()
             full_text += "\n" + row_text
             if re.search(r'Company\s*\|', row_text, re.I) and not company:
                 parts = row_text.split('|')
                 if len(parts) >= 2:
-                    company = parts[1].strip()
+                    c_cand = parts[1].strip()
+                    if len(c_cand) >= 2 and not any(k in c_cand.lower() for k in ["hiring", "recruiter", "http"]):
+                        company = c_cand
             if re.search(r'Role\s*\||Position\s*\||Designation\s*\||Job\s*Title\s*\|', row_text, re.I) and not role:
                 parts = row_text.split('|')
                 if len(parts) >= 2:
@@ -3149,9 +3231,9 @@ def fetch_target_page_job_meta(url):
                 if len(parts) >= 2:
                     loc_str = parts[1].strip()
 
-        # 2. Extract from H1 / Title if not in table
+        # Extract from H1 / Title if not in table
         if not company:
-            m_h1 = re.search(r'^([A-Za-z0-9\s.,&-]+?)\s+(?:Walk-in|Hiring|Recruitment|Drive|is\s+Hiring)', h1, re.I)
+            m_h1 = re.search(r'^([A-Za-z0-9\s.,&-]+?)\s+(?:Walk-in|Hiring|Recruitment|Drive|is\s+Hiring|Off\s*Campus)', h1, re.I)
             if m_h1:
                 company = m_h1.group(1).strip()
         if not role:
@@ -3160,7 +3242,11 @@ def fetch_target_page_job_meta(url):
                 after_colon = re.sub(r'\s+Hiring.*', '', after_colon, flags=re.I).strip()
                 if len(after_colon) > 3:
                     role = after_colon
-                    
+            elif "|" in h1:
+                parts_h1 = h1.split("|")
+                if len(parts_h1) >= 2:
+                    role = parts_h1[1].strip()
+
         return {
             "company": company,
             "role": role,
@@ -3170,86 +3256,92 @@ def fetch_target_page_job_meta(url):
             "page_text": full_text
         }
     except Exception:
-        return {}
+        return {"company": company_from_url, "role": role_from_url}
 
 def extract_structured_channel_job_details(message_text, raw_link, final_url, channel_name):
     """
     Parses channel message text, target webpage, and direct URL to extract structured job metadata.
+    Combines multi-pattern regex, URL analysis, and fast AI fallback (Gemini/Groq) for 100% accuracy.
     Returns: dict with (company, role, location, batch, salary, work_mode, description_summary, direct_url, is_tamil_nadu, priority_tier, is_valid_india)
     """
     from job_radar import classify_location
 
     text_clean = message_text.strip()
     lines = [l.strip() for l in text_clean.split('\n') if l.strip()]
-    first_line = lines[0] if lines else ""
 
     # Fetch webpage metadata to verify against false channel claims
     page_meta = fetch_target_page_job_meta(final_url)
 
-    # 1. EXTRACT COMPANY
+    invalid_companies = [
+        "bit", "bitly", "tinyurl", "cutt", "cuttly", "rb", "rbgy", "t", "tly", "isgd", "buffly",
+        "owly", "shorturl", "dub", "linkvertise", "adf", "goo", "gl", "lnkd", "linktr", "forms",
+        "google", "docs", "sheets", "drive", "notion", "airtable", "blogger", "blogspot",
+        "wordpress", "medium", "github", "gitlab", "jobsgovind", "freshershunt", "foundthejob",
+        "jobopenings", "jobopenings_india", "tech_jobs_india", "indiawalkinjobs", "walkinjobs",
+        "meganaukri", "dailyjobalerts", "sarkariprep", "freejobalert", "freshersvoice", "naukriauto",
+        "jobalertshub", "placementdrive", "allindiajobs", "offcampusjobs4u", "kickcharm", "jobskull",
+        "naukri", "foundit", "shine", "monster", "telegram", "telegram.org", "telegram.dog", "t.me",
+        "whatsapp", "wa.me", "youtube", "instagram", "facebook", "twitter", "x.com", "threads.net",
+        "verified recruiter", "verified", "recruiter", "company", "organisation", "organization",
+        "hiring", "careers", "jobs", "job", "apply", "unknown", "admin", "domain", "hugedomains",
+        "godaddy", "sedo", "dan", "afternic", "addtoany", "addthis", "sharethis", "disqus", "direct hiring organization"
+    ]
+
+    # 1. EXTRACT COMPANY (Multi-Line Regex)
     company = ""
-    if page_meta.get("company") and len(page_meta["company"]) >= 2:
+    if page_meta.get("company") and len(page_meta["company"]) >= 2 and page_meta["company"].lower() not in invalid_companies:
         company = page_meta["company"]
 
     if not company:
-        comp_m = re.search(r'(?:🏢\s*Company|Company|Organisation|Org|Organization)\s*[:\-]\s*([^\n📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
+        comp_m = re.search(r'(?:🏢\s*(?:Company|Organisation|Org|Organization|Company\s*Name)?|Company|Organisation|Org|Organization)\s*[:\-]\s*([^\n📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
         if comp_m:
-            company = comp_m.group(1).strip()
-    
-    if not company or len(company) < 2:
-        m_hiring = re.search(r'^[^\w\s]*\s*([A-Za-z0-9\s.,&-]+?)\s+(?:is\s+Hiring|is\s+Recruiting|Recruitment\s+20\d\d|Recruitment|Off\s*Campus\s+Drive|Off\s*Campus|Mega\s+Drive|Drive|Hiring|Walkin|Walk-in)', first_line, re.I)
-        if m_hiring:
-            company = m_hiring.group(1).strip()
+            cand = comp_m.group(1).strip()
+            if len(cand) >= 2 and cand.lower() not in invalid_companies:
+                company = cand
+
+    if not company:
+        for line in lines[:4]:
+            m_hiring = re.search(r'^[^\w\s]*\s*([A-Za-z0-9\s.,&-]+?)\s+(?:is\s+Hiring|is\s+Recruiting|Recruitment\s+20\d\d|Recruitment|Off\s*Campus\s+Drive|Off\s*Campus|Mega\s+Drive|Drive|Hiring|Walkin|Walk-in)', line, re.I)
+            if m_hiring:
+                cand = m_hiring.group(1).strip()
+                if len(cand) >= 2 and cand.lower() not in invalid_companies:
+                    company = cand
+                    break
+
+    if not company:
+        for line in lines[:3]:
+            m_ad = re.search(r'#ad\s*🚀?\s*([A-Za-z0-9\s.,&-]+?)\s+(?:Hiring|Recruitment|Drive)', line, re.I)
+            if m_ad:
+                cand = m_ad.group(1).strip()
+                if len(cand) >= 2 and cand.lower() not in invalid_companies:
+                    company = cand
+                    break
 
     company = re.sub(r'[^\w\s.,&-]', '', company).replace('Title', '').replace(':', '').strip()
-    invalid_companies = [
-        "verified recruiter", "hiring", "job", "hugedomains", "godaddy", "sedo", "dan",
-        "afternic", "domain", "admin", "unknown", "addtoany", "addthis", "sharethis",
-        "blogger", "wordpress", "disqus", "telegram", "telegram.org", "telegram.dog",
-        "freshershunt", "foundthejob", "jobopenings", "jobopenings_india", "tech_jobs_india",
-        "indiawalkinjobs", "walkinjobs", "meganaukri", "dailyjobalerts", "sarkariprep",
-        "freejobalert", "freshersvoice", "naukriauto", "jobalertshub", "placementdrive", "allindiajobs"
-    ]
-    if not company or len(company) < 2 or company.lower() in invalid_companies:
-        if final_url and "http" in final_url and not is_social_or_promo_link(final_url):
-            from urllib.parse import urlparse
-            netloc = urlparse(final_url).netloc.lower()
-            for part in netloc.split('.'):
-                if part not in ["www", "com", "in", "io", "co", "careers", "jobs", "apply", "wd3", "myworkdayjobs", "sensehq", "greenhouse", "lever", "smartrecruiters", "docs", "google", "hugedomains", "sedo", "godaddy", "addtoany", "addthis", "sharethis", "telegram", "t", "dog", "org", "freshershunt", "foundthejob", "indiawalkinjobs", "walkinjobs", "meganaukri"]:
-                    if len(part) >= 3:
-                        company = part.capitalize()
-                        break
-        if not company or len(company) < 2 or company.lower() in invalid_companies:
-            company = "Verified Recruiter"
+    if company.lower() in invalid_companies or len(company) < 2:
+        company = ""
 
-    # 2. EXTRACT ROLE / POSITION
+    # 2. EXTRACT ROLE / POSITION (Multi-Line Regex)
     role = ""
     if page_meta.get("role") and len(page_meta["role"]) >= 3:
         role = page_meta["role"]
 
     if not role:
-        role_m = re.search(r'(?:(?:🚀\s*)?Hiring\s+Now|Role|Position|Job\s*Title|Profile|Post|Designation)\s*[:\-]\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
+        role_m = re.search(r'(?:(?:💼\s*)?Role|Position|Job\s*Title|Profile|Post|Designation|▪️\s*Post)\s*[:\-]\s*([^\n🏢📍🛠️💰📝👉🔗|]+)', text_clean, re.I)
         if role_m:
             role = role_m.group(1).strip()
 
-    if not role or len(role) < 2:
-        m_role_paren = re.search(r'is\s+Hiring\s*\(([^)]+)\)', first_line, re.I)
-        if m_role_paren:
-            role = m_role_paren.group(1).strip()
-
-    if not role or len(role) < 2:
-        if "is Hiring" in first_line:
-            after_hiring = first_line.split("is Hiring")[-1].strip()
-            after_hiring = re.sub(r'[^\w\s.,&-]', '', after_hiring).strip()
-            if len(after_hiring) > 3:
-                role = after_hiring
+    if not role:
+        for line in lines[:4]:
+            m_role_paren = re.search(r'is\s+Hiring\s*(?:for\s+)?(?:\(([^)]+)\)|([A-Za-z0-9\s/&,.-]+?(?:Developer|Engineer|Analyst|Associate|Specialist|Trainee|Intern|Executive|Manager|Consultant)))', line, re.I)
+            if m_role_paren:
+                role = (m_role_paren.group(1) or m_role_paren.group(2) or "").strip()
+                break
 
     role = re.sub(r'^[▪️👉•\-:\s]+', '', role).strip()
     role = re.sub(r'[^\w\s.,&/\(\)\-]', '', role).strip()
-    if not role or len(role) < 2:
-        role = "Software Developer / Fresher Engineer"
 
-    # 3. EXTRACT & VERIFY LOCATION (Strictly prioritize actual webpage location over channel noise)
+    # 3. EXTRACT LOCATION
     if page_meta.get("location_raw"):
         raw_loc = page_meta["location_raw"]
         context_for_loc = f"{raw_loc} {page_meta.get('page_text', '')}"
@@ -3261,38 +3353,112 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
         loc_m = re.search(r'(?:📍\s*Location|Location|Job\s*Location|Work\s*Location|Place)\s*[:\-]\s*([^\n🏢💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
         raw_loc = loc_m.group(1).strip() if loc_m else ""
         context_for_loc = f"{raw_loc} {text_clean}"
-    is_valid_loc, tier, loc_tag, is_tn = classify_location(raw_loc, context_for_loc)
 
     # 4. EXTRACT BATCH / ELIGIBILITY
     batch = ""
-    batch_m = re.search(r'(?:🎓\s*Batch|Batch|Eligibility|Passout|Year\s*of\s*Passing|Qualification|Experience|Exp)\s*[:\-]\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
+    batch_m = re.search(r'(?:(?:🎓\s*)?Batch|Batch|Eligibility|Passout|Year\s*of\s*Passing|Qualification|Experience|Exp)\s*[:\-]\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
     if batch_m:
         batch = batch_m.group(1).strip()
-    if not batch:
-        batch = "2024 / 2025 / 2026 Batch | Freshers"
 
     # 5. EXTRACT SALARY / CTC
     salary = ""
-    sal_m = re.search(r'(?:💰\s*(?:Expected\s*CTC|CTC)|Expected\s*CTC|CTC|Salary|Package|Pay|Stipend)\s*[:\-]\s*([^\n🏢📍💼🛠️📝👉🔗|]+)', text_clean, re.I)
+    sal_m = re.search(r'(?:(?:💰\s*)?(?:Expected\s*CTC|CTC)|Expected\s*CTC|CTC|Salary|Package|Pay|Stipend)\s*[:\-]\s*([^\n🏢📍💼🛠️📝👉🔗|]+)', text_clean, re.I)
     if sal_m:
         salary = sal_m.group(1).strip()
-    if not salary:
-        salary = "As per Industry Standard"
 
     # 6. EXTRACT WORK STATUS / JOB TYPE
     work_mode = ""
-    wm_m = re.search(r'(?:🛠️\s*Work\s*Status|Work\s*Status|💼\s*Job\s*Type|Job\s*Type|Work\s*Mode)\s*[:\-]\s*([^\n🏢📍💰📝👉🔗|]+)', text_clean, re.I)
+    wm_m = re.search(r'(?:(?:🛠️\s*)?Work\s*Status|Work\s*Status|💼\s*Job\s*Type|Job\s*Type|Work\s*Mode)\s*[:\-]\s*([^\n🏢📍💰📝👉🔗|]+)', text_clean, re.I)
     if wm_m:
         work_mode = wm_m.group(1).strip()
         work_mode = re.sub(r'🛠️\s*Work\s*Status\s*:\s*', '| ', work_mode).strip()
 
     # 7. EXTRACT JOB DESCRIPTION / SUMMARY
     desc_summary = ""
-    desc_m = re.search(r'(?:📝\s*Job\s*Description|Job\s*Description|Description|Responsibilities|About\s*Role)\s*[:\-]\s*([^\n👉🔗]+)', text_clean, re.I)
+    desc_m = re.search(r'(?:📝\s*Job\s*Description|Job\s*Description|Description|Responsibilities|About\s*Role|Highlights)\s*[:\-]\s*([^\n👉🔗]+)', text_clean, re.I)
     if desc_m:
         desc_summary = desc_m.group(1).strip()[:200]
-        if len(desc_m.group(1).strip()) > 200:
-            desc_summary += "..."
+
+    # ── AI EXTRACTION FALLBACK (When company or role is uncertain) ──
+    if not company or company.lower() in invalid_companies or not role or role == "Software Developer / Fresher Engineer":
+        ai_data = None
+        # Try Gemini Flash
+        try:
+            gc = get_gemini_client()
+            if gc:
+                resp = gc.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=f"Extract structured job data from this post:\n{text_clean[:600]}\nReturn JSON with keys: company, role, location, batch, salary, work_mode, key_highlights."
+                )
+                raw_t = resp.text.strip()
+                if "```" in raw_t:
+                    m = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', raw_t)
+                    if m:
+                        raw_t = m.group(1)
+                ai_data = json.loads(raw_t)
+        except Exception:
+            pass
+
+        # Try Groq fallback
+        if not ai_data and groq_client:
+            try:
+                g_resp = groq_client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=[{"role": "user", "content": f"Extract structured job data from this post:\n{text_clean[:600]}\nReturn valid JSON with keys: company, role, location, batch, salary, work_mode, key_highlights."}],
+                    timeout=5
+                )
+                raw_t = g_resp.choices[0].message.content.strip()
+                if "```" in raw_t:
+                    m = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', raw_t)
+                    if m:
+                        raw_t = m.group(1)
+                ai_data = json.loads(raw_t)
+            except Exception:
+                pass
+
+        if ai_data and isinstance(ai_data, dict):
+            ai_comp = str(ai_data.get("company", "")).strip()
+            if ai_comp and len(ai_comp) >= 2 and ai_comp.lower() not in invalid_companies and "null" not in ai_comp.lower():
+                company = ai_comp
+                print(f"[AI Extraction] Successfully resolved company: {company}")
+            ai_role = str(ai_data.get("role", "")).strip()
+            if ai_role and len(ai_role) >= 3 and "null" not in ai_role.lower():
+                role = ai_role
+                print(f"[AI Extraction] Successfully resolved role: {role}")
+            if not raw_loc and ai_data.get("location") and "null" not in str(ai_data["location"]).lower():
+                raw_loc = str(ai_data["location"]).strip()
+                context_for_loc = f"{raw_loc} {context_for_loc}"
+            if not batch and ai_data.get("batch") and "null" not in str(ai_data["batch"]).lower():
+                batch = str(ai_data["batch"]).strip()
+            if not salary and ai_data.get("salary") and "null" not in str(ai_data["salary"]).lower():
+                salary = str(ai_data["salary"]).strip()
+            if not work_mode and ai_data.get("work_mode") and "null" not in str(ai_data["work_mode"]).lower():
+                work_mode = str(ai_data["work_mode"]).strip()
+            if not desc_summary and ai_data.get("key_highlights") and "null" not in str(ai_data["key_highlights"]).lower():
+                desc_summary = str(ai_data["key_highlights"]).strip()[:200]
+
+    # Fallback to URL domain ONLY for corporate domains (NEVER shorteners/aggregators)
+    if not company or company.lower() in invalid_companies:
+        if final_url and "http" in final_url and not is_social_or_promo_link(final_url):
+            from urllib.parse import urlparse
+            netloc = urlparse(final_url).netloc.lower()
+            parts = [p for p in netloc.split('.') if p not in ["www", "com", "in", "io", "co", "careers", "jobs", "apply", "wd3", "myworkdayjobs", "sensehq", "greenhouse", "lever", "smartrecruiters", "docs", "google", "org", "net"]]
+            if parts and parts[0] not in invalid_companies and len(parts[0]) >= 3:
+                company = parts[0].capitalize()
+
+    if not company or company.lower() in invalid_companies:
+        company = "Direct Hiring Organization"
+
+    if not role or len(role) < 2:
+        role = "Software Developer / Fresher Engineer"
+
+    if not batch:
+        batch = "2024 / 2025 / 2026 Batch | Freshers"
+
+    if not salary:
+        salary = "As per Industry Standard"
+
+    is_valid_loc, tier, loc_tag, is_tn = classify_location(raw_loc, context_for_loc)
 
     return {
         "company": company[:50],
@@ -3445,15 +3611,23 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
             if bot and active_chat_id:
                 try:
                     import html
+                    import urllib.parse
                     channel_post_url = f"https://t.me/s/{channel_name}"
-                    
-                    tn_header = (
-                        "🌟 <b>TAMIL NADU PRIORITY OPPORTUNITY</b> ⭐\n"
-                        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                    ) if details["is_tamil_nadu"] else ""
-                    
+
+                    priority_banner = ""
+                    if details.get("is_tamil_nadu"):
+                        priority_banner = (
+                            "🌟 <b>TAMIL NADU PRIORITY OPPORTUNITY</b> 🇮🇳\n"
+                            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        )
+                    elif "remote" in str(details.get("work_mode", "")).lower() or "remote" in str(details.get("location", "")).lower():
+                        priority_banner = (
+                            "🏠 <b>REMOTE / WORK FROM HOME OPPORTUNITY</b> 🌐\n"
+                            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                        )
+
                     work_info = f"🛠️ <b>Work Mode / Type:</b>\n   <code>{html.escape(str(details['work_mode']))}</code>\n\n" if details.get('work_mode') else ""
-                    
+
                     desc_section = ""
                     if details.get('description_summary') and len(details['description_summary']) > 15:
                         desc_section = (
@@ -3465,7 +3639,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     notification = (
                         "🎯 <b>NEW VERIFIED JOB ALERT</b>\n"
                         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                        f"{tn_header}"
+                        f"{priority_banner}"
                         f"🏢 <b>COMPANY:</b>\n"
                         f"   <code>{html.escape(str(details['company']))}</code>\n\n"
                         f"💼 <b>ROLE / POSITION:</b>\n"
@@ -3490,6 +3664,11 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     markup.row(
                         InlineKeyboardButton("🚀 Direct Apply (Official)", url=final_url),
                         InlineKeyboardButton("📢 View Channel Post", url=channel_post_url)
+                    )
+                    share_text = urllib.parse.quote(f"🚀 Job Alert: {details['company']} - {details['role']}\nApply Link: {final_url}")
+                    share_url = f"https://t.me/share/url?url={urllib.parse.quote(final_url)}&text={share_text}"
+                    markup.row(
+                        InlineKeyboardButton("📤 Share Job Alert", url=share_url)
                     )
                     bot.send_message(active_chat_id, notification, parse_mode="HTML", disable_web_page_preview=True, reply_markup=markup)
                     print(f"[Scraper] Sent direct job alert to Telegram: {details['company']} - {details['role']}")

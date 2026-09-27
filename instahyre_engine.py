@@ -1,3 +1,4 @@
+import sys
 import time
 import random
 import os
@@ -34,8 +35,11 @@ def human_distraction(context):
 
 def coffee_break():
     """Simulates the user stepping away from the computer or checking their phone."""
+    is_ci = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
+    if is_ci:
+        return
     if random.random() < 0.10:  # 10% chance
-        break_time = random.randint(25, 45)
+        break_time = random.randint(15, 30)
         print(f"[Instahyre Stealth] Taking a coffee break for {break_time} seconds...")
         time.sleep(break_time)
 
@@ -159,8 +163,10 @@ def run_instahyre_mass_apply(skills="Software Engineer Fresher", max_application
     
     with sync_playwright() as p:
         is_huggingface = "SPACE_ID" in os.environ
-        # Force headless=False to bypass Cloudflare Turnstile (xvfb handles it on Hugging Face)
-        browser = p.chromium.launch(headless=False, args=['--no-sandbox', '--disable-blink-features=AutomationControlled'])
+        is_ci = os.getenv("CI") == "true" or os.getenv("GITHUB_ACTIONS") == "true"
+        # On Hugging Face, xvfb is running so headless=False is safe. On headless Linux/CI without display, use headless=True
+        use_headless = is_ci or (not is_huggingface and os.getenv("HEADFUL", "false").lower() != "true" and sys.platform != "win32")
+        browser = p.chromium.launch(headless=use_headless, args=['--no-sandbox', '--disable-blink-features=AutomationControlled'])
         auth_file = "instahyre_auth.json"
         has_auth = os.path.exists(auth_file)
         
