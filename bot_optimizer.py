@@ -246,6 +246,58 @@ import os
 import json
 import difflib
 
+DEFAULT_QA_SEEDS = {
+    "What are your salary expectations?": "30000",
+    "Current CTC / Current Salary": "0",
+    "Expected CTC / Expected Salary": "4.5 LPA",
+    "What is your notice period / When can you start?": "Immediate / 1 week",
+    "Are you willing to relocate for this position?": "Yes",
+    "Are you comfortable working in Chennai, Coimbatore, or Bangalore?": "Yes",
+    "Are you willing to work from office / hybrid mode?": "Yes",
+    "Are you open to working in rotational or night shifts?": "Yes",
+    "How did you hear about this opportunity?": "LinkedIn",
+    "Why do you want to work here? / Why are you a good fit?": "I am a highly motivated engineer passionate about building scalable software and contributing to innovative, fast-paced teams. I thrive in environments where I can tackle complex technical challenges, collaborate with talented professionals, and continuously grow my skill set to deliver high-quality products.",
+    "What is your highest level of education?": "Bachelor's Degree in Information Technology",
+    "Year of graduation / Passing out batch": "2025",
+    "Aggregate CGPA / Percentage": "8.2 CGPA",
+    "Do you have any active backlogs or arrears?": "No",
+    "Are you a fresher?": "Yes",
+    "Are you legally authorized to work in the country where this job is located?": "Yes",
+    "Will you now or in the future require sponsorship for employment visa status?": "No",
+    "How many years of professional experience do you have in software development / IT?": "Entry level / 0 years",
+    "Primary programming languages & technical skills": "Python, React, SQL, JavaScript, Git, FastAPI",
+    "Describe a difficult technical challenge you faced and how you solved it.": "During a recent project, I encountered a data synchronization issue where the frontend state was falling out of sync with the backend. I systematically debugged the issue, identified a race condition in the API calls, and implemented a robust debouncing mechanism that completely resolved the inconsistency.",
+    "Are you open to contract or temporary roles, or only full-time permanent?": "Open to both full-time permanent and contract roles.",
+    "Have you ever been employed by this company or its subsidiaries before?": "No",
+    "Do you have an active Security Clearance?": "No",
+    "Do you require any reasonable accommodations to perform the essential duties of this job?": "No",
+    "What are your preferred pronouns?": "He/Him",
+    "Do you possess a valid Indian Passport?": "Yes",
+    "Are you willing to work in night shifts for international clients?": "Yes, I am comfortable with flexible, rotational, and night shifts."
+}
+
+def get_seeded_qa_memory(qa_memory_file: str = "qa_memory.json") -> dict:
+    """
+    Loads qa_memory from disk, auto-seeding with standard defaults if missing or empty.
+    Ensures zero cold-start latency for freshly cloned or cloud containers.
+    """
+    data = {}
+    if os.path.exists(qa_memory_file):
+        try:
+            with open(qa_memory_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            data = {}
+    if not data:
+        data = dict(DEFAULT_QA_SEEDS)
+        try:
+            with open(qa_memory_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
+            print(f"[RAG Memory] 🌱 Initialized '{qa_memory_file}' with {len(data)} foundational Q&A pairs.")
+        except Exception as e:
+            print(f"[RAG Memory] Warning: Could not write default seeds: {e}")
+    return data
+
 def record_learned_qa(question: str, answer: str, qa_memory_file: str = "qa_memory.json") -> bool:
     """
     Persists newly encountered and answered questions into the local memory database
@@ -258,13 +310,7 @@ def record_learned_qa(question: str, answer: str, qa_memory_file: str = "qa_memo
     if len(q_clean) < 3 or len(a_clean) == 0:
         return False
     try:
-        data = {}
-        if os.path.exists(qa_memory_file):
-            try:
-                with open(qa_memory_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-            except Exception:
-                data = {}
+        data = get_seeded_qa_memory(qa_memory_file)
         
         # Don't overwrite if identical question exists with non-empty answer
         if q_clean not in data or not data[q_clean]:
@@ -277,12 +323,14 @@ def record_learned_qa(question: str, answer: str, qa_memory_file: str = "qa_memo
         print(f"[RAG Memory] Error recording learned Q&A: {e}")
     return False
 
-def apply_rag_memory_fallback(page, qa_memory: dict, profile: dict = None) -> list:
+def apply_rag_memory_fallback(page, qa_memory: dict = None, profile: dict = None) -> list:
     """
     Evaluates form fields via comprehensive DOM inspection.
     Matches questions against the local qa_memory using SequenceMatcher & category heuristics.
     Fills inputs, textareas, selects, and checkboxes without calling external LLM APIs.
     """
+    if qa_memory is None:
+        qa_memory = get_seeded_qa_memory()
     if not qa_memory:
         return []
         

@@ -466,7 +466,14 @@ def save_applied_job(job_url):
 
 # --- QA Memory: remember answers to custom job questions ---
 def load_qa_memory():
-    return safe_load_json(QA_MEMORY_FILE, {})
+    mem = safe_load_json(QA_MEMORY_FILE, {})
+    if not mem:
+        try:
+            from bot_optimizer import get_seeded_qa_memory
+            mem = get_seeded_qa_memory(QA_MEMORY_FILE)
+        except Exception:
+            pass
+    return mem
 
 def save_qa_memory(qa_memory):
     safe_save_json(QA_MEMORY_FILE, qa_memory)
@@ -3215,7 +3222,10 @@ def fetch_target_page_job_meta(url):
         r = requests.get(url, headers=headers, timeout=6)
         if r.status_code != 200:
             return {"company": company_from_url, "role": role_from_url}
-        soup = BeautifulSoup(r.text, "html.parser")
+        ct = r.headers.get("content-type", "").lower()
+        if ct and not any(ok in ct for ok in ["text", "html", "json"]):
+            return {"company": company_from_url, "role": role_from_url}
+        soup = BeautifulSoup(r.text[:300000], "html.parser")
         title = soup.title.string.strip() if soup.title and soup.title.string else ""
         h1 = soup.find("h1").get_text().strip() if soup.find("h1") else ""
 
@@ -3720,7 +3730,16 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     markup.row(
                         InlineKeyboardButton("📤 Share Job Alert", url=share_url)
                     )
-                    bot.send_message(active_chat_id, notification, parse_mode="HTML", disable_web_page_preview=True, reply_markup=markup)
+                    if len(notification) > 3900:
+                        notification = notification[:3850] + "\n...</i>\n\n👇 <b>Tap below to apply:</b>"
+
+                    try:
+                        bot.send_message(active_chat_id, notification, parse_mode="HTML", disable_web_page_preview=True, reply_markup=markup)
+                    except Exception as html_err:
+                        print(f"[Scraper] HTML parse send failed ({html_err}). Retrying plain text...")
+                        clean_plain = re.sub(r'<[^>]+>', '', notification)
+                        bot.send_message(active_chat_id, clean_plain[:3900], parse_mode=None, reply_markup=markup)
+
                     print(f"[Scraper] Sent direct job alert to Telegram: {details['company']} - {details['role']}")
                 except Exception as notif_e:
                     print(f"[Scraper] Failed to send job summary: {notif_e}")

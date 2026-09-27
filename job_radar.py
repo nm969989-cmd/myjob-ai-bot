@@ -678,10 +678,19 @@ def scrape_adzuna_india():
                     continue
 
                 desc = clean_html(job.get("description", ""))
+                sal_min = job.get("salary_min")
+                sal_max = job.get("salary_max")
+                adzuna_sal = ""
+                if sal_min and sal_max:
+                    adzuna_sal = f"₹{int(sal_min):,} - ₹{int(sal_max):,}"
+                elif sal_min:
+                    adzuna_sal = f"₹{int(sal_min):,}+"
+
                 jobs_found.append(_make_job(
                     title=title, company=company, link=link, location=loc_tag,
                     source="Adzuna India 🇮🇳", date_posted=full_created[:10],
-                    description=desc, priority_tier=tier, is_tn=is_tn
+                    description=desc, priority_tier=tier, is_tn=is_tn,
+                    salary=adzuna_sal
                 ))
                 if len(jobs_found) >= MAX_PER_SOURCE:
                     break
@@ -815,10 +824,12 @@ def scrape_remotive():
                     continue
 
                 desc = clean_html(job.get("description", ""))
+                rem_sal = str(job.get("salary", "")).strip()
                 jobs_found.append(_make_job(
                     title=title, company=company, link=link, location=loc_tag,
                     source="Remotive 🚀", date_posted=full_date[:10],
-                    description=desc, priority_tier=tier, is_tn=is_tn
+                    description=desc, priority_tier=tier, is_tn=is_tn,
+                    salary=rem_sal
                 ))
                 if len(jobs_found) >= MAX_PER_SOURCE:
                     break
@@ -859,10 +870,15 @@ def scrape_jobicy():
                 continue
 
             desc = clean_html(job.get("jobDescription", job.get("description", "")))
+            j_min = job.get("annualSalaryMin")
+            j_max = job.get("annualSalaryMax")
+            j_cur = job.get("salaryCurrency", "USD")
+            j_sal = f"{j_min} - {j_max} {j_cur}" if j_min and j_max else ""
             jobs_found.append(_make_job(
                 title=title, company=company, link=link, location=loc_tag,
                 source="Jobicy 💼", date_posted=full_date[:10],
-                description=desc, priority_tier=tier, is_tn=is_tn
+                description=desc, priority_tier=tier, is_tn=is_tn,
+                salary=j_sal
             ))
             if len(jobs_found) >= MAX_PER_SOURCE:
                 break
@@ -944,10 +960,15 @@ def scrape_remoteok():
                 continue
 
             desc = clean_html(job.get("description", ""))
+            ro_min = job.get("salary_min")
+            ro_max = job.get("salary_max")
+            ro_sal = f"${int(ro_min):,} - ${int(ro_max):,}" if ro_min and ro_max else str(job.get("salary", "")).strip()
+
             jobs_found.append(_make_job(
                 title=title, company=company, link=link, location=loc_tag,
                 source="RemoteOK 🌏", date_posted=full_date[:10],
-                description=desc, priority_tier=tier, is_tn=is_tn
+                description=desc, priority_tier=tier, is_tn=is_tn,
+                salary=ro_sal
             ))
             if len(jobs_found) >= MAX_PER_SOURCE:
                 break
