@@ -6141,7 +6141,18 @@ def radar_loop():
     time.sleep(30)  # Initial delay so bot fully starts first
     while True:
         try:
-            from job_radar import run_radar
+            from job_radar import run_radar, dispatch_tamil_nadu_alerts
+            chat_id = load_chat_id()
+
+            # 1. Automatically dispatch fresh Tamil Nadu jobs
+            if bot and chat_id:
+                try:
+                    print("[Radar Loop] Automatically dispatching Tamil Nadu jobs digest...")
+                    dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=True)
+                except Exception as tn_auto_e:
+                    print(f"[Radar Loop] TN auto-dispatch warning: {tn_auto_e}")
+
+            # 2. Run full radar
             new_jobs = run_radar()
             
             # If no new jobs found, send a heartbeat so user knows radar is alive

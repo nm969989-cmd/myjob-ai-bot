@@ -213,6 +213,16 @@ try:
                 except Exception as send_err:
                     print(f"  ⚠️ Failed to send radar job: {send_err}")
             stage_times["radar_send"] = int(time.time() - _stage_start)
+
+        # Automated Tamil Nadu Digest Dispatch
+        if bot and chat_id:
+            try:
+                from job_radar import dispatch_tamil_nadu_alerts
+                print("🌟 [Cloud Runner] Automatically dispatching Tamil Nadu Fresh Job Digest...")
+                dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=False)
+                print("✅ [Cloud Runner] Automated Tamil Nadu digest sent successfully!")
+            except Exception as tn_auto_err:
+                print(f"⚠️ Automated Tamil Nadu dispatch error: {tn_auto_err}")
 except Exception as e:
     step_errors.append(f"Radar stage: {e}")
     print(f"⚠️ Radar Scan error: {e}")
