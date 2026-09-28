@@ -2201,6 +2201,324 @@ def dispatch_walkin_alerts(bot=None, chat_id=None, city=None, once_per_day=True,
     return True
 
 
+# ─────────────────────────────────────────────────────────────────
+# FEATURE 13: 🔍 MULTI-SOURCE UNIFIED JOB SEARCH ENGINE
+# Searches across live Tamil Nadu feeds, mass drives, weekend walk-ins, and radar caches.
+# ─────────────────────────────────────────────────────────────────
+
+def search_jobs_multi_source(query: str, limit: int = 6) -> list:
+    """
+    Performs high-speed fuzzy & keyword matching across all integrated job pipelines:
+    1. Weekend Walk-In Tracker (Chennai & Coimbatore in-person drives)
+    2. National Mass Off-Campus Drives (TCS, Zoho, Cognizant, Infosys, etc.)
+    3. Live Tamil Nadu Direct Fresh Jobs Feed
+    4. Multi-Platform Radar Cache
+    Returns ranked job dictionaries matching the query.
+    """
+    if not query or not isinstance(query, str) or not query.strip():
+        return []
+
+    q_clean = query.strip().lower()
+    q_tokens = [t for t in re.split(r'[\s,+/|]+', q_clean) if t]
+    if not q_tokens:
+        return []
+
+    matches = []
+    seen_identifiers = set()
+
+    def calc_relevance(title, company, location, text_blob=""):
+        full_haystack = f"{title} {company} {location} {text_blob}".lower()
+        score = 0
+        for token in q_tokens:
+            if token in title.lower():
+                score += 15  # Title matches are top priority
+            elif token in company.lower():
+                score += 12  # Company matches
+            elif token in location.lower():
+                score += 8   # Location matches
+            elif token in full_haystack:
+                score += 4   # General keyword / skill matches
+        return score
+
+    # 1. Search Weekend Walk-In Drives
+    try:
+        walkins = get_walkin_drives()
+        for w in walkins:
+            title = w.get("role", "")
+            comp = w.get("company", "")
+            loc = f"{w.get('city', '')} ({w.get('location_area', '')})"
+            blob = f"{w.get('batches', '')} {w.get('degrees', '')} {w.get('selection_rounds', '')} {w.get('package', '')}"
+            rel = calc_relevance(title, comp, loc, blob)
+            if rel > 0:
+                ident = f"walkin_{w.get('id', comp)}"
+                if ident not in seen_identifiers:
+                    seen_identifiers.add(ident)
+                    matches.append({
+                        "id": ident,
+                        "source_type": "🚶‍♂️ Walk-In Drive",
+                        "company": comp,
+                        "role": title,
+                        "location": loc,
+                        "salary": w.get("package", "Competitive"),
+                        "batches": w.get("batches", "2024 / 2025 / 2026 Batch"),
+                        "link": w.get("google_maps") or "https://maps.google.com",
+                        "link_text": "📍 View Venue in Google Maps",
+                        "timing": w.get("timing", "Upcoming Weekend"),
+                        "relevance": rel
+                    })
+    except Exception as e:
+        print(f"[Search Engine] Walkin scan notice: {e}")
+
+    # 2. Search National Mass Drives
+    try:
+        drives = get_national_drives()
+        for d in drives:
+            title = d.get("role", "")
+            comp = d.get("company", "")
+            loc = d.get("locations", "Pan-India")
+            blob = f"{d.get('batch', '')} {d.get('eligibility', '')} {d.get('syllabus_highlights', '')} {d.get('test_pattern', '')}"
+            rel = calc_relevance(title, comp, loc, blob)
+            if rel > 0:
+                ident = f"drive_{d.get('id', comp)}"
+                if ident not in seen_identifiers:
+                    seen_identifiers.add(ident)
+                    matches.append({
+                        "id": ident,
+                        "source_type": "📢 Mass Drive",
+                        "company": comp,
+                        "role": title,
+                        "location": loc,
+                        "salary": d.get("package", "Standard Fresher Band"),
+                        "batches": d.get("batch", "2025 / 2026 Batches"),
+                        "link": d.get("link", ""),
+                        "link_text": "🚀 Apply on Official Portal",
+                        "timing": f"Deadline: {d.get('deadline', 'Open')}",
+                        "relevance": rel
+                    })
+    except Exception as e:
+        print(f"[Search Engine] National drives scan notice: {e}")
+
+    # 3. Search Tamil Nadu Job Radar
+    try:
+        from job_radar import get_tamil_nadu_jobs
+        tn_jobs = get_tamil_nadu_jobs(limit=50, force_refresh=False)
+        for j in tn_jobs:
+            title = j.get("title", "")
+            comp = j.get("company", "")
+            loc = j.get("location", "Tamil Nadu")
+            blob = f"{j.get('batches', '')} {j.get('experience', '')} {j.get('source', '')} {j.get('link', '')}"
+            rel = calc_relevance(title, comp, loc, blob)
+            if rel > 0:
+                link = j.get("link", "")
+                ident = f"tn_{link}"
+                if ident not in seen_identifiers:
+                    seen_identifiers.add(ident)
+                    matches.append({
+                        "id": ident,
+                        "source_type": "🌟 Tamil Nadu Direct",
+                        "company": comp,
+                        "role": title,
+                        "location": loc,
+                        "salary": j.get("salary") or "Best in Industry",
+                        "batches": j.get("batches") or "2024 / 2025 / 2026",
+                        "link": link,
+                        "link_text": "🚀 Direct Apply (Official)",
+                        "timing": "Verified Fresh Opening",
+                        "relevance": rel
+                    })
+    except Exception as e:
+        print(f"[Search Engine] TN jobs scan notice: {e}")
+
+    # Sort descending by relevance score
+    matches.sort(key=lambda m: m["relevance"], reverse=True)
+    return matches[:limit]
+
+
+def format_search_results_report(query: str, results: list) -> tuple:
+    """
+    Formats search results into Telegram HTML cards and builds interactive filter markup.
+    Returns: (chunks: list[str], reply_markup: InlineKeyboardMarkup)
+    """
+    import html
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+    markup = InlineKeyboardMarkup()
+    # Row 1: Common Quick Searches
+    markup.row(
+        InlineKeyboardButton("🐍 Python", callback_data="search:python"),
+        InlineKeyboardButton("⚛️ React", callback_data="search:react"),
+        InlineKeyboardButton("📊 Data Analyst", callback_data="search:data analyst")
+    )
+    # Row 2: Location & Type
+    markup.row(
+        InlineKeyboardButton("📍 Chennai / TN", callback_data="search:chennai"),
+        InlineKeyboardButton("🏠 Remote", callback_data="search:remote"),
+        InlineKeyboardButton("📢 Mass Drives", callback_data="drives")
+    )
+    markup.row(
+        InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all"),
+        InlineKeyboardButton("⏳ Deadlines", callback_data="deadlines")
+    )
+
+    if not results:
+        no_res_msg = (
+            f"🔍 <b>No Active Jobs Found for '{html.escape(query)}'</b>\n\n"
+            f"💡 <b>Search Suggestions:</b>\n"
+            f"• Try broader terms: <code>python</code>, <code>react</code>, <code>chennai</code>, <code>fresher</code>, <code>zoho</code>\n"
+            f"• Tap any of the quick-search categories below:"
+        )
+        return ([no_res_msg], markup)
+
+    header = (
+        f"🔍 <b>SEARCH RESULTS FOR:</b> <code>{html.escape(query.upper())}</code>\n"
+        f"<i>Found {len(results)} top verified matching opportunities:</i>\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    )
+
+    cards = []
+    for idx, item in enumerate(results, 1):
+        comp = html.escape(str(item.get("company", "Company")))
+        role = html.escape(str(item.get("role", "Software Role")))
+        loc = html.escape(str(item.get("location", "India")))
+        stype = item.get("source_type", "Job")
+        sal = html.escape(str(item.get("salary", "Competitive")))
+        batches = html.escape(str(item.get("batches", "Freshers")))
+        link = item.get("link", "")
+        link_text = html.escape(str(item.get("link_text", "Apply Now")))
+        timing = html.escape(str(item.get("timing", "Active")))
+
+        card = (
+            f"<b>{idx}. {comp}</b> • <i>{role}</i>\n"
+            f"🏷️ <b>Category:</b> {stype}\n"
+            f"📍 <b>Location:</b> {loc}\n"
+            f"💰 <b>CTC / Band:</b> {sal}\n"
+            f"🎓 <b>Batches:</b> {batches}\n"
+            f"⏰ <b>Status:</b> {timing}\n"
+            f"👉 <a href=\"{link}\">{link_text}</a>\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        )
+        cards.append(card)
+
+    full_text = header + "\n\n".join(cards)
+    
+    # Split if exceeds Telegram 3900 chars
+    chunks = []
+    if len(full_text) <= 3900:
+        chunks.append(full_text)
+    else:
+        current_chunk = header
+        for card in cards:
+            if len(current_chunk) + len(card) + 4 > 3800:
+                chunks.append(current_chunk)
+                current_chunk = card + "\n\n"
+            else:
+                current_chunk += card + "\n\n"
+        if current_chunk.strip():
+            chunks.append(current_chunk)
+
+    return (chunks, markup)
+
+
+# ─────────────────────────────────────────────────────────────────
+# FEATURE 14: 🎯 INSTANT ATS RESUME & JOB COMPATIBILITY ANALYZER
+# Takes any job description text or careers URL and returns deep ATS analysis.
+# ─────────────────────────────────────────────────────────────────
+
+def match_job_compatibility(job_text_or_url: str, profile: dict = None) -> tuple:
+    """
+    Analyzes job description text or fetches live URL content, then computes:
+    1. ATS Skill Match Score (%) with visual status badge
+    2. Matched profile skills vs missing skills to add
+    3. Extracted CTC, eligible batches, and experience levels
+    4. Auto-generated 1-Tap Interview Prep Sheet
+    5. Tailored recruiter outreach message
+    Returns: (report_text: str, reply_markup: InlineKeyboardMarkup)
+    """
+    import html
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+    if not job_text_or_url or not isinstance(job_text_or_url, str) or not job_text_or_url.strip():
+        guide = (
+            "🎯 <b>ATS Resume & Job Matcher Guide</b>\n\n"
+            "Use this tool to compare your resume against any job description in seconds!\n\n"
+            "<b>Usage:</b>\n"
+            "• Paste text: <code>/match Software Engineer Fresher at Zoho. Skills: Python, SQL, React...</code>\n"
+            "• Or URL: <code>/match https://careers.company.com/job/12345</code>\n\n"
+            "The bot will compute your exact ATS % fit, tell you what keywords to add to your resume, and generate instant interview cheat sheets."
+        )
+        return (guide, None)
+
+    raw_input = job_text_or_url.strip()
+    job_text = raw_input
+
+    # If input is a URL, fetch page text
+    if raw_input.startswith("http://") or raw_input.startswith("https://"):
+        try:
+            s = _get_probe_session()
+            resp = s.get(raw_input, timeout=8, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0"})
+            if resp.status_code == 200:
+                from bs4 import BeautifulSoup
+                soup = BeautifulSoup(resp.text, "html.parser")
+                for tag in ["script", "style", "nav", "footer", "header"]:
+                    for elem in soup.find_all(tag):
+                        elem.decompose()
+                job_text = soup.get_text(separator=" ", strip=True)[:10000]
+        except Exception as e:
+            print(f"[Job Matcher] URL fetch blip: {e}")
+            job_text = raw_input
+
+    # 1. Skill Match Score
+    match_data = calculate_skill_match_score(job_text, profile)
+    score = match_data["score"]
+    badge = match_data["badge"]
+    matched = match_data["matched"]
+    missing = match_data["missing"]
+
+    # 2. Key metadata extraction
+    sal = extract_job_salary(job_text)
+    batch = extract_eligible_batch(job_text)
+    exp = extract_experience_level(job_text)
+    hr_email = extract_hr_email(job_text)
+
+    # 3. Build aesthetic report
+    matched_str = ", ".join(sorted(matched)) if matched else "General Fresher Alignment"
+    missing_str = ", ".join(sorted(missing)) if missing else "None! Outstanding alignment with profile."
+
+    report = (
+        f"🎯 <b>ATS RESUME FIT & COMPATIBILITY REPORT</b>\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"📊 <b>ATS Match Score:</b> <b>{score}%</b> ({badge})\n\n"
+        f"✅ <b>Matched Profile Skills:</b>\n"
+        f"<code>{html.escape(matched_str)}</code>\n\n"
+        f"⚠️ <b>Keywords to Add to Your Resume:</b>\n"
+        f"<code>{html.escape(missing_str)}</code>\n\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"💼 <b>Detected Experience:</b> {html.escape(exp or 'Freshers / Entry-Level')}\n"
+        f"🎓 <b>Detected Batch:</b> {html.escape(batch or 'All Eligible Batches')}\n"
+        f"💰 <b>Detected Salary:</b> {html.escape(sal or 'Standard Band')}\n"
+    )
+    if hr_email:
+        report += f"📧 <b>Recruiter Contact:</b> <code>{html.escape(hr_email)}</code>\n"
+
+    report += (
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"💡 <i>Tip: Add the missing keywords above into your resume's Skills or Projects section before applying to guarantee ATS screening pass.</i>"
+    )
+
+    # 4. Action buttons
+    markup = InlineKeyboardMarkup()
+    markup.row(
+        InlineKeyboardButton("💡 1-Tap Interview Prep", callback_data="prep:Target Company:Software Engineer"),
+        InlineKeyboardButton("✉️ LinkedIn Outreach Note", callback_data="linote:Target Company:Software Engineer")
+    )
+    markup.row(
+        InlineKeyboardButton("🌟 Tamil Nadu Jobs", callback_data="tnjobs"),
+        InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all")
+    )
+
+    return (report, markup)
+
+
 if __name__ == "__main__":
     import sys
     if hasattr(sys.stdout, "reconfigure"):

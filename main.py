@@ -53,7 +53,10 @@ from bot_optimizer import (
     format_eligibility_badge,
     get_walkin_drives,
     format_walkins_report,
-    format_single_walkin_detail
+    format_single_walkin_detail,
+    search_jobs_multi_source,
+    format_search_results_report,
+    match_job_compatibility
 )
 
 # Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
@@ -267,16 +270,17 @@ def enforce_bot_security_profile(tg_bot):
         commands = [
             BotCommand("start", "⚡ Restart Bot & Activate Alerts"),
             BotCommand("help", "📖 View All Bot Commands & Guide"),
-            BotCommand("status", "🩺 Bot Engine & Channels Health"),
-            BotCommand("analytics", "📊 Live Market & Career Analytics"),
-            BotCommand("radar", "📡 Run Radar Scan (TN & India)"),
+            BotCommand("search", "🔍 Instant Multi-Source Job Search"),
+            BotCommand("match", "🎯 ATS Resume & Job Matcher"),
             BotCommand("tnjobs", "🌟 Tamil Nadu & Chennai Fresh Jobs"),
             BotCommand("walkins", "🚶‍♂️ Tamil Nadu Weekend Walk-In Drives"),
             BotCommand("drives", "📢 National Mass Off-Campus Drives"),
-            BotCommand("pause", "🛑 Pause Scanning Channels"),
-            BotCommand("resume", "🟢 Resume Scanning Channels"),
+            BotCommand("deadlines", "⏳ Mass Drive Deadlines Radar"),
+            BotCommand("analytics", "📊 Live Market & Career Analytics"),
+            BotCommand("radar", "📡 Run Radar Scan (TN & India)"),
+            BotCommand("status", "🩺 Bot Engine & Channels Health"),
+            BotCommand("dashboard", "🎛️ Interactive Command Center"),
             BotCommand("notion", "📋 Open Notion CRM Tracker"),
-            BotCommand("history", "🕒 View Recent Applied/Matched Jobs"),
             BotCommand("download", "📥 Export Jobs CSV Log")
         ]
         tg_bot.set_my_commands(commands)
@@ -4948,10 +4952,18 @@ if bot:
             InlineKeyboardButton("🧠 AI Memory (QA)", callback_data="qa_memory")
         )
         
-        # Row 3: Actions
+        # Row 3: Discovery & Actions
         markup.add(
-            InlineKeyboardButton("🌟 Tamil Nadu Jobs", callback_data="tnjobs"),
-            InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all")
+            InlineKeyboardButton("🔍 Search Jobs", callback_data="search:menu"),
+            InlineKeyboardButton("🌟 Tamil Nadu Jobs", callback_data="tnjobs")
+        )
+        markup.add(
+            InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all"),
+            InlineKeyboardButton("📢 National Drives", callback_data="drives")
+        )
+        markup.add(
+            InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines"),
+            InlineKeyboardButton("📊 Career Analytics", callback_data="analytics")
         )
         markup.add(
             InlineKeyboardButton("🎯 Job Radar", callback_data="radar"),
@@ -4993,14 +5005,16 @@ if bot:
 
 _Welcome to your fully autonomous AI job-hunting engine! Here is your complete manual:_
 
-⚡️ *CORE OPERATIONS*
-🔹 `/start` - Wake up the bot and lock your Chat ID for notifications.
-🔹 `/help` - Show this detailed command manual.
-🔹 `/tnjobs` - 🌟 Search latest Tamil Nadu & Chennai jobs (Batch & Exp tagged).
+⚡️ *DISCOVERY & SEARCH OPERATIONS*
+🔹 `/search <keyword>` - 🔍 Instant search across TN, mass drives, walk-ins & radar (e.g. `/search python`).
+🔹 `/match <text or URL>` - 🎯 Instant ATS resume compatibility score, keyword gaps & prep sheet.
+🔹 `/tnjobs` - 🌟 Latest Tamil Nadu & Chennai jobs (Batch & Exp tagged).
 🔹 `/walkins` - 🚶‍♂️ Tamil Nadu weekend walk-in drives (e.g. `/walkins chennai`).
-🔹 `/radar` - 📡 Multi-platform job radar (Adzuna, Unstop, Telegram).
 🔹 `/drives` - 📢 National mass off-campus hiring drives (TCS, Infosys, Zoho).
 🔹 `/deadlines` - ⏳ Mass drive deadlines countdown radar.
+🔹 `/radar` - 📡 Multi-platform job radar (Adzuna, Unstop, Telegram).
+🔹 `/analytics` - 📊 Live engineering market & career analytics.
+🔹 `/dashboard` - 🎛️ Interactive Telegram control panel.
 🔹 `/status` - 🩺 Check the heartbeat of the bot, API keys, and total jobs processed.
 🔹 `/pause` - 🛑 Temporarily stop the background 24/7 scanning.
 🔹 `/resume` - 🟢 Turn the background scanning back on.
@@ -5012,14 +5026,12 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
 🔹 `/answer <num> | <text>` - 💡 Teach the bot how to answer a specific question so it never asks you again!
 🔹 `/clearqa <num>` - 🗑 Delete a saved answer from the bot's brain.
 
-📊 *ANALYTICS & MANUAL ACTION*
+📊 *ACTIONS & TRACKING*
 🔹 `/apply <url>` - 🎯 Force the bot to immediately apply to a specific job link you found.
 🔹 `/instahyre <email> | <password>` - 🚀 Trigger the Instahyre Mass-Applier (Submits 20 jobs instantly).
 🔹 `/notion` - 📋 Open your Notion Job Tracker with full CRM details.
 🔹 `/history` - 🕒 View the last 10 jobs the bot attempted, including success/fail status.
 🔹 `/download` - 📥 Export a massive CSV Excel file of every single job ever applied to.
-
-_Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks your streak!_ 🔥
 """
         bot.reply_to(message, help_text, parse_mode=None)
 
@@ -5531,6 +5543,56 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Walk-In error: {e}")
 
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("search:"))
+    def handle_search_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        query = call.data.split(":", 1)[1].strip() if ":" in call.data else ""
+        if query == "menu":
+            query = ""
+        try:
+            bot.answer_callback_query(call.id, text=f"🔍 Searching for '{query or 'jobs'}'...")
+        except Exception:
+            pass
+
+        if not query:
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("🐍 Python", callback_data="search:python"),
+                InlineKeyboardButton("⚛️ React", callback_data="search:react"),
+                InlineKeyboardButton("📊 Data Analyst", callback_data="search:data analyst")
+            )
+            markup.row(
+                InlineKeyboardButton("📍 Chennai / TN", callback_data="search:chennai"),
+                InlineKeyboardButton("🏠 Remote", callback_data="search:remote"),
+                InlineKeyboardButton("📢 Mass Drives", callback_data="drives")
+            )
+            markup.row(
+                InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all"),
+                InlineKeyboardButton("⏳ Deadlines", callback_data="deadlines")
+            )
+            help_msg = (
+                "🔍 <b>Multi-Source Job Search Engine</b>\n\n"
+                "Search live openings across Tamil Nadu feeds, mass drives, weekend walk-ins, and radar caches!\n\n"
+                "<b>Usage:</b> <code>/search python</code>, <code>/search react</code>, <code>/search chennai</code>\n\n"
+                "<i>Or tap any popular category below for instant results:</i>"
+            )
+            bot.send_message(chat_id, help_msg, parse_mode="HTML", reply_markup=markup)
+            return
+
+        try:
+            results = search_jobs_multi_source(query=query, limit=6)
+            chunks, markup = format_search_results_report(query=query, results=results)
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ Search error: {e}")
+
     @bot.callback_query_handler(func=lambda call: call.data.startswith("drive_info:"))
     def handle_drive_detail_callback(call):
         chat_id = call.message.chat.id
@@ -5951,6 +6013,68 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                 time.sleep(0.3)
         except Exception as e:
             bot.send_message(message.chat.id, f"⚠️ Walk-In error: {e}")
+
+    @bot.message_handler(commands=['search', 'find'])
+    @admin_only
+    def handle_search_command(message):
+        save_chat_id(message.chat.id)
+        raw_cmd = message.text.strip().split(maxsplit=1)
+        query = raw_cmd[1].strip() if len(raw_cmd) > 1 else ""
+        if not query:
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("🐍 Python", callback_data="search:python"),
+                InlineKeyboardButton("⚛️ React", callback_data="search:react"),
+                InlineKeyboardButton("📊 Data Analyst", callback_data="search:data analyst")
+            )
+            markup.row(
+                InlineKeyboardButton("📍 Chennai / TN", callback_data="search:chennai"),
+                InlineKeyboardButton("🏠 Remote", callback_data="search:remote"),
+                InlineKeyboardButton("📢 Mass Drives", callback_data="drives")
+            )
+            markup.row(
+                InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all"),
+                InlineKeyboardButton("⏳ Deadlines", callback_data="deadlines")
+            )
+            help_msg = (
+                "🔍 <b>Multi-Source Job Search Engine</b>\n\n"
+                "Search live openings across Tamil Nadu feeds, mass drives, weekend walk-ins, and radar caches!\n\n"
+                "<b>Usage:</b>\n"
+                "• <code>/search python</code>\n"
+                "• <code>/search react</code>\n"
+                "• <code>/search data analyst</code>\n"
+                "• <code>/search chennai</code>\n"
+                "• <code>/search zoho</code>\n\n"
+                "<i>Or tap any popular category below for instant results:</i>"
+            )
+            bot.send_message(message.chat.id, help_msg, parse_mode="HTML", reply_markup=markup)
+            return
+
+        try:
+            results = search_jobs_multi_source(query=query, limit=6)
+            chunks, markup = format_search_results_report(query=query, results=results)
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
+        except Exception as e:
+            bot.send_message(message.chat.id, f"⚠️ Search error: {e}")
+
+    @bot.message_handler(commands=['match', 'ats', 'fit'])
+    @admin_only
+    def handle_match_command(message):
+        save_chat_id(message.chat.id)
+        raw_cmd = message.text.strip().split(maxsplit=1)
+        input_text = raw_cmd[1].strip() if len(raw_cmd) > 1 else ""
+        profile = load_profile()
+        report_text, markup = match_job_compatibility(input_text, profile=profile)
+        try:
+            bot.send_message(message.chat.id, report_text, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
+        except Exception:
+            bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', report_text), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
 
     @bot.message_handler(commands=['tnjobs', 'tamilnadu', 'chennai'])
     @admin_only

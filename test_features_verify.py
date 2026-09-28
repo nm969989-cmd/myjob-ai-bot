@@ -190,6 +190,41 @@ def run_all_tests():
     assert "WALK-IN" in str(sent_args[1])
     print(f"✅ Automated Walk-In Dispatch Test: Successfully tested simulated bot delivery ({mock_bot.send_message.call_count} messages sent).")
 
+    # 12. Multi-Source Unified Job Search Engine (/search)
+    from bot_optimizer import search_jobs_multi_source, format_search_results_report
+    py_matches = search_jobs_multi_source("python", limit=5)
+    assert len(py_matches) > 0, "Expected at least 1 Python match across integrated sources"
+    
+    zoho_matches = search_jobs_multi_source("zoho", limit=3)
+    assert any("zoho" in (m["company"] + m["role"]).lower() for m in zoho_matches), "Expected Zoho match"
+
+    search_chunks, search_markup = format_search_results_report("python", py_matches)
+    assert len(search_chunks) > 0
+    assert "SEARCH RESULTS" in search_chunks[0]
+    assert search_markup is not None
+    print(f"✅ Unified Search Engine Test: Successfully verified multi-source search ('python': {len(py_matches)} hits, 'zoho': {len(zoho_matches)} hits).")
+
+    # 13. Instant ATS Resume & Job Matcher (/match)
+    from bot_optimizer import match_job_compatibility
+    sample_jd = """
+    Software Development Engineer - Fresher
+    Company: Razorpay / FinTech Labs
+    Location: Chennai / Remote
+    Batch: 2025 or 2026 Batch
+    Experience: 0-1 yrs Freshers
+    Package: 6.5 - 9.5 LPA
+    Requirements: Strong problem solving in Python, SQL, REST APIs, and React. Good understanding of Git.
+    HR Desk: campus.hiring@razorpay.com
+    """
+    mock_prof = {"skills": "Python, SQL, Django, Git, Automation"}
+    match_report, match_markup = match_job_compatibility(sample_jd, profile=mock_prof)
+    assert "ATS RESUME FIT" in match_report
+    assert "Matched Profile Skills" in match_report
+    assert "Python" in match_report or "PYTHON" in match_report
+    assert "campus.hiring@razorpay.com" in match_report
+    assert match_markup is not None
+    print(f"✅ Instant ATS Matcher Test: Generated ATS compatibility report, keyword gaps, and action buttons.")
+
     print("\n🎉 ALL VERIFICATION CHECKS PASSED WITH ZERO ERRORS!\n")
 
 if __name__ == "__main__":
