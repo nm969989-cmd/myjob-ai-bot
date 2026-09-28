@@ -94,30 +94,26 @@ try:
             j_source = str(job.get("source", "Multi-Platform Radar")).strip()
             is_tn = job.get("is_tamil_nadu", False)
 
-            p_banner = "🌟 <b>TAMIL NADU PRIORITY OPPORTUNITY</b> 🇮🇳\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if is_tn else ""
+            banner = "🌟 <b>TAMIL NADU PRIORITY</b> 🇮🇳" if is_tn else "📡 <b>VERIFIED RADAR MATCH</b> 🇮🇳"
 
             share_text = urllib.parse.quote(f"🚀 Job Alert: {j_company} - {j_title}\nApply Link: {j_link}")
             share_url = f"https://t.me/share/url?url={urllib.parse.quote(j_link)}&text={share_text}"
 
             card = (
-                "🎯 <b>NEW VERIFIED RADAR JOB ALERT</b>\n"
-                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                f"{p_banner}"
-                f"🏢 <b>COMPANY:</b>\n   <code>{html.escape(j_company)}</code>\n\n"
-                f"💼 <b>ROLE / POSITION:</b>\n   <b>{html.escape(j_title)}</b>\n\n"
-                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                f"📍 <b>Job Location:</b>\n   <code>{html.escape(j_location)}</code>\n\n"
-                f"📡 <b>Platform Source:</b>\n   <code>{html.escape(j_source)}</code>\n\n"
-                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                f"🚀 <b>Direct Application:</b>\n"
-                f"<a href=\"{html.escape(j_link)}\">👉 Click here to Apply on Official Portal 👈</a>\n\n"
-                "👇 <b>Tap the buttons below to open directly:</b>"
+                f"{banner}\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"🏢 <b>{html.escape(j_company)}</b> • <i>{html.escape(j_title)}</i>\n\n"
+                f"📍 <b>Location:</b> {html.escape(j_location)}\n"
+                f"📡 <b>Platform:</b> {html.escape(j_source)}\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━"
             )
 
             kb = InlineKeyboardMarkup()
             kb.row(
-                InlineKeyboardButton("🚀 Direct Apply (Official)", url=j_link),
-                InlineKeyboardButton("📤 Share Job Alert", url=share_url)
+                InlineKeyboardButton("🚀 Direct Apply (Official)", url=j_link)
+            )
+            kb.row(
+                InlineKeyboardButton("📤 Share Alert", url=share_url)
             )
 
             try:

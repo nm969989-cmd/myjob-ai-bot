@@ -51,6 +51,8 @@ from bot_optimizer import (
 
 # Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
 _INTERVIEW_PREP_CACHE = {}
+# Global in-memory cache for 1-Tap LinkedIn Note button callbacks (capped to 500 items)
+_LINKEDIN_NOTE_CACHE = {}
 
 class LoggerWriter:
     def __init__(self, filename):
@@ -3254,16 +3256,28 @@ def fetch_target_page_job_meta(url):
             m_h1 = re.search(r'^([A-Za-z0-9\s.,&-]+?)\s+(?:Walk-in|Hiring|Recruitment|Drive|is\s+Hiring|Off\s*Campus)', h1, re.I)
             if m_h1:
                 company = m_h1.group(1).strip()
-        if not role:
-            if ":" in h1:
-                after_colon = h1.split(":", 1)[1].strip()
-                after_colon = re.sub(r'\s+Hiring.*', '', after_colon, flags=re.I).strip()
-                if len(after_colon) > 3:
-                    role = after_colon
-            elif "|" in h1:
-                parts_h1 = h1.split("|")
-                if len(parts_h1) >= 2:
-                    role = parts_h1[1].strip()
+        junk_role_words = ["offices of the us", "careers", "job detail", "about us", "welcome", "hiring", "home", "search jobs"]
+        if not role or any(bad in role.lower() for bad in junk_role_words):
+            # Check soup.title or h1 for clean job title
+            if title:
+                title_parts = [p.strip() for p in re.split(r'[-–—|]', title) if p.strip()]
+                for p in title_parts:
+                    p_clean = re.sub(r'\s*\b(job|careers?|recruitment|drive|\d{5,})\b.*', '', p, flags=re.I).strip()
+                    if len(p_clean) >= 4 and not any(bad in p_clean.lower() for bad in ["deloitte", "india", "hyderabad", "bangalore", "chennai", "offices", "welcome", "home", "search"]):
+                        role = p_clean
+                        break
+            if not role and h1:
+                if ":" in h1:
+                    after_colon = h1.split(":", 1)[1].strip()
+                    after_colon = re.sub(r'\s+Hiring.*', '', after_colon, flags=re.I).strip()
+                    if len(after_colon) > 3 and not any(bad in after_colon.lower() for bad in junk_role_words):
+                        role = after_colon
+                elif "|" in h1:
+                    parts_h1 = [p.strip() for p in h1.split("|") if p.strip()]
+                    for p in parts_h1:
+                        if len(p) > 3 and not any(bad in p.lower() for bad in junk_role_words + ["deloitte", "company"]):
+                            role = p
+                            break
 
         return {
             "company": company,
@@ -3713,53 +3727,38 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
 
                     # Tier 2: AI Outreach Drafter (LinkedIn connection note)
                     linkedin_note = generate_linkedin_outreach_note(details.get("company", ""), details.get("role", ""), profile)
-                    linkedin_section = ""
-                    if linkedin_note:
-                        linkedin_section = (
-                            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                            "💬 <b>1-Tap LinkedIn Outreach Note (Copy & Send):</b>\n"
-                            f"<pre><code>{html.escape(linkedin_note)}</code></pre>\n\n"
-                        )
 
                     # Feature 9: AI Skill Match Score & Resume Fit Analyzer
                     match_data = details.get("match_data") or calculate_skill_match_score(f"{message_text} {details.get('role', '')}", profile)
-                    match_badge = match_data.get("badge", "🟢 85% Fresher Fit")
+                    match_badge = html.escape(str(match_data.get("badge", "🟢 85% Fresher Fit")).strip())
                     matched_list = match_data.get("matched", [])
-                    missing_list = match_data.get("missing", [])
 
-                    skill_section = f"🎯 <b>Candidate Fit:</b> <code>{html.escape(match_badge)}</code>\n"
-                    if matched_list:
-                        skill_section += f"   ✅ <b>Matched:</b> <code>{html.escape(', '.join(matched_list[:5]))}</code>\n"
-                    if missing_list:
-                        skill_section += f"   💡 <b>To Highlight:</b> <code>{html.escape(', '.join(missing_list[:3]))}</code>\n"
-                    skill_section += "\n"
+                    # Ultra-Sleek Banner
+                    if details.get("is_tamil_nadu"):
+                        banner = "🌟 <b>TAMIL NADU PRIORITY</b> 🇮🇳"
+                    elif "remote" in str(details.get("work_mode", "")).lower() or "remote" in str(details.get("location", "")).lower():
+                        banner = "🏠 <b>REMOTE / WORK FROM HOME</b> 🌐"
+                    else:
+                        banner = "🚀 <b>NEW JOB OPPORTUNITY</b> 🇮🇳"
 
+                    comp_name = html.escape(str(details.get('company', 'Direct Hiring')).strip())
+                    clean_role = html.escape(str(details.get('role', 'Software Engineer')).strip())
+                    loc_val = html.escape(str(details.get('location', 'India (PAN India)')).strip())
+                    batch_val = html.escape(str(details.get('batch', '2024 / 2025 / 2026 Batch | Freshers')).strip())
+                    sal_val = html.escape(str(details.get('salary', 'As per Industry Standard')).strip())
+                    channel_post_url = f"https://t.me/s/{channel_name}"
+
+                    # Compact 1-Screen Modern Card Layout
                     notification = (
-                        "🎯 <b>NEW VERIFIED JOB ALERT</b>\n"
-                        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                        f"{priority_banner}"
-                        f"🏢 <b>COMPANY:</b>\n"
-                        f"   <code>{html.escape(str(details['company']))}</code>\n\n"
-                        f"💼 <b>ROLE / POSITION:</b>\n"
-                        f"   <b>{html.escape(str(details['role']))}</b>\n\n"
-                        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                        f"📍 <b>Job Location:</b>\n"
-                        f"   <code>{html.escape(str(details['location']))}</code>\n\n"
-                        f"{skill_section}"
-                        f"{work_info}"
-                        f"🎓 <b>Batch & Eligibility:</b>\n"
-                        f"   <code>{html.escape(str(details['batch']))}</code>\n\n"
-                        f"💰 <b>Salary / Expected CTC:</b>\n"
-                        f"   <code>{html.escape(str(details['salary']))}</code>\n\n"
-                        f"{hr_email_section}"
-                        f"📡 <b>Channel Source:</b>\n"
-                        f"   <a href=\"{html.escape(str(channel_post_url))}\">@{html.escape(str(channel_name))}</a>\n\n"
-                        f"{desc_section}"
-                        f"{linkedin_section}"
-                        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                        f"🚀 <b>Direct Application:</b>\n"
-                        f"<a href=\"{html.escape(str(final_url))}\">👉 Click here to Apply on Official Portal 👈</a>\n\n"
-                        "👇 <b>Tap the buttons below to open directly:</b>"
+                        f"{banner}\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                        f"🏢 <b>{comp_name}</b> • <i>{clean_role}</i>\n\n"
+                        f"📍 <b>Location:</b> {loc_val}\n"
+                        f"🎓 <b>Batch:</b> {batch_val}\n"
+                        f"💰 <b>Salary:</b> {sal_val}\n"
+                        f"🎯 <b>Match:</b> {match_badge}\n"
+                        f"📡 <b>Source:</b> <a href=\"{html.escape(str(channel_post_url))}\">@{html.escape(str(channel_name))}</a>\n"
+                        f"━━━━━━━━━━━━━━━━━━━━━━"
                     )
 
                     # Feature 11: 1-Tap Interview Prep Callback Cache
@@ -3773,17 +3772,29 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     if len(_INTERVIEW_PREP_CACHE) > 500:
                         _INTERVIEW_PREP_CACHE.pop(next(iter(_INTERVIEW_PREP_CACHE)))
 
+                    # 1-Tap LinkedIn Outreach Note Callback Cache
+                    note_hash = hashlib.md5(f"note_{details.get('company','')}_{details.get('role','')}".encode()).hexdigest()[:8]
+                    _LINKEDIN_NOTE_CACHE[note_hash] = linkedin_note or (
+                        f"Hi! I noticed the {clean_role} opening at {comp_name}. With hands-on experience in "
+                        f"{profile.get('top_skills', 'Python, software engineering')}, I would love to connect and explore how I can add value to your team!"
+                    )
+                    if len(_LINKEDIN_NOTE_CACHE) > 500:
+                        _LINKEDIN_NOTE_CACHE.pop(next(iter(_LINKEDIN_NOTE_CACHE)))
+
                     share_text = urllib.parse.quote(f"🚀 Job Alert: {details['company']} - {details['role']}\nApply Link: {final_url}")
                     share_url = f"https://t.me/share/url?url={urllib.parse.quote(final_url)}&text={share_text}"
 
                     markup = InlineKeyboardMarkup()
                     markup.row(
-                        InlineKeyboardButton("🚀 Direct Apply (Official)", url=final_url),
-                        InlineKeyboardButton("💡 1-Tap Interview Prep", callback_data=f"prep:{prep_hash}")
+                        InlineKeyboardButton("🚀 Direct Apply (Official)", url=final_url)
+                    )
+                    markup.row(
+                        InlineKeyboardButton("💡 Interview Prep", callback_data=f"prep:{prep_hash}"),
+                        InlineKeyboardButton("💬 LinkedIn Note", callback_data=f"note:{note_hash}")
                     )
                     markup.row(
                         InlineKeyboardButton("📢 View Channel Post", url=channel_post_url),
-                        InlineKeyboardButton("📤 Share Job Alert", url=share_url)
+                        InlineKeyboardButton("📤 Share Alert", url=share_url)
                     )
                     if hr_email_val and "@" in hr_email_val:
                         candidate_name = profile.get("name", "Applicant")
@@ -5405,6 +5416,28 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                 bot.send_message(chat_id, re.sub(r'<[^>]+>', '', sheet), parse_mode=None)
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Unable to generate interview cheat sheet: {e}")
+
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("note:"))
+    def handle_linkedin_note_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        note_key = call.data.split(":", 1)[1]
+        note = _LINKEDIN_NOTE_CACHE.get(note_key, "")
+        if not note:
+            note = "Hi! I noticed your opening and would love to connect and explore how my engineering background can add value to your team!"
+        try:
+            bot.answer_callback_query(call.id, text="💬 LinkedIn note sent below!")
+        except Exception:
+            pass
+
+        try:
+            msg = (
+                "💬 <b>1-Tap LinkedIn Outreach Note (Copy & Send):</b>\n\n"
+                f"<code>{html.escape(note)}</code>"
+            )
+            bot.send_message(chat_id, msg, parse_mode="HTML")
+        except Exception as e:
+            bot.send_message(chat_id, f"Note: {note}")
 
     @bot.message_handler(commands=['analytics', 'metrics'])
     @admin_only
