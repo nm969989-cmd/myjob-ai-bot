@@ -514,6 +514,20 @@ def apply_rag_memory_fallback(page, qa_memory: dict = None, profile: dict = None
 # Extracts salary, package, LPA, and monthly stipends from unstructured text.
 # ─────────────────────────────────────────────────────────────────
 
+# Pre-compiled salary extraction regex patterns for zero re-compilation overhead
+_COMPILED_SALARY_PATTERNS = [
+    re.compile(r'(?:(?:💰|💵|💸)?\s*(?:Expected\s*CTC|CTC|Salary|Package|Stipend|Pay|Compensation))\s*[:\-–]\s*([^\n🏢📍💼🛠️📝👉🔗|]+)', re.I),
+    re.compile(r'\b(\d+(?:\.\d+)?\s*(?:-|–|to)\s*\d+(?:\.\d+)?\s*(?:LPA|lpa|Lakhs?|Lacs?|PA))\b', re.I),
+    re.compile(r'\b(\d+(?:\.\d+)?\s*(?:LPA|lpa|Lakhs?|Lacs?)\s*(?:PA|P\.A)?)\b', re.I),
+    re.compile(r'([₹Rs]\.?\s*[\d,kK]+(?:\s*(?:-|–|to)\s*[\d,kK]+)?\s*(?:per\s+month|pm|p\.m|/mo|/month|P\.M|PM))', re.I),
+    re.compile(r'(?:Stipend|stipend)\s*[:\-–]\s*([^\n🏢📍💼🛠️📝👉🔗|]+)', re.I),
+]
+_SALARY_CUTOFF_RE = re.compile(r'\s+(?:Send|Reach|Apply|Email|Contact|Batch|Location|Role|Eligibility|Link|DM|Website)\b', re.I)
+_SALARY_PREFIX_RE = re.compile(r'^[▪️👉•\-:\s]+')
+_LPA_RE = re.compile(r'\blpa\b', re.I)
+_PA_RE = re.compile(r'\bpa\b', re.I)
+_PM_RE = re.compile(r'\bpm\b', re.I)
+
 def extract_job_salary(text: str) -> str:
     """
     Extracts CTC, package, salary, or internship stipend from unstructured text.
@@ -522,34 +536,20 @@ def extract_job_salary(text: str) -> str:
     if not text or not isinstance(text, str):
         return ""
     
-    # 1. Direct explicit keyword search: CTC / Salary / Package / Stipend
-    patterns = [
-        # Explicit label on single line: CTC: 4.5 - 7.5 LPA
-        r'(?:(?:💰|💵|💸)?\s*(?:Expected\s*CTC|CTC|Salary|Package|Stipend|Pay|Compensation))\s*[:\-–]\s*([^\n🏢📍💼🛠️📝👉🔗|]+)',
-        # Standalone range: 3.5 - 6.5 LPA
-        r'\b(\d+(?:\.\d+)?\s*(?:-|–|to)\s*\d+(?:\.\d+)?\s*(?:LPA|lpa|Lakhs?|Lacs?|PA))\b',
-        # Standalone figure: 6 LPA
-        r'\b(\d+(?:\.\d+)?\s*(?:LPA|lpa|Lakhs?|Lacs?)\s*(?:PA|P\.A)?)\b',
-        # Monthly figure: ₹ 25,000 / month or ₹15k - 25k/month
-        r'([₹Rs]\.?\s*[\d,kK]+(?:\s*(?:-|–|to)\s*[\d,kK]+)?\s*(?:per\s+month|pm|p\.m|/mo|/month|P\.M|PM))',
-        # Stipend line
-        r'(?:Stipend|stipend)\s*[:\-–]\s*([^\n🏢📍💼🛠️📝👉🔗|]+)',
-    ]
-
-    for pat in patterns:
-        m = re.search(pat, text, re.I)
+    for pat in _COMPILED_SALARY_PATTERNS:
+        m = pat.search(text)
         if m:
             raw_sal = m.group(1).strip()
             # Cut off sentence spills or next-field words (e.g. ". Reach out", "Send resume", etc.)
             raw_sal = re.split(r'\.\s+[A-Z]', raw_sal)[0].strip()
-            raw_sal = re.split(r'\s+(?:Send|Reach|Apply|Email|Contact|Batch|Location|Role|Eligibility|Link|DM|Website)\b', raw_sal, flags=re.I)[0].strip()
-            clean = re.sub(r'^[▪️👉•\-:\s]+', '', raw_sal).strip()
+            raw_sal = _SALARY_CUTOFF_RE.split(raw_sal)[0].strip()
+            clean = _SALARY_PREFIX_RE.sub('', raw_sal).strip()
             clean = re.sub(r'[\s]+', ' ', clean).strip()
             clean = clean.rstrip(".,;:-|")
             if len(clean) >= 2 and (any(c.isdigit() for c in clean) or any(w in clean.lower() for w in ["industry", "norms"])):
-                clean = re.sub(r'\blpa\b', 'LPA', clean, flags=re.I)
-                clean = re.sub(r'\bpa\b', 'PA', clean, flags=re.I)
-                clean = re.sub(r'\bpm\b', '/month', clean, flags=re.I)
+                clean = _LPA_RE.sub('LPA', clean)
+                clean = _PA_RE.sub('PA', clean)
+                clean = _PM_RE.sub('/month', clean)
                 return clean[:40]
                 
     return ""
@@ -771,6 +771,21 @@ COMMON_TECH_SKILLS = [
     "selenium", "playwright", "cypress", "junit", "pytest", "data structures", "algorithms", "dsa"
 ]
 
+# Pre-compiled word-boundary regex patterns for instant ATS skill scanning
+_PRECOMPILED_SKILL_PATTERNS = {
+    skill: re.compile(rf'(?:\b|(?<=[^a-zA-Z0-9])){re.escape(skill)}(?:\b|(?=[^a-zA-Z0-9]))')
+    for skill in COMMON_TECH_SKILLS
+}
+
+_TECH_ALIAS_MAP = {
+    "react.js": "react",
+    "vue.js": "vue",
+    "nodejs": "node.js",
+    "nextjs": "next.js",
+    "dsa": "data structures",
+    "github": "git",
+}
+
 def calculate_skill_match_score(job_text: str, profile: dict = None) -> dict:
     """
     Computes an ATS-style skill match score (0-100%) by comparing keywords
@@ -799,30 +814,20 @@ def calculate_skill_match_score(job_text: str, profile: dict = None) -> dict:
 
     job_text_lower = job_text.lower()
     
-    # Detect which tech skills the job specifically asks for
+    # Detect which tech skills the job specifically asks for using pre-compiled regexes (O(1) pattern overhead)
     found_job_skills = set()
-    for skill in COMMON_TECH_SKILLS:
-        # Safe word boundary match
-        pattern = rf'(?:\b|(?<=[^a-zA-Z0-9])){re.escape(skill)}(?:\b|(?=[^a-zA-Z0-9]))'
-        if re.search(pattern, job_text_lower):
+    for skill, pat in _PRECOMPILED_SKILL_PATTERNS.items():
+        if pat.search(job_text_lower):
             found_job_skills.add(skill)
 
     # Normalize aliases (e.g. react.js -> react, nodejs -> node.js)
-    alias_map = {
-        "react.js": "react",
-        "vue.js": "vue",
-        "nodejs": "node.js",
-        "nextjs": "next.js",
-        "dsa": "data structures",
-        "github": "git",
-    }
     normalized_job_skills = set()
     for s in found_job_skills:
-        normalized_job_skills.add(alias_map.get(s, s))
+        normalized_job_skills.add(_TECH_ALIAS_MAP.get(s, s))
 
     normalized_user_skills = set()
     for s in user_skills_list:
-        normalized_user_skills.add(alias_map.get(s, s))
+        normalized_user_skills.add(_TECH_ALIAS_MAP.get(s, s))
 
     matched = normalized_job_skills.intersection(normalized_user_skills)
     missing = normalized_job_skills.difference(normalized_user_skills)
@@ -881,9 +886,26 @@ _DEAD_JOB_PHRASES = [
     "job not found",
 ]
 
+_PROBE_SESSION = None
+_LINK_ALIVE_CACHE = {}  # url -> (is_alive, timestamp)
+_LINK_CACHE_TTL = 900   # 15 minutes
+
+def _get_probe_session():
+    global _PROBE_SESSION
+    if _PROBE_SESSION is None:
+        import requests
+        from requests.adapters import HTTPAdapter
+        s = requests.Session()
+        adapter = HTTPAdapter(pool_connections=10, pool_maxsize=25, max_retries=1)
+        s.mount("http://", adapter)
+        s.mount("https://", adapter)
+        _PROBE_SESSION = s
+    return _PROBE_SESSION
+
 def is_job_link_alive(url: str, timeout: float = 3.5) -> bool:
     """
     Ultra-fast, non-blocking probe to verify if a job URL is live and accepting applications.
+    Reuses pooled HTTP connections and leverages an in-memory TTL cache to eliminate duplicate network requests.
     Detects expired ATS pages (Workday, Lever, Greenhouse, etc.) and dead 404 links.
     Fails OPEN (returns True) on transient network issues so valid jobs are never lost.
     """
@@ -897,19 +919,25 @@ def is_job_link_alive(url: str, timeout: float = 3.5) -> bool:
     if any(domain in clean_url.lower() for domain in ["t.me/", "telegram.dog/", "forms.gle", "docs.google.com/forms", "mailto:"]):
         return True
 
+    now = time.time()
+    cached = _LINK_ALIVE_CACHE.get(clean_url)
+    if cached and (now - cached[1] < _LINK_CACHE_TTL):
+        return cached[0]
+
     try:
-        import requests
+        session = _get_probe_session()
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.9",
         }
         # Use stream=True to only download the first few KB instead of entire pages
-        resp = requests.get(clean_url, headers=headers, timeout=timeout, allow_redirects=True, stream=True)
+        resp = session.get(clean_url, headers=headers, timeout=timeout, allow_redirects=True, stream=True)
         
         # Immediate HTTP dead status
         if resp.status_code in [404, 410]:
             print(f"[DeadLink Filter] ❌ Link returned HTTP {resp.status_code}: {clean_url[:60]}")
+            _LINK_ALIVE_CACHE[clean_url] = (False, now)
             return False
 
         # Read first 8KB of content to detect "Job Closed" banners
@@ -924,11 +952,14 @@ def is_job_link_alive(url: str, timeout: float = 3.5) -> bool:
         for phrase in _DEAD_JOB_PHRASES:
             if phrase in text_snippet:
                 print(f"[DeadLink Filter] ❌ Detected expired job phrase '{phrase}' in {clean_url[:60]}")
+                _LINK_ALIVE_CACHE[clean_url] = (False, now)
                 return False
 
+        _LINK_ALIVE_CACHE[clean_url] = (True, now)
         return True
     except Exception as e:
         # On connection timeout or SSL blip, fail open
+        _LINK_ALIVE_CACHE[clean_url] = (True, now)
         return True
 
 
@@ -1481,17 +1512,27 @@ DEFAULT_NATIONAL_DRIVES = [
     }
 ]
 
+_NATIONAL_DRIVES_CACHE = None
+_NATIONAL_DRIVES_MTIME = 0
+
 def get_national_drives(filepath: str = "national_drives.json") -> list:
     """
-    Loads national mass drives from disk or initializes with verified seeds.
+    Loads national mass drives from disk or initializes with verified seeds with mtime memory caching.
     """
+    global _NATIONAL_DRIVES_CACHE, _NATIONAL_DRIVES_MTIME
     import os
     import json
+    current_mtime = os.path.getmtime(filepath) if os.path.exists(filepath) else 0
+    if _NATIONAL_DRIVES_CACHE is not None and current_mtime == _NATIONAL_DRIVES_MTIME:
+        return _NATIONAL_DRIVES_CACHE
+
     if os.path.exists(filepath):
         try:
             with open(filepath, "r", encoding="utf-8") as f:
                 drives = json.load(f)
                 if isinstance(drives, list) and len(drives) > 0:
+                    _NATIONAL_DRIVES_CACHE = drives
+                    _NATIONAL_DRIVES_MTIME = current_mtime
                     return drives
         except Exception:
             pass
@@ -1502,6 +1543,8 @@ def get_national_drives(filepath: str = "national_drives.json") -> list:
             json.dump(DEFAULT_NATIONAL_DRIVES, f, ensure_ascii=False, indent=2)
     except Exception:
         pass
+    _NATIONAL_DRIVES_CACHE = DEFAULT_NATIONAL_DRIVES
+    _NATIONAL_DRIVES_MTIME = os.path.getmtime(filepath) if os.path.exists(filepath) else 0
     return DEFAULT_NATIONAL_DRIVES
 
 def format_national_drives_report(drives: list = None, query: str = None) -> list:
@@ -1902,21 +1945,31 @@ def get_urgent_deadlines_summary(drives: list = None, ref_date=None) -> str:
 # Tracks verified in-person IT & tech walk-in drives across Chennai, Coimbatore & TN.
 # ─────────────────────────────────────────────────────────────────
 
+_WALKIN_DRIVES_CACHE = None
+_WALKIN_DRIVES_MTIME = 0
+
 def get_walkin_drives(city: str = None, json_path: str = "walkin_drives.json") -> list:
     """
-    Retrieves verified Tamil Nadu walk-in drives from walkin_drives.json.
+    Retrieves verified Tamil Nadu walk-in drives from walkin_drives.json with mtime memory caching.
     Optionally filters by city ('chennai', 'coimbatore', etc.).
     """
+    global _WALKIN_DRIVES_CACHE, _WALKIN_DRIVES_MTIME
     import os
     import json
 
-    drives = []
-    if os.path.exists(json_path):
-        try:
-            with open(json_path, "r", encoding="utf-8") as f:
-                drives = json.load(f)
-        except Exception as e:
-            print(f"[Walk-Ins] Error reading {json_path}: {e}")
+    current_mtime = os.path.getmtime(json_path) if os.path.exists(json_path) else 0
+    if _WALKIN_DRIVES_CACHE is not None and current_mtime == _WALKIN_DRIVES_MTIME:
+        drives = _WALKIN_DRIVES_CACHE
+    else:
+        drives = []
+        if os.path.exists(json_path):
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    drives = json.load(f)
+                    _WALKIN_DRIVES_CACHE = drives
+                    _WALKIN_DRIVES_MTIME = current_mtime
+            except Exception as e:
+                print(f"[Walk-Ins] Error reading {json_path}: {e}")
 
     if not city:
         return drives

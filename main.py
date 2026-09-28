@@ -156,16 +156,27 @@ UNSUPPORTED_DOMAINS = [
     "linktr.ee", "bit.ly", "shorturl"
 ]
 
-# Helper to load and save chat ID dynamically
+# Helper to load and save chat ID dynamically with memory caching to eliminate disk thrashing
+_AUTHORIZED_IDS_CACHE = None
+_AUTH_CACHE_MTIME = 0
+
 def load_chat_id():
     global TELEGRAM_CHAT_ID
     if TELEGRAM_CHAT_ID:
         return TELEGRAM_CHAT_ID
     data = safe_load_json(CHAT_ID_FILE, {})
-    return data.get("chat_id", "")
+    cid = str(data.get("chat_id", "")).strip()
+    if cid:
+        TELEGRAM_CHAT_ID = cid
+    return TELEGRAM_CHAT_ID or ""
 
 def get_authorized_chat_ids():
-    """Returns all authorized admin Telegram IDs (from env, saved file, and memory)."""
+    """Returns all authorized admin Telegram IDs (from env, saved file, and memory) with mtime-checked caching."""
+    global _AUTHORIZED_IDS_CACHE, _AUTH_CACHE_MTIME
+    current_mtime = os.path.getmtime(CHAT_ID_FILE) if os.path.exists(CHAT_ID_FILE) else 0
+    if _AUTHORIZED_IDS_CACHE is not None and current_mtime == _AUTH_CACHE_MTIME:
+        return _AUTHORIZED_IDS_CACHE
+
     ids = set()
     raw_env_chat = str(os.getenv("TELEGRAM_CHAT_ID", "")).strip().strip('"').strip("'")
     if raw_env_chat:
@@ -178,7 +189,10 @@ def get_authorized_chat_ids():
         ids.add(saved_cid)
     if TELEGRAM_CHAT_ID:
         ids.add(str(TELEGRAM_CHAT_ID))
-    return ids
+
+    _AUTHORIZED_IDS_CACHE = ids
+    _AUTH_CACHE_MTIME = current_mtime
+    return _AUTHORIZED_IDS_CACHE
 
 def is_authorized(user_or_chat_id):
     """Verifies whether the given Telegram User ID or Chat ID is an authorized admin."""
@@ -191,16 +205,22 @@ def is_authorized(user_or_chat_id):
     return str(user_or_chat_id) in allowed
 
 def save_chat_id(chat_id):
-    """Safely updates chat ID only if authorized or initializing for the first time."""
-    global TELEGRAM_CHAT_ID
+    """Safely updates chat ID only if authorized or initializing for the first time with disk I/O deduplication."""
+    global TELEGRAM_CHAT_ID, _AUTHORIZED_IDS_CACHE, _AUTH_CACHE_MTIME
     if not chat_id:
         return
     s_chat_id = str(chat_id).strip()
+    # In-memory cache hit: avoid duplicate disk I/O and log noise across the 35+ command and callback handlers
+    if s_chat_id == TELEGRAM_CHAT_ID and os.path.exists(CHAT_ID_FILE):
+        return
+
     if not is_authorized(s_chat_id) and get_authorized_chat_ids():
         print(f"[Security Warning] Blocked attempt to overwrite Chat ID from unauthorized sender: {s_chat_id}")
         return
     TELEGRAM_CHAT_ID = s_chat_id
     safe_save_json(CHAT_ID_FILE, {"chat_id": TELEGRAM_CHAT_ID})
+    _AUTHORIZED_IDS_CACHE = None  # Invalidate cache
+    _AUTH_CACHE_MTIME = 0
     print(f"[Auth] Verified Telegram chat ID locked: {TELEGRAM_CHAT_ID}")
 
 def admin_only(handler_func):
@@ -449,15 +469,27 @@ def safe_save_json(filepath, data):
         except Exception as e:
             print(f"[I/O Error] Failed to write {filepath}: {e}")
 
-# Load state
+# Load state with mtime memory caching (O(1) lookups during multi-channel scans)
+_APPLIED_JOBS_CACHE = None
+_APPLIED_JOBS_MTIME = 0
+
 def load_applied_jobs():
+    global _APPLIED_JOBS_CACHE, _APPLIED_JOBS_MTIME
+    current_mtime = os.path.getmtime(STATE_FILE) if os.path.exists(STATE_FILE) else 0
+    if _APPLIED_JOBS_CACHE is not None and current_mtime == _APPLIED_JOBS_MTIME:
+        return _APPLIED_JOBS_CACHE.copy()
     data = safe_load_json(STATE_FILE, [])
-    return set(data)
+    _APPLIED_JOBS_CACHE = set(data)
+    _APPLIED_JOBS_MTIME = current_mtime
+    return _APPLIED_JOBS_CACHE.copy()
 
 def save_applied_job(job_url):
+    global _APPLIED_JOBS_CACHE, _APPLIED_JOBS_MTIME
     applied = load_applied_jobs()
     applied.add(job_url)
     safe_save_json(STATE_FILE, list(applied))
+    _APPLIED_JOBS_CACHE = applied
+    _APPLIED_JOBS_MTIME = os.path.getmtime(STATE_FILE) if os.path.exists(STATE_FILE) else time.time()
 
 # --- QA Memory: remember answers to custom job questions ---
 def load_qa_memory():
@@ -537,8 +569,16 @@ def is_sleep_time() -> bool:
 # --- Duplicate URL hash set (cross-channel dedup within one cycle) ---
 _seen_this_cycle: set = set()
 
-# Load profile data
+# Load profile data with mtime memory caching (O(1) memory lookup)
+_PROFILE_CACHE = None
+_PROFILE_CACHE_MTIME = 0
+
 def load_profile():
+    global _PROFILE_CACHE, _PROFILE_CACHE_MTIME
+    current_mtime = os.path.getmtime(PROFILE_FILE) if os.path.exists(PROFILE_FILE) else 0
+    if _PROFILE_CACHE is not None and current_mtime == _PROFILE_CACHE_MTIME:
+        return _PROFILE_CACHE.copy()
+
     default_profile = {
         "full_name": "Manoj Kumar",
         "email": "manoj.kumar@example.com",
@@ -555,7 +595,11 @@ def load_profile():
             "corporate": "With a solid foundation in software engineering principles and a track record of reliable delivery, I am eager to bring my technical expertise to your established organization and contribute to long-term success."
         }
     }
-    return safe_load_json(PROFILE_FILE, default_profile)
+    _PROFILE_CACHE = safe_load_json(PROFILE_FILE, default_profile)
+    _PROFILE_CACHE_MTIME = current_mtime
+    return _PROFILE_CACHE.copy()
+
+_TRACKING_KEYS = frozenset({"utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "fbclid", "gclid", "ref", "source", "ref_id"})
 
 def clean_tracking_params(url):
     """Strips Google Analytics/Social Media tracking parameters to keep URLs clean and direct."""
@@ -565,8 +609,7 @@ def clean_tracking_params(url):
     try:
         parsed = urlparse(url)
         qs = parse_qs(parsed.query)
-        tracking_keys = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "fbclid", "gclid", "ref", "source", "ref_id"]
-        filtered_qs = {k: v for k, v in qs.items() if k.lower() not in tracking_keys}
+        filtered_qs = {k: v for k, v in qs.items() if k.lower() not in _TRACKING_KEYS}
         clean_query = urlencode(filtered_qs, doseq=True)
         return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, clean_query, parsed.fragment))
     except Exception:
@@ -3152,37 +3195,38 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
             except Exception:
                 pass
 
+_PROMO_DOMAINS = (
+    "t.me", "telegram.org", "telegram.dog", "whatsapp.com", "wa.me",
+    "instagram.com", "facebook.com", "fb.com", "twitter.com", "x.com",
+    "youtube.com", "youtu.be", "pinterest.com", "threads.net",
+    "linktr.ee", "bio.link", "campsite.bio", "taplink.cc", "beacons.ai",
+    "play.google.com", "apps.apple.com", "aratt.ai",
+    # Online courses, tutorials, coupon sites
+    "udemy.com", "coursera.org", "edx.org", "simplilearn.com", "greatlearning.in",
+    "udemy-free-course", "free-course", "free-udemy", "interview-questions-answers",
+    # Social sharing / blog widgets
+    "addtoany.com", "addthis.com", "sharethis.com", "disqus.com", "gravatar.com",
+    "blogger.com", "feedburner.com", "wordpress.com", "w3.org",
+    # Expired / Parked / Squatter domains
+    "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com",
+    "namecheap.com", "domainmarket.com", "parklogic.com", "parkingcrew.com",
+    "bodis.com", "above.com", "domainagents.com", "undeveloped.com",
+    "buydomains.com", "domain_profile.cfm", "domainforbuy"
+)
+_LINKEDIN_NON_JOB_SUBSTRS = ("/company/", "/in/", "/feed/", "/posts/", "/groups/", "/pulse/", "/school/")
+
 def is_social_or_promo_link(url):
     """Detects if a URL is a social media link, channel promo, parked domain, or non-job page."""
     if not url or not isinstance(url, str):
         return True
     u = url.lower().strip()
     
-    # Exclude social media profiles, chat groups, channel promos, share widgets & parked domains
-    promo_domains = [
-        "t.me", "telegram.org", "telegram.dog", "whatsapp.com", "wa.me",
-        "instagram.com", "facebook.com", "fb.com", "twitter.com", "x.com",
-        "youtube.com", "youtu.be", "pinterest.com", "threads.net",
-        "linktr.ee", "bio.link", "campsite.bio", "taplink.cc", "beacons.ai",
-        "play.google.com", "apps.apple.com", "aratt.ai",
-        # Online courses, tutorials, coupon sites
-        "udemy.com", "coursera.org", "edx.org", "simplilearn.com", "greatlearning.in",
-        "udemy-free-course", "free-course", "free-udemy", "interview-questions-answers",
-        # Social sharing / blog widgets
-        "addtoany.com", "addthis.com", "sharethis.com", "disqus.com", "gravatar.com",
-        "blogger.com", "feedburner.com", "wordpress.com", "w3.org",
-        # Expired / Parked / Squatter domains
-        "hugedomains.com", "sedo.com", "godaddy.com", "dan.com", "afternic.com",
-        "namecheap.com", "domainmarket.com", "parklogic.com", "parkingcrew.com",
-        "bodis.com", "above.com", "domainagents.com", "undeveloped.com",
-        "buydomains.com", "domain_profile.cfm", "domainforbuy"
-    ]
-    if any(d in u for d in promo_domains):
+    if any(d in u for d in _PROMO_DOMAINS):
         return True
         
     # LinkedIn company, personal profile, or feed pages are NOT direct job apply links
     if "linkedin.com" in u:
-        if any(p in u for p in ["/company/", "/in/", "/feed/", "/posts/", "/groups/", "/pulse/", "/school/"]):
+        if any(p in u for p in _LINKEDIN_NON_JOB_SUBSTRS):
             return True
             
     return False

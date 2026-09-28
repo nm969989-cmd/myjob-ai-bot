@@ -190,8 +190,21 @@ USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0",
 ]
 
+_RADAR_SESSION = None
+
+def _get_radar_session():
+    global _RADAR_SESSION
+    if _RADAR_SESSION is None:
+        from requests.adapters import HTTPAdapter
+        s = requests.Session()
+        adapter = HTTPAdapter(pool_connections=15, pool_maxsize=30, max_retries=1)
+        s.mount("http://", adapter)
+        s.mount("https://", adapter)
+        _RADAR_SESSION = s
+    return _RADAR_SESSION
+
 def _api_request(url, headers_extra=None, max_retries=2, timeout=20):
-    """Robust HTTP request helper."""
+    """Robust HTTP request helper with persistent connection pooling."""
     headers = {
         "User-Agent": random.choice(USER_AGENTS),
         "Accept": "application/json, text/html, */*",
@@ -199,9 +212,10 @@ def _api_request(url, headers_extra=None, max_retries=2, timeout=20):
     }
     if headers_extra:
         headers.update(headers_extra)
+    session = _get_radar_session()
     for attempt in range(max_retries):
         try:
-            resp = requests.get(url, headers=headers, timeout=timeout)
+            resp = session.get(url, headers=headers, timeout=timeout)
             if resp.status_code == 200:
                 return resp
             if resp.status_code in [429, 503]:
@@ -252,23 +266,48 @@ def normalize_job_url(url):
     except Exception:
         return url
 
+_SEEN_JOBS_CACHE = None
+_SEEN_JOBS_MTIME = 0
+
 def load_seen_jobs():
+    global _SEEN_JOBS_CACHE, _SEEN_JOBS_MTIME
+    current_mtime = os.path.getmtime(SEEN_JOBS_FILE) if os.path.exists(SEEN_JOBS_FILE) else 0
+    if _SEEN_JOBS_CACHE is not None and current_mtime == _SEEN_JOBS_MTIME:
+        return _SEEN_JOBS_CACHE.copy()
+
+    seen = set()
     if os.path.exists(SEEN_JOBS_FILE):
-        with open(SEEN_JOBS_FILE, "r", encoding="utf-8") as f:
-            seen = set()
-            for line in f.read().splitlines():
-                if line.strip():
-                    seen.add(line.strip())
-                    seen.add(normalize_job_url(line.strip()))
-            return seen
-    return set()
+        try:
+            with open(SEEN_JOBS_FILE, "r", encoding="utf-8") as f:
+                for line in f.read().splitlines():
+                    clean_l = line.strip()
+                    if clean_l:
+                        seen.add(clean_l)
+                        norm = normalize_job_url(clean_l)
+                        if norm:
+                            seen.add(norm)
+        except Exception:
+            pass
+    _SEEN_JOBS_CACHE = seen
+    _SEEN_JOBS_MTIME = current_mtime
+    return _SEEN_JOBS_CACHE.copy()
 
 def mark_seen(link):
+    global _SEEN_JOBS_CACHE, _SEEN_JOBS_MTIME
     norm = normalize_job_url(link)
-    with open(SEEN_JOBS_FILE, "a", encoding="utf-8") as f:
-        f.write(link.strip() + "\n")
-        if norm and norm != link.strip():
-            f.write(norm + "\n")
+    clean_link = link.strip()
+    try:
+        with open(SEEN_JOBS_FILE, "a", encoding="utf-8") as f:
+            f.write(clean_link + "\n")
+            if norm and norm != clean_link:
+                f.write(norm + "\n")
+    except Exception:
+        pass
+    if _SEEN_JOBS_CACHE is not None:
+        _SEEN_JOBS_CACHE.add(clean_link)
+        if norm:
+            _SEEN_JOBS_CACHE.add(norm)
+        _SEEN_JOBS_MTIME = os.path.getmtime(SEEN_JOBS_FILE) if os.path.exists(SEEN_JOBS_FILE) else time.time()
 
 def save_results(jobs):
     with open(RESULTS_JSON, "w", encoding="utf-8") as f:
