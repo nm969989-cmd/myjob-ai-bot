@@ -219,8 +219,8 @@ try:
             try:
                 from job_radar import dispatch_tamil_nadu_alerts
                 print("🌟 [Cloud Runner] Automatically dispatching Tamil Nadu Fresh Job Digest...")
-                dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=False)
-                print("✅ [Cloud Runner] Automated Tamil Nadu digest sent successfully!")
+                dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=True, only_unseen=True)
+                print("✅ [Cloud Runner] Automated Tamil Nadu digest sweep finished!")
             except Exception as tn_auto_err:
                 print(f"⚠️ Automated Tamil Nadu dispatch error: {tn_auto_err}")
 except Exception as e:

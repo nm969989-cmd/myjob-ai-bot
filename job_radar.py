@@ -1541,14 +1541,46 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
                     continue
 
                 raw_link = links[0]
-                lines = [l.strip() for l in text.splitlines() if l.strip()]
-                first_line = lines[0] if lines else "Software Engineer Opportunity"
+                direct_link = unwrap_radar_direct_link(raw_link)
+                if is_social_or_promo_link(direct_link):
+                    continue
 
-                comp_m = re.search(r'(?:🏢|Company|Hiring|At)\s*[:\-]?\s*([A-Za-z0-9\s&.,\-]+)', text, re.I)
-                comp = comp_m.group(1).strip()[:35] if comp_m else "Verified Tech Company"
+                # Clean Company Extraction
+                comp = ""
+                comp_m = re.search(r'(?:🏢|Company|Organisation|Org)\s*[:\-]?\s*([^\n📍💼🛠️💰📝👉🔗|]+)', text, re.I)
+                if comp_m:
+                    comp = comp_m.group(1).strip()
+                if not comp:
+                    comp_m2 = re.search(r'([A-Za-z0-9\s&.,\-]{2,30}?)\s+(?:is\s+Hiring|Hiring|Off\s*Campus\s+Drive|Recruitment)', text, re.I)
+                    if comp_m2:
+                        comp = comp_m2.group(1).strip()
+                comp = re.sub(r'^[^\w\s]+', '', comp).strip()
+                comp = re.sub(r'^(?:Miss|Alert|Opportunity|Permanent|Remote)\s+', '', comp, flags=re.I).strip()
+                comp = re.sub(r'\s+(?:is\s+)?hiring.*$', '', comp, flags=re.I).strip()
+                if not comp or len(comp) < 2 or comp.lower() in ["hiring", "apply", "job", "verified recruiter", "recruitment", "online", "drive"]:
+                    comp = "Verified Tech Company"
 
-                role_m = re.search(r'(?:💼|Role|Position|Job\s*Title)\s*[:\-]?\s*([A-Za-z0-9\s&.,\-/]+)', text, re.I)
-                role = role_m.group(1).strip()[:50] if role_m else first_line[:50]
+                # Clean Role Extraction
+                role = ""
+                role_m = re.search(r'(?:💼|Role|Position|Job\s*Title|Post|Designation)\s*[:\-]?\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)', text, re.I)
+                if role_m:
+                    role = role_m.group(1).strip()
+                if not role:
+                    role_m2 = re.search(r'(?:Hiring|for)\s+([A-Za-z0-9\s&.,\-/]{3,45}?)(?:\s+Location|\s+Experience|\s+Salary|\n|$)', text, re.I)
+                    if role_m2:
+                        role = role_m2.group(1).strip()
+                role = re.sub(r'^[^\w\s]+', '', role).strip()
+                role = re.sub(r'^(?:Freshers\s+for|Freshers\s+as)\s+', '', role, flags=re.I).strip()
+                if not role or len(role) < 3 or not re.search(r'[A-Za-z]', role):
+                    role = "Software Development Engineer"
+
+                # Strict non-engineering filter
+                non_eng_keywords = [
+                    "medical billing", "medical coder", "medical coding", "bpo", "telecaller",
+                    "telecalling", "delivery boy", "delivery partner", "pharma sales", "retail sales"
+                ]
+                if any(k in role.lower() for k in non_eng_keywords):
+                    continue
 
                 loc_str = "Chennai, Tamil Nadu ⭐"
                 for city in ["coimbatore", "madurai", "trichy", "salem", "hosur", "tirunelveli"]:
@@ -1559,15 +1591,15 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
                     loc_str = "Remote (All TN Candidates) 🌐"
 
                 item = _make_job(
-                    title=role,
-                    company=comp,
-                    link=raw_link,
+                    title=role[:60],
+                    company=comp[:35],
+                    link=direct_link,
                     location=loc_str,
                     source=f"Telegram @{channel_name}",
                     description=text[:250],
                     priority_tier=1,
                     is_tn=True,
-                    direct_link=unwrap_radar_direct_link(raw_link)
+                    direct_link=direct_link
                 )
                 res.append(item)
         except Exception:
@@ -1697,9 +1729,10 @@ def format_tamil_nadu_telegram_digest(jobs, max_chars=3800):
     return chunks, markup
 
 
-def dispatch_tamil_nadu_alerts(bot=None, chat_id=None, limit=8, force_refresh=False):
+def dispatch_tamil_nadu_alerts(bot=None, chat_id=None, limit=8, force_refresh=False, only_unseen=False):
     """
     Sweeps and directly dispatches Tamil Nadu job cards to the given or configured Telegram chat.
+    If only_unseen=True, filters against already dispatched links so automated runs never send duplicates.
     """
     if not bot:
         token = os.getenv("TELEGRAM_TOKEN", "").strip().strip('"').strip("'")
@@ -1722,7 +1755,29 @@ def dispatch_tamil_nadu_alerts(bot=None, chat_id=None, limit=8, force_refresh=Fa
         print("[TN Radar] No TELEGRAM_CHAT_ID found for dispatch.")
         return False
 
-    jobs = get_tamil_nadu_jobs(limit=limit, force_refresh=force_refresh)
+    jobs = get_tamil_nadu_jobs(limit=limit * 2 if only_unseen else limit, force_refresh=force_refresh)
+
+    if only_unseen:
+        seen_links = set(load_seen_jobs())
+        if os.path.exists("applied_jobs.json"):
+            try:
+                with open("applied_jobs.json", "r", encoding="utf-8") as f:
+                    seen_links.update(json.load(f))
+            except Exception:
+                pass
+
+        unseen = []
+        for j in jobs:
+            link = normalize_job_url(j.get("link") or j.get("raw_link") or "")
+            raw = (j.get("raw_link") or "").strip()
+            if link and link not in seen_links and raw not in seen_links:
+                unseen.append(j)
+        jobs = unseen[:limit]
+
+        if not jobs:
+            print("[TN Radar] All available Tamil Nadu jobs have already been dispatched. Skipping duplicate send.")
+            return True
+
     chunks, markup = format_tamil_nadu_telegram_digest(jobs)
 
     for idx, chunk in enumerate(chunks):
@@ -1745,6 +1800,12 @@ def dispatch_tamil_nadu_alerts(bot=None, chat_id=None, limit=8, force_refresh=Fa
                 reply_markup=markup if is_last else None
             )
         time.sleep(0.5)
+
+    # Mark sent links as seen so they are never resent automatically
+    for j in jobs:
+        link = normalize_job_url(j.get("link") or j.get("raw_link") or "")
+        if link:
+            mark_seen(link)
 
     return True
 

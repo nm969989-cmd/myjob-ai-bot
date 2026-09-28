@@ -6144,11 +6144,11 @@ def radar_loop():
             from job_radar import run_radar, dispatch_tamil_nadu_alerts
             chat_id = load_chat_id()
 
-            # 1. Automatically dispatch fresh Tamil Nadu jobs
+            # 1. Automatically dispatch fresh Tamil Nadu jobs (unseen only)
             if bot and chat_id:
                 try:
                     print("[Radar Loop] Automatically dispatching Tamil Nadu jobs digest...")
-                    dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=True)
+                    dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=True, only_unseen=True)
                 except Exception as tn_auto_e:
                     print(f"[Radar Loop] TN auto-dispatch warning: {tn_auto_e}")
 
