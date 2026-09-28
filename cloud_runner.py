@@ -15,7 +15,10 @@ from dotenv import load_dotenv
 
 # Mark script start time
 START_TIME = time.time()
-MAX_EXECUTION_SECONDS = 12 * 60  # 12-minute budget (well within GitHub Actions 20-min timeout)
+# 18-minute scan budget: 3 deep sweeps/day (IST 10 AM / 5 PM / 9 PM) x ~20 min total
+# runner time stays inside the 2,000 free Linux-minutes/month private-repo allowance.
+# Ends gracefully ~90s before the workflow's 20-min hard timeout.
+MAX_EXECUTION_SECONDS = 18 * 60
 
 # Ensure environment is loaded
 load_dotenv(override=True)

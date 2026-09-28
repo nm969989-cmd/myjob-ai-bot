@@ -4200,6 +4200,7 @@
     {
       "id": "functools",
       "label": "functools",
+      "_origin": "semantic",
       "community": 0,
       "community_name": "job_radar.py",
       "external": true,
@@ -4211,6 +4212,7 @@
     {
       "id": "requests",
       "label": "requests",
+      "_origin": "semantic",
       "community": 0,
       "community_name": "job_radar.py",
       "external": true,
@@ -4222,6 +4224,7 @@
     {
       "id": "email",
       "label": "email",
+      "_origin": "semantic",
       "community": 12,
       "community_name": "bot_features.py",
       "external": true,
@@ -4233,6 +4236,7 @@
     {
       "id": "email_header",
       "label": "email_header",
+      "_origin": "semantic",
       "community": 12,
       "community_name": "bot_features.py",
       "external": true,
@@ -4244,6 +4248,7 @@
     {
       "id": "email_message",
       "label": "email_message",
+      "_origin": "semantic",
       "community": 12,
       "community_name": "bot_features.py",
       "external": true,
@@ -4255,6 +4260,7 @@
     {
       "id": "re",
       "label": "re",
+      "_origin": "semantic",
       "community": 12,
       "community_name": "bot_features.py",
       "external": true,
@@ -4266,6 +4272,7 @@
     {
       "id": "smtplib",
       "label": "smtplib",
+      "_origin": "semantic",
       "community": 12,
       "community_name": "bot_features.py",
       "external": true,
@@ -4277,6 +4284,7 @@
     {
       "id": "time",
       "label": "time",
+      "_origin": "semantic",
       "community": 12,
       "community_name": "bot_features.py",
       "external": true,
@@ -4288,6 +4296,7 @@
     {
       "id": "csv",
       "label": "csv",
+      "_origin": "semantic",
       "community": 15,
       "community_name": "cloud_runner.py",
       "external": true,
@@ -4299,6 +4308,7 @@
     {
       "id": "datetime",
       "label": "datetime",
+      "_origin": "semantic",
       "community": 15,
       "community_name": "cloud_runner.py",
       "external": true,
@@ -4310,6 +4320,7 @@
     {
       "id": "dotenv",
       "label": "dotenv",
+      "_origin": "semantic",
       "community": 15,
       "community_name": "cloud_runner.py",
       "external": true,
@@ -4321,6 +4332,7 @@
     {
       "id": "html",
       "label": "html",
+      "_origin": "semantic",
       "community": 15,
       "community_name": "cloud_runner.py",
       "external": true,
@@ -4332,6 +4344,7 @@
     {
       "id": "imaplib",
       "label": "imaplib",
+      "_origin": "semantic",
       "community": 15,
       "community_name": "cloud_runner.py",
       "external": true,
@@ -4343,6 +4356,7 @@
     {
       "id": "os",
       "label": "os",
+      "_origin": "semantic",
       "community": 15,
       "community_name": "cloud_runner.py",
       "external": true,
@@ -4354,6 +4368,7 @@
     {
       "id": "telebot",
       "label": "telebot",
+      "_origin": "semantic",
       "community": 15,
       "community_name": "cloud_runner.py",
       "external": true,
@@ -4365,6 +4380,7 @@
     {
       "id": "telebot_types",
       "label": "telebot_types",
+      "_origin": "semantic",
       "community": 15,
       "community_name": "cloud_runner.py",
       "external": true,
@@ -4376,6 +4392,7 @@
     {
       "id": "urllib_parse",
       "label": "urllib_parse",
+      "_origin": "semantic",
       "community": 15,
       "community_name": "cloud_runner.py",
       "external": true,
@@ -4387,6 +4404,7 @@
     {
       "id": "difflib",
       "label": "difflib",
+      "_origin": "semantic",
       "community": 2,
       "community_name": "bot_optimizer.py",
       "external": true,
@@ -4398,6 +4416,7 @@
     {
       "id": "sys",
       "label": "sys",
+      "_origin": "semantic",
       "community": 2,
       "community_name": "bot_optimizer.py",
       "external": true,
@@ -4409,6 +4428,7 @@
     {
       "id": "base64",
       "label": "base64",
+      "_origin": "semantic",
       "community": 4,
       "community_name": "main.py",
       "external": true,
@@ -4420,6 +4440,7 @@
     {
       "id": "bs4",
       "label": "bs4",
+      "_origin": "semantic",
       "community": 4,
       "community_name": "main.py",
       "external": true,
@@ -4431,6 +4452,7 @@
     {
       "id": "flask",
       "label": "flask",
+      "_origin": "semantic",
       "community": 4,
       "community_name": "main.py",
       "external": true,
@@ -4442,6 +4464,7 @@
     {
       "id": "google",
       "label": "google",
+      "_origin": "semantic",
       "community": 4,
       "community_name": "main.py",
       "external": true,
@@ -4453,6 +4476,7 @@
     {
       "id": "groq",
       "label": "groq",
+      "_origin": "semantic",
       "community": 4,
       "community_name": "main.py",
       "external": true,
@@ -4464,6 +4488,7 @@
     {
       "id": "io",
       "label": "io",
+      "_origin": "semantic",
       "community": 4,
       "community_name": "main.py",
       "external": true,
@@ -4475,6 +4500,7 @@
     {
       "id": "queue",
       "label": "queue",
+      "_origin": "semantic",
       "community": 4,
       "community_name": "main.py",
       "external": true,
@@ -4486,6 +4512,7 @@
     {
       "id": "subprocess",
       "label": "subprocess",
+      "_origin": "semantic",
       "community": 4,
       "community_name": "main.py",
       "external": true,
@@ -4497,6 +4524,7 @@
     {
       "id": "threading",
       "label": "threading",
+      "_origin": "semantic",
       "community": 4,
       "community_name": "main.py",
       "external": true,
@@ -4508,6 +4536,7 @@
     {
       "id": "json",
       "label": "json",
+      "_origin": "semantic",
       "community": 6,
       "community_name": "instahyre_engine.py",
       "external": true,
@@ -4519,6 +4548,7 @@
     {
       "id": "playwright_stealth",
       "label": "playwright_stealth",
+      "_origin": "semantic",
       "community": 6,
       "community_name": "instahyre_engine.py",
       "external": true,
@@ -4530,6 +4560,7 @@
     {
       "id": "playwright_sync_api",
       "label": "playwright_sync_api",
+      "_origin": "semantic",
       "community": 6,
       "community_name": "instahyre_engine.py",
       "external": true,
@@ -4541,6 +4572,7 @@
     {
       "id": "random",
       "label": "random",
+      "_origin": "semantic",
       "community": 7,
       "community_name": "enterprise_adapters.py",
       "external": true,
@@ -4552,6 +4584,7 @@
     {
       "id": "string",
       "label": "string",
+      "_origin": "semantic",
       "community": 7,
       "community_name": "enterprise_adapters.py",
       "external": true,
@@ -9623,7 +9656,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L146",
+      "source_location": "L149",
       "weight": 1.0
     },
     {
@@ -9635,7 +9668,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L184",
+      "source_location": "L187",
       "weight": 1.0
     },
     {
@@ -9647,7 +9680,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L35",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -9659,7 +9692,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L36",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -9671,7 +9704,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L36",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -9695,7 +9728,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L70",
+      "source_location": "L73",
       "weight": 1.0
     },
     {
@@ -9707,7 +9740,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L70",
+      "source_location": "L73",
       "weight": 1.0
     },
     {
@@ -9719,7 +9752,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L70",
+      "source_location": "L73",
       "weight": 1.0
     },
     {
@@ -9731,7 +9764,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L72",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -9743,7 +9776,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L73",
+      "source_location": "L76",
       "weight": 1.0
     },
     {
@@ -11027,7 +11060,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L146",
+      "source_location": "L149",
       "weight": 1.0
     },
     {
@@ -11039,7 +11072,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L36",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -11051,7 +11084,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "cloud_runner.py",
-      "source_location": "L71",
+      "source_location": "L74",
       "weight": 1.0
     },
     {
@@ -15233,5 +15266,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b2b562cef1ea8bd034689a8515c1ec0ce3f27537"
+  "built_at_commit": "fbb03574cb28431541416835cdbcde46a2d8e12f"
 }

@@ -2,11 +2,12 @@ name: Telegram Job Bot Cloud Automation
 
 on:
   schedule:
-    # GitHub's scheduler silently delays/skips cron events under global load.
-    # Two staggered slots per hour roughly double the delivery odds (minute 00
-    # suffers the worst congestion, so we avoid it entirely).
-    - cron: '15 * * * *'
-    - cron: '45 * * * *'
+    # Private-safe budget: 3 deep sweeps/day x 20 min = 1,860 min/month (under the 2,000
+    # free Linux-minute allowance). Times are IST 10:00 AM / 5:00 PM / 9:00 PM (cron is UTC).
+    # :30 past the hour dodges the worst minute-00 scheduler congestion.
+    - cron: '30 4 * * *'
+    - cron: '30 11 * * *'
+    - cron: '30 15 * * *'
   workflow_dispatch: # Allows manual 1-click trigger from GitHub Actions dashboard
   push:
     branches:
@@ -30,7 +31,7 @@ concurrency:
 jobs:
   run-job-bot:
     runs-on: ubuntu-22.04
-    timeout-minutes: 20
+    timeout-minutes: 20 # Hard cap: keeps worst-case run at 20 min so the 1,860 min/month budget holds
 
     steps:
       - name: 📥 Check out repository
