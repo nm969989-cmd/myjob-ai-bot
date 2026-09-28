@@ -176,6 +176,20 @@ def run_all_tests():
 
     print(f"✅ Weekend Walk-In Tracker Test: Verified {len(all_walkins)} drives (Chennai: {len(chennai_walkins)}, Coimbatore: {len(coimbatore_walkins)}) & Maps links.")
 
+    # 11. Automated Walk-In Dispatch Test (Mock Bot)
+    from unittest.mock import MagicMock
+    from bot_optimizer import dispatch_walkin_alerts
+    mock_bot = MagicMock()
+    mock_chat_id = "test_chat_987"
+    # Test dispatch with force (once_per_day=False)
+    dispatch_success = dispatch_walkin_alerts(bot=mock_bot, chat_id=mock_chat_id, once_per_day=False, limit=3)
+    assert dispatch_success is True
+    assert mock_bot.send_message.called
+    sent_args, sent_kwargs = mock_bot.send_message.call_args
+    assert sent_args[0] == mock_chat_id
+    assert "WALK-IN" in str(sent_args[1])
+    print(f"✅ Automated Walk-In Dispatch Test: Successfully tested simulated bot delivery ({mock_bot.send_message.call_count} messages sent).")
+
     print("\n🎉 ALL VERIFICATION CHECKS PASSED WITH ZERO ERRORS!\n")
 
 if __name__ == "__main__":

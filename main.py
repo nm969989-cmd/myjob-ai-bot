@@ -6239,7 +6239,16 @@ def radar_loop():
                 except Exception as tn_auto_e:
                     print(f"[Radar Loop] TN auto-dispatch warning: {tn_auto_e}")
 
-            # 2. Run full radar
+            # 2. Automatically dispatch weekend walk-in drives once per day
+            if bot and chat_id:
+                try:
+                    from bot_optimizer import dispatch_walkin_alerts
+                    print("[Radar Loop] Checking Weekend Walk-In Drives auto-dispatch...")
+                    dispatch_walkin_alerts(bot=bot, chat_id=chat_id, once_per_day=True, limit=5)
+                except Exception as walkin_auto_e:
+                    print(f"[Radar Loop] Walk-in auto-dispatch warning: {walkin_auto_e}")
+
+            # 3. Run full radar
             new_jobs = run_radar()
             
             # If no new jobs found, send a heartbeat so user knows radar is alive

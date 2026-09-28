@@ -223,6 +223,15 @@ try:
                 print("✅ [Cloud Runner] Automated Tamil Nadu digest sweep finished!")
             except Exception as tn_auto_err:
                 print(f"⚠️ Automated Tamil Nadu dispatch error: {tn_auto_err}")
+
+        # Automated Weekend Walk-In Tracker Dispatch (Once per day)
+        if bot and chat_id:
+            try:
+                from bot_optimizer import dispatch_walkin_alerts
+                print("🚶‍♂️ [Cloud Runner] Automatically checking Weekend Walk-In Drives...")
+                dispatch_walkin_alerts(bot=bot, chat_id=chat_id, once_per_day=True, limit=5)
+            except Exception as walkin_auto_err:
+                print(f"⚠️ Automated Walk-In dispatch error: {walkin_auto_err}")
 except Exception as e:
     step_errors.append(f"Radar stage: {e}")
     print(f"⚠️ Radar Scan error: {e}")

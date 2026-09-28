@@ -2039,5 +2039,140 @@ def format_single_walkin_detail(walkin_id: str, json_path: str = "walkin_drives.
     )
 
 
+def dispatch_walkin_alerts(bot=None, chat_id=None, city=None, once_per_day=True, limit=6):
+    """
+    Automatically dispatches verified Tamil Nadu weekend walk-in drives to the configured Telegram chat.
+    If once_per_day=True, ensures only 1 walk-in digest is sent per day to prevent spamming the user across multiple daily runs.
+    """
+    import os
+    import sys
+    import json
+    import time
+    from datetime import datetime
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    tracker_file = "last_walkin_dispatch.json"
+
+    if once_per_day and os.path.exists(tracker_file):
+        try:
+            with open(tracker_file, "r", encoding="utf-8") as f:
+                tdata = json.load(f)
+            if tdata.get("last_sent_date") == today_str:
+                print(f"[Walk-Ins] Walk-in digest already sent today ({today_str}). Skipping duplicate automated alert.")
+                return True
+        except Exception:
+            pass
+
+    if not bot:
+        token = str(os.getenv("TELEGRAM_TOKEN", os.getenv("TELEGRAM_BOT_TOKEN", ""))).strip().strip('"').strip("'")
+        if token.lower().startswith("bot"):
+            token = token[3:]
+        if not token:
+            print("[Walk-Ins] No TELEGRAM_TOKEN available for dispatch.")
+            return False
+        import telebot
+        bot = telebot.TeleBot(token)
+
+    if not chat_id:
+        chat_id = str(os.getenv("TELEGRAM_CHAT_ID", "")).strip().strip('"').strip("'")
+        if not chat_id and os.path.exists("chat_id.json"):
+            try:
+                with open("chat_id.json", "r", encoding="utf-8") as f:
+                    chat_id = json.load(f).get("chat_id", "")
+            except Exception:
+                pass
+
+    if not chat_id:
+        print("[Walk-Ins] No TELEGRAM_CHAT_ID found for dispatch.")
+        return False
+
+    drives = get_walkin_drives(city=city)
+    if not drives:
+        print("[Walk-Ins] No active walk-in drives found to dispatch.")
+        return True
+
+    chunks = format_walkins_report(drives[:limit], city_filter=city)
+
+    try:
+        from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("📍 Chennai Walk-Ins", callback_data="walkins:chennai"),
+            InlineKeyboardButton("📍 Coimbatore Walk-Ins", callback_data="walkins:coimbatore")
+        )
+        markup.row(
+            InlineKeyboardButton("📢 All TN Walk-Ins", callback_data="walkins:all"),
+            InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+        )
+        markup.row(
+            InlineKeyboardButton("📢 National Drives", callback_data="drives"),
+            InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines")
+        )
+    except Exception:
+        markup = None
+
+    import re
+    for idx, chunk in enumerate(chunks):
+        is_last = (idx == len(chunks) - 1)
+        try:
+            bot.send_message(
+                chat_id,
+                chunk,
+                parse_mode="HTML",
+                disable_web_page_preview=True,
+                reply_markup=markup if is_last else None
+            )
+        except Exception:
+            plain = re.sub(r'<[^>]+>', '', chunk)
+            bot.send_message(
+                chat_id,
+                plain[:4096],
+                parse_mode=None,
+                disable_web_page_preview=True,
+                reply_markup=markup if is_last else None
+            )
+        time.sleep(0.5)
+
+    # Record dispatch date
+    try:
+        with open(tracker_file, "w", encoding="utf-8") as f:
+            json.dump({
+                "last_sent_date": today_str,
+                "timestamp": time.time(),
+                "total_sent": min(len(drives), limit)
+            }, f, indent=2)
+    except Exception as e:
+        print(f"[Walk-Ins] Error writing tracker file: {e}")
+
+    print(f"[Walk-Ins] ✅ Successfully dispatched {min(len(drives), limit)} walk-in drives to Telegram!")
+    return True
 
 
+if __name__ == "__main__":
+    import sys
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    from dotenv import load_dotenv
+    load_dotenv()
+
+    if "--dispatch-walkins" in sys.argv:
+        force = "--force" in sys.argv
+        city_arg = None
+        for arg in sys.argv:
+            if arg.lower() in ["chennai", "coimbatore"]:
+                city_arg = arg.lower()
+        print(f"[CLI] Triggering walk-in alert dispatch (city={city_arg}, force={force})...")
+        dispatch_walkin_alerts(city=city_arg, once_per_day=(not force))
+    elif "--walkins" in sys.argv:
+        city_arg = None
+        for arg in sys.argv:
+            if arg.lower() in ["chennai", "coimbatore"]:
+                city_arg = arg.lower()
+        drives = get_walkin_drives(city=city_arg)
+        print(f"\n🚶‍♂️ Found {len(drives)} active walk-in drives" + (f" in {city_arg.title()}:" if city_arg else ":"))
+        for d in drives:
+            print(f"  • [{d.get('city')}] {d.get('company')} — {d.get('role')} | {d.get('timing')}")
+    else:
+        print("Bot Optimizer CLI Options:")
+        print("  python bot_optimizer.py --walkins [chennai|coimbatore]")
+        print("  python bot_optimizer.py --dispatch-walkins [--force] [chennai|coimbatore]")
