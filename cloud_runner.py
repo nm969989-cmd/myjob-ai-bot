@@ -149,6 +149,8 @@ try:
     
     # Shuffle priority channels so no single slow channel blocks others
     random.shuffle(priority_channels)
+    raw_env_channels = os.getenv("TARGET_CHANNEL", "")
+    env_channels = [c.strip().replace("@", "") for c in raw_env_channels.split(",") if c.strip()]
     channels_to_scan = list(dict.fromkeys(priority_channels + env_channels + list(TARGET_CHANNELS)))
 
     for ch in channels_to_scan:
