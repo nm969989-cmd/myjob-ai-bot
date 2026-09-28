@@ -8,7 +8,6 @@ import os
 import sys
 import time
 import json
-import re
 import random
 from datetime import datetime
 from dotenv import load_dotenv
@@ -56,6 +55,12 @@ if not chat_id and os.path.exists("chat_id.json"):
 
 bot = telebot.TeleBot(token, parse_mode=None) if token else None
 
+# Telegram flood-control resilience: retry with backoff on 429s instead of dropping alerts
+# (main.py only sets this in local bot mode, so it must be set for the cloud path too)
+from telebot import apihelper
+apihelper.MAX_RETRIES = 5
+apihelper.RETRY_TIMEOUT = 2
+
 radar_jobs_count = 0
 radar_alerts_sent = 0
 channels_scanned = 0
@@ -64,104 +69,34 @@ channel_attempts = 0
 follow_up_count = 0
 new_radar_jobs = []
 step_errors = []  # Tracks silent failures so the status report can never hide a broken stage
+stage_times = {}  # Per-stage duration breakdown for the status report
+stage_notes = []  # Non-fatal operational notes (budget skips, partial runs)
 
 # -------------------------------------------------------------
-# STEP 1: Multi-Platform Job Radar Scan & Direct Telegram Dispatch
+# STEP 1: Telegram Channel Scrape & Direct Link Extraction
 # -------------------------------------------------------------
-print("\n📡 [1/3] Running Multi-Platform Job Radar...")
-try:
-    from main import load_applied_jobs, save_applied_job, load_profile
-    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-    import html
-    import urllib.parse
-
-    applied_jobs = load_applied_jobs()
-    profile = load_profile()
-
-    new_radar_jobs = run_radar() or []
-    radar_jobs_count = len(new_radar_jobs)
-    print(f"✅ Job Radar scan finished. Found {radar_jobs_count} new opportunities.")
-
-    # Dispatch top fresh radar opportunities directly to Telegram
-    if new_radar_jobs and bot and chat_id:
-        print("🚀 Dispatching top verified Radar opportunities to Telegram...")
-        for job in new_radar_jobs:
-            if radar_alerts_sent >= 5:  # Send up to 5 top fresh opportunities per cycle
-                break
-            j_link = job.get("link") or job.get("raw_link")
-            if not j_link or j_link in applied_jobs:
-                continue
-
-            try:
-                import main
-                unwrapped = main.bypass_blog_redirect(j_link)
-                if unwrapped:
-                    j_link = unwrapped
-            except Exception:
-                pass
-
-            j_title = str(job.get("title", "Software Engineer")).strip()
-            j_company = str(job.get("company", "Verified Company")).strip()
-            j_location = str(job.get("location", "India (PAN India)")).strip()
-            j_source = str(job.get("source", "Multi-Platform Radar")).strip()
-            is_tn = job.get("is_tamil_nadu", False)
-
-            banner = "🌟 <b>TAMIL NADU PRIORITY</b> 🇮🇳" if is_tn else "📡 <b>VERIFIED RADAR MATCH</b> 🇮🇳"
-
-            share_text = urllib.parse.quote(f"🚀 Job Alert: {j_company} - {j_title}\nApply Link: {j_link}")
-            share_url = f"https://t.me/share/url?url={urllib.parse.quote(j_link)}&text={share_text}"
-
-            card = (
-                f"{banner}\n"
-                f"━━━━━━━━━━━━━━━━━━━━━━\n"
-                f"🏢 <b>{html.escape(j_company)}</b> • <i>{html.escape(j_title)}</i>\n\n"
-                f"📍 <b>Location:</b> {html.escape(j_location)}\n"
-                f"📡 <b>Platform:</b> {html.escape(j_source)}\n"
-                f"━━━━━━━━━━━━━━━━━━━━━━"
-            )
-
-            kb = InlineKeyboardMarkup()
-            kb.row(
-                InlineKeyboardButton("🚀 Direct Apply (Official)", url=j_link)
-            )
-            kb.row(
-                InlineKeyboardButton("📤 Share Alert", url=share_url)
-            )
-
-            try:
-                bot.send_message(chat_id, card, parse_mode="HTML", reply_markup=kb, disable_web_page_preview=True)
-                applied_jobs.add(j_link)
-                save_applied_job(j_link)
-                radar_alerts_sent += 1
-                print(f"  [Radar Alert Sent] {j_company} - {j_title}")
-                time.sleep(1.5)
-            except Exception as send_err:
-                print(f"  ⚠️ Failed to send radar job: {send_err}")
-except Exception as e:
-    step_errors.append(f"Radar stage: {e}")
-    print(f"⚠️ Radar Scan error: {e}")
-
-# -------------------------------------------------------------
-# STEP 2: Telegram Channel Scrape & Direct Link Extraction
-# -------------------------------------------------------------
-print("\n📢 [2/3] Scraping Telegram Channels & Extracting Direct Links...")
+# Channels run FIRST: run history proves them the highest-yield stage (18 alerts
+# vs 0 from radar in one cycle), so the slower multi-platform radar farm can never
+# starve them. 5 minutes of budget are reserved for Radar + follow-ups + report.
+print("\n📢 [1/3] Scraping Telegram Channels & Extracting Direct Links...")
 try:
     from main import scrape_single_channel, load_applied_jobs, TARGET_CHANNELS
 
     applied_jobs = load_applied_jobs()
     priority_channels = ["KickCharm", "OffCampusJobs4u", "Freshershunt", "fresheroffcampus", "JobSkull", "Foundthejob", "chennaijobsofficial", "tech_jobs_india", "freshersvoice", "engineering_jobs_india", "placementjobs", "DailyJobs4You", "jobopenings_india"]
-    
+
     # Shuffle priority channels so no single slow channel blocks others
     random.shuffle(priority_channels)
     raw_env_channels = os.getenv("TARGET_CHANNEL", "")
     env_channels = [c.strip().replace("@", "") for c in raw_env_channels.split(",") if c.strip()]
     channels_to_scan = list(dict.fromkeys(priority_channels + env_channels + list(TARGET_CHANNELS)))
 
+    channel_deadline = START_TIME + (MAX_EXECUTION_SECONDS - 5 * 60)
+    _stage_start = time.time()
     for ch in channels_to_scan:
-        # Check overall time budget
-        elapsed = time.time() - START_TIME
-        if elapsed > MAX_EXECUTION_SECONDS:
-            print(f"⏱️ Time budget reached ({int(elapsed)}s). Concluding channel scans gracefully.")
+        if time.time() > channel_deadline:
+            print(f"⏱️ Channel deadline reached ({int(time.time() - START_TIME)}s). Concluding channel scans gracefully.")
+            stage_notes.append("Channel scan hit deadline")
             break
 
         if ch:
@@ -174,9 +109,99 @@ try:
                 channel_attempts += (attempts or 0)
             except Exception as ch_err:
                 print(f"  ⚠️ Error scanning @{clean_ch}: {ch_err}")
+    stage_times["channels"] = int(time.time() - _stage_start)
 except Exception as e:
     step_errors.append(f"Channel stage: {e}")
     print(f"⚠️ Channel Scraper error: {e}")
+
+# -------------------------------------------------------------
+# STEP 2: Multi-Platform Job Radar Scan & Direct Telegram Dispatch
+# -------------------------------------------------------------
+print("\n📡 [2/3] Running Multi-Platform Job Radar...")
+try:
+    if MAX_EXECUTION_SECONDS - (time.time() - START_TIME) < 150:
+        stage_notes.append("Radar skipped (time budget)")
+        print("⏱️ Less than 2.5 min of budget left — skipping radar this cycle.")
+    else:
+        from main import load_applied_jobs, save_applied_job, load_profile
+        from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+        import html
+        import urllib.parse
+
+        applied_jobs = load_applied_jobs()
+        profile = load_profile()
+
+        _stage_start = time.time()
+        new_radar_jobs = run_radar() or []
+        stage_times["radar_scan"] = int(time.time() - _stage_start)
+        radar_jobs_count = len(new_radar_jobs)
+        print(f"✅ Job Radar scan finished. Found {radar_jobs_count} new opportunities.")
+
+        # Dispatch top fresh radar opportunities directly to Telegram
+        if new_radar_jobs and bot and chat_id:
+            print("🚀 Dispatching top verified Radar opportunities to Telegram...")
+            _stage_start = time.time()
+            for job in new_radar_jobs:
+                if radar_alerts_sent >= 5:  # Send up to 5 top fresh opportunities per cycle
+                    break
+                # Keep runway for follow-ups + status report (never die mid-send)
+                if MAX_EXECUTION_SECONDS - (time.time() - START_TIME) < 90:
+                    stage_notes.append(f"Radar dispatch cut short ({radar_alerts_sent}/5)")
+                    print("⏱️ Budget runway low — stopping radar dispatch.")
+                    break
+                j_link = job.get("link") or job.get("raw_link")
+                if not j_link or j_link in applied_jobs:
+                    continue
+
+                try:
+                    import main
+                    unwrapped = main.bypass_blog_redirect(j_link)
+                    if unwrapped:
+                        j_link = unwrapped
+                except Exception:
+                    pass
+
+                j_title = str(job.get("title", "Software Engineer")).strip()
+                j_company = str(job.get("company", "Verified Company")).strip()
+                j_location = str(job.get("location", "India (PAN India)")).strip()
+                j_source = str(job.get("source", "Multi-Platform Radar")).strip()
+                is_tn = job.get("is_tamil_nadu", False)
+
+                banner = "🌟 <b>TAMIL NADU PRIORITY</b> 🇮🇳" if is_tn else "📡 <b>VERIFIED RADAR MATCH</b> 🇮🇳"
+
+                share_text = urllib.parse.quote(f"🚀 Job Alert: {j_company} - {j_title}\nApply Link: {j_link}")
+                share_url = f"https://t.me/share/url?url={urllib.parse.quote(j_link)}&text={share_text}"
+
+                card = (
+                    f"{banner}\n"
+                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"🏢 <b>{html.escape(j_company)}</b> • <i>{html.escape(j_title)}</i>\n\n"
+                    f"📍 <b>Location:</b> {html.escape(j_location)}\n"
+                    f"📡 <b>Platform:</b> {html.escape(j_source)}\n"
+                    f"━━━━━━━━━━━━━━━━━━━━━━"
+                )
+
+                kb = InlineKeyboardMarkup()
+                kb.row(
+                    InlineKeyboardButton("🚀 Direct Apply (Official)", url=j_link)
+                )
+                kb.row(
+                    InlineKeyboardButton("📤 Share Alert", url=share_url)
+                )
+
+                try:
+                    bot.send_message(chat_id, card, parse_mode="HTML", reply_markup=kb, disable_web_page_preview=True)
+                    applied_jobs.add(j_link)
+                    save_applied_job(j_link)
+                    radar_alerts_sent += 1
+                    print(f"  [Radar Alert Sent] {j_company} - {j_title}")
+                    time.sleep(1.5)
+                except Exception as send_err:
+                    print(f"  ⚠️ Failed to send radar job: {send_err}")
+            stage_times["radar_send"] = int(time.time() - _stage_start)
+except Exception as e:
+    step_errors.append(f"Radar stage: {e}")
+    print(f"⚠️ Radar Scan error: {e}")
 
 # -------------------------------------------------------------
 # STEP 3: Check Follow-up Reminders (Ghosting Preventer)
@@ -187,7 +212,7 @@ try:
         import csv
         with open("applied_jobs_log.csv", "r", encoding="utf-8") as f:
             rows = list(csv.reader(f))
-        
+
         now = datetime.now()
         follow_ups = []
         for i in range(1, len(rows)):
@@ -202,10 +227,12 @@ try:
                         follow_ups.append((i, row[1], row[2]))
                 except Exception:
                     pass
-                
+
         if follow_ups:
             follow_up_count = len(follow_ups)
             msg = f"👻 *GHOSTING PREVENTER ALERT*\nIt has been 7 days since you applied to {follow_up_count} jobs.\n\n"
+            # Only the 8 shown are marked "Followed Up"; the rest roll to the next cycle
+            # instead of being silently marked as done.
             for idx, job_title, url in follow_ups[:8]:
                 msg += f"💼 *{escape_md(job_title[:35])}*\n🔗 [Job Link]({url})\n"
                 if len(rows[idx]) >= 5:
@@ -228,7 +255,7 @@ except Exception as e:
 # STEP 4: Cloud Status Update to Telegram (Always sent!)
 # -------------------------------------------------------------
 total_elapsed = int(time.time() - START_TIME)
-print(f"\n📊 Cycle summary: Duration={total_elapsed}s, Radar={radar_jobs_count}, Channels={channels_scanned}, Direct Alerts={channel_jobs_found}")
+print(f"\n📊 Cycle summary: Duration={total_elapsed}s, Channels={channels_scanned} ({channel_jobs_found} alerts), Radar={radar_jobs_count} ({radar_alerts_sent} alerts)")
 
 try:
     tn_radar_count = sum(1 for j in new_radar_jobs if j.get('is_tamil_nadu', False)) if new_radar_jobs else 0
@@ -237,15 +264,22 @@ try:
         health_line += "\n".join(f"⚠️ {e[:90]}" for e in step_errors[:3]) + "\n"
     else:
         health_line = "🟢 *Engine Health: All stages OK*\n"
+    if stage_notes:
+        health_line += "📝 " + " | ".join(stage_notes) + "\n"
+    breakdown = " • ".join(f"{k} {v}s" for k, v in stage_times.items())
+    duration_line = f"⏱️ Duration: *{total_elapsed}s*"
+    if breakdown:
+        duration_line += f" (_{breakdown}_)"
+    duration_line += "\n"
     status_msg = (
         f"☁️ *GitHub Actions Cloud Cycle Complete*\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"🕒 Time: {datetime.now().strftime('%d %b %Y, %I:%M %p UTC')}\n"
-        f"⏱️ Duration: *{total_elapsed}s*\n"
-        f"📡 Radar Jobs (India): *{radar_jobs_count}* (_{radar_alerts_sent} alerts sent_)\n"
-        f"🌟 Tamil Nadu Priority: *{tn_radar_count}* jobs\n"
+        f"{duration_line}"
         f"📢 Channels Scanned: *{channels_scanned}*\n"
         f"🚀 Direct Channel Alerts Sent: *{channel_jobs_found}*\n"
+        f"📡 Radar Jobs (India): *{radar_jobs_count}* (_{radar_alerts_sent} alerts sent_)\n"
+        f"🌟 Tamil Nadu Priority: *{tn_radar_count}* jobs\n"
         f"👻 7-Day Follow-ups: *{follow_up_count}*\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"{health_line}"
