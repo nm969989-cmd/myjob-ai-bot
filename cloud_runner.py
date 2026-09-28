@@ -141,13 +141,11 @@ try:
     from main import scrape_single_channel, load_applied_jobs, TARGET_CHANNELS
 
     applied_jobs = load_applied_jobs()
-    raw_env_ch = os.getenv("TARGET_CHANNEL", "JobSkull,KickCharm,jobopenings_india").strip()
-    env_channels = [c.strip().lstrip("@") for c in raw_env_ch.split(",") if c.strip()]
-    priority_channels = ["JobSkull", "KickCharm", "Freshershunt", "chennaijobs2025", "OffCampusJobs4u", "placementjobs", "tamilnadujob", "jobopenings_india"]
+    priority_channels = ["KickCharm", "OffCampusJobs4u", "Freshershunt", "fresheroffcampus", "JobSkull", "Foundthejob", "chennaijobsofficial", "tech_jobs_india", "freshersvoice", "engineering_jobs_india", "placementjobs", "DailyJobs4You", "jobopenings_india"]
     
     # Shuffle priority channels so no single slow channel blocks others
     random.shuffle(priority_channels)
-    channels_to_scan = list(dict.fromkeys(env_channels + priority_channels + list(TARGET_CHANNELS)))
+    channels_to_scan = list(dict.fromkeys(priority_channels + env_channels + list(TARGET_CHANNELS)))
 
     for ch in channels_to_scan:
         # Check overall time budget

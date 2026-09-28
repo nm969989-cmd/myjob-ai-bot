@@ -98,56 +98,20 @@ TARGET_CHANNEL = os.getenv("TARGET_CHANNEL", "JobSkull")  # Primary channel (kep
 # All channels to monitor (from env as comma-separated list, or use defaults)
 _channels_env = os.getenv("TARGET_CHANNELS", "")
 TARGET_CHANNELS = [c.strip().lstrip("@") for c in _channels_env.split(",") if c.strip()] if _channels_env else [
-    # Top Pan-India Engineering & Fresher Job Channels
-    "JobSkull",
+    # Top Active Pan-India Engineering & Fresher Job Channels (Audited & Active)
     "KickCharm",
     "OffCampusJobs4u",
-    "offcampusjobss",
     "Freshershunt",
-    "job4freshers",
-    "placementjobs",
-    "jobsinternshipplacement",
     "fresheroffcampus",
-    "workfromhomejobs1",
-    "offcampusphodenge",
-    "veagance",
-    "DailyJobs4You",
+    "JobSkull",
     "Foundthejob",
-    # Tamil Nadu & South India High Priority Channels
-    "chennaijobs2025",
     "chennaijobsofficial",
-    "tamilnadujob",
-    "tamilnadujobsalert",
-    "TamilNadu_Govt_Private_Jobs",
-    "chennai_it_jobs",
-    "coimbatore_jobs",
-    "tn_job_alert",
-    "bangalore_chennai_jobs",
-    "tamil_tech_jobs",
-    "chennai_walkins",
-    "tamilnadu_freshers",
-    "tn_fresher_jobs",
-    # Tech & Placement Update Channels
-    "offcampus_freshers",
-    "freshers_jobs_india",
     "tech_jobs_india",
-    "internships_freshers",
-    "naukri_fresher_jobs",
-    "allindiafreshersjobs",
-    "it_jobs_freshers",
-    "placement_season",
-    "offcampushire",
     "freshersvoice",
-    "jobopenings_india",
-    "techfreshers",
-    "jobsforyou_india",
-    "freshers_drive",
     "engineering_jobs_india",
-    "software_jobs_india",
-    "campus_placement_prep",
-    "india_remote_jobs",
-    "fresher_engineer_jobs",
-    "fresher_it_openings",
+    "placementjobs",
+    "DailyJobs4You",
+    "jobopenings_india",
 ]
 
 # Files
@@ -3545,15 +3509,27 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
     }
 
 # --- 5. TELEGRAM CHANNEL SCRAPER (PUBLIC WEB PREVIEW) ---
+_channel_session = None
+
+def get_channel_session():
+    global _channel_session
+    if _channel_session is None:
+        _channel_session = requests.Session()
+        adapter = requests.adapters.HTTPAdapter(max_retries=2, pool_connections=10, pool_maxsize=10)
+        _channel_session.mount("https://", adapter)
+        _channel_session.mount("http://", adapter)
+    return _channel_session
+
 def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2):
     """
     Scrapes one Telegram public channel and triggers applications for new jobs.
+    Supports text links, media captions, and inline keyboard buttons.
     Returns (new_jobs_found, attempts_this_cycle).
     """
     global _seen_this_cycle
-    channel_name = channel_name.replace("@", "")
-    url = f"https://telegram.dog/s/{channel_name}"
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+    channel_name = channel_name.replace("@", "").strip()
+    session = get_channel_session()
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"}
     new_jobs_found = 0
     attempts_this_cycle = 0
     profile = load_profile()
@@ -3562,36 +3538,53 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
     ch_status = load_channel_status()
     ch_status.setdefault(channel_name, {"last_scan": "Never", "jobs_found": 0, "status": "Pending"})
 
-    try:
-        response = requests.get(url, headers=headers, timeout=10)
-        print(f"[Scraper] @{channel_name} -> HTTP {response.status_code}")
-        soup = BeautifulSoup(response.text, "html.parser")
-        messages = soup.find_all("div", class_="tgme_widget_message_text")
-        if not messages:
-            ch_status[channel_name].update({"status": "Empty/Private", "last_scan": datetime.now().strftime("%H:%M")})
-            save_channel_status(ch_status)
-            print(f"[Scraper] @{channel_name} -> No messages found (private or empty channel).")
-            return 0, 0
-    except Exception as e:
-        ch_status[channel_name].update({"status": f"Error: {str(e)[:40]}", "last_scan": datetime.now().strftime("%H:%M")})
+    soup = None
+    # Dual-domain resilient fallback (try t.me first, then telegram.dog)
+    for domain in ["t.me", "telegram.dog"]:
+        try:
+            url = f"https://{domain}/s/{channel_name}"
+            response = session.get(url, headers=headers, timeout=8)
+            if response.status_code == 200:
+                candidate_soup = BeautifulSoup(response.text, "html.parser")
+                bubbles = candidate_soup.find_all("div", class_="tgme_widget_message_bubble") or candidate_soup.find_all("div", class_="tgme_widget_message_wrap")
+                if bubbles:
+                    soup = candidate_soup
+                    break
+        except Exception:
+            continue
+
+    if not soup:
+        ch_status[channel_name].update({"status": "Fetch Error / Rate Limited", "last_scan": datetime.now().strftime("%H:%M")})
         save_channel_status(ch_status)
-        print(f"[Scraper] @{channel_name} → Fetch error: {e}")
+        print(f"[Scraper] @{channel_name} -> Fetch error or connection dropped across both domains.")
         return 0, 0
 
-    # Only inspect the latest 5 messages per channel for lightning fast cloud runs
-    recent_messages = messages[-5:] if len(messages) > 5 else messages
-    for msg in reversed(recent_messages):
+    bubbles = soup.find_all("div", class_="tgme_widget_message_bubble") or soup.find_all("div", class_="tgme_widget_message_wrap")
+    if not bubbles:
+        ch_status[channel_name].update({"status": "Empty/Private", "last_scan": datetime.now().strftime("%H:%M")})
+        save_channel_status(ch_status)
+        print(f"[Scraper] @{channel_name} -> No messages found (private or empty channel).")
+        return 0, 0
+
+    print(f"[Scraper] @{channel_name} -> Found {len(bubbles)} post widgets.")
+
+    # Inspect up to 12 recent messages per channel to ensure no jobs are missed
+    recent_bubbles = bubbles[-12:] if len(bubbles) > 12 else bubbles
+    for bubble in reversed(recent_bubbles):
         if attempts_this_cycle >= max_jobs:
             break
-        message_text = msg.get_text(separator=" ")
 
-        # --- IMPROVED LINK EXTRACTION ---
-        # Extract hrefs from <a> tags and raw text
+        # Extract text from message text block or entire bubble (handles images with captions)
+        text_el = bubble.find("div", class_="tgme_widget_message_text")
+        message_text = text_el.get_text(separator=" ").strip() if text_el else bubble.get_text(separator=" ").strip()
+
+        # --- IMPROVED LINK EXTRACTION (Supports BOTH text links & inline buttons!) ---
         urls_found = []
-        for a_tag in msg.find_all("a", href=True):
+        for a_tag in bubble.find_all("a", href=True):
             href = a_tag["href"].strip()
             if href.startswith("http") and not is_social_or_promo_link(href):
-                urls_found.append(href)
+                if href not in urls_found:
+                    urls_found.append(href)
 
         regex_urls = re.findall(r'(https?://[^\s<>"]+)', message_text)
         for u in regex_urls:
