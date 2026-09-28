@@ -594,6 +594,139 @@ def extract_hr_email(text: str) -> str:
 
 
 # ─────────────────────────────────────────────────────────────────
+# FEATURE 7B: 🎓 ELIGIBLE BATCH YEAR & EXPERIENCE LEVEL TAGGER
+# High-precision extraction of graduation batch years (2024-2027)
+# and experience requirements (Freshers, 0-1 yrs, 0-2 yrs, etc.)
+# ─────────────────────────────────────────────────────────────────
+
+def extract_eligible_batch(text: str) -> str:
+    """
+    Extracts graduation batch year(s) from unstructured job text, titles, or descriptions.
+    Handles single years ('2025 Batch'), lists ('2024 / 2025 / 2026 Batches'), ranges ('2023-2026 Batches'),
+    and phrasing like 'Year of Passing: 2025', '2025 passouts only', 'YOP: 2024/25'.
+    """
+    if not text or not isinstance(text, str):
+        return ""
+
+    # 1. Explicit line / label match
+    batch_line_m = re.search(
+        r'(?:(?:🎓\s*)?(?:Batch(?:es)?|Passout(?:s)?|Passing\s*Out\s*Year|Year\s*of\s*Passing|Graduat(?:ion|ing)\s*(?:Year|Batch)|YOP))\s*[:\-–]\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)',
+        text, re.I
+    )
+    raw_batch_line = batch_line_m.group(1).strip() if batch_line_m else ""
+
+    # 2. Year ranges like 2023-2026 or 2024 to 2026
+    range_candidates = [raw_batch_line, text] if raw_batch_line else [text]
+    years = []
+    
+    for candidate in range_candidates:
+        range_m = re.search(r'\b(202[0-9])\s*(?:-|–|to)\s*(202[0-9])\b', candidate)
+        if range_m:
+            start_y, end_y = int(range_m.group(1)), int(range_m.group(2))
+            if 2020 <= start_y <= end_y <= 2030:
+                years = [str(y) for y in range(start_y, end_y + 1)]
+                break
+
+    # 3. Individual 4-digit years (2022-2028)
+    if not years:
+        if raw_batch_line:
+            years = re.findall(r'\b(202[2-8])\b', raw_batch_line)
+        if not years:
+            explicit_matches = re.findall(r'\b(202[2-8])\s*(?:batch|passout|graduat\w*|candidates?|freshers?)', text, re.I)
+            explicit_matches += re.findall(r'(?:batch|passout|yop)\s*[:\-–]?\s*\b(202[2-8])\b', text, re.I)
+            if explicit_matches:
+                years = re.findall(r'\b(202[2-8])\b', " ".join(explicit_matches))
+            else:
+                years = re.findall(r'\b(202[2-8])\b', text)
+
+    if years:
+        seen = set()
+        clean_years = []
+        for y in sorted(years):
+            if y not in seen and 2020 <= int(y) <= 2030:
+                seen.add(y)
+                clean_years.append(y)
+
+        if len(clean_years) == 1:
+            return f"{clean_years[0]} Batch"
+        elif 2 <= len(clean_years) <= 3:
+            return " / ".join(clean_years) + " Batches"
+        elif len(clean_years) > 3:
+            return f"{clean_years[0]} - {clean_years[-1]} Batches"
+
+    # If explicit line had degree/freshers text
+    if raw_batch_line and len(raw_batch_line) <= 40:
+        clean = re.sub(r'^[▪️👉•\-:\s]+', '', raw_batch_line).strip()
+        clean = re.split(r'\s+(?:Send|Reach|Apply|Email|Location|Salary|CTC|Link)\b', clean, flags=re.I)[0].strip()
+        if clean and not any(k in clean.lower() for k in ["http", "apply", "t.me"]):
+            return clean
+
+    # Generic fallback
+    if re.search(r'\b(freshers?|entry[\s\-]level|intern(?:ship)?|campus\s*hiring)\b', text, re.I):
+        return "2024 / 2025 / 2026 Batch (Freshers)"
+
+    return "2024 / 2025 / 2026 Batch"
+
+
+def extract_experience_level(text: str) -> str:
+    """
+    Extracts candidate experience requirement from unstructured job text.
+    Handles 'Freshers (0-1 yrs)', '0-2 Years', 'Entry Level', 'Internship', etc.
+    """
+    if not text or not isinstance(text, str):
+        return "Freshers / Entry Level"
+
+    # 1. Explicit experience line
+    m = re.search(
+        r'(?:(?:💼\s*)?(?:Experience|Exp(?:\.)?|Work\s*Exp|Required\s*Experience))\s*[:\-–]\s*([^\n🏢📍🎓🛠️💰📝👉🔗|]+)',
+        text, re.I
+    )
+    if m:
+        raw_exp = m.group(1).strip()
+        raw_exp = re.split(r'\.\s+[A-Z]', raw_exp)[0].strip()
+        raw_exp = re.split(r'\s+(?:Send|Reach|Apply|Email|Location|Batch|Salary|CTC|Link)\b', raw_exp, flags=re.I)[0].strip()
+        clean = re.sub(r'^[▪️👉•\-:\s]+', '', raw_exp).strip()
+        if clean and len(clean) <= 40:
+            if re.search(r'\b0\s*(?:-|–|to)\s*1\s*(?:yrs?|years?)?\b', clean, re.I) or ("fresher" in clean.lower() and "1" in clean):
+                return "Freshers (0-1 yrs)"
+            if re.search(r'\b0\s*(?:-|–|to)\s*2\s*(?:yrs?|years?)?\b', clean, re.I):
+                return "0-2 Years"
+            if re.search(r'\b0\s*(?:-|–|to)\s*3\s*(?:yrs?|years?)?\b', clean, re.I):
+                return "0-3 Years"
+            if "fresher" in clean.lower():
+                return "Freshers (0 yrs)"
+            return clean
+
+    # 2. Pattern scan across entire text
+    if re.search(r'\b(?:0\s*(?:-|–|to)\s*1\s*(?:yrs?|years?)|0-1\s*yr|0\s*to\s*1\s*year)\b', text, re.I):
+        return "Freshers (0-1 yrs)"
+    if re.search(r'\b(?:0\s*(?:-|–|to)\s*2\s*(?:yrs?|years?)|0-2\s*yr|0\s*to\s*2\s*years?)\b', text, re.I):
+        return "0-2 Years"
+    if re.search(r'\b(?:0\s*(?:-|–|to)\s*3\s*(?:yrs?|years?)|0-3\s*yr)\b', text, re.I):
+        return "0-3 Years"
+    if re.search(r'\b(?:1\s*(?:-|–|to)\s*3\s*(?:yrs?|years?)|1-3\s*yr)\b', text, re.I):
+        return "1-3 Years"
+    if re.search(r'\b(?:freshers?\s+can\s+apply|fresher\s+friendly|only\s+freshers?|for\s+freshers?)\b', text, re.I):
+        return "Freshers (0 yrs)"
+    if re.search(r'\b(?:internship|interns?\b|graduate\s*trainee|trainee\s*engineer)\b', text, re.I):
+        return "Intern / Fresher"
+    if re.search(r'\b(entry[\s\-]level|junior\s*level)\b', text, re.I):
+        return "Entry Level (0-1 yrs)"
+
+    return "Freshers (0-1 yrs)"
+
+
+def format_eligibility_badge(batch: str, exp: str) -> str:
+    """Combines batch and experience into a clean, modern Telegram card line."""
+    parts = []
+    if batch:
+        parts.append(f"🎓 {batch}")
+    if exp:
+        parts.append(f"💼 {exp}")
+    return " • ".join(parts) if parts else "🎓 2024/2025/2026 Batch • 💼 Freshers"
+
+
+# ─────────────────────────────────────────────────────────────────
 # FEATURE 8: 💬 AI LINKEDIN RECRUITER OUTREACH NOTE GENERATOR
 # Generates personalized connection message (<= 300 characters).
 # ─────────────────────────────────────────────────────────────────

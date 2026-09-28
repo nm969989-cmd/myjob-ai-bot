@@ -47,7 +47,10 @@ from bot_optimizer import (
     format_single_drive_detail,
     get_all_drive_deadlines,
     format_deadlines_radar_report,
-    get_urgent_deadlines_summary
+    get_urgent_deadlines_summary,
+    extract_eligible_batch,
+    extract_experience_level,
+    format_eligibility_badge
 )
 
 # Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
@@ -244,6 +247,7 @@ def enforce_bot_security_profile(tg_bot):
             BotCommand("status", "🩺 Bot Engine & Channels Health"),
             BotCommand("analytics", "📊 Live Market & Career Analytics"),
             BotCommand("radar", "📡 Run Radar Scan (TN & India)"),
+            BotCommand("tnjobs", "🌟 Tamil Nadu & Chennai Fresh Jobs"),
             BotCommand("drives", "📢 National Mass Off-Campus Drives"),
             BotCommand("pause", "🛑 Pause Scanning Channels"),
             BotCommand("resume", "🟢 Resume Scanning Channels"),
@@ -3407,11 +3411,20 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
         raw_loc = loc_m.group(1).strip() if loc_m else ""
         context_for_loc = f"{raw_loc} {text_clean}"
 
-    # 4. EXTRACT BATCH / ELIGIBILITY
-    batch = ""
-    batch_m = re.search(r'(?:(?:🎓\s*)?Batch|Batch|Eligibility|Passout|Year\s*of\s*Passing|Qualification|Experience|Exp)\s*[:\-]\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
-    if batch_m:
-        batch = batch_m.group(1).strip()
+    # 4. EXTRACT BATCH & EXPERIENCE LEVEL (High-Precision Indian Batch Tagger)
+    batch = extract_eligible_batch(text_clean)
+    if not batch and page_meta.get("page_text"):
+        batch = extract_eligible_batch(page_meta["page_text"])
+    if not batch:
+        batch_m = re.search(r'(?:(?:🎓\s*)?Batch|Batch|Eligibility|Passout|Year\s*of\s*Passing|Qualification|Experience|Exp)\s*[:\-]\s*([^\n🏢📍💼🛠️💰📝👉🔗|]+)', text_clean, re.I)
+        if batch_m:
+            batch = batch_m.group(1).strip()
+
+    experience = extract_experience_level(text_clean)
+    if (not experience or experience == "Freshers (0-1 yrs)") and page_meta.get("page_text"):
+        exp_page = extract_experience_level(page_meta["page_text"])
+        if exp_page:
+            experience = exp_page
 
     # 5. EXTRACT SALARY / CTC (High-Precision Indian Packages: LPA, CTC, Stipend)
     salary = extract_job_salary(text_clean)
@@ -3516,7 +3529,12 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
         role = "Software Developer / Fresher Engineer"
 
     if not batch:
-        batch = "2024 / 2025 / 2026 Batch | Freshers"
+        batch = "2024 / 2025 / 2026 Batch"
+
+    if not experience:
+        experience = "Freshers (0-1 yrs)"
+
+    eligibility_badge = format_eligibility_badge(batch, experience)
 
     if not salary:
         salary = "As per Industry Standard"
@@ -3532,6 +3550,8 @@ def extract_structured_channel_job_details(message_text, raw_link, final_url, ch
         "location": loc_tag if loc_tag else (raw_loc if raw_loc else "India (PAN India) 🇮🇳"),
         "raw_location": raw_loc,
         "batch": batch[:50],
+        "experience": experience[:50],
+        "eligibility_badge": eligibility_badge,
         "salary": salary[:40],
         "hr_email": hr_email[:80] if hr_email else "",
         "work_mode": work_mode[:40] if work_mode else "Full-time / Fresher",
@@ -3765,7 +3785,8 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     comp_name = html.escape(str(details.get('company', 'Direct Hiring')).strip())
                     clean_role = html.escape(str(details.get('role', 'Software Engineer')).strip())
                     loc_val = html.escape(str(details.get('location', 'India (PAN India)')).strip())
-                    batch_val = html.escape(str(details.get('batch', '2024 / 2025 / 2026 Batch | Freshers')).strip())
+                    batch_val = html.escape(str(details.get('batch', '2024 / 2025 / 2026 Batch')).strip())
+                    exp_val = html.escape(str(details.get('experience', 'Freshers (0-1 yrs)')).strip())
                     sal_val = html.escape(str(details.get('salary', 'As per Industry Standard')).strip())
                     channel_post_url = f"https://t.me/s/{channel_name}"
 
@@ -3776,6 +3797,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         f"🏢 <b>{comp_name}</b> • <i>{clean_role}</i>\n\n"
                         f"📍 <b>Location:</b> {loc_val}\n"
                         f"🎓 <b>Batch:</b> {batch_val}\n"
+                        f"💼 <b>Experience:</b> {exp_val}\n"
                         f"💰 <b>Salary:</b> {sal_val}\n"
                         f"🎯 <b>Match:</b> {match_badge}\n"
                         f"📡 <b>Source:</b> <a href=\"{html.escape(str(channel_post_url))}\">@{html.escape(str(channel_name))}</a>\n"
@@ -4880,7 +4902,10 @@ if bot:
         
         # Row 3: Actions
         markup.add(
-            InlineKeyboardButton("🎯 Job Radar", callback_data="radar"),
+            InlineKeyboardButton("🌟 Tamil Nadu Jobs", callback_data="tnjobs"),
+            InlineKeyboardButton("🎯 Job Radar", callback_data="radar")
+        )
+        markup.add(
             InlineKeyboardButton("👁️ Ghost Mode Toggle", callback_data="ghost")
         )
         
@@ -4922,6 +4947,10 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
 ⚡️ *CORE OPERATIONS*
 🔹 `/start` - Wake up the bot and lock your Chat ID for notifications.
 🔹 `/help` - Show this detailed command manual.
+🔹 `/tnjobs` - 🌟 Search latest Tamil Nadu & Chennai jobs (Batch & Exp tagged).
+🔹 `/radar` - 📡 Multi-platform job radar (Adzuna, Unstop, Telegram).
+🔹 `/drives` - 📢 National mass off-campus hiring drives (TCS, Infosys, Zoho).
+🔹 `/deadlines` - ⏳ Mass drive deadlines countdown radar.
 🔹 `/status` - 🩺 Check the heartbeat of the bot, API keys, and total jobs processed.
 🔹 `/pause` - 🛑 Temporarily stop the background 24/7 scanning.
 🔹 `/resume` - 🟢 Turn the background scanning back on.
@@ -5134,7 +5163,7 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                 bot.send_message(message.chat.id, f"⚠️ *Error scanning inbox:* {e}", parse_mode=None)
         threading.Thread(target=_bg_scan).start()
 
-    @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost", "analytics", "drives"])
+    @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost", "analytics", "drives", "tnjobs", "tnjobs:refresh"])
     @admin_only
     def handle_button(call):
         global BOT_PAUSED
@@ -5264,6 +5293,26 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
                 if len(qa_memory) > 10:
                     msg += f"_...and {len(qa_memory)-10} more. Use `/qa` to see all._"
                 bot.send_message(chat_id, msg, parse_mode=None)
+
+        elif call.data in ["tnjobs", "tnjobs:refresh"]:
+            try:
+                bot.answer_callback_query(call.id, "🔍 Loading Tamil Nadu jobs...")
+            except Exception:
+                pass
+            try:
+                from job_radar import get_tamil_nadu_jobs, format_tamil_nadu_telegram_digest
+                force = (call.data == "tnjobs:refresh")
+                jobs = get_tamil_nadu_jobs(limit=10, force_refresh=force)
+                chunks, markup = format_tamil_nadu_telegram_digest(jobs)
+                for idx, chunk in enumerate(chunks):
+                    is_last = (idx == len(chunks) - 1)
+                    try:
+                        bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                    except Exception:
+                        bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                    time.sleep(0.4)
+            except Exception as e:
+                bot.send_message(chat_id, f"❌ Error loading Tamil Nadu jobs: {e}")
 
         elif call.data == "radar":
             bot.send_message(chat_id, "📡 *Job Radar Triggered!*\nScanning all configured Telegram channels right now for fresh jobs...", parse_mode=None)
@@ -5773,6 +5822,29 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
     def ping_test(message):
         bot.reply_to(message, "🏓 Pong! The cloud bot is alive and listening!")
 
+    @bot.message_handler(commands=['tnjobs', 'tamilnadu', 'chennai'])
+    @admin_only
+    def show_tamil_nadu_jobs(message):
+        save_chat_id(message.chat.id)
+        loading_msg = bot.reply_to(message, "🔍 Scanning latest Tamil Nadu jobs (Chennai, Coimbatore, Madurai, Remote)...", parse_mode=None)
+        try:
+            from job_radar import get_tamil_nadu_jobs, format_tamil_nadu_telegram_digest
+            jobs = get_tamil_nadu_jobs(limit=10, force_refresh=False)
+            chunks, markup = format_tamil_nadu_telegram_digest(jobs)
+            try:
+                bot.delete_message(message.chat.id, loading_msg.message_id)
+            except Exception:
+                pass
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.4)
+        except Exception as e:
+            bot.send_message(message.chat.id, f"❌ Error retrieving Tamil Nadu jobs: {e}")
+
     @bot.message_handler(commands=['radar', 'jobs'])
     @admin_only
     def show_radar(message):
@@ -6026,6 +6098,7 @@ def run_telegram_polling():
             BotCommand("lastjob",    "💼 See the last application attempt"),
             BotCommand("history",    "📅 View last 10 applications"),
             BotCommand("radar",      "📡 View latest multi-platform jobs"),
+            BotCommand("tnjobs",     "🌟 Tamil Nadu & Chennai Fresh Jobs"),
             BotCommand("drives",     "📢 National Mass Off-Campus Drives"),
             BotCommand("instahyre",  "🚀 Trigger Instahyre mass-apply"),
             BotCommand("apply",      "🎯 Manually apply to a job URL"),

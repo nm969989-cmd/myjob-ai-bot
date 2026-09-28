@@ -20,6 +20,9 @@ on:
       - 'applied_jobs.json'
       - 'channel_status.json'
       - 'last_job.json'
+      - 'chat_id.json'
+      - 'qa_memory.json'
+      - 'national_drives.json'
 
 permissions:
   contents: write

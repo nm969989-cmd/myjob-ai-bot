@@ -8,7 +8,7 @@ Your **Telegram Job Bot** runs 24/7 on **GitHub Actions** (16 GB RAM + 4 vCPUs p
 - **Repository Remote:** `github https://github.com/nm969989-cmd/myjob-ai-bot.git`
 - **Workflow File:** `.github/workflows/job_bot.yml`
 - **Cloud Runner Entrypoint:** `cloud_runner.py`
-- **Schedule:** Runs automatically every 1 hour (`0 * * * *`) + 1-click manual trigger (`workflow_dispatch`).
+- **Schedule:** 3 daily sweeps at 10:00 AM, 5:00 PM, 9:00 PM IST (~20 min/run, 60 min/day total) sized safely for GitHub's 2,000 min/month free tier + 1-click manual trigger (`workflow_dispatch`).
 
 ---
 

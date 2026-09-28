@@ -17,8 +17,21 @@ from datetime import datetime
 import requests
 from dotenv import load_dotenv
 import functools
+import html
 
-from bot_optimizer import extract_job_salary, extract_hr_email
+try:
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+except Exception:
+    InlineKeyboardMarkup = None
+    InlineKeyboardButton = None
+
+from bot_optimizer import (
+    extract_job_salary,
+    extract_hr_email,
+    extract_eligible_batch,
+    extract_experience_level,
+    format_eligibility_badge,
+)
 
 if sys.platform == "win32":
     try:
@@ -327,7 +340,7 @@ def classify_location(location_str, context_text=""):
     # Otherwise, reject unknown or foreign location
     return False, 99, "", False
 
-def _make_job(title, company, link, location, source, date_posted="", description="", priority_tier=2, is_tn=False, direct_link="", salary="", hr_email=""):
+def _make_job(title, company, link, location, source, date_posted="", description="", priority_tier=2, is_tn=False, direct_link="", salary="", hr_email="", batch="", experience=""):
     if not date_posted:
         date_posted = datetime.now().strftime("%Y-%m-%d")
 
@@ -342,21 +355,35 @@ def _make_job(title, company, link, location, source, date_posted="", descriptio
             hr_email = extract_hr_email(description)
         except Exception:
             pass
+    if not batch:
+        try:
+            batch = extract_eligible_batch(f"{title} {description}")
+        except Exception:
+            pass
+    if not experience:
+        try:
+            experience = extract_experience_level(f"{title} {description}")
+        except Exception:
+            pass
+    badge = format_eligibility_badge(batch, experience)
 
     return {
-        "title":          title.strip(),
-        "company":        company.strip(),
-        "link":           direct_link.strip() if direct_link else link.strip(),
-        "raw_link":       link.strip(),
-        "location":       location.strip(),
-        "source":         source,
-        "date_posted":    date_posted,
-        "description":    description.strip(),
-        "priority_tier":  priority_tier,
-        "is_tamil_nadu":  is_tn,
-        "salary":         salary.strip() if salary else "",
-        "hr_email":       hr_email.strip() if hr_email else "",
-        "found_at":       datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "title":              title.strip(),
+        "company":            company.strip(),
+        "link":               direct_link.strip() if direct_link else link.strip(),
+        "raw_link":           link.strip(),
+        "location":           location.strip(),
+        "source":             source,
+        "date_posted":        date_posted,
+        "description":        description.strip(),
+        "priority_tier":      priority_tier,
+        "is_tamil_nadu":      is_tn,
+        "salary":             salary.strip() if salary else "",
+        "hr_email":           hr_email.strip() if hr_email else "",
+        "batch":              batch.strip() if batch else "",
+        "experience":         experience.strip() if experience else "",
+        "eligibility_badge":  badge,
+        "found_at":           datetime.now().strftime("%Y-%m-%d %H:%M"),
     }
 
 def is_social_or_promo_link(url):
@@ -1375,5 +1402,360 @@ def run_radar():
     print("[Radar] Scan complete.\n")
     return new_jobs
 
+# ──────────────────────────────────────────────────
+# 🌟  DEDICATED TAMIL NADU JOB RADAR & DISPATCH
+# ──────────────────────────────────────────────────
+
+TN_CACHE_FILE = "tn_jobs_cache.json"
+
+def get_tamil_nadu_jobs(limit=10, force_refresh=False):
+    """
+    Retrieves recently posted engineering and tech jobs in Tamil Nadu (Chennai, Coimbatore, Madurai, Trichy, Salem, Hosur, etc.)
+    and verified Remote positions open to TN candidates.
+    Uses intelligent caching (30-min TTL) unless force_refresh is True.
+    """
+    now_ts = time.time()
+    if not force_refresh and os.path.exists(TN_CACHE_FILE):
+        try:
+            with open(TN_CACHE_FILE, "r", encoding="utf-8") as f:
+                cached = json.load(f)
+            cached_ts = cached.get("timestamp", 0)
+            cached_jobs = cached.get("jobs", [])
+            if cached_jobs and (now_ts - cached_ts < 1800):
+                print(f"[TN Radar] Using cached Tamil Nadu jobs ({len(cached_jobs)} available, TTL: {int(1800 - (now_ts - cached_ts))}s remaining)")
+                return cached_jobs[:limit]
+        except Exception as e:
+            print(f"[TN Radar] Cache read warning: {e}")
+
+    print("[TN Radar] 🔍 Sweeping live sources for fresh Tamil Nadu job openings...")
+    collected = []
+    seen_links = set()
+
+    # 1. Inspect existing radar_results.json
+    if os.path.exists(RESULTS_JSON):
+        try:
+            with open(RESULTS_JSON, "r", encoding="utf-8") as f:
+                rdata = json.load(f)
+            for j in rdata.get("jobs", []):
+                loc = (j.get("location") or "").lower()
+                is_tn = j.get("is_tamil_nadu") or any(k in loc for k in TAMIL_NADU_LOCATIONS)
+                link = normalize_job_url(j.get("link") or j.get("raw_link") or "")
+                if is_tn and link and link not in seen_links:
+                    seen_links.add(link)
+                    collected.append(j)
+        except Exception as e:
+            print(f"[TN Radar] Error reading radar_results.json: {e}")
+
+    # 2. Query Adzuna India for Tamil Nadu & Chennai
+    app_id = os.getenv("ADZUNA_APP_ID", "")
+    app_key = os.getenv("ADZUNA_APP_KEY", "")
+    if app_id and app_key:
+        tn_queries = [
+            ("software engineer", "Chennai"),
+            ("developer", "Tamil Nadu"),
+            ("fresher engineer", "Coimbatore"),
+        ]
+        for kw, where in tn_queries:
+            try:
+                url = (
+                    f"https://api.adzuna.com/v1/api/jobs/in/search/1"
+                    f"?app_id={app_id}&app_key={app_key}"
+                    f"&what={urllib.parse.quote(kw)}&where={urllib.parse.quote(where)}"
+                    f"&results_per_page=15&content-type=application/json&sort_by=date"
+                )
+                resp = _api_request(url)
+                if resp:
+                    for job in resp.json().get("results", []):
+                        title = job.get("title", "")
+                        comp = job.get("company", {}).get("display_name", "Tech Company")
+                        link = job.get("redirect_url", "")
+                        raw_loc = job.get("location", {}).get("display_name", where)
+                        norm = normalize_job_url(link)
+                        if not norm or norm in seen_links:
+                            continue
+                        seen_links.add(norm)
+                        desc = clean_html(job.get("description", ""))
+                        sal_min = job.get("salary_min")
+                        sal_max = job.get("salary_max")
+                        adz_sal = f"₹{int(sal_min):,} - ₹{int(sal_max):,}" if sal_min and sal_max else ""
+                        item = _make_job(
+                            title=title,
+                            company=comp,
+                            link=link,
+                            location=f"{where}, Tamil Nadu ⭐",
+                            source="Adzuna India 🇮🇳",
+                            date_posted=str(job.get("created", ""))[:10],
+                            description=desc,
+                            priority_tier=1,
+                            is_tn=True,
+                            salary=adz_sal
+                        )
+                        collected.append(item)
+            except Exception as adz_e:
+                print(f"[TN Radar] Adzuna error: {adz_e}")
+
+    # 3. Targeted scrape of dedicated Tamil Nadu & top fresher Telegram channels
+    tn_channels = [
+        "chennaijobsofficial",
+        "chennaijobs2025",
+        "chennai_it_jobs",
+        "coimbatore_jobs",
+        "tamilnadujobsalert",
+        "KickCharm",
+        "JobSkull",
+        "Freshershunt"
+    ]
+    def _fetch_channel_tn(channel_name):
+        res = []
+        try:
+            tg_url = f"https://t.me/s/{channel_name}"
+            headers = {"User-Agent": random.choice(USER_AGENTS)}
+            r = requests.get(tg_url, headers=headers, timeout=5)
+            if r.status_code != 200:
+                return []
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(r.text, "html.parser")
+            msgs = soup.find_all("div", class_="tgme_widget_message_wrap")
+            for b in reversed(msgs[-12:]):
+                txt_el = b.find("div", class_="tgme_widget_message_text")
+                if not txt_el:
+                    continue
+                text = txt_el.get_text(separator="\n").strip()
+                t_lower = text.lower()
+                is_tn = any(k in t_lower for k in TAMIL_NADU_LOCATIONS)
+                is_remote = any(k in t_lower for k in ["remote", "work from home", "wfh", "pan india"])
+                if not (is_tn or is_remote or channel_name.startswith("chennai") or channel_name.startswith("tamil")):
+                    continue
+
+                links = []
+                for a in b.find_all("a", href=True):
+                    href = a["href"].strip()
+                    if href.startswith("http") and not is_social_or_promo_link(href):
+                        links.append(href)
+                for u in re.findall(r'(https?://[^\s<>"]+)', text):
+                    u = u.rstrip(").,!*'\"")
+                    if not is_social_or_promo_link(u) and u not in links:
+                        links.append(u)
+
+                if not links:
+                    continue
+
+                raw_link = links[0]
+                lines = [l.strip() for l in text.splitlines() if l.strip()]
+                first_line = lines[0] if lines else "Software Engineer Opportunity"
+
+                comp_m = re.search(r'(?:🏢|Company|Hiring|At)\s*[:\-]?\s*([A-Za-z0-9\s&.,\-]+)', text, re.I)
+                comp = comp_m.group(1).strip()[:35] if comp_m else "Verified Tech Company"
+
+                role_m = re.search(r'(?:💼|Role|Position|Job\s*Title)\s*[:\-]?\s*([A-Za-z0-9\s&.,\-/]+)', text, re.I)
+                role = role_m.group(1).strip()[:50] if role_m else first_line[:50]
+
+                loc_str = "Chennai, Tamil Nadu ⭐"
+                for city in ["coimbatore", "madurai", "trichy", "salem", "hosur", "tirunelveli"]:
+                    if city in t_lower:
+                        loc_str = f"{city.capitalize()}, Tamil Nadu ⭐"
+                        break
+                if is_remote and not is_tn:
+                    loc_str = "Remote (All TN Candidates) 🌐"
+
+                item = _make_job(
+                    title=role,
+                    company=comp,
+                    link=raw_link,
+                    location=loc_str,
+                    source=f"Telegram @{channel_name}",
+                    description=text[:250],
+                    priority_tier=1,
+                    is_tn=True,
+                    direct_link=unwrap_radar_direct_link(raw_link)
+                )
+                res.append(item)
+        except Exception:
+            pass
+        return res
+
+    import concurrent.futures
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(len(tn_channels), 8)) as ex:
+        futures = [ex.submit(_fetch_channel_tn, ch) for ch in tn_channels]
+        for f in concurrent.futures.as_completed(futures, timeout=15):
+            try:
+                ch_jobs = f.result()
+                for j in ch_jobs:
+                    norm = normalize_job_url(j.get("link") or j.get("raw_link") or "")
+                    if norm and norm not in seen_links:
+                        seen_links.add(norm)
+                        collected.append(j)
+            except Exception:
+                pass
+
+    # Sort newest first
+    def _tn_sort_key(job):
+        raw_date = str(job.get("date_posted", ""))[:10]
+        try:
+            dt = datetime.strptime(raw_date, "%Y-%m-%d")
+        except Exception:
+            dt = datetime.min
+        return -dt.timestamp()
+
+    collected.sort(key=_tn_sort_key)
+
+    # Save to cache
+    try:
+        cache_data = {
+            "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "timestamp": now_ts,
+            "total": len(collected),
+            "jobs": collected
+        }
+        with open(TN_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(cache_data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"[TN Radar] Failed to write cache: {e}")
+
+    print(f"[TN Radar] Found {len(collected)} verified Tamil Nadu jobs.")
+    return collected[:limit]
+
+
+def format_tamil_nadu_telegram_digest(jobs, max_chars=3800):
+    """
+    Formats recently posted Tamil Nadu jobs into clean, high-aesthetic HTML chunks
+    with batch year & experience badges, direct links, and an inline keyboard.
+    Returns (chunks: list[str], reply_markup: InlineKeyboardMarkup).
+    """
+    if not jobs:
+        msg = (
+            "🌟 <b>TAMIL NADU JOB RADAR</b> 🇮🇳\n\n"
+            "⚠️ No recent Tamil Nadu jobs found in this sweep.\n"
+            "Try running <code>/radar</code> for all-India tech roles, or refresh again in a few minutes."
+        )
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton(text="🔄 Refresh TN Jobs", callback_data="tnjobs:refresh"),
+            InlineKeyboardButton(text="📡 All India Radar", callback_data="radar")
+        )
+        return [msg], markup
+
+    header = (
+        "🌟 <b>TAMIL NADU FRESH JOB RADAR</b> 🇮🇳\n"
+        "📍 <i>Targeting: Chennai, Coimbatore, Madurai, Trichy, Salem & Remote</i>\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    )
+
+    chunks = []
+    current_chunk = header
+    num_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+
+    for idx, j in enumerate(jobs):
+        num = num_emojis[idx] if idx < len(num_emojis) else f"#{idx+1}"
+        title = html.escape(str(j.get("title", "Software Engineer"))[:50])
+        company = html.escape(str(j.get("company", "Tech Company"))[:35])
+        location = html.escape(str(j.get("location", "Chennai, Tamil Nadu ⭐")))
+        batch = html.escape(str(j.get("batch") or "2024 / 2025 / 2026 Batch"))
+        exp = html.escape(str(j.get("experience") or "Freshers (0-1 yrs)"))
+        sal = html.escape(str(j.get("salary") or "As per Industry Standards"))
+        link = (j.get("link") or j.get("raw_link") or "#").strip()
+        date_posted = html.escape(str(j.get("date_posted", "Recently"))[:10])
+
+        card = (
+            f"{num} <b>{title}</b>\n"
+            f"🏢 <b>{company}</b>\n"
+            f"📍 <i>{location}</i>\n"
+            f"🎓 <b>Eligible:</b> <code>{batch}</code>\n"
+            f"💼 <b>Experience:</b> <code>{exp}</code>\n"
+            f"💰 <b>Package:</b> {sal}\n"
+            f"🗓️ <b>Posted:</b> {date_posted}\n"
+            f"🔗 <a href=\"{link}\">👉 <b>Tap to Apply Online</b></a>\n\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        )
+
+        if len(current_chunk) + len(card) > max_chars:
+            chunks.append(current_chunk)
+            current_chunk = f"🌟 <b>TAMIL NADU JOBS (Contd. {len(chunks)+1})</b>\n\n" + card
+        else:
+            current_chunk += card
+
+    if current_chunk.strip():
+        chunks.append(current_chunk)
+
+    # Attach interactive keyboard
+    markup = InlineKeyboardMarkup()
+    top_job = jobs[0]
+    top_link = (top_job.get("link") or top_job.get("raw_link") or "").strip()
+    top_comp = str(top_job.get("company", "Top Job"))[:16]
+    if top_link.startswith("http"):
+        markup.row(InlineKeyboardButton(text=f"🚀 Apply to #1: {top_comp}", url=top_link))
+
+    markup.row(
+        InlineKeyboardButton(text="🔄 Refresh TN Jobs", callback_data="tnjobs:refresh"),
+        InlineKeyboardButton(text="📡 All India Radar", callback_data="radar")
+    )
+    markup.row(
+        InlineKeyboardButton(text="📢 National Drives", callback_data="drives"),
+        InlineKeyboardButton(text="📊 Market Analytics", callback_data="analytics")
+    )
+
+    return chunks, markup
+
+
+def dispatch_tamil_nadu_alerts(bot=None, chat_id=None, limit=8, force_refresh=False):
+    """
+    Sweeps and directly dispatches Tamil Nadu job cards to the given or configured Telegram chat.
+    """
+    if not bot:
+        token = os.getenv("TELEGRAM_TOKEN", "").strip().strip('"').strip("'")
+        if not token:
+            print("[TN Radar] No TELEGRAM_TOKEN available for dispatch.")
+            return False
+        import telebot
+        bot = telebot.TeleBot(token)
+
+    if not chat_id:
+        chat_id = os.getenv("TELEGRAM_CHAT_ID", "").strip().strip('"').strip("'")
+        if not chat_id and os.path.exists("chat_id.json"):
+            try:
+                with open("chat_id.json", "r", encoding="utf-8") as f:
+                    chat_id = json.load(f).get("chat_id", "")
+            except Exception:
+                pass
+
+    if not chat_id:
+        print("[TN Radar] No TELEGRAM_CHAT_ID found for dispatch.")
+        return False
+
+    jobs = get_tamil_nadu_jobs(limit=limit, force_refresh=force_refresh)
+    chunks, markup = format_tamil_nadu_telegram_digest(jobs)
+
+    for idx, chunk in enumerate(chunks):
+        is_last = (idx == len(chunks) - 1)
+        try:
+            bot.send_message(
+                chat_id,
+                chunk,
+                parse_mode="HTML",
+                disable_web_page_preview=True,
+                reply_markup=markup if is_last else None
+            )
+        except Exception:
+            plain = re.sub(r'<[^>]+>', '', chunk)
+            bot.send_message(
+                chat_id,
+                plain[:4096],
+                parse_mode=None,
+                disable_web_page_preview=True,
+                reply_markup=markup if is_last else None
+            )
+        time.sleep(0.5)
+
+    return True
+
 if __name__ == "__main__":
-    run_radar()
+    if "--tn-only" in sys.argv:
+        tn_jobs = get_tamil_nadu_jobs(limit=10, force_refresh=("--refresh" in sys.argv))
+        print(f"\n[CLI] Discovered {len(tn_jobs)} Tamil Nadu jobs:")
+        for idx, j in enumerate(tn_jobs, 1):
+            print(f" {idx}. {j.get('title')} @ {j.get('company')} ({j.get('location')}) - Batch: {j.get('batch')} - Link: {j.get('link')}")
+        if "--send" in sys.argv:
+            dispatch_tamil_nadu_alerts(limit=8, force_refresh=("--refresh" in sys.argv))
+            print("[CLI] Dispatched to Telegram.")
+    else:
+        run_radar()

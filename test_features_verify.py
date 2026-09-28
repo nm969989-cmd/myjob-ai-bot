@@ -21,7 +21,10 @@ from bot_optimizer import (
     generate_market_analytics_report,
     extract_job_salary,
     extract_hr_email,
-    generate_linkedin_outreach_note
+    generate_linkedin_outreach_note,
+    extract_eligible_batch,
+    extract_experience_level,
+    format_eligibility_badge
 )
 
 def run_all_tests():
@@ -119,6 +122,34 @@ def run_all_tests():
     assert "URGENT" in summary
 
     print(f"✅ Mass Drive Deadlines Radar Test: Verified {len(deadlines)} countdowns and urgency tiers.")
+
+    # 8. Eligible Batch Year & Experience Level Tagging
+    tcs_sample = "TCS Off Campus Drive 2025\nRole: Systems Engineer\nYear of Passing: 2024, 2025 & 2026 Batch\nExperience: Freshers (0-1 Years)"
+    b1 = extract_eligible_batch(tcs_sample)
+    e1 = extract_experience_level(tcs_sample)
+    badge1 = format_eligibility_badge(b1, e1)
+    assert "2024" in b1 and "2026" in b1
+    assert "Freshers" in e1
+    assert "🎓" in badge1 and "💼" in badge1
+
+    cog_sample = "Cognizant GenC\nBatch: 2025 Passouts Only\nExp: 0 - 2 yrs"
+    b2 = extract_eligible_batch(cog_sample)
+    e2 = extract_experience_level(cog_sample)
+    assert "2025" in b2
+    assert "0-2" in e2
+
+    print(f"✅ Eligible Batch & Experience Tag Test: Batch='{b1}', Exp='{e1}' | Badge: '{badge1}'")
+
+    # 9. Tamil Nadu Job Radar & Telegram Formatting
+    from job_radar import get_tamil_nadu_jobs, format_tamil_nadu_telegram_digest
+    tn_jobs = get_tamil_nadu_jobs(limit=3, force_refresh=False)
+    assert len(tn_jobs) > 0
+    chunks, markup = format_tamil_nadu_telegram_digest(tn_jobs)
+    assert len(chunks) > 0
+    assert markup is not None
+    assert "TAMIL NADU" in chunks[0]
+
+    print(f"✅ Tamil Nadu Job Radar Test: Retrieved {len(tn_jobs)} TN jobs & verified card formatting.")
 
     print("\n🎉 ALL VERIFICATION CHECKS PASSED WITH ZERO ERRORS!\n")
 

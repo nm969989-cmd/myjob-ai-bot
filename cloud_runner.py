@@ -172,11 +172,25 @@ try:
                 share_text = urllib.parse.quote(f"🚀 Job Alert: {j_company} - {j_title}\nApply Link: {j_link}")
                 share_url = f"https://t.me/share/url?url={urllib.parse.quote(j_link)}&text={share_text}"
 
+                j_batch = str(job.get("batch", "")).strip()
+                j_exp = str(job.get("experience", "")).strip()
+                j_sal = str(job.get("salary", "")).strip()
+
+                meta_lines = []
+                if j_batch:
+                    meta_lines.append(f"🎓 <b>Batch:</b> {html.escape(j_batch)}")
+                if j_exp:
+                    meta_lines.append(f"💼 <b>Experience:</b> {html.escape(j_exp)}")
+                if j_sal:
+                    meta_lines.append(f"💰 <b>Salary:</b> {html.escape(j_sal)}")
+                meta_block = "\n".join(meta_lines) + "\n" if meta_lines else ""
+
                 card = (
                     f"{banner}\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
                     f"🏢 <b>{html.escape(j_company)}</b> • <i>{html.escape(j_title)}</i>\n\n"
                     f"📍 <b>Location:</b> {html.escape(j_location)}\n"
+                    f"{meta_block}"
                     f"📡 <b>Platform:</b> {html.escape(j_source)}\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━"
                 )
