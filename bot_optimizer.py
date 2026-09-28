@@ -1897,5 +1897,147 @@ def get_urgent_deadlines_summary(drives: list = None, ref_date=None) -> str:
     return "\n\n".join(lines)
 
 
+# ─────────────────────────────────────────────────────────────────
+# FEATURE 12: 🚶‍♂️ TAMIL NADU WEEKEND WALK-IN TRACKER
+# Tracks verified in-person IT & tech walk-in drives across Chennai, Coimbatore & TN.
+# ─────────────────────────────────────────────────────────────────
+
+def get_walkin_drives(city: str = None, json_path: str = "walkin_drives.json") -> list:
+    """
+    Retrieves verified Tamil Nadu walk-in drives from walkin_drives.json.
+    Optionally filters by city ('chennai', 'coimbatore', etc.).
+    """
+    import os
+    import json
+
+    drives = []
+    if os.path.exists(json_path):
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                drives = json.load(f)
+        except Exception as e:
+            print(f"[Walk-Ins] Error reading {json_path}: {e}")
+
+    if not city:
+        return drives
+
+    city_clean = city.strip().lower()
+    return [d for d in drives if city_clean in str(d.get("city", "")).lower() or city_clean in str(d.get("venue_address", "")).lower()]
+
+
+def format_walkins_report(drives: list = None, city_filter: str = None, max_chars: int = 3800) -> list:
+    """
+    Formats verified Tamil Nadu walk-in drives into high-aesthetic HTML chunks for Telegram messages.
+    Includes exact venues, Google Maps links, timing, and documents to bring.
+    """
+    import html
+
+    if drives is None:
+        drives = get_walkin_drives(city=city_filter)
+    elif city_filter:
+        c_low = city_filter.strip().lower()
+        drives = [d for d in drives if c_low in str(d.get("city", "")).lower()]
+
+    if not drives:
+        filter_note = f" in <b>{html.escape(city_filter.title())}</b>" if city_filter else ""
+        return [
+            f"🚶‍♂️ <b>TAMIL NADU WEEKEND WALK-IN TRACKER</b> 🇮🇳\n\n"
+            f"⚠️ No active weekend walk-in drives currently found{filter_note}.\n"
+            f"Check back on Thursday/Friday as companies announce weekend drives, or use <code>/tnjobs</code> for verified online openings."
+        ]
+
+    filter_title = f" — {city_filter.upper()}" if city_filter else " (CHENNAI & COIMBATORE)"
+    header = (
+        f"🚶‍♂️ <b>TAMIL NADU WEEKEND WALK-IN TRACKER{filter_title}</b> 🇮🇳\n"
+        f"📍 <i>Direct In-Person Drives with Same-Day Interviews & Offer Letters</i>\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    )
+
+    chunks = []
+    current_chunk = header
+    num_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+
+    for idx, d in enumerate(drives):
+        num = num_emojis[idx] if idx < len(num_emojis) else f"#{idx+1}"
+        comp = html.escape(str(d.get("company", "Company")))
+        role = html.escape(str(d.get("role", "Software Trainee")))
+        city = html.escape(str(d.get("city", "Chennai")))
+        area = html.escape(str(d.get("location_area", "IT Corridor")))
+        batches = html.escape(str(d.get("batches", "2024 / 2025 / 2026 Batch")))
+        timing = html.escape(str(d.get("timing", "Upcoming Saturday (9:00 AM)")))
+        pkg = html.escape(str(d.get("package", "As per Industry Standards")))
+        venue = html.escape(str(d.get("venue_address", "")))
+        docs = html.escape(str(d.get("mandatory_docs", "Resume, Govt ID")))
+        maps_link = str(d.get("google_maps", "#")).strip()
+
+        card = (
+            f"{num} <b>{comp}</b> • <i>{role}</i>\n"
+            f"📍 <b>City:</b> {city} ({area}) ⭐\n"
+            f"🗓️ <b>Walk-In Timing:</b> {timing}\n"
+            f"🎓 <b>Eligible:</b> <code>{batches}</code>\n"
+            f"💰 <b>Package:</b> {pkg}\n"
+            f"🏢 <b>Venue:</b> {venue}\n"
+            f"🎒 <b>Carry:</b> {docs}\n"
+            f"🗺️ <a href=\"{maps_link}\">👉 <b>Open Location in Google Maps</b></a>\n\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        )
+
+        if len(current_chunk) + len(card) > max_chars:
+            chunks.append(current_chunk.strip())
+            current_chunk = f"🚶‍♂️ <b>TAMIL NADU WALK-IN DRIVES (Part {len(chunks)+1})</b>\n\n" + card
+        else:
+            current_chunk += card
+
+    if current_chunk.strip():
+        chunks.append(current_chunk.strip())
+
+    return chunks
+
+
+def format_single_walkin_detail(walkin_id: str, json_path: str = "walkin_drives.json") -> str:
+    """
+    Returns an exhaustive breakdown of a single walk-in drive including selection rounds and contact info.
+    """
+    import html
+    drives = get_walkin_drives(json_path=json_path)
+    drive = next((d for d in drives if d.get("id") == walkin_id), None)
+    if not drive:
+        return f"⚠️ Walk-In Drive ID <code>{html.escape(walkin_id)}</code> not found."
+
+    comp = html.escape(str(drive.get("company", "Company")))
+    role = html.escape(str(drive.get("role", "Role")))
+    city = html.escape(str(drive.get("city", "Chennai")))
+    timing = html.escape(str(drive.get("timing", "")))
+    pkg = html.escape(str(drive.get("package", "")))
+    degrees = html.escape(str(drive.get("degrees", "Any Graduate")))
+    batches = html.escape(str(drive.get("batches", "")))
+    venue = html.escape(str(drive.get("venue_address", "")))
+    maps_link = str(drive.get("google_maps", "#"))
+    docs = html.escape(str(drive.get("mandatory_docs", "")))
+    rounds = html.escape(str(drive.get("selection_rounds", "")))
+    contact = html.escape(str(drive.get("contact_info", "")))
+
+    return (
+        f"🏢 <b>{comp} — In-Person Walk-In Briefing</b>\n"
+        f"💼 <i>{role}</i>\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"📍 <b>City:</b> {city}\n"
+        f"🗓️ <b>Timing:</b> {timing}\n"
+        f"🎓 <b>Eligible Batches:</b> {batches}\n"
+        f"🎓 <b>Degrees:</b> {degrees}\n"
+        f"💰 <b>Package / CTC:</b> {pkg}\n\n"
+        f"🏢 <b>Exact Venue Address:</b>\n"
+        f"<code>{venue}</code>\n"
+        f"🗺️ <a href=\"{maps_link}\">👉 Open in Google Maps</a>\n\n"
+        f"🎒 <b>Mandatory Documents to Bring:</b>\n"
+        f"{docs}\n\n"
+        f"📝 <b>Selection Process & Rounds:</b>\n"
+        f"{rounds}\n\n"
+        f"📞 <b>Contact / Helpdesk:</b> {contact}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"💡 <i>Tip: Arrive at least 30 minutes before reporting time in formal attire with 2 printed resumes.</i>"
+    )
+
+
 
 

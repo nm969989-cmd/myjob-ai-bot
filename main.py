@@ -50,7 +50,10 @@ from bot_optimizer import (
     get_urgent_deadlines_summary,
     extract_eligible_batch,
     extract_experience_level,
-    format_eligibility_badge
+    format_eligibility_badge,
+    get_walkin_drives,
+    format_walkins_report,
+    format_single_walkin_detail
 )
 
 # Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
@@ -248,6 +251,7 @@ def enforce_bot_security_profile(tg_bot):
             BotCommand("analytics", "📊 Live Market & Career Analytics"),
             BotCommand("radar", "📡 Run Radar Scan (TN & India)"),
             BotCommand("tnjobs", "🌟 Tamil Nadu & Chennai Fresh Jobs"),
+            BotCommand("walkins", "🚶‍♂️ Tamil Nadu Weekend Walk-In Drives"),
             BotCommand("drives", "📢 National Mass Off-Campus Drives"),
             BotCommand("pause", "🛑 Pause Scanning Channels"),
             BotCommand("resume", "🟢 Resume Scanning Channels"),
@@ -4903,9 +4907,10 @@ if bot:
         # Row 3: Actions
         markup.add(
             InlineKeyboardButton("🌟 Tamil Nadu Jobs", callback_data="tnjobs"),
-            InlineKeyboardButton("🎯 Job Radar", callback_data="radar")
+            InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all")
         )
         markup.add(
+            InlineKeyboardButton("🎯 Job Radar", callback_data="radar"),
             InlineKeyboardButton("👁️ Ghost Mode Toggle", callback_data="ghost")
         )
         
@@ -4948,6 +4953,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
 🔹 `/start` - Wake up the bot and lock your Chat ID for notifications.
 🔹 `/help` - Show this detailed command manual.
 🔹 `/tnjobs` - 🌟 Search latest Tamil Nadu & Chennai jobs (Batch & Exp tagged).
+🔹 `/walkins` - 🚶‍♂️ Tamil Nadu weekend walk-in drives (e.g. `/walkins chennai`).
 🔹 `/radar` - 📡 Multi-platform job radar (Adzuna, Unstop, Telegram).
 🔹 `/drives` - 📢 National mass off-campus hiring drives (TCS, Infosys, Zoho).
 🔹 `/deadlines` - ⏳ Mass drive deadlines countdown radar.
@@ -5441,6 +5447,46 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
             )
             bot.send_message(chat_id, help_text, parse_mode=None)
 
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("walkins"))
+    def handle_walkins_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        try:
+            bot.answer_callback_query(call.id, text="⚡ Loading Weekend Walk-In Drives...")
+        except Exception:
+            pass
+        city_filter = None
+        if ":" in call.data:
+            sub = call.data.split(":")[1]
+            if sub in ["chennai", "coimbatore"]:
+                city_filter = sub
+        try:
+            from bot_optimizer import format_walkins_report, get_walkin_drives
+            drives = get_walkin_drives(city=city_filter)
+            chunks = format_walkins_report(drives, city_filter=city_filter)
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("📍 Chennai Walk-Ins", callback_data="walkins:chennai"),
+                InlineKeyboardButton("📍 Coimbatore Walk-Ins", callback_data="walkins:coimbatore")
+            )
+            markup.row(
+                InlineKeyboardButton("📢 All TN Walk-Ins", callback_data="walkins:all"),
+                InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+            )
+            markup.row(
+                InlineKeyboardButton("📢 National Drives", callback_data="drives"),
+                InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines")
+            )
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ Walk-In error: {e}")
+
     @bot.callback_query_handler(func=lambda call: call.data.startswith("drive_info:"))
     def handle_drive_detail_callback(call):
         chat_id = call.message.chat.id
@@ -5822,6 +5868,46 @@ _Tip: The bot sends a daily summary at 7 AM, runs Instahyre at 11 PM, and tracks
     def ping_test(message):
         bot.reply_to(message, "🏓 Pong! The cloud bot is alive and listening!")
 
+    @bot.message_handler(commands=['walkins', 'walkin'])
+    @admin_only
+    def send_walkin_drives(message):
+        save_chat_id(message.chat.id)
+        city_filter = None
+        parts = message.text.strip().split()
+        if len(parts) > 1:
+            raw_c = parts[1].strip().lower()
+            if "chennai" in raw_c:
+                city_filter = "chennai"
+            elif "coimbatore" in raw_c:
+                city_filter = "coimbatore"
+
+        try:
+            from bot_optimizer import format_walkins_report, get_walkin_drives
+            drives = get_walkin_drives(city=city_filter)
+            chunks = format_walkins_report(drives, city_filter=city_filter)
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("📍 Chennai Walk-Ins", callback_data="walkins:chennai"),
+                InlineKeyboardButton("📍 Coimbatore Walk-Ins", callback_data="walkins:coimbatore")
+            )
+            markup.row(
+                InlineKeyboardButton("📢 All TN Walk-Ins", callback_data="walkins:all"),
+                InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+            )
+            markup.row(
+                InlineKeyboardButton("📢 National Drives", callback_data="drives"),
+                InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines")
+            )
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
+        except Exception as e:
+            bot.send_message(message.chat.id, f"⚠️ Walk-In error: {e}")
+
     @bot.message_handler(commands=['tnjobs', 'tamilnadu', 'chennai'])
     @admin_only
     def show_tamil_nadu_jobs(message):
@@ -6099,6 +6185,7 @@ def run_telegram_polling():
             BotCommand("history",    "📅 View last 10 applications"),
             BotCommand("radar",      "📡 View latest multi-platform jobs"),
             BotCommand("tnjobs",     "🌟 Tamil Nadu & Chennai Fresh Jobs"),
+            BotCommand("walkins",    "🚶‍♂️ Tamil Nadu Weekend Walk-In Drives"),
             BotCommand("drives",     "📢 National Mass Off-Campus Drives"),
             BotCommand("instahyre",  "🚀 Trigger Instahyre mass-apply"),
             BotCommand("apply",      "🎯 Manually apply to a job URL"),

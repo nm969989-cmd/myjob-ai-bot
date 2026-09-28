@@ -14,6 +14,7 @@ applied_jobs.json
 applied_jobs_log.csv
 !qa_memory.json
 !national_drives.json
+!walkin_drives.json
 checkpoints.json
 radar_results.json
 radar_seen_jobs.txt

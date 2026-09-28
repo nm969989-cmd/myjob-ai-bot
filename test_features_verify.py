@@ -151,6 +151,31 @@ def run_all_tests():
 
     print(f"✅ Tamil Nadu Job Radar Test: Retrieved {len(tn_jobs)} TN jobs & verified card formatting.")
 
+    # 10. Tamil Nadu Weekend Walk-In Tracker (/walkins)
+    from bot_optimizer import get_walkin_drives, format_walkins_report, format_single_walkin_detail
+    all_walkins = get_walkin_drives()
+    assert len(all_walkins) >= 6, f"Expected at least 6 verified walk-in drives, got {len(all_walkins)}"
+    
+    # City filters
+    chennai_walkins = get_walkin_drives(city="chennai")
+    assert len(chennai_walkins) > 0
+    coimbatore_walkins = get_walkin_drives(city="coimbatore")
+    assert len(coimbatore_walkins) > 0
+    
+    # Report formatting
+    w_chunks = format_walkins_report(all_walkins)
+    assert len(w_chunks) > 0
+    assert "WALK-IN" in w_chunks[0]
+    assert "Tech Mahindra" in w_chunks[0]
+    
+    # Single drive detail
+    single_detail = format_single_walkin_detail("tech_mahindra_sholinganallur")
+    assert "Tech Mahindra" in single_detail
+    assert "Google Maps" in single_detail
+    assert "ELCOT SEZ" in single_detail
+
+    print(f"✅ Weekend Walk-In Tracker Test: Verified {len(all_walkins)} drives (Chennai: {len(chennai_walkins)}, Coimbatore: {len(coimbatore_walkins)}) & Maps links.")
+
     print("\n🎉 ALL VERIFICATION CHECKS PASSED WITH ZERO ERRORS!\n")
 
 if __name__ == "__main__":
