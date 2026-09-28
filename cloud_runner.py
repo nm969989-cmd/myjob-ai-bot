@@ -54,11 +54,13 @@ if not chat_id and os.path.exists("chat_id.json"):
 bot = telebot.TeleBot(token, parse_mode=None) if token else None
 
 radar_jobs_count = 0
+radar_alerts_sent = 0
 channels_scanned = 0
 channel_jobs_found = 0
 channel_attempts = 0
 follow_up_count = 0
 new_radar_jobs = []
+step_errors = []  # Tracks silent failures so the status report can never hide a broken stage
 
 # -------------------------------------------------------------
 # STEP 1: Multi-Platform Job Radar Scan & Direct Telegram Dispatch
@@ -79,7 +81,6 @@ try:
 
     # Dispatch top fresh radar opportunities directly to Telegram
     if new_radar_jobs and bot and chat_id:
-        radar_alerts_sent = 0
         print("🚀 Dispatching top verified Radar opportunities to Telegram...")
         for job in new_radar_jobs:
             if radar_alerts_sent >= 5:  # Send up to 5 top fresh opportunities per cycle
@@ -129,12 +130,12 @@ try:
                 applied_jobs.add(j_link)
                 save_applied_job(j_link)
                 radar_alerts_sent += 1
-                channel_jobs_found += 1
                 print(f"  [Radar Alert Sent] {j_company} - {j_title}")
                 time.sleep(1.5)
             except Exception as send_err:
                 print(f"  ⚠️ Failed to send radar job: {send_err}")
 except Exception as e:
+    step_errors.append(f"Radar stage: {e}")
     print(f"⚠️ Radar Scan error: {e}")
 
 # -------------------------------------------------------------
@@ -171,6 +172,7 @@ try:
             except Exception as ch_err:
                 print(f"  ⚠️ Error scanning @{clean_ch}: {ch_err}")
 except Exception as e:
+    step_errors.append(f"Channel stage: {e}")
     print(f"⚠️ Channel Scraper error: {e}")
 
 # -------------------------------------------------------------
@@ -191,7 +193,9 @@ try:
                 date_str = row[0][:10]
                 try:
                     dt = datetime.strptime(date_str, "%Y-%m-%d")
-                    if (now - dt).days == 7:
+                    # >= 7 (not == 7): rows are flagged "Followed Up" once sent, so a wider
+                    # window prevents missed reminders when scheduled runs get delayed/skipped.
+                    if (now - dt).days >= 7:
                         follow_ups.append((i, row[1], row[2]))
                 except Exception:
                     pass
@@ -214,6 +218,7 @@ try:
             except Exception as tg_e:
                 print(f"⚠️ Failed to send ghosting alert: {tg_e}")
 except Exception as e:
+    step_errors.append(f"Follow-up stage: {e}")
     print(f"⚠️ Follow-up check error: {e}")
 
 # -------------------------------------------------------------
@@ -224,17 +229,23 @@ print(f"\n📊 Cycle summary: Duration={total_elapsed}s, Radar={radar_jobs_count
 
 try:
     tn_radar_count = sum(1 for j in new_radar_jobs if j.get('is_tamil_nadu', False)) if new_radar_jobs else 0
+    if step_errors:
+        health_line = f"🔴 *Engine Health: {len(step_errors)} stage error(s)*\n"
+        health_line += "\n".join(f"⚠️ {e[:90]}" for e in step_errors[:3]) + "\n"
+    else:
+        health_line = "🟢 *Engine Health: All stages OK*\n"
     status_msg = (
         f"☁️ *GitHub Actions Cloud Cycle Complete*\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"🕒 Time: {datetime.now().strftime('%d %b %Y, %I:%M %p UTC')}\n"
         f"⏱️ Duration: *{total_elapsed}s*\n"
-        f"📡 Radar Jobs (India): *{radar_jobs_count}*\n"
+        f"📡 Radar Jobs (India): *{radar_jobs_count}* (_{radar_alerts_sent} alerts sent_)\n"
         f"🌟 Tamil Nadu Priority: *{tn_radar_count}* jobs\n"
         f"📢 Channels Scanned: *{channels_scanned}*\n"
-        f"🚀 Direct Job Alerts Sent: *{channel_jobs_found}*\n"
+        f"🚀 Direct Channel Alerts Sent: *{channel_jobs_found}*\n"
         f"👻 7-Day Follow-ups: *{follow_up_count}*\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"{health_line}"
         f"🟢 _Search & Direct Link Extraction Mode Active_"
     )
     if bot and chat_id:

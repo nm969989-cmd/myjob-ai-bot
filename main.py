@@ -5,6 +5,7 @@ import time
 import random
 import requests
 import csv
+import html
 
 from datetime import datetime
 from bs4 import BeautifulSoup

@@ -2,8 +2,11 @@ name: Telegram Job Bot Cloud Automation
 
 on:
   schedule:
-    # Runs every hour at minute 15 (minute 00 suffers severe GitHub Actions global queue congestion)
+    # GitHub's scheduler silently delays/skips cron events under global load.
+    # Two staggered slots per hour roughly double the delivery odds (minute 00
+    # suffers the worst congestion, so we avoid it entirely).
     - cron: '15 * * * *'
+    - cron: '45 * * * *'
   workflow_dispatch: # Allows manual 1-click trigger from GitHub Actions dashboard
   push:
     branches:
@@ -84,3 +87,30 @@ jobs:
           git commit -m "🤖 Cloud Run: Auto-updated applied jobs, state & seen radar [skip ci]" || echo "No changes to commit"
           git pull --rebase --autostash -X ours origin main || git pull --rebase origin main || true
           git push origin main || echo "Push completed or already up to date"
+
+      # 🔴 Watchdog: fires a Telegram alert if ANY earlier step failed (pip install,
+      # checkout, cloud_runner crash, etc.) so silent breakage is never invisible.
+      # Uses raw Bot API curl — no repo code or Python needed, works even if checkout failed.
+      # Note: cancelled() is intentionally excluded — mid-run cancels from fresh pushes are normal.
+      - name: 🚨 Alert Telegram on Failure
+        if: failure()
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          EVENT: ${{ github.event_name }}
+          STATUS: ${{ job.status }}
+          REF: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+        run: |
+          printf '%s\n' \
+            "🔴 GITHUB ACTIONS RUN FAILED — Job Bot Cloud" \
+            "━━━━━━━━━━━━━━━━━━━━━━" \
+            "Event: $EVENT | Status: $STATUS" \
+            "Branch: $REF" \
+            "Commit: ${SHA:0:10}" \
+            "Logs: $RUN_URL" \
+          | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+              -d "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text@-" \
+              -d "disable_web_page_preview=true" || echo "Failed to deliver watchdog alert (check secrets)"
