@@ -88,6 +88,14 @@ try:
             if not j_link or j_link in applied_jobs:
                 continue
 
+            try:
+                import main
+                unwrapped = main.bypass_blog_redirect(j_link)
+                if unwrapped:
+                    j_link = unwrapped
+            except Exception:
+                pass
+
             j_title = str(job.get("title", "Software Engineer")).strip()
             j_company = str(job.get("company", "Verified Company")).strip()
             j_location = str(job.get("location", "India (PAN India)")).strip()

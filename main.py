@@ -587,9 +587,12 @@ def bypass_blog_redirect(blog_url):
         "bamboohr.com", "jobs.lever.co", "taleo.net", "breezy.hr", "phenompeople.com",
         "recruitee.com", "freshteam.com", "zohorecruit.com", "wellfound.com",
         "angel.co", "workingnomads.com", "weworkremotely.com", "hired.com",
-        "triplebyte.com", "ycombinator.com/companies", "darwinbox.com", "keka.com",
-        "unstop.com", "internshala.com", "foundit.in", "naukri.com", "hirist.com",
-        "amazon.jobs", "careers.google.com", "careers.microsoft.com", "jobs.apple.com"
+        "triplebyte.com", "ycombinator.com/companies", "darwinbox.com", "darwinbox.in", "keka.com",
+        "unstop.com", "internshala.com", "foundit.in", "naukri.com", "hirist.com", "hirist.tech",
+        "amazon.jobs", "careers.google.com", "careers.microsoft.com", "jobs.apple.com",
+        "peoplestrong.com", "ripplehire.com", "eightfold.ai", "talentbrew.com",
+        "cornerstoneondemand.com", "brassring.com", "avature.net", "workable.com",
+        "applytojob.com", "personio.com", "jobs.sap.com", "jobs.siemens.com", "jobs.cisco.com"
     ]
     if any(domain in blog_url.lower() for domain in direct_domains):
         print(f"[Bypasser] URL is already a direct job portal: {blog_url}")
@@ -691,42 +694,43 @@ def bypass_blog_redirect(blog_url):
                         print(f"[Bypasser] Found meta refresh redirect: {meta_url}")
                         return clean_tracking_params(meta_url)
 
-        # Container search
-        container = (
-            soup.find("div", class_=lambda c: c and any(k in str(c) for k in ["post-body", "entry-content", "article-body", "article-content", "post-content"])) or
-            soup.find("article") or
-            soup.find("div", id=lambda i: i and any(k in str(i) for k in ["post-body", "content", "main-content"])) or
-            soup
-        )
-
-        # 3a. Direct ATS links inside container
-        for link in container.find_all("a", href=True):
+        # 3a. Direct ATS links across the ENTIRE page (Highest Priority)
+        for link in soup.find_all("a", href=True):
             href = link["href"].strip()
             if not href.startswith("http"):
                 continue
             if any(domain in href.lower() for domain in direct_domains):
                 if blog_domain not in href and not any(x in href.lower() for x in skip_domains):
-                    print(f"[Bypasser] Found direct ATS link inside article: {href}")
+                    print(f"[Bypasser] Found direct ATS link on page: {href}")
                     return clean_tracking_params(href)
 
-        # 3b. Links with apply/registration text
+        # 3b. Gather ALL content containers (not just the first div)
+        containers = soup.find_all(["article", "main"])
+        if not containers:
+            containers = soup.find_all("div", class_=lambda c: c and any(k in str(c).lower() for k in ["entry-content", "post-body", "article-body", "post-content", "content"]))
+        if not containers:
+            containers = [soup]
+
         apply_keywords = [
             "apply online", "click here to apply", "apply for this job", "start application",
             "apply link", "direct apply", "official apply link", "official link", "registration link",
             "apply now", "register now", "apply here", "external apply", "apply on company",
-            "career page", "company website", "job link", "official portal", "registration form"
+            "career page", "company website", "job link", "official portal", "registration form",
+            "click here", "more details", "apply"
         ]
-        for link in container.find_all("a", href=True):
-            href = link["href"].strip()
-            link_text = link.get_text(separator=" ").strip().lower()
-            if not href.startswith("http"):
-                continue
-            if any(word in link_text for word in apply_keywords):
-                if blog_domain not in href and not any(x in href.lower() for x in skip_domains):
-                    # If this apply link is another shortener, follow it
+
+        for c in containers:
+            for link in c.find_all("a", href=True):
+                href = link["href"].strip()
+                link_text = link.get_text(separator=" ").strip().lower()
+                if not href.startswith("http") or blog_domain in href:
+                    continue
+                if any(x in href.lower() for x in skip_domains):
+                    continue
+                if any(word in link_text for word in apply_keywords):
                     if any(sh in href.lower() for sh in shortener_domains):
                         try:
-                            sub_r = requests.head(href, headers=headers, timeout=6, allow_redirects=True)
+                            sub_r = requests.get(href, headers=headers, timeout=8, allow_redirects=True)
                             href = sub_r.url
                         except Exception:
                             pass
@@ -751,25 +755,34 @@ def bypass_blog_redirect(blog_url):
                         return clean_tracking_params(js_url)
 
         # 3d. Check button onclick handlers
-        for btn in container.find_all(["button", "a", "div"], onclick=True):
-            onclick = btn.get("onclick", "")
-            url_match = re.search(r'["\']?(https?://[^"\';\s]+)', onclick)
-            if url_match:
-                btn_url = url_match.group(1).strip()
-                if blog_domain not in btn_url and not any(x in btn_url.lower() for x in skip_domains):
-                    print(f"[Bypasser] Found onclick URL: {btn_url}")
-                    return clean_tracking_params(btn_url)
+        for c in containers:
+            for btn in c.find_all(["button", "a", "div"], onclick=True):
+                onclick = btn.get("onclick", "")
+                url_match = re.search(r'["\']?(https?://[^"\';\s]+)', onclick)
+                if url_match:
+                    btn_url = url_match.group(1).strip()
+                    if blog_domain not in btn_url and not any(x in btn_url.lower() for x in skip_domains):
+                        print(f"[Bypasser] Found onclick URL: {btn_url}")
+                        return clean_tracking_params(btn_url)
 
-        # 3e. Career / Jobs URL pattern check
+        # 3e. Career / Jobs URL pattern check across all external links
         all_external_links = []
-        for link in container.find_all("a", href=True):
-            href = link["href"].strip()
-            if href.startswith("http") and blog_domain not in href:
-                if not any(x in href.lower() for x in skip_domains):
-                    all_external_links.append(href)
+        for c in containers:
+            for link in c.find_all("a", href=True):
+                href = link["href"].strip()
+                if href.startswith("http") and blog_domain not in href:
+                    if not any(x in href.lower() for x in skip_domains):
+                        if href not in all_external_links:
+                            all_external_links.append(href)
 
         for ext_link in all_external_links:
             if any(kw in ext_link.lower() for kw in ["/career", "/job", "/apply", "/opening", "/hiring", "/recruit", "careers.", "jobs."]):
+                if any(sh in ext_link.lower() for sh in shortener_domains):
+                    try:
+                        sub_r = requests.get(ext_link, headers=headers, timeout=8, allow_redirects=True)
+                        ext_link = sub_r.url
+                    except Exception:
+                        pass
                 print(f"[Bypasser] Found career page URL pattern: {ext_link}")
                 return clean_tracking_params(ext_link)
 
@@ -3256,28 +3269,35 @@ def fetch_target_page_job_meta(url):
             m_h1 = re.search(r'^([A-Za-z0-9\s.,&-]+?)\s+(?:Walk-in|Hiring|Recruitment|Drive|is\s+Hiring|Off\s*Campus)', h1, re.I)
             if m_h1:
                 company = m_h1.group(1).strip()
-        junk_role_words = ["offices of the us", "careers", "job detail", "about us", "welcome", "hiring", "home", "search jobs"]
-        if not role or any(bad in role.lower() for bad in junk_role_words):
-            # Check soup.title or h1 for clean job title
-            if title:
+        junk_role_words = ["offices of the us", "careers", "job detail", "about us", "welcome", "hiring", "home", "search jobs", "deloitte", "freshers", "graduates", "any graduate"]
+        if not role or any(bad in role.lower() for bad in junk_role_words) or (company and role.lower() == company.lower()):
+            role = ""
+            for src in [h1, title]:
+                if not src:
+                    continue
+                # Pattern A: Hiring ... for [Role]
+                m_for = re.search(r'(?:Hiring|Recruiting)\s+(?:Any\s+)?(?:Graduates?|Freshers?|Students?|Batch|Candidates?|\d{4}\s+Batch)*(?:\s+Freshers?)?\s+(?:for|as|role\s+of)\s+([A-Za-z0-9\s/&,().-]+)', src, re.I)
+                if m_for:
+                    cand = m_for.group(1).strip()
+                    cand = re.split(r'[-–—|]|(?:\s+(?:at|in|with)\s+[A-Z])', cand)[0].strip()
+                    if len(cand) >= 3 and not any(bad in cand.lower() for bad in junk_role_words):
+                        role = cand
+                        break
+                # Pattern B: Hiring [Role] Freshers/Drive/Walkin
+                m_role = re.search(r'(?:Hiring|Recruiting)\s+(?:Any\s+)?(?:Freshers?\s+)?([A-Za-z0-9\s/&,().-]+?)(?:\s+(?:Freshers?|Drive|Walk-?in|Recruitment|Off\s*Campus|\d{4}\s+Batch|Job|Opportunities?)|[-–—|]|$)', src, re.I)
+                if m_role:
+                    cand = m_role.group(1).strip()
+                    if len(cand) >= 3 and not any(bad in cand.lower() for bad in junk_role_words):
+                        role = cand
+                        break
+            # Fallback to general title split
+            if not role and title:
                 title_parts = [p.strip() for p in re.split(r'[-–—|]', title) if p.strip()]
                 for p in title_parts:
                     p_clean = re.sub(r'\s*\b(job|careers?|recruitment|drive|\d{5,})\b.*', '', p, flags=re.I).strip()
-                    if len(p_clean) >= 4 and not any(bad in p_clean.lower() for bad in ["deloitte", "india", "hyderabad", "bangalore", "chennai", "offices", "welcome", "home", "search"]):
+                    if len(p_clean) >= 4 and not any(bad in p_clean.lower() for bad in junk_role_words + ["india", "hyderabad", "bangalore", "chennai", "offices"]):
                         role = p_clean
                         break
-            if not role and h1:
-                if ":" in h1:
-                    after_colon = h1.split(":", 1)[1].strip()
-                    after_colon = re.sub(r'\s+Hiring.*', '', after_colon, flags=re.I).strip()
-                    if len(after_colon) > 3 and not any(bad in after_colon.lower() for bad in junk_role_words):
-                        role = after_colon
-                elif "|" in h1:
-                    parts_h1 = [p.strip() for p in h1.split("|") if p.strip()]
-                    for p in parts_h1:
-                        if len(p) > 3 and not any(bad in p.lower() for bad in junk_role_words + ["deloitte", "company"]):
-                            role = p
-                            break
 
         return {
             "company": company,
