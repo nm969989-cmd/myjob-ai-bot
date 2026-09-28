@@ -2,8 +2,8 @@ name: Telegram Job Bot Cloud Automation
 
 on:
   schedule:
-    # Runs every 1 hour (24/7/365) — 100% Free on Public / Fits in Free Tier Private
-    - cron: '0 * * * *'
+    # Runs every hour at minute 15 (minute 00 suffers severe GitHub Actions global queue congestion)
+    - cron: '15 * * * *'
   workflow_dispatch: # Allows manual 1-click trigger from GitHub Actions dashboard
   push:
     branches:

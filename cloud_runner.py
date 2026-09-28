@@ -9,12 +9,13 @@ import sys
 import time
 import json
 import re
+import random
 from datetime import datetime
 from dotenv import load_dotenv
 
 # Mark script start time
 START_TIME = time.time()
-MAX_EXECUTION_SECONDS = 3 * 60  # 3-minute soft budget so GitHub Actions completes quickly
+MAX_EXECUTION_SECONDS = 12 * 60  # 12-minute budget (well within GitHub Actions 20-min timeout)
 
 # Ensure environment is loaded
 load_dotenv(override=True)
@@ -57,15 +58,78 @@ channels_scanned = 0
 channel_jobs_found = 0
 channel_attempts = 0
 follow_up_count = 0
+new_radar_jobs = []
 
 # -------------------------------------------------------------
-# STEP 1: Multi-Platform Job Radar Scan
+# STEP 1: Multi-Platform Job Radar Scan & Direct Telegram Dispatch
 # -------------------------------------------------------------
 print("\n📡 [1/3] Running Multi-Platform Job Radar...")
 try:
-    new_radar_jobs = run_radar()
-    radar_jobs_count = len(new_radar_jobs) if new_radar_jobs else 0
+    from main import load_applied_jobs, save_applied_job, load_profile
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+    import html
+    import urllib.parse
+
+    applied_jobs = load_applied_jobs()
+    profile = load_profile()
+
+    new_radar_jobs = run_radar() or []
+    radar_jobs_count = len(new_radar_jobs)
     print(f"✅ Job Radar scan finished. Found {radar_jobs_count} new opportunities.")
+
+    # Dispatch top fresh radar opportunities directly to Telegram
+    if new_radar_jobs and bot and chat_id:
+        radar_alerts_sent = 0
+        print("🚀 Dispatching top verified Radar opportunities to Telegram...")
+        for job in new_radar_jobs:
+            if radar_alerts_sent >= 5:  # Send up to 5 top fresh opportunities per cycle
+                break
+            j_link = job.get("link") or job.get("raw_link")
+            if not j_link or j_link in applied_jobs:
+                continue
+
+            j_title = str(job.get("title", "Software Engineer")).strip()
+            j_company = str(job.get("company", "Verified Company")).strip()
+            j_location = str(job.get("location", "India (PAN India)")).strip()
+            j_source = str(job.get("source", "Multi-Platform Radar")).strip()
+            is_tn = job.get("is_tamil_nadu", False)
+
+            p_banner = "🌟 <b>TAMIL NADU PRIORITY OPPORTUNITY</b> 🇮🇳\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" if is_tn else ""
+
+            share_text = urllib.parse.quote(f"🚀 Job Alert: {j_company} - {j_title}\nApply Link: {j_link}")
+            share_url = f"https://t.me/share/url?url={urllib.parse.quote(j_link)}&text={share_text}"
+
+            card = (
+                "🎯 <b>NEW VERIFIED RADAR JOB ALERT</b>\n"
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"{p_banner}"
+                f"🏢 <b>COMPANY:</b>\n   <code>{html.escape(j_company)}</code>\n\n"
+                f"💼 <b>ROLE / POSITION:</b>\n   <b>{html.escape(j_title)}</b>\n\n"
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"📍 <b>Job Location:</b>\n   <code>{html.escape(j_location)}</code>\n\n"
+                f"📡 <b>Platform Source:</b>\n   <code>{html.escape(j_source)}</code>\n\n"
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"🚀 <b>Direct Application:</b>\n"
+                f"<a href=\"{html.escape(j_link)}\">👉 Click here to Apply on Official Portal 👈</a>\n\n"
+                "👇 <b>Tap the buttons below to open directly:</b>"
+            )
+
+            kb = InlineKeyboardMarkup()
+            kb.row(
+                InlineKeyboardButton("🚀 Direct Apply (Official)", url=j_link),
+                InlineKeyboardButton("📤 Share Job Alert", url=share_url)
+            )
+
+            try:
+                bot.send_message(chat_id, card, parse_mode="HTML", reply_markup=kb, disable_web_page_preview=True)
+                applied_jobs.add(j_link)
+                save_applied_job(j_link)
+                radar_alerts_sent += 1
+                channel_jobs_found += 1
+                print(f"  [Radar Alert Sent] {j_company} - {j_title}")
+                time.sleep(1.5)
+            except Exception as send_err:
+                print(f"  ⚠️ Failed to send radar job: {send_err}")
 except Exception as e:
     print(f"⚠️ Radar Scan error: {e}")
 
@@ -77,13 +141,16 @@ try:
     from main import scrape_single_channel, load_applied_jobs, TARGET_CHANNELS
 
     applied_jobs = load_applied_jobs()
-    raw_env_ch = os.getenv("TARGET_CHANNEL", "jobopenings_india,JobSkull").strip()
+    raw_env_ch = os.getenv("TARGET_CHANNEL", "JobSkull,KickCharm,jobopenings_india").strip()
     env_channels = [c.strip().lstrip("@") for c in raw_env_ch.split(",") if c.strip()]
-    priority_channels = ["jobopenings_india", "JobSkull", "KickCharm", "OffCampusJobs4u", "Freshershunt", "placementjobs"]
+    priority_channels = ["JobSkull", "KickCharm", "Freshershunt", "chennaijobs2025", "OffCampusJobs4u", "placementjobs", "tamilnadujob", "jobopenings_india"]
+    
+    # Shuffle priority channels so no single slow channel blocks others
+    random.shuffle(priority_channels)
     channels_to_scan = list(dict.fromkeys(env_channels + priority_channels + list(TARGET_CHANNELS)))
 
     for ch in channels_to_scan:
-        # Check time budget
+        # Check overall time budget
         elapsed = time.time() - START_TIME
         if elapsed > MAX_EXECUTION_SECONDS:
             print(f"⏱️ Time budget reached ({int(elapsed)}s). Concluding channel scans gracefully.")
@@ -93,7 +160,7 @@ try:
             clean_ch = ch.replace("@", "").strip()
             print(f"  🔍 Checking @{clean_ch}...")
             try:
-                found, attempts = scrape_single_channel(clean_ch, applied_jobs, chat_id, max_jobs=3)
+                found, attempts = scrape_single_channel(clean_ch, applied_jobs, chat_id, max_jobs=2)
                 channels_scanned += 1
                 channel_jobs_found += (found or 0)
                 channel_attempts += (attempts or 0)
@@ -166,8 +233,9 @@ try:
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"🟢 _Search & Direct Link Extraction Mode Active_"
     )
-    bot.send_message(chat_id, status_msg, parse_mode="Markdown", disable_web_page_preview=True)
-    print("✅ Status summary sent to Telegram.")
+    if bot and chat_id:
+        bot.send_message(chat_id, status_msg, parse_mode="Markdown", disable_web_page_preview=True)
+        print("✅ Status summary sent to Telegram.")
 except Exception as e:
     print(f"⚠️ Failed to send status summary: {e}")
 

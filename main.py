@@ -3177,6 +3177,9 @@ def is_social_or_promo_link(url):
         "youtube.com", "youtu.be", "pinterest.com", "threads.net",
         "linktr.ee", "bio.link", "campsite.bio", "taplink.cc", "beacons.ai",
         "play.google.com", "apps.apple.com", "aratt.ai",
+        # Online courses, tutorials, coupon sites
+        "udemy.com", "coursera.org", "edx.org", "simplilearn.com", "greatlearning.in",
+        "udemy-free-course", "free-course", "free-udemy", "interview-questions-answers",
         # Social sharing / blog widgets
         "addtoany.com", "addthis.com", "sharethis.com", "disqus.com", "gravatar.com",
         "blogger.com", "feedburner.com", "wordpress.com", "w3.org",
@@ -3777,6 +3780,9 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     if len(_INTERVIEW_PREP_CACHE) > 500:
                         _INTERVIEW_PREP_CACHE.pop(next(iter(_INTERVIEW_PREP_CACHE)))
 
+                    share_text = urllib.parse.quote(f"🚀 Job Alert: {details['company']} - {details['role']}\nApply Link: {final_url}")
+                    share_url = f"https://t.me/share/url?url={urllib.parse.quote(final_url)}&text={share_text}"
+
                     markup = InlineKeyboardMarkup()
                     markup.row(
                         InlineKeyboardButton("🚀 Direct Apply (Official)", url=final_url),
@@ -3796,8 +3802,6 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         markup.row(
                             InlineKeyboardButton("📧 Email Recruiter (Gmail)", url=gmail_compose_url)
                         )
-                    share_text = urllib.parse.quote(f"🚀 Job Alert: {details['company']} - {details['role']}\nApply Link: {final_url}")
-                    share_url = f"https://t.me/share/url?url={urllib.parse.quote(final_url)}&text={share_text}"
                     if len(notification) > 3900:
                         notification = notification[:3850] + "\n...</i>\n\n👇 <b>Tap below to apply:</b>"
 
