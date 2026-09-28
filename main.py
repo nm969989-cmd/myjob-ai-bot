@@ -56,7 +56,13 @@ from bot_optimizer import (
     format_single_walkin_detail,
     search_jobs_multi_source,
     format_search_results_report,
-    match_job_compatibility
+    match_job_compatibility,
+    format_oa_report,
+    get_company_oa_info,
+    get_watchdog_subscriptions,
+    add_watchdog_subscription,
+    remove_watchdog_subscription,
+    check_job_against_watchdogs
 )
 
 # Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
@@ -272,6 +278,8 @@ def enforce_bot_security_profile(tg_bot):
             BotCommand("help", "📖 View All Bot Commands & Guide"),
             BotCommand("search", "🔍 Instant Multi-Source Job Search"),
             BotCommand("match", "🎯 ATS Resume & Job Matcher"),
+            BotCommand("oa", "🎓 Company OA Patterns & Coding Exam Syllabus"),
+            BotCommand("alerts", "🔔 Keyword Watchdogs & Custom Alerts"),
             BotCommand("tnjobs", "🌟 Tamil Nadu & Chennai Fresh Jobs"),
             BotCommand("walkins", "🚶‍♂️ Tamil Nadu Weekend Walk-In Drives"),
             BotCommand("drives", "📢 National Mass Off-Campus Drives"),
@@ -3842,8 +3850,20 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     sal_val = html.escape(str(details.get('salary', 'As per Industry Standard')).strip())
                     channel_post_url = f"https://t.me/s/{channel_name}"
 
+                    # Feature 16: Check Keyword Watchdog Subscriptions
+                    watchdogs = get_watchdog_subscriptions(active_chat_id)
+                    matched_watchdogs = check_job_against_watchdogs(details, watchdogs)
+                    watchdog_tag = ""
+                    if matched_watchdogs:
+                        tags_str = ", ".join([f"#{w.replace(' ', '_')}" for w in matched_watchdogs])
+                        watchdog_tag = (
+                            f"🔔 <b>[WATCHDOG ALERT: {html.escape(tags_str.upper())}]</b>\n"
+                            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                        )
+
                     # Compact 1-Screen Modern Card Layout
                     notification = (
+                        f"{watchdog_tag}"
                         f"{banner}\n"
                         f"━━━━━━━━━━━━━━━━━━━━━━\n"
                         f"🏢 <b>{comp_name}</b> • <i>{clean_role}</i>\n\n"
@@ -4969,6 +4989,10 @@ if bot:
             InlineKeyboardButton("🎯 Job Radar", callback_data="radar"),
             InlineKeyboardButton("👁️ Ghost Mode Toggle", callback_data="ghost")
         )
+        markup.add(
+            InlineKeyboardButton("🎓 Exam Syllabus (OA)", callback_data="oa:menu"),
+            InlineKeyboardButton("🔔 Keyword Alerts", callback_data="alerts:list")
+        )
         
         # Row 4: Control
         state_btn = InlineKeyboardButton("▶️ Resume Bot", callback_data="resume") if BOT_PAUSED else InlineKeyboardButton("⏸️ Pause Bot", callback_data="pause")
@@ -5008,6 +5032,10 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
 ⚡️ *DISCOVERY & SEARCH OPERATIONS*
 🔹 `/search <keyword>` - 🔍 Instant search across TN, mass drives, walk-ins & radar (e.g. `/search python`).
 🔹 `/match <text or URL>` - 🎯 Instant ATS resume compatibility score, keyword gaps & prep sheet.
+🔹 `/oa [company]` - 🎓 Company OA pattern & coding exam syllabus (TCS, Zoho, CTS, Accenture, etc.).
+🔹 `/alertme <keyword>` - 🔔 Subscribe to live keyword alerts (e.g. `/alertme python chennai`).
+🔹 `/alerts` - 📋 View & manage your active keyword watchdog subscriptions.
+🔹 `/unalert <keyword>` - ❌ Remove a keyword watchdog subscription.
 🔹 `/tnjobs` - 🌟 Latest Tamil Nadu & Chennai jobs (Batch & Exp tagged).
 🔹 `/walkins` - 🚶‍♂️ Tamil Nadu weekend walk-in drives (e.g. `/walkins chennai`).
 🔹 `/drives` - 📢 National mass off-campus hiring drives (TCS, Infosys, Zoho).
@@ -5616,6 +5644,118 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Unable to load drive syllabus: {e}")
 
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("oa:"))
+    def handle_oa_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        comp_key = call.data.split(":", 1)[1] if ":" in call.data else "menu"
+        try:
+            bot.answer_callback_query(call.id, text=f"⚡ Loading OA Blueprint: {comp_key.upper()}...")
+        except Exception:
+            pass
+        try:
+            report_text, markup = format_oa_report(comp_key)
+            try:
+                bot.send_message(chat_id, report_text, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
+            except Exception:
+                bot.send_message(chat_id, re.sub(r'<[^>]+>', '', report_text), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ Unable to load OA syllabus: {e}")
+
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("unalert:"))
+    def handle_unalert_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        keyword = call.data.split(":", 1)[1].strip() if ":" in call.data else ""
+        if keyword:
+            updated = remove_watchdog_subscription(keyword, str(chat_id))
+            try:
+                bot.answer_callback_query(call.id, text=f"❌ Removed alert for '{keyword}'", show_alert=False)
+            except Exception:
+                pass
+            
+            if updated:
+                msg = f"✅ Removed watchdog for: <code>{html.escape(keyword)}</code>\n\n<b>Active Keyword Subscriptions:</b>\n"
+                for i, k in enumerate(updated, 1):
+                    msg += f"• <code>{html.escape(k)}</code>\n"
+                msg += "\n<i>Tap any button below to remove more:</i>"
+                markup = InlineKeyboardMarkup()
+                for k in updated[:10]:
+                    markup.row(InlineKeyboardButton(f"❌ Remove '{k}'", callback_data=f"unalert:{k}"))
+                markup.row(InlineKeyboardButton("➕ Add New Alert", callback_data="alerts:how_to"))
+                markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
+            else:
+                msg = (
+                    f"✅ Removed watchdog for: <code>{html.escape(keyword)}</code>\n\n"
+                    "ℹ️ You have no active keyword alerts remaining.\n"
+                    "Use <code>/alertme &lt;keyword&gt;</code> to create a new one (e.g. <code>/alertme python chennai</code>)."
+                )
+                markup = InlineKeyboardMarkup()
+                markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
+            try:
+                bot.send_message(chat_id, msg, parse_mode="HTML", reply_markup=markup)
+            except Exception:
+                bot.send_message(chat_id, re.sub(r'<[^>]+>', '', msg), parse_mode=None, reply_markup=markup)
+
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("alerts:"))
+    def handle_alerts_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        sub_action = call.data.split(":", 1)[1] if ":" in call.data else "list"
+        try:
+            bot.answer_callback_query(call.id)
+        except Exception:
+            pass
+
+        if sub_action == "how_to":
+            msg = (
+                "🔔 <b>HOW TO CREATE KEYWORD ALERTS</b>\n\n"
+                "Send any command in this format:\n"
+                "• <code>/alertme python chennai</code>\n"
+                "• <code>/alertme remote 2025</code>\n"
+                "• <code>/alertme zoho developer</code>\n"
+                "• <code>/alertme data analyst</code>\n\n"
+                "The bot will highlight matching openings instantly with high priority!"
+            )
+            bot.send_message(chat_id, msg, parse_mode="HTML")
+            return
+
+        subs = get_watchdog_subscriptions(str(chat_id))
+        markup = InlineKeyboardMarkup()
+        if subs:
+            msg = (
+                "🔔 <b>YOUR ACTIVE KEYWORD WATCHDOG ALERTS</b>\n"
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                "You will receive priority highlighted notifications whenever a matching job is scanned:\n\n"
+            )
+            for i, kw in enumerate(subs, 1):
+                msg += f"<b>{i}.</b> <code>{html.escape(kw)}</code>\n"
+                markup.row(InlineKeyboardButton(f"❌ Remove '{kw}'", callback_data=f"unalert:{kw}"))
+            msg += "\n<i>To add more, send:</i> <code>/alertme &lt;keyword&gt;</code>"
+            markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
+        else:
+            msg = (
+                "🔔 <b>CUSTOM KEYWORD WATCHDOGS</b>\n\n"
+                "You currently have no active keyword alerts.\n\n"
+                "<b>How it works:</b>\n"
+                "Subscribe to any role, technology, or city. When our 24/7 scrapers find a match, you get an instant 🔔 <b>[WATCHDOG ALERT]</b> notification!\n\n"
+                "<b>Examples:</b>\n"
+                "• <code>/alertme python chennai</code>\n"
+                "• <code>/alertme remote 2025</code>\n"
+                "• <code>/alertme zoho</code>\n"
+                "• <code>/alertme data analyst</code>"
+            )
+            markup.row(
+                InlineKeyboardButton("🐍 /alertme python", callback_data="search:python"),
+                InlineKeyboardButton("📍 /alertme chennai", callback_data="search:chennai")
+            )
+            markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
+
+        try:
+            bot.send_message(chat_id, msg, parse_mode="HTML", reply_markup=markup)
+        except Exception:
+            bot.send_message(chat_id, re.sub(r'<[^>]+>', '', msg), parse_mode=None, reply_markup=markup)
+
     @bot.callback_query_handler(func=lambda call: call.data.startswith("prep:"))
     def handle_interview_prep_callback(call):
         chat_id = call.message.chat.id
@@ -6076,6 +6216,115 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         except Exception:
             bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', report_text), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
 
+    @bot.message_handler(commands=['oa', 'syllabus', 'exam', 'pattern'])
+    @admin_only
+    def handle_oa_command(message):
+        save_chat_id(message.chat.id)
+        raw_cmd = message.text.strip().split(maxsplit=1)
+        company_query = raw_cmd[1].strip() if len(raw_cmd) > 1 else "menu"
+        report_text, markup = format_oa_report(company_query)
+        try:
+            bot.send_message(message.chat.id, report_text, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
+        except Exception:
+            bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', report_text), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
+
+    @bot.message_handler(commands=['alertme', 'subscribe', 'watchdog'])
+    @admin_only
+    def handle_alertme_command(message):
+        save_chat_id(message.chat.id)
+        raw_cmd = message.text.strip().split(maxsplit=1)
+        keyword = raw_cmd[1].strip() if len(raw_cmd) > 1 else ""
+        chat_id_str = str(message.chat.id)
+        if not keyword:
+            subs = get_watchdog_subscriptions(chat_id_str)
+            markup = InlineKeyboardMarkup()
+            if subs:
+                for k in subs[:8]:
+                    markup.row(InlineKeyboardButton(f"❌ Remove '{k}'", callback_data=f"unalert:{k}"))
+            markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
+            msg = (
+                "🔔 <b>CUSTOM KEYWORD WATCHDOGS</b>\n\n"
+                "Get instant priority alerts whenever our 24/7 scrapers find jobs matching your exact keywords!\n\n"
+                "<b>Usage:</b>\n"
+                "• <code>/alertme python chennai</code>\n"
+                "• <code>/alertme remote 2025</code>\n"
+                "• <code>/alertme zoho</code>\n"
+                "• <code>/alertme data analyst</code>\n\n"
+            )
+            if subs:
+                msg += "<b>Your Current Alerts:</b>\n" + "\n".join([f"• <code>{html.escape(s)}</code>" for s in subs])
+            else:
+                msg += "<i>You currently have no active keyword alerts. Try:</i> <code>/alertme python chennai</code>"
+            bot.send_message(message.chat.id, msg, parse_mode="HTML", reply_markup=markup)
+            return
+
+        updated_subs = add_watchdog_subscription(keyword, chat_id_str)
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton(f"❌ Undo / Remove '{keyword}'", callback_data=f"unalert:{keyword}"),
+            InlineKeyboardButton("📋 View All Alerts", callback_data="alerts:list")
+        )
+        markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
+        resp = (
+            f"✅ <b>WATCHDOG ALERT ACTIVATED!</b>\n\n"
+            f"🎯 <b>Tracking Keyword:</b> <code>{html.escape(keyword)}</code>\n"
+            f"⚡ <b>Priority:</b> Maximum\n\n"
+            f"Whenever our scrapers detect a job matching <b>'{html.escape(keyword)}'</b> in title, role, company, or location, "
+            f"you will receive an immediate highlighted 🔔 <b>[WATCHDOG ALERT]</b> card.\n\n"
+            f"<b>Total Active Alerts:</b> {len(updated_subs)}"
+        )
+        bot.send_message(message.chat.id, resp, parse_mode="HTML", reply_markup=markup)
+
+    @bot.message_handler(commands=['alerts', 'subscriptions', 'myalerts'])
+    @admin_only
+    def handle_alerts_command(message):
+        save_chat_id(message.chat.id)
+        chat_id_str = str(message.chat.id)
+        subs = get_watchdog_subscriptions(chat_id_str)
+        markup = InlineKeyboardMarkup()
+        if subs:
+            msg = (
+                "🔔 <b>YOUR ACTIVE KEYWORD WATCHDOG ALERTS</b>\n"
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                "You are currently tracking these keywords across all channels:\n\n"
+            )
+            for i, kw in enumerate(subs, 1):
+                msg += f"<b>{i}.</b> <code>{html.escape(kw)}</code>\n"
+                markup.row(InlineKeyboardButton(f"❌ Remove '{kw}'", callback_data=f"unalert:{kw}"))
+            msg += "\n<i>To add another trigger:</i> <code>/alertme &lt;keyword&gt;</code>"
+            markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
+        else:
+            msg = (
+                "🔔 <b>NO ACTIVE WATCHDOG ALERTS</b>\n\n"
+                "You haven't subscribed to any custom keywords yet.\n\n"
+                "<b>Quick Examples:</b>\n"
+                "• <code>/alertme python chennai</code>\n"
+                "• <code>/alertme react bangalore</code>\n"
+                "• <code>/alertme remote 2025</code>\n"
+                "• <code>/alertme zoho developer</code>\n\n"
+                "Send any of these commands to begin tracking!"
+            )
+            markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
+        bot.send_message(message.chat.id, msg, parse_mode="HTML", reply_markup=markup)
+
+    @bot.message_handler(commands=['unalert', 'unsubscribe'])
+    @admin_only
+    def handle_unalert_command(message):
+        save_chat_id(message.chat.id)
+        chat_id_str = str(message.chat.id)
+        raw_cmd = message.text.strip().split(maxsplit=1)
+        keyword = raw_cmd[1].strip() if len(raw_cmd) > 1 else ""
+        if not keyword:
+            subs = get_watchdog_subscriptions(chat_id_str)
+            markup = InlineKeyboardMarkup()
+            for k in subs[:8]:
+                markup.row(InlineKeyboardButton(f"❌ Remove '{k}'", callback_data=f"unalert:{k}"))
+            bot.send_message(message.chat.id, "Please specify which keyword to remove, e.g. <code>/unalert python</code>, or tap a button below:", parse_mode="HTML", reply_markup=markup)
+            return
+
+        updated = remove_watchdog_subscription(keyword, chat_id_str)
+        bot.send_message(message.chat.id, f"✅ Removed keyword alert for <code>{html.escape(keyword)}</code>. You have {len(updated)} active alerts remaining.", parse_mode="HTML")
+
     @bot.message_handler(commands=['tnjobs', 'tamilnadu', 'chennai'])
     @admin_only
     def show_tamil_nadu_jobs(message):
@@ -6346,6 +6595,9 @@ def run_telegram_polling():
             BotCommand("start",      "❤️ Wake up & lock your Chat ID"),
             BotCommand("help",       "📖 Full guide & all commands"),
             BotCommand("status",     "🚑 Bot health, API & stats"),
+            BotCommand("oa",         "🎓 Company OA Syllabus & Exam Pattern"),
+            BotCommand("alerts",     "🔔 Manage Keyword Watchdogs"),
+            BotCommand("alertme",    "➕ Add Keyword Alert (/alertme python chennai)"),
             BotCommand("analytics",  "📊 Live Market & Career Analytics"),
             BotCommand("notion",     "📋 Open Notion Job Tracker"),
             BotCommand("channels",   "📡 View all monitored channels"),

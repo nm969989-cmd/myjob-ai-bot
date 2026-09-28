@@ -225,7 +225,84 @@ def run_all_tests():
     assert match_markup is not None
     print(f"✅ Instant ATS Matcher Test: Generated ATS compatibility report, keyword gaps, and action buttons.")
 
-    print("\n🎉 ALL VERIFICATION CHECKS PASSED WITH ZERO ERRORS!\n")
+    # 14. Company OA Blueprint & Exam Syllabus Engine (/oa)
+    from bot_optimizer import format_oa_report, get_company_oa_info
+    # Test specific company extraction
+    for comp_key in ["tcs", "zoho", "cognizant", "accenture", "wipro", "infosys"]:
+        info = get_company_oa_info(comp_key)
+        assert info is not None, f"Expected OA info for '{comp_key}'"
+        assert "exam_name" in info and "sectional_breakdown" in info
+        assert len(info["sample_questions"]) >= 2
+
+    # Test report formatting
+    tcs_report, tcs_markup = format_oa_report("tcs")
+    assert "TCS NQT" in tcs_report
+    assert "Sectional Timing" in tcs_report
+    assert "Prime" in tcs_report
+    assert tcs_markup is not None
+
+    menu_report, menu_markup = format_oa_report("menu")
+    assert "COMPANY ONLINE ASSESSMENT (OA)" in menu_report
+    assert len(menu_markup.keyboard) >= 4
+    print("✅ Company OA Syllabus Engine Test: Verified TCS, Zoho, CTS, Accenture, Wipro, Infosys patterns & buttons.")
+
+    # 15. Custom Keyword Watchdog & Alert Subscriptions (/alertme, /alerts, /unalert)
+    from bot_optimizer import (
+        get_watchdog_subscriptions,
+        add_watchdog_subscription,
+        remove_watchdog_subscription,
+        check_job_against_watchdogs
+    )
+    test_user_id = "test_candidate_9988"
+    # Clean previous state if any
+    for sub in get_watchdog_subscriptions(test_user_id):
+        remove_watchdog_subscription(sub, test_user_id)
+
+    # Add subscriptions
+    subs1 = add_watchdog_subscription("python chennai", test_user_id)
+    subs2 = add_watchdog_subscription("remote 2025", test_user_id)
+    assert "python chennai" in subs2
+    assert "remote 2025" in subs2
+    assert len(get_watchdog_subscriptions(test_user_id)) == 2
+
+    # Test multi-token matching against job dictionary
+    match_job_1 = {
+        "title": "Junior Python Developer",
+        "company": "Zoho Corporation",
+        "location": "Chennai, Tamil Nadu",
+        "role": "Software Engineer"
+    }
+    hits_1 = check_job_against_watchdogs(match_job_1, subs2)
+    assert "python chennai" in hits_1
+
+    non_match_job = {
+        "title": "Java Developer",
+        "company": "Infosys",
+        "location": "Chennai",
+        "role": "SE"
+    }
+    hits_non = check_job_against_watchdogs(non_match_job, subs2)
+    assert len(hits_non) == 0
+
+    match_job_2 = {
+        "title": "Frontend Engineer (2025 Batch)",
+        "company": "Unstop Startup",
+        "location": "Work From Home / Remote",
+        "role": "Developer"
+    }
+    hits_2 = check_job_against_watchdogs(match_job_2, subs2)
+    assert "remote 2025" in hits_2
+
+    # Test removal
+    remaining = remove_watchdog_subscription("python chennai", test_user_id)
+    assert "python chennai" not in remaining
+    assert "remote 2025" in remaining
+    # Clean up completely
+    remove_watchdog_subscription("remote 2025", test_user_id)
+    assert len(get_watchdog_subscriptions(test_user_id)) == 0
+    print("✅ Keyword Watchdog Test: Verified multi-token precision matching, alert persistence, and clean unsubscribes.")
+
+    print("\n🎉 ALL 15 VERIFICATION CHECKS PASSED WITH ZERO ERRORS!\n")
 
 if __name__ == "__main__":
     run_all_tests()

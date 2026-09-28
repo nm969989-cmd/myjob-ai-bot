@@ -2519,6 +2519,373 @@ def match_job_compatibility(job_text_or_url: str, profile: dict = None) -> tuple
     return (report, markup)
 
 
+# ─────────────────────────────────────────────────────────────────
+# FEATURE 15: 🎓 COMPANY ONLINE ASSESSMENT (OA) & CODING EXAM ENGINE
+# Detailed round structures, sectional timers, coding patterns, and cutoffs.
+# ─────────────────────────────────────────────────────────────────
+
+COMPANY_OA_DATABASE = {
+    "tcs": {
+        "company": "TCS (Tata Consultancy Services)",
+        "exam_name": "TCS NQT (National Qualifier Test)",
+        "tracks": "Prime (₹9.0 LPA) • Digital (₹7.5 LPA) • Ninja (₹3.6 LPA)",
+        "eligibility": "2024 / 2025 / 2026 Batch (B.E/B.Tech/M.E/M.Tech/MCA/M.Sc)",
+        "rounds_summary": "Cognitive Test (65 Qs, 75m) ➔ Technical Assessment (25 Qs, 40m) ➔ Coding (2 Qs, 90m)",
+        "sectional_breakdown": (
+            "• <b>Part A (Foundation Cognitive):</b>\n"
+            "   - Numerical Ability (20 Qs, 25 mins)\n"
+            "   - Verbal Ability (25 Qs, 25 mins)\n"
+            "   - Reasoning Ability (20 Qs, 25 mins)\n"
+            "• <b>Part B (Advanced / Technical):</b>\n"
+            "   - Advanced Quantitative (15 Qs, 25 mins)\n"
+            "   - Advanced Reasoning (10 Qs, 15 mins)\n"
+            "• <b>Part C (Hands-on Coding):</b>\n"
+            "   - 2 Problems in 90 mins (Problem 1: Medium, Problem 2: Hard)"
+        ),
+        "coding_languages": "C, C++, Java, Python 3, Perl",
+        "hot_topics": "Dynamic Programming, Prefix Sums, GCD/Primes, Sliding Window, Matrix Rotations, Strings",
+        "sample_questions": [
+            "1. Given an array of integers, find the maximum sum of a contiguous subarray using Kadane's algorithm.",
+            "2. String manipulation: Count occurrences of non-repeating characters and output encrypted stream.",
+            "3. Coin Change / Unbounded Knapsack variant for minimum denomination transaction."
+        ],
+        "strategy_tips": "⚠️ TCS test platform does NOT permit moving back to previous questions or sections. Allocate time per question strictly. Code Problem 1 first to guarantee Ninja/Digital baseline.",
+        "practice_link": "https://www.geeksforgeeks.org/tcs-nqt-preparation-sheet/"
+    },
+    "zoho": {
+        "company": "Zoho Corporation",
+        "exam_name": "Zoho Off-Campus Developer Assessment",
+        "tracks": "Product Software Engineer (₹5.6 LPA – ₹8.4 LPA)",
+        "eligibility": "Any Engineering / Science / Arts Graduate (Zero Cutoff, No CGPA criteria)",
+        "rounds_summary": "Written Flow-of-Control (20 Qs) ➔ Basic Coding (5 Scratch Problems) ➔ Advanced Coding (1 System App) ➔ Tech HR ➔ General HR",
+        "sectional_breakdown": (
+            "• <b>Round 1 (Written Prelims):</b> 15-20 Questions on flow of control, loop dry run, pointer arithmetic & bitwise logic in C/C++.\n"
+            "• <b>Round 2 (Basic Coding - 5 Problems):</b> Solve scratch problems without built-in library functions (e.g. write custom split/sort).\n"
+            "• <b>Round 3 (Advanced Coding - 1 System App):</b> Build a complete terminal mini-app (Railway Booking, Taxi Booking, Splitwise clone) with OOPS concepts in 3 hours.\n"
+            "• <b>Round 4 (Technical HR):</b> Live code walkthrough, recursion depth, and database schema design."
+        ),
+        "coding_languages": "C, C++, Java (Strictly No Python in Round 2)",
+        "hot_topics": "Pointers, 2D Arrays, Pattern Printing, Custom String Parsing, Recursion, Object-Oriented System Design",
+        "sample_questions": [
+            "1. Print an odd-length string in 'X' shape pattern (e.g. 'PROGRAM').",
+            "2. Sort an array by frequency of elements without using built-in sort functions.",
+            "3. Design a Call Taxi Booking System with customer pickup, booking history, and kilometer billing."
+        ],
+        "strategy_tips": "⚠️ Zero tolerance for built-in libraries like `java.util.Collections.sort` in Round 2. Master pointer logic and arrays from scratch.",
+        "practice_link": "https://www.geeksforgeeks.org/zoho-interview-questions/"
+    },
+    "cognizant": {
+        "company": "Cognizant (CTS)",
+        "exam_name": "Cognizant GenC / Elevate Assessment",
+        "tracks": "GenC Next (₹6.75 LPA) • GenC Elevate (₹4.5 LPA) • GenC (₹4.0 LPA)",
+        "eligibility": "2024 / 2025 / 2026 Batches (B.E/B.Tech/MCA/M.Sc)",
+        "rounds_summary": "Communication Assessment (Versant) ➔ Aptitude & Automata Fix (7 Qs, 20m) ➔ Coding Assessment (2 Qs, 60m)",
+        "sectional_breakdown": (
+            "• <b>Round 1 (Communication Assessment):</b> Versant Speech Test covering sentence repetition, listening comprehension, story retelling, and open speaking.\n"
+            "• <b>Round 2 (Aptitude & Automata Fix):</b> Quantitative aptitude + 7 Automata Fix debugging questions where you identify syntax and logical bugs in 20 mins.\n"
+            "• <b>Round 3 (Coding Assessment):</b> 2 Coding problems (60 mins) testing array manipulation and HashMap frequency counts."
+        ),
+        "coding_languages": "Java, C++, Python, C",
+        "hot_topics": "Automata Fix Debugging, HashMaps, String Subsequences, Prefix Array, Two Pointers",
+        "sample_questions": [
+            "1. Automata Fix: Fix off-by-one boundary loop bug in array sorting function.",
+            "2. Find all pairs of integers in an array whose difference equals target k.",
+            "3. Longest substring with at most k distinct characters."
+        ],
+        "strategy_tips": "💡 Use a quiet room and high-fidelity headset for the Versant communication round. Practice finding boundary loop bugs for Automata Fix.",
+        "practice_link": "https://www.geeksforgeeks.org/cognizant-genc-next-recruitment-process/"
+    },
+    "accenture": {
+        "company": "Accenture",
+        "exam_name": "Accenture ASE (Associate Software Engineer)",
+        "tracks": "Advanced ASE (₹6.5 LPA) • ASE (₹4.5 LPA)",
+        "eligibility": "2024 / 2025 / 2026 Batches (All branches)",
+        "rounds_summary": "Cognitive + Technical (90 Qs, 90m) ➔ Coding (2 Qs, 45m) ➔ Communication Assessment",
+        "sectional_breakdown": (
+            "• <b>Round 1 (Cognitive & Technical - 90 Qs, 90m):</b>\n"
+            "   - Critical Thinking & Analytical Reasoning (50 Qs)\n"
+            "   - Pseudocode & Code Snippet dry runs (20 Qs)\n"
+            "   - Cloud Fundamentals, Network Security & MS Office (20 Qs)\n"
+            "• <b>Round 2 (Coding Round - 2 Qs, 45m):</b> Unlocked immediately if Round 1 cutoff is crossed.\n"
+            "• <b>Round 3 (Communication Assessment):</b> Pronunciation, fluency, and sentence mastery."
+        ),
+        "coding_languages": "C, C++, Java, Python",
+        "hot_topics": "Bitwise Operations, Binary Conversions, String Reversals, Array Differences, Pseudocode Evaluation",
+        "sample_questions": [
+            "1. Given two numbers, return the count of carries generated when adding them.",
+            "2. Rearrange binary string to form the maximum possible binary number.",
+            "3. Difference of sum of numbers divisible by m and not divisible by m in range [1, n]."
+        ],
+        "strategy_tips": "💡 Round 1 is an elimination round! Solve the 20 Pseudocode questions carefully as they carry heavy sectional weight.",
+        "practice_link": "https://www.geeksforgeeks.org/accenture-recruitment-process/"
+    },
+    "wipro": {
+        "company": "Wipro",
+        "exam_name": "Wipro National Talent Hunt (Elite & Turbo)",
+        "tracks": "Turbo (₹6.5 LPA) • Elite (₹3.5 LPA)",
+        "eligibility": "2024 / 2025 / 2026 Batches (B.E/B.Tech/MCA)",
+        "rounds_summary": "Aptitude (48 Qs, 48m) ➔ Written Essay (20m) ➔ Coding Assessment (2 Qs, 60m)",
+        "sectional_breakdown": (
+            "• <b>Aptitude Test (48 Qs, 48m):</b> Quantitative, Logical, and English Verbal.\n"
+            "• <b>Written Communication (20 mins):</b> Formal essay writing on modern technology or societal topic (minimum 100-200 words, strictly zero spelling errors).\n"
+            "• <b>Online Coding (2 Qs, 60m):</b> 1 Basic Problem (Math/String) + 1 Intermediate Problem (Arrays/Matrix)."
+        ),
+        "coding_languages": "Java, C++, Python, C",
+        "hot_topics": "Palindromes, Matrix Diagonals, Frequency Count, Sorting, Basic Math Logic",
+        "sample_questions": [
+            "1. Check if a given string can be converted into a palindrome by removing at most one character.",
+            "2. Find the difference between the primary and secondary diagonals of a square matrix.",
+            "3. Count the number of sub-arrays having sum divisible by k."
+        ],
+        "strategy_tips": "💡 Avoid using backspace repeatedly in essay writing. Test cases in Wipro platform penalize syntax compilation errors heavily.",
+        "practice_link": "https://www.geeksforgeeks.org/wipro-recruitment-process/"
+    },
+    "infosys": {
+        "company": "Infosys",
+        "exam_name": "Infosys Off-Campus Certification & Drives",
+        "tracks": "Specialist Programmer (₹9.5 LPA) • DSE (₹6.25 LPA) • Systems Engineer (₹3.6 LPA)",
+        "eligibility": "2024 / 2025 / 2026 Batches (B.E/B.Tech/MCA)",
+        "rounds_summary": "Specialist Coding Round (3 Qs, 3 Hours on HackerRank) OR SE Aptitude Test (54 Qs, 100m)",
+        "sectional_breakdown": (
+            "• <b>SP / DSE Track:</b> 3 Hard/Medium DSA problems in 3 hours testing Trees, Graphs, DP, and Segment Trees.\n"
+            "• <b>Systems Engineer Track:</b>\n"
+            "   - Reasoning Ability (15 Qs, 25 mins)\n"
+            "   - Technical Ability / Pseudocode (10 Qs, 35 mins)\n"
+            "   - Quantitative Aptitude (10 Qs, 35 mins)\n"
+            "   - Verbal Ability (20 Qs, 20 mins)\n"
+            "   - Puzzle Solving (4 Qs, 10 mins)"
+        ),
+        "coding_languages": "Java, Python, C++, C",
+        "hot_topics": "Breadth-First Search (BFS), Depth-First Search (DFS), Dynamic Programming, Knapsack, Binary Search Trees",
+        "sample_questions": [
+            "1. Shortest path in a weighted grid with directional obstacles.",
+            "2. Maximum value achievable in customized multi-choice Knapsack.",
+            "3. Number of connected components formed by disconnected network nodes."
+        ],
+        "strategy_tips": "💡 Specialist Programmer track questions are competitive programming standard. Practice LeetCode Medium/Hard graphs and DP.",
+        "practice_link": "https://www.geeksforgeeks.org/infosys-recruitment-process/"
+    }
+}
+
+def get_company_oa_info(company_key: str = None) -> dict:
+    if not company_key:
+        return None
+    k = company_key.strip().lower()
+    for key, data in COMPANY_OA_DATABASE.items():
+        if k in key or key in k or k in data["company"].lower():
+            return data
+    return None
+
+def format_oa_report(company_key: str = None) -> tuple:
+    """
+    Formats the company Online Assessment (OA) syllabus and pattern card for Telegram.
+    Returns: (text: str, reply_markup: InlineKeyboardMarkup)
+    """
+    import html
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+    markup = InlineKeyboardMarkup()
+    # If no company or menu requested, render interactive company selector
+    if not company_key or company_key.lower() in ["menu", "all", "list"]:
+        markup.row(
+            InlineKeyboardButton("🏢 TCS NQT", callback_data="oa:tcs"),
+            InlineKeyboardButton("🌟 Zoho Corp", callback_data="oa:zoho")
+        )
+        markup.row(
+            InlineKeyboardButton("💼 Cognizant (CTS)", callback_data="oa:cognizant"),
+            InlineKeyboardButton("⚡ Accenture", callback_data="oa:accenture")
+        )
+        markup.row(
+            InlineKeyboardButton("🎯 Wipro Elite", callback_data="oa:wipro"),
+            InlineKeyboardButton("🚀 Infosys SP/SE", callback_data="oa:infosys")
+        )
+        markup.row(
+            InlineKeyboardButton("📢 Mass Drives", callback_data="drives"),
+            InlineKeyboardButton("⏳ Deadlines", callback_data="deadlines")
+        )
+
+        menu_text = (
+            "🎓 <b>COMPANY ONLINE ASSESSMENT (OA) & CODING SYLLABUS</b>\n\n"
+            "Get instant breakdowns of round structures, sectional timers, coding patterns, and real test questions for India's top tech employers.\n\n"
+            "<b>Usage:</b>\n"
+            "• <code>/oa tcs</code> — TCS NQT Prime, Digital & Ninja syllabus\n"
+            "• <code>/oa zoho</code> — Zoho written rounds, basic & advanced coding\n"
+            "• <code>/oa cognizant</code> — GenC, Automata Fix & Versant test\n"
+            "• <code>/oa accenture</code> — Cognitive, Pseudocode & Coding\n"
+            "• <code>/oa wipro</code> — Elite & Turbo aptitude & coding\n"
+            "• <code>/oa infosys</code> — Specialist Programmer & SE tracks\n\n"
+            "<i>Select any company below to view its complete exam blueprint:</i>"
+        )
+        return (menu_text, markup)
+
+    oa = get_company_oa_info(company_key)
+    if not oa:
+        # Fallback to menu if unknown
+        return format_oa_report("menu")
+
+    comp = html.escape(oa["company"])
+    exam = html.escape(oa["exam_name"])
+    tracks = html.escape(oa["tracks"])
+    elig = html.escape(oa["eligibility"])
+    rounds = html.escape(oa["rounds_summary"])
+    breakdown = oa["sectional_breakdown"]  # Already HTML
+    langs = html.escape(oa["coding_languages"])
+    topics = html.escape(oa["hot_topics"])
+    tips = html.escape(oa["strategy_tips"])
+    res_link = oa["practice_link"]
+
+    q_lines = "\n".join([f"• <i>{html.escape(q)}</i>" for q in oa["sample_questions"]])
+
+    card = (
+        f"🎓 <b>{comp}</b>\n"
+        f"📝 <b>Exam Blueprint:</b> <code>{exam}</code>\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"💼 <b>Hiring Bands:</b> {tracks}\n"
+        f"🎓 <b>Batches:</b> {elig}\n\n"
+        f"🔄 <b>Rounds Overview:</b>\n"
+        f"{rounds}\n\n"
+        f"⏱️ <b>Sectional Timing & Pattern:</b>\n"
+        f"{breakdown}\n\n"
+        f"💻 <b>Allowed Languages:</b> <code>{langs}</code>\n"
+        f"🔥 <b>High-Yield Topics:</b>\n"
+        f"<code>{topics}</code>\n\n"
+        f"❓ <b>Recent Real Exam Questions:</b>\n"
+        f"{q_lines}\n\n"
+        f"💡 <b>Strategy & Cutoff Pro-Tip:</b>\n"
+        f"{tips}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    )
+
+    markup.row(
+        InlineKeyboardButton("📚 Free GFG Practice Sheet", url=res_link),
+        InlineKeyboardButton("💡 1-Tap Interview Prep", callback_data=f"prep:{oa['company']}:Software Engineer")
+    )
+    markup.row(
+        InlineKeyboardButton("⬅️ All Companies", callback_data="oa:menu"),
+        InlineKeyboardButton("📢 National Mass Drives", callback_data="drives")
+    )
+
+    return (card, markup)
+
+
+# ─────────────────────────────────────────────────────────────────
+# FEATURE 16: 🔔 CUSTOM KEYWORD WATCHDOG & ALERT SUBSCRIPTIONS
+# Allows candidates to subscribe to custom triggers (e.g. 'python chennai', 'zoho', 'remote').
+# ─────────────────────────────────────────────────────────────────
+
+_WATCHDOG_FILE = "watchdog_subscriptions.json"
+_WATCHDOG_CACHE = None
+_WATCHDOG_MTIME = 0
+
+def get_watchdog_subscriptions(chat_id: str = None) -> list:
+    """Retrieves all active keyword subscriptions with mtime memory caching."""
+    global _WATCHDOG_CACHE, _WATCHDOG_MTIME
+    import os
+    import json
+    current_mtime = os.path.getmtime(_WATCHDOG_FILE) if os.path.exists(_WATCHDOG_FILE) else 0
+    if _WATCHDOG_CACHE is not None and current_mtime == _WATCHDOG_MTIME:
+        data = _WATCHDOG_CACHE
+    else:
+        data = {}
+        if os.path.exists(_WATCHDOG_FILE):
+            try:
+                with open(_WATCHDOG_FILE, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    _WATCHDOG_CACHE = data
+                    _WATCHDOG_MTIME = current_mtime
+            except Exception:
+                pass
+
+    if chat_id:
+        return data.get(str(chat_id), [])
+    # Return all unique keywords across all users if chat_id not specified
+    all_subs = set()
+    for subs in data.values():
+        if isinstance(subs, list):
+            for s in subs:
+                all_subs.add(s)
+    return list(all_subs)
+
+def add_watchdog_subscription(keyword: str, chat_id: str) -> list:
+    """Adds a custom keyword subscription for the user. Returns updated list."""
+    global _WATCHDOG_CACHE, _WATCHDOG_MTIME
+    import os
+    import json
+    if not keyword or not chat_id:
+        return []
+
+    clean_kw = keyword.strip().lower()
+    data = {}
+    if os.path.exists(_WATCHDOG_FILE):
+        try:
+            with open(_WATCHDOG_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            pass
+
+    s_chat = str(chat_id)
+    current_list = data.get(s_chat, [])
+    if clean_kw not in current_list:
+        current_list.append(clean_kw)
+    data[s_chat] = current_list
+
+    try:
+        with open(_WATCHDOG_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        _WATCHDOG_CACHE = data
+        _WATCHDOG_MTIME = os.path.getmtime(_WATCHDOG_FILE)
+    except Exception as e:
+        print(f"[Watchdog] Error saving subscription: {e}")
+
+    return current_list
+
+def remove_watchdog_subscription(keyword: str, chat_id: str) -> list:
+    """Removes a keyword subscription for the user. Returns updated list."""
+    global _WATCHDOG_CACHE, _WATCHDOG_MTIME
+    import os
+    import json
+    if not keyword or not chat_id:
+        return []
+
+    clean_kw = keyword.strip().lower()
+    data = {}
+    if os.path.exists(_WATCHDOG_FILE):
+        try:
+            with open(_WATCHDOG_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception:
+            pass
+
+    s_chat = str(chat_id)
+    current_list = data.get(s_chat, [])
+    current_list = [k for k in current_list if k != clean_kw]
+    data[s_chat] = current_list
+
+    try:
+        with open(_WATCHDOG_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        _WATCHDOG_CACHE = data
+        _WATCHDOG_MTIME = os.path.getmtime(_WATCHDOG_FILE)
+    except Exception as e:
+        print(f"[Watchdog] Error updating subscription: {e}")
+
+    return current_list
+
+def check_job_against_watchdogs(job: dict, subscriptions: list) -> list:
+    """Checks if a job dictionary matches any active keyword subscriptions."""
+    if not job or not subscriptions:
+        return []
+
+    haystack = f"{job.get('company', '')} {job.get('title', '')} {job.get('role', '')} {job.get('location', '')} {job.get('description', '')}".lower()
+    matched_subs = []
+    for sub in subscriptions:
+        sub_clean = sub.strip().lower()
+        sub_tokens = sub_clean.split()
+        if sub_tokens and all(token in haystack for token in sub_tokens):
+            matched_subs.append(sub_clean)
+    return matched_subs
+
+
 if __name__ == "__main__":
     import sys
     if hasattr(sys.stdout, "reconfigure"):
