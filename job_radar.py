@@ -237,6 +237,58 @@ def escape_md(text):
         return ""
     return str(text).replace("*", "").replace("_", " ").replace("[", "(").replace("]", ")").replace("`", "")
 
+def safe_date_timestamp(date_val):
+    """
+    Safely converts any date representation (YYYY-MM-DD, ISO string, RFC 2822, 
+    unix timestamp, or datetime object) into a POSIX timestamp (float).
+    Always returns a float >= 0.0, never raises exceptions, and never yields year 0.
+    """
+    if not date_val:
+        return 0.0
+    if isinstance(date_val, (int, float)):
+        try:
+            val = float(date_val)
+            if 0.0 <= val <= 2500000000.0:
+                return val
+        except Exception:
+            return 0.0
+
+    s = str(date_val).strip()
+    if not s or s.lower() in ("none", "null", "unknown", "nan", "recently"):
+        return 0.0
+
+    # 1. Try ISO date substring YYYY-MM-DD
+    iso_m = re.search(r'\b(20\d{2})-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])\b', s)
+    if iso_m:
+        try:
+            y, m, d = int(iso_m.group(1)), int(iso_m.group(2)), int(iso_m.group(3))
+            dt = datetime(y, m, d)
+            return dt.timestamp()
+        except Exception:
+            pass
+
+    # 2. Try unix timestamp string (e.g. "1727632800")
+    if s.isdigit() and len(s) in (10, 13):
+        try:
+            ts = float(s)
+            if len(s) == 13:
+                ts /= 1000.0
+            if 0.0 <= ts <= 2500000000.0:
+                return ts
+        except Exception:
+            pass
+
+    # 3. Try standard strptime formats
+    for fmt in ("%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%a, %d %b %Y %H:%M:%S %z", "%d %b %Y"):
+        try:
+            dt = datetime.strptime(s[:25].strip(), fmt)
+            if 1970 <= dt.year <= 2100:
+                return dt.timestamp()
+        except Exception:
+            continue
+
+    return 0.0
+
 @functools.lru_cache(maxsize=8192)
 def normalize_job_url(url):
     """
@@ -1065,11 +1117,9 @@ def scrape_linkedin_indeed():
         from jobspy import scrape_jobs
         queries = [
             ("software engineer fresher", "Chennai, Tamil Nadu, India"),
-            ("frontend developer fresher", "Chennai, Tamil Nadu, India"),
             ("python developer fresher", "Chennai, Tamil Nadu, India"),
             ("junior software engineer", "Coimbatore, Tamil Nadu, India"),
             ("data analyst fresher", "Chennai, Tamil Nadu, India"),
-            ("full stack developer fresher", "Bangalore, Karnataka, India"),
         ]
         for query, loc in queries:
             try:
@@ -1077,7 +1127,7 @@ def scrape_linkedin_indeed():
                     site_name=["linkedin", "indeed"],
                     search_term=query,
                     location=loc,
-                    results_wanted=3,
+                    results_wanted=2,
                     hours_old=72,
                     country_indeed="India",
                     linkedin_fetch_description=False,
@@ -1178,15 +1228,19 @@ def send_radar_telegram(new_jobs):
                 src     = html.escape(str(job.get("source", "Radar")))
 
                 time_tag = "🟢 Today"
-                if date_str and len(date_str) >= 10:
-                    try:
-                        dt = datetime.strptime(date_str[:10], "%Y-%m-%d")
-                        days = (datetime.now() - dt).days
-                        if days == 0: time_tag = "🟢 Today"
-                        elif days == 1: time_tag = "🟡 Yesterday"
-                        elif days <= 7: time_tag = f"📅 {days}d ago"
-                        else: time_tag = f"📆 {date_str[:10]}"
-                    except Exception:
+                if date_str:
+                    ts = safe_date_timestamp(date_str)
+                    if ts > 0:
+                        try:
+                            dt = datetime.fromtimestamp(ts)
+                            days = (datetime.now() - dt).days
+                            if days <= 0: time_tag = "🟢 Today"
+                            elif days == 1: time_tag = "🟡 Yesterday"
+                            elif days <= 7: time_tag = f"📅 {days}d ago"
+                            else: time_tag = f"📆 {dt.strftime('%Y-%m-%d')}"
+                        except Exception:
+                            time_tag = "🟢 Recent"
+                    else:
                         time_tag = "🟢 Recent"
 
                 sal = html.escape(str(job.get("salary", "")).strip())
@@ -1407,13 +1461,8 @@ def run_radar():
     # 🎯 SORTING ENGINE: Tamil Nadu (Tier 1) FIRST, then India (Tier 2), then Remote (Tier 3)
     def _priority_sort_key(job):
         tier = job.get("priority_tier", 2)
-        raw_date = str(job.get("date_posted", ""))[:10]
-        try:
-            dt = datetime.strptime(raw_date, "%Y-%m-%d")
-        except Exception:
-            dt = datetime.min
-        # Sort by tier ascending (1 first), then date descending (newest first)
-        return (tier, -dt.timestamp())
+        # Sort by tier ascending (1 first: TN, 2: India, 3: Remote), then date descending (newest first)
+        return (tier, -safe_date_timestamp(job.get("date_posted")))
 
     new_jobs.sort(key=_priority_sort_key)
 
@@ -1485,14 +1534,18 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
         except Exception as e:
             print(f"[TN Radar] Error reading radar_results.json: {e}")
 
-    # 2. Query Adzuna India for Tamil Nadu & Chennai
+    # 2. Query Adzuna India for Tamil Nadu, Chennai, Coimbatore & Hosur
     app_id = os.getenv("ADZUNA_APP_ID", "")
     app_key = os.getenv("ADZUNA_APP_KEY", "")
     if app_id and app_key:
         tn_queries = [
             ("software engineer", "Chennai"),
             ("developer", "Tamil Nadu"),
+            ("fresher", "Chennai"),
+            ("python developer", "Chennai"),
             ("fresher engineer", "Coimbatore"),
+            ("software trainee", "Tamil Nadu"),
+            ("junior developer", "Chennai"),
         ]
         for kw, where in tn_queries:
             try:
@@ -1536,26 +1589,33 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
     # 3. Targeted scrape of dedicated Tamil Nadu & top fresher Telegram channels
     tn_channels = [
         "chennaijobsofficial",
-        "chennaijobs2025",
-        "chennai_it_jobs",
         "coimbatore_jobs",
-        "tamilnadujobsalert",
-        "KickCharm",
         "JobSkull",
-        "Freshershunt"
+        "KickCharm",
+        "Freshershunt",
+        "chennai_walkins",
+        "tn_fresher_jobs",
     ]
     def _fetch_channel_tn(channel_name):
         res = []
+        resp_text = None
+        for host in ["telegram.dog", "t.me"]:
+            try:
+                tg_url = f"https://{host}/s/{channel_name}"
+                headers = {"User-Agent": random.choice(USER_AGENTS)}
+                r = requests.get(tg_url, headers=headers, timeout=6)
+                if r.status_code == 200 and r.text:
+                    resp_text = r.text
+                    break
+            except Exception:
+                continue
+        if not resp_text:
+            return []
         try:
-            tg_url = f"https://t.me/s/{channel_name}"
-            headers = {"User-Agent": random.choice(USER_AGENTS)}
-            r = requests.get(tg_url, headers=headers, timeout=5)
-            if r.status_code != 200:
-                return []
             from bs4 import BeautifulSoup
-            soup = BeautifulSoup(r.text, "html.parser")
+            soup = BeautifulSoup(resp_text, "html.parser")
             msgs = soup.find_all("div", class_="tgme_widget_message_wrap")
-            for b in reversed(msgs[-12:]):
+            for b in reversed(msgs[-15:]):
                 txt_el = b.find("div", class_="tgme_widget_message_text")
                 if not txt_el:
                     continue
@@ -1563,7 +1623,7 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
                 t_lower = text.lower()
                 is_tn = any(k in t_lower for k in TAMIL_NADU_LOCATIONS)
                 is_remote = any(k in t_lower for k in ["remote", "work from home", "wfh", "pan india"])
-                if not (is_tn or is_remote or channel_name.startswith("chennai") or channel_name.startswith("tamil")):
+                if not (is_tn or is_remote or channel_name.startswith("chennai") or channel_name.startswith("tamil") or channel_name.startswith("coimbatore")):
                     continue
 
                 links = []
@@ -1648,25 +1708,23 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
     import concurrent.futures
     with concurrent.futures.ThreadPoolExecutor(max_workers=min(len(tn_channels), 8)) as ex:
         futures = [ex.submit(_fetch_channel_tn, ch) for ch in tn_channels]
-        for f in concurrent.futures.as_completed(futures, timeout=15):
-            try:
-                ch_jobs = f.result()
-                for j in ch_jobs:
-                    norm = normalize_job_url(j.get("link") or j.get("raw_link") or "")
-                    if norm and norm not in seen_links:
-                        seen_links.add(norm)
-                        collected.append(j)
-            except Exception:
-                pass
+        try:
+            for f in concurrent.futures.as_completed(futures, timeout=12):
+                try:
+                    ch_jobs = f.result()
+                    for j in ch_jobs:
+                        norm = normalize_job_url(j.get("link") or j.get("raw_link") or "")
+                        if norm and norm not in seen_links:
+                            seen_links.add(norm)
+                            collected.append(j)
+                except Exception:
+                    pass
+        except concurrent.futures.TimeoutError:
+            print("  [TN Radar] Channel sweep timeout reached. Proceeding with collected jobs.")
 
     # Sort newest first
     def _tn_sort_key(job):
-        raw_date = str(job.get("date_posted", ""))[:10]
-        try:
-            dt = datetime.strptime(raw_date, "%Y-%m-%d")
-        except Exception:
-            dt = datetime.min
-        return -dt.timestamp()
+        return -safe_date_timestamp(job.get("date_posted"))
 
     collected.sort(key=_tn_sort_key)
 
@@ -1794,7 +1852,8 @@ def dispatch_tamil_nadu_alerts(bot=None, chat_id=None, limit=8, force_refresh=Fa
         print("[TN Radar] No TELEGRAM_CHAT_ID found for dispatch.")
         return False
 
-    jobs = get_tamil_nadu_jobs(limit=limit * 2 if only_unseen else limit, force_refresh=force_refresh)
+    # Fetch wider pool (up to 50 jobs) so unseen filtering finds fresh opportunities across multiple sweeps
+    jobs = get_tamil_nadu_jobs(limit=50 if only_unseen else limit, force_refresh=force_refresh)
 
     if only_unseen:
         seen_links = set(load_seen_jobs())
@@ -1815,7 +1874,7 @@ def dispatch_tamil_nadu_alerts(bot=None, chat_id=None, limit=8, force_refresh=Fa
 
         if not jobs:
             print("[TN Radar] All available Tamil Nadu jobs have already been dispatched. Skipping duplicate send.")
-            return True
+            return 0
 
     chunks, markup = format_tamil_nadu_telegram_digest(jobs)
 
@@ -1846,7 +1905,8 @@ def dispatch_tamil_nadu_alerts(bot=None, chat_id=None, limit=8, force_refresh=Fa
         if link:
             mark_seen(link)
 
-    return True
+    print(f"[TN Radar] Successfully dispatched {len(jobs)} Tamil Nadu jobs to Telegram.")
+    return len(jobs)
 
 if __name__ == "__main__":
     if "--tn-only" in sys.argv:

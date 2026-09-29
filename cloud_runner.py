@@ -63,6 +63,7 @@ apihelper.RETRY_TIMEOUT = 2
 
 radar_jobs_count = 0
 radar_alerts_sent = 0
+tn_alerts_sent = 0
 channels_scanned = 0
 channel_jobs_found = 0
 channel_attempts = 0
@@ -213,28 +214,36 @@ try:
                 except Exception as send_err:
                     print(f"  ⚠️ Failed to send radar job: {send_err}")
             stage_times["radar_send"] = int(time.time() - _stage_start)
-
-        # Automated Tamil Nadu Digest Dispatch
-        if bot and chat_id:
-            try:
-                from job_radar import dispatch_tamil_nadu_alerts
-                print("🌟 [Cloud Runner] Automatically dispatching Tamil Nadu Fresh Job Digest...")
-                dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=True, only_unseen=True)
-                print("✅ [Cloud Runner] Automated Tamil Nadu digest sweep finished!")
-            except Exception as tn_auto_err:
-                print(f"⚠️ Automated Tamil Nadu dispatch error: {tn_auto_err}")
-
-        # Automated Weekend Walk-In Tracker Dispatch (Once per day)
-        if bot and chat_id:
-            try:
-                from bot_optimizer import dispatch_walkin_alerts
-                print("🚶‍♂️ [Cloud Runner] Automatically checking Weekend Walk-In Drives...")
-                dispatch_walkin_alerts(bot=bot, chat_id=chat_id, once_per_day=True, limit=5)
-            except Exception as walkin_auto_err:
-                print(f"⚠️ Automated Walk-In dispatch error: {walkin_auto_err}")
 except Exception as e:
     step_errors.append(f"Radar stage: {e}")
     print(f"⚠️ Radar Scan error: {e}")
+
+# -------------------------------------------------------------
+# STEP 2B: Dedicated Tamil Nadu Vacancies Digest Dispatch
+# -------------------------------------------------------------
+print("\n🌟 [2B] Sweeping & Dispatching Fresh Tamil Nadu Vacancies...")
+try:
+    if bot and chat_id:
+        from job_radar import dispatch_tamil_nadu_alerts
+        _tn_start = time.time()
+        sent = dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=True, only_unseen=True)
+        tn_alerts_sent = int(sent) if isinstance(sent, (int, float)) else (6 if sent else 0)
+        stage_times["tn_digest"] = int(time.time() - _tn_start)
+        print(f"✅ [Cloud Runner] Automated Tamil Nadu digest sweep finished! Dispatched: {tn_alerts_sent}")
+except Exception as tn_auto_err:
+    step_errors.append(f"Tamil Nadu stage: {tn_auto_err}")
+    print(f"⚠️ Automated Tamil Nadu dispatch error: {tn_auto_err}")
+
+# -------------------------------------------------------------
+# STEP 2C: Automated Weekend Walk-In Tracker Dispatch (Once per day)
+# -------------------------------------------------------------
+try:
+    if bot and chat_id:
+        from bot_optimizer import dispatch_walkin_alerts
+        print("🚶‍♂️ [Cloud Runner] Automatically checking Weekend Walk-In Drives...")
+        dispatch_walkin_alerts(bot=bot, chat_id=chat_id, once_per_day=True, limit=5)
+except Exception as walkin_auto_err:
+    print(f"⚠️ Automated Walk-In dispatch error: {walkin_auto_err}")
 
 # -------------------------------------------------------------
 # STEP 3: Check Follow-up Reminders (Ghosting Preventer)
@@ -291,7 +300,16 @@ total_elapsed = int(time.time() - START_TIME)
 print(f"\n📊 Cycle summary: Duration={total_elapsed}s, Channels={channels_scanned} ({channel_jobs_found} alerts), Radar={radar_jobs_count} ({radar_alerts_sent} alerts)")
 
 try:
-    tn_radar_count = sum(1 for j in new_radar_jobs if j.get('is_tamil_nadu', False)) if new_radar_jobs else 0
+    tn_found = 0
+    if os.path.exists("tn_jobs_cache.json"):
+        try:
+            with open("tn_jobs_cache.json", "r", encoding="utf-8") as f:
+                tn_found = json.load(f).get("total", 0)
+        except Exception:
+            pass
+    if not tn_found and new_radar_jobs:
+        tn_found = sum(1 for j in new_radar_jobs if j.get('is_tamil_nadu', False))
+
     if step_errors:
         health_line = f"🔴 *Engine Health: {len(step_errors)} stage error(s)*\n"
         health_line += "\n".join(f"⚠️ {e[:90]}" for e in step_errors[:3]) + "\n"
@@ -312,7 +330,7 @@ try:
         f"📢 Channels Scanned: *{channels_scanned}*\n"
         f"🚀 Direct Channel Alerts Sent: *{channel_jobs_found}*\n"
         f"📡 Radar Jobs (India): *{radar_jobs_count}* (_{radar_alerts_sent} alerts sent_)\n"
-        f"🌟 Tamil Nadu Priority: *{tn_radar_count}* jobs\n"
+        f"🌟 Tamil Nadu Priority: *{tn_found}* available (_{tn_alerts_sent} digest alerts sent_)\n"
         f"👻 7-Day Follow-ups: *{follow_up_count}*\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"{health_line}"
