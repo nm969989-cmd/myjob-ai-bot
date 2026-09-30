@@ -2,12 +2,9 @@ name: Telegram Job Bot Cloud Automation
 
 on:
   schedule:
-    # Private-safe budget: 3 deep sweeps/day x 20 min = 1,860 min/month (under the 2,000
-    # free Linux-minute allowance). Times are IST 10:00 AM / 5:00 PM / 9:00 PM (cron is UTC).
-    # :30 past the hour dodges the worst minute-00 scheduler congestion.
-    - cron: '30 4 * * *'
-    - cron: '30 11 * * *'
-    - cron: '30 15 * * *'
+    # Runs twice daily at 11:00 AM IST (05:30 UTC) and 7:00 PM IST (13:30 UTC)
+    - cron: '30 5 * * *'
+    - cron: '30 13 * * *'
   workflow_dispatch: # Allows manual 1-click trigger from GitHub Actions dashboard
   push:
     branches:
@@ -34,7 +31,7 @@ concurrency:
 jobs:
   run-job-bot:
     runs-on: ubuntu-22.04
-    timeout-minutes: 20 # Hard cap: keeps worst-case run at 20 min so the 1,860 min/month budget holds
+    timeout-minutes: 30 # Capped at 30 minutes to protect free tier minutes
 
     steps:
       - name: 📥 Check out repository
@@ -65,6 +62,23 @@ jobs:
         run: |
           python -m playwright install --with-deps chromium
 
+      - name: 🟢 Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'tn-live-jobs/package-lock.json'
+
+      - name: 📦 Install TN Live Jobs Dependencies
+        run: |
+          cd tn-live-jobs
+          npm ci
+
+      - name: 🔍 Refresh Verified TN Jobs (Zero-Bot-Block ATS & Govt)
+        run: |
+          cd tn-live-jobs
+          npm run scrape
+
       - name: 🚀 Run Telegram Job Bot Cloud Cycle
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
@@ -83,12 +97,12 @@ jobs:
         run: |
           python cloud_runner.py
 
-      - name: 💾 Commit & Push Application Logs
+      - name: 💾 Commit & Push Application Logs & Verified Job Data
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add applied_jobs.json applied_jobs_log.csv radar_seen_jobs.txt chat_id.json channel_status.json last_job.json qa_memory.json national_drives.json 2>/dev/null || true
-          git commit -m "🤖 Cloud Run: Auto-updated applied jobs, state & seen radar [skip ci]" || echo "No changes to commit"
+          git add applied_jobs.json applied_jobs_log.csv radar_seen_jobs.txt chat_id.json channel_status.json last_job.json qa_memory.json national_drives.json tn_jobs_cache.json tn-live-jobs/data/ tn-live-jobs/public/data/ tn-live-jobs/report.md 2>/dev/null || true
+          git commit -m "🤖 Cloud Run: Auto-updated jobs, state & verified TN radar [skip ci]" || echo "No changes to commit"
           git pull --rebase --autostash -X ours origin main || git pull --rebase origin main || true
           git push origin main || echo "Push completed or already up to date"
 

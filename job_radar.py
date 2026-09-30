@@ -1519,6 +1519,33 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
     collected = []
     seen_links = set()
 
+    # 0. Load high-confidence verified Tamil Nadu jobs from tn-live-jobs (Zero-Bot-Block ATS + TN Govt)
+    tn_live_json = os.path.join(os.path.dirname(__file__), "tn-live-jobs", "data", "jobs.json")
+    if os.path.exists(tn_live_json):
+        try:
+            with open(tn_live_json, "r", encoding="utf-8") as f:
+                tdata = json.load(f)
+            for j in tdata.get("jobs", []):
+                link = normalize_job_url(j.get("url") or "")
+                if link and link not in seen_links:
+                    seen_links.add(link)
+                    city = j.get("city") or "Tamil Nadu"
+                    collected.append(_make_job(
+                        title=j.get("title", ""),
+                        company=j.get("company", "Verified Employer"),
+                        link=link,
+                        location=f"{city}, Tamil Nadu ⭐",
+                        source=f"TN Live ({j.get('source', 'Verified')})",
+                        date_posted=j.get("date_posted") or datetime.now().strftime("%Y-%m-%d"),
+                        description=j.get("summary") or j.get("title") or "",
+                        priority_tier=1,
+                        is_tn=True,
+                        salary=j.get("salary_raw") or ""
+                    ))
+            print(f"[TN Radar] 🌟 Loaded {len(tdata.get('jobs', []))} verified live jobs from tn-live-jobs suite.")
+        except Exception as e:
+            print(f"[TN Radar] Error reading tn-live-jobs data: {e}")
+
     # 1. Inspect existing radar_results.json
     if os.path.exists(RESULTS_JSON):
         try:

@@ -82,3 +82,7 @@ check_instahyre.py
 graphify-out/.graphify_*
 graphify-out/cache/
 graphify-out/20*
+
+# TN Live Jobs artifacts
+tn-live-jobs/node_modules/
+tn-live-jobs/work/

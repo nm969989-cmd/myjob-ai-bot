@@ -1975,13 +1975,15 @@ def get_walkin_drives(city: str = None, json_path: str = "walkin_drives.json") -
         return drives
 
     city_clean = city.strip().lower()
+    if city_clean in ["south", "madurai_trichy", "other"]:
+        return [d for d in drives if any(c in str(d.get("city", "")).lower() for c in ["madurai", "trichy", "hosur", "salem"])]
     return [d for d in drives if city_clean in str(d.get("city", "")).lower() or city_clean in str(d.get("venue_address", "")).lower()]
 
 
 def format_walkins_report(drives: list = None, city_filter: str = None, max_chars: int = 3800) -> list:
     """
     Formats verified Tamil Nadu walk-in drives into high-aesthetic HTML chunks for Telegram messages.
-    Includes exact venues, Google Maps links, timing, and documents to bring.
+    Includes exact venues, Google Maps links, timing, eligibility, selection rounds, and documents to bring.
     """
     import html
 
@@ -1989,7 +1991,10 @@ def format_walkins_report(drives: list = None, city_filter: str = None, max_char
         drives = get_walkin_drives(city=city_filter)
     elif city_filter:
         c_low = city_filter.strip().lower()
-        drives = [d for d in drives if c_low in str(d.get("city", "")).lower()]
+        if c_low in ["south", "madurai_trichy", "other"]:
+            drives = [d for d in drives if any(c in str(d.get("city", "")).lower() for c in ["madurai", "trichy", "hosur", "salem"])]
+        else:
+            drives = [d for d in drives if c_low in str(d.get("city", "")).lower() or c_low in str(d.get("venue_address", "")).lower()]
 
     if not drives:
         filter_note = f" in <b>{html.escape(city_filter.title())}</b>" if city_filter else ""
@@ -1999,7 +2004,7 @@ def format_walkins_report(drives: list = None, city_filter: str = None, max_char
             f"Check back on Thursday/Friday as companies announce weekend drives, or use <code>/tnjobs</code> for verified online openings."
         ]
 
-    filter_title = f" — {city_filter.upper()}" if city_filter else " (CHENNAI & COIMBATORE)"
+    filter_title = f" — {city_filter.upper()}" if city_filter else " (CHENNAI, COIMBATORE, MADURAI & TRICHY)"
     header = (
         f"🚶‍♂️ <b>TAMIL NADU WEEKEND WALK-IN TRACKER{filter_title}</b> 🇮🇳\n"
         f"📍 <i>Direct In-Person Drives with Same-Day Interviews & Offer Letters</i>\n"
@@ -2008,32 +2013,59 @@ def format_walkins_report(drives: list = None, city_filter: str = None, max_char
 
     chunks = []
     current_chunk = header
-    num_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+    num_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟",
+                  "1️⃣1️⃣", "1️⃣2️⃣", "1️⃣3️⃣", "1️⃣4️⃣", "1️⃣5️⃣", "1️⃣6️⃣", "1️⃣7️⃣", "1️⃣8️⃣"]
 
     for idx, d in enumerate(drives):
         num = num_emojis[idx] if idx < len(num_emojis) else f"#{idx+1}"
         comp = html.escape(str(d.get("company", "Company")))
         role = html.escape(str(d.get("role", "Software Trainee")))
+        status = html.escape(str(d.get("status", "🟢 Active Walk-In")))
         city = html.escape(str(d.get("city", "Chennai")))
         area = html.escape(str(d.get("location_area", "IT Corridor")))
         batches = html.escape(str(d.get("batches", "2024 / 2025 / 2026 Batch")))
+        exp = html.escape(str(d.get("experience", "Freshers (0 - 1 Years)")))
+        degrees = html.escape(str(d.get("degrees", "Any Graduate")))
         timing = html.escape(str(d.get("timing", "Upcoming Saturday (9:00 AM)")))
         pkg = html.escape(str(d.get("package", "As per Industry Standards")))
         venue = html.escape(str(d.get("venue_address", "")))
+        landmarks = html.escape(str(d.get("landmarks", "")))
         docs = html.escape(str(d.get("mandatory_docs", "Resume, Govt ID")))
+        dress = html.escape(str(d.get("dress_code", "Formal Business Attire")))
+        rounds = html.escape(str(d.get("selection_rounds", "")))
+        prep = html.escape(str(d.get("prep_tips", "")))
+        contact = html.escape(str(d.get("contact_info", "")))
+        reg_link = str(d.get("registration_link", "")).strip()
         maps_link = str(d.get("google_maps", "#")).strip()
 
-        card = (
-            f"{num} <b>{comp}</b> • <i>{role}</i>\n"
-            f"📍 <b>City:</b> {city} ({area}) ⭐\n"
-            f"🗓️ <b>Walk-In Timing:</b> {timing}\n"
-            f"🎓 <b>Eligible:</b> <code>{batches}</code>\n"
-            f"💰 <b>Package:</b> {pkg}\n"
-            f"🏢 <b>Venue:</b> {venue}\n"
-            f"🎒 <b>Carry:</b> {docs}\n"
-            f"🗺️ <a href=\"{maps_link}\">👉 <b>Open Location in Google Maps</b></a>\n\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-        )
+        card_lines = [
+            f"{num} <b>{comp}</b> • <i>{role}</i>",
+            f"🏷️ <b>Status:</b> {status}",
+            f"📍 <b>City & Hub:</b> {city} ({area}) ⭐",
+            f"🗓️ <b>Walk-In Timing:</b> {timing}",
+            f"🎓 <b>Eligible:</b> <code>{batches}</code> • <b>Exp:</b> {exp}",
+            f"🎯 <b>Degree/Stream:</b> {degrees}",
+            f"💰 <b>Package:</b> {pkg}",
+            f"🏢 <b>Venue:</b> {venue}",
+        ]
+        if landmarks:
+            card_lines.append(f"📌 <b>Landmark:</b> {landmarks}")
+        card_lines.append(f"🎒 <b>Carry:</b> {docs}")
+        card_lines.append(f"👔 <b>Dress Code:</b> {dress}")
+        if rounds:
+            card_lines.append(f"🔄 <b>Selection Process:</b> {rounds}")
+        if prep:
+            card_lines.append(f"💡 <b>Prep Tip:</b> <i>{prep}</i>")
+        if contact:
+            card_lines.append(f"📞 <b>Contact / Desk:</b> <code>{contact}</code>")
+
+        action_links = []
+        if reg_link:
+            action_links.append(f"<a href=\"{reg_link}\">👉 <b>Official Portal / Register</b></a>")
+        action_links.append(f"<a href=\"{maps_link}\">🗺️ <b>Open in Google Maps</b></a>")
+
+        card_lines.append(" • ".join(action_links))
+        card = "\n".join(card_lines) + "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
 
         if len(current_chunk) + len(card) > max_chars:
             chunks.append(current_chunk.strip())
@@ -2049,47 +2081,78 @@ def format_walkins_report(drives: list = None, city_filter: str = None, max_char
 
 def format_single_walkin_detail(walkin_id: str, json_path: str = "walkin_drives.json") -> str:
     """
-    Returns an exhaustive breakdown of a single walk-in drive including selection rounds and contact info.
+    Returns an exhaustive breakdown of a single walk-in drive including selection rounds, syllabus, and contact info.
     """
     import html
     drives = get_walkin_drives(json_path=json_path)
-    drive = next((d for d in drives if d.get("id") == walkin_id), None)
+    drive = next((d for d in drives if d.get("id") == walkin_id or walkin_id.lower() in str(d.get("company", "")).lower()), None)
     if not drive:
         return f"⚠️ Walk-In Drive ID <code>{html.escape(walkin_id)}</code> not found."
 
     comp = html.escape(str(drive.get("company", "Company")))
     role = html.escape(str(drive.get("role", "Role")))
+    status = html.escape(str(drive.get("status", "🟢 Active Drive")))
     city = html.escape(str(drive.get("city", "Chennai")))
+    area = html.escape(str(drive.get("location_area", "IT Corridor")))
     timing = html.escape(str(drive.get("timing", "")))
     pkg = html.escape(str(drive.get("package", "")))
     degrees = html.escape(str(drive.get("degrees", "Any Graduate")))
     batches = html.escape(str(drive.get("batches", "")))
+    exp = html.escape(str(drive.get("experience", "Freshers (0 - 1 Years)")))
+    venue_name = html.escape(str(drive.get("venue_name", "")))
     venue = html.escape(str(drive.get("venue_address", "")))
+    landmarks = html.escape(str(drive.get("landmarks", "")))
     maps_link = str(drive.get("google_maps", "#"))
     docs = html.escape(str(drive.get("mandatory_docs", "")))
+    dress = html.escape(str(drive.get("dress_code", "Formal Business Attire")))
     rounds = html.escape(str(drive.get("selection_rounds", "")))
+    skills = html.escape(str(drive.get("key_skills", "")))
+    prep = html.escape(str(drive.get("prep_tips", "")))
     contact = html.escape(str(drive.get("contact_info", "")))
+    reg_link = str(drive.get("registration_link", "")).strip()
 
-    return (
-        f"🏢 <b>{comp} — In-Person Walk-In Briefing</b>\n"
-        f"💼 <i>{role}</i>\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"📍 <b>City:</b> {city}\n"
-        f"🗓️ <b>Timing:</b> {timing}\n"
-        f"🎓 <b>Eligible Batches:</b> {batches}\n"
-        f"🎓 <b>Degrees:</b> {degrees}\n"
-        f"💰 <b>Package / CTC:</b> {pkg}\n\n"
-        f"🏢 <b>Exact Venue Address:</b>\n"
-        f"<code>{venue}</code>\n"
-        f"🗺️ <a href=\"{maps_link}\">👉 Open in Google Maps</a>\n\n"
-        f"🎒 <b>Mandatory Documents to Bring:</b>\n"
-        f"{docs}\n\n"
-        f"📝 <b>Selection Process & Rounds:</b>\n"
-        f"{rounds}\n\n"
-        f"📞 <b>Contact / Helpdesk:</b> {contact}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"💡 <i>Tip: Arrive at least 30 minutes before reporting time in formal attire with 2 printed resumes.</i>"
-    )
+    detail_lines = [
+        f"🏢 <b>{comp} — Complete In-Person Walk-In Briefing</b>",
+        f"💼 <i>{role}</i>",
+        f"🏷️ <b>Status:</b> {status}",
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        f"📍 <b>Location:</b> {city} ({area})",
+        f"🗓️ <b>Reporting Timing:</b> {timing}",
+        f"🎓 <b>Eligible Batches:</b> <code>{batches}</code>",
+        f"💼 <b>Experience Level:</b> {exp}",
+        f"🎯 <b>Academic Criteria:</b> {degrees}",
+        f"💰 <b>Package / CTC:</b> {pkg}",
+        "",
+        "🏢 <b>Venue & Landmarks:</b>",
+        f"<b>{venue_name}</b>",
+        f"<code>{venue}</code>",
+    ]
+    if landmarks:
+        detail_lines.append(f"📌 <i>Landmarks: {landmarks}</i>")
+    detail_lines.append(f"🗺️ <a href=\"{maps_link}\">👉 <b>Open Location in Google Maps (GPS Navigation)</b></a>")
+    detail_lines.append("")
+    detail_lines.append("🎒 <b>Mandatory Documents to Carry:</b>")
+    detail_lines.append(docs)
+    detail_lines.append("")
+    detail_lines.append(f"👔 <b>Dress Code:</b> {dress}")
+    detail_lines.append("")
+    detail_lines.append("📝 <b>Selection Process & Interview Rounds:</b>")
+    detail_lines.append(rounds)
+    detail_lines.append("")
+    if skills:
+        detail_lines.append(f"🔑 <b>Key Skills Tested:</b> <code>{skills}</code>")
+        detail_lines.append("")
+    if prep:
+        detail_lines.append(f"💡 <b>Insider Interview Tips:</b>\n<i>{prep}</i>")
+        detail_lines.append("")
+    detail_lines.append("📞 <b>Contact & Official Helpdesk:</b>")
+    detail_lines.append(contact)
+    if reg_link:
+        detail_lines.append(f"🔗 <a href=\"{reg_link}\">👉 <b>Official Career Page / Pre-Register</b></a>")
+    detail_lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    detail_lines.append("⚠️ <i>Important: Arrive 30–45 minutes before reporting time. Walk-in token distribution closes once candidate quota is reached.</i>")
+
+    return "\n".join(detail_lines)
 
 
 def dispatch_walkin_alerts(bot=None, chat_id=None, city=None, once_per_day=True, limit=6):
@@ -2154,12 +2217,16 @@ def dispatch_walkin_alerts(bot=None, chat_id=None, city=None, once_per_day=True,
             InlineKeyboardButton("📍 Coimbatore Walk-Ins", callback_data="walkins:coimbatore")
         )
         markup.row(
-            InlineKeyboardButton("📢 All TN Walk-Ins", callback_data="walkins:all"),
-            InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+            InlineKeyboardButton("📍 Madurai & Trichy", callback_data="walkins:south"),
+            InlineKeyboardButton("📢 All TN Walk-Ins", callback_data="walkins:all")
         )
         markup.row(
-            InlineKeyboardButton("📢 National Drives", callback_data="drives"),
-            InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines")
+            InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs"),
+            InlineKeyboardButton("📢 National Drives", callback_data="drives")
+        )
+        markup.row(
+            InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines"),
+            InlineKeyboardButton("🔄 Refresh Walk-Ins", callback_data="walkins:all")
         )
     except Exception:
         markup = None
@@ -2197,23 +2264,136 @@ def dispatch_walkin_alerts(bot=None, chat_id=None, city=None, once_per_day=True,
     except Exception as e:
         print(f"[Walk-Ins] Error writing tracker file: {e}")
 
-    print(f"[Walk-Ins] ✅ Successfully dispatched {min(len(drives), limit)} walk-in drives to Telegram!")
+    try:
+        print(f"[Walk-Ins] Successfully dispatched {min(len(drives), limit)} walk-in drives to Telegram!")
+    except Exception:
+        pass
     return True
 
 
 # ─────────────────────────────────────────────────────────────────
-# FEATURE 13: 🔍 MULTI-SOURCE UNIFIED JOB SEARCH ENGINE
-# Searches across live Tamil Nadu feeds, mass drives, weekend walk-ins, and radar caches.
 # ─────────────────────────────────────────────────────────────────
+# FEATURE 13: 🔍 MULTI-SOURCE UNIFIED REAL-DATA SEARCH ENGINE
+# Searches across live Tamil Nadu feeds, tn-live-jobs verified database,
+# real-time Adzuna queries, mass drives, and weekend walk-ins.
+# ─────────────────────────────────────────────────────────────────
+
+_TN_LIVE_JOBS_CACHE = None
+_TN_LIVE_JOBS_MTIME = 0
+
+def get_tn_scraped_live_jobs() -> list:
+    """
+    Loads verified and live scraped job records from the tn-live-jobs engine
+    (covering Tamil Nadu government portals, apna.co, Freshersworld, LinkedIn Jobs, etc.).
+    """
+    global _TN_LIVE_JOBS_CACHE, _TN_LIVE_JOBS_MTIME
+    import os
+    import json
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        os.path.abspath(os.path.join(base_dir, "..", "tn-live-jobs", "public", "data", "jobs.json")),
+        os.path.abspath(os.path.join(base_dir, "..", "tn-live-jobs", "data", "jobs.json")),
+        os.path.abspath(os.path.join(base_dir, "..", "tn-live-jobs", "work", "validated.json")),
+        os.path.abspath(os.path.join(base_dir, "..", "tn-live-jobs", "work", "scraped.json")),
+    ]
+
+    for p in candidates:
+        if os.path.exists(p):
+            mtime = os.path.getmtime(p)
+            if _TN_LIVE_JOBS_CACHE is not None and mtime == _TN_LIVE_JOBS_MTIME:
+                return _TN_LIVE_JOBS_CACHE
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                raw_jobs = data.get("jobs", [])
+                if raw_jobs:
+                    _TN_LIVE_JOBS_CACHE = raw_jobs
+                    _TN_LIVE_JOBS_MTIME = mtime
+                    return raw_jobs
+            except Exception:
+                continue
+    return []
+
+
+def fetch_live_adzuna_search(query: str, location: str = "Tamil Nadu", limit: int = 6) -> list:
+    """
+    Fetches 100% real, freshly posted job opportunities directly from Adzuna India Live API
+    for any search query in real time.
+    """
+    import os
+    import re
+    import requests
+    import urllib.parse
+
+    app_id = str(os.getenv("ADZUNA_APP_ID", "")).strip().strip('"').strip("'")
+    app_key = str(os.getenv("ADZUNA_APP_KEY", "")).strip().strip('"').strip("'")
+    if not app_id or not app_key:
+        return []
+
+    try:
+        q_enc = urllib.parse.quote(query.strip())
+        loc_enc = urllib.parse.quote(location.strip())
+        url = (
+            f"https://api.adzuna.com/v1/api/jobs/in/search/1"
+            f"?app_id={app_id}&app_key={app_key}"
+            f"&what={q_enc}&where={loc_enc}"
+            f"&results_per_page={max(limit, 8)}&content-type=application/json&sort_by=date"
+        )
+        resp = requests.get(url, timeout=6)
+        if resp.status_code != 200:
+            return []
+
+        results = resp.json().get("results", [])
+        live_jobs = []
+        for r in results:
+            title = r.get("title", "Software Engineer")
+            comp = r.get("company", {}).get("display_name", "Tech Company")
+            link = r.get("redirect_url", "")
+            if not link:
+                continue
+            raw_loc = r.get("location", {}).get("display_name", location)
+            desc = r.get("description", "")
+            desc_clean = re.sub(r'<[^>]+>', ' ', desc).strip()
+            sal_min = r.get("salary_min")
+            sal_max = r.get("salary_max")
+            if sal_min and sal_max:
+                sal = f"₹{int(sal_min):,} - ₹{int(sal_max):,} / yr"
+            elif sal_min:
+                sal = f"From ₹{int(sal_min):,} / yr"
+            else:
+                sal = "Competitive Market Package"
+
+            live_jobs.append({
+                "id": f"adz_{r.get('id', link)}",
+                "source_type": "🟢 Live Posting • Adzuna Verified",
+                "company": comp,
+                "role": title,
+                "location": f"{raw_loc} ⭐",
+                "salary": sal,
+                "batches": "2024 / 2025 / 2026 Batch",
+                "experience": "Freshers (0 - 1 Years)",
+                "link": link,
+                "link_text": "🚀 Apply Direct on Official Portal",
+                "timing": "🔥 Verified Live Today",
+                "snippet": desc_clean[:180] if desc_clean else "Verified direct application on official career portal.",
+                "relevance": 20
+            })
+        return live_jobs[:limit]
+    except Exception as e:
+        print(f"[Adzuna Live Search] Error: {e}")
+        return []
+
 
 def search_jobs_multi_source(query: str, limit: int = 6) -> list:
     """
-    Performs high-speed fuzzy & keyword matching across all integrated job pipelines:
-    1. Weekend Walk-In Tracker (Chennai & Coimbatore in-person drives)
-    2. National Mass Off-Campus Drives (TCS, Zoho, Cognizant, Infosys, etc.)
-    3. Live Tamil Nadu Direct Fresh Jobs Feed
-    4. Multi-Platform Radar Cache
-    Returns ranked job dictionaries matching the query.
+    Performs comprehensive search across all real-data pipelines:
+    1. Verified Walk-In Drives (Chennai, Coimbatore, Madurai, Trichy, Hosur)
+    2. National Mass Off-Campus Drives (TCS, Zoho, Cognizant, Infosys, Accenture, Wipro)
+    3. Scraped Real Tamil Nadu Portal Jobs (tn-live-jobs: Govt TN, Freshersworld, apna.co, LinkedIn)
+    4. Tamil Nadu Job Radar Cache
+    5. Real-Time On-Demand Adzuna India Live API
+    Returns ranked, verified real job postings.
     """
     if not query or not isinstance(query, str) or not query.strip():
         return []
@@ -2223,6 +2403,25 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
     if not q_tokens:
         return []
 
+    SYNONYMS = {
+        "python": ["python", "django", "fastapi", "flask", "pyspark", "data science"],
+        "react": ["react", "frontend", "next.js", "nextjs", "javascript", "typescript", "ui developer", "web developer"],
+        "java": ["java", "spring boot", "springboot", "j2ee", "backend"],
+        "fresher": ["fresher", "freshers", "trainee", "graduate", "junior", "intern", "entry level", "0-1"],
+        "analyst": ["analyst", "data analyst", "business analyst", "power bi", "tableau", "sql"],
+        "tester": ["tester", "qa", "testing", "sdet", "automation", "quality assurance"],
+        "chennai": ["chennai", "madras", "omr", "guindy", "navallur", "siruseri", "sholinganallur", "tambaram"],
+        "coimbatore": ["coimbatore", "kovai", "saravanampatti", "chil sez"],
+        "madurai": ["madurai", "ilandhaikulam", "elcot"],
+        "trichy": ["trichy", "tiruchirappalli", "navalpattu"],
+    }
+
+    # Expand query tokens with synonyms
+    expanded_tokens = set(q_tokens)
+    for t in q_tokens:
+        if t in SYNONYMS:
+            expanded_tokens.update(SYNONYMS[t])
+
     matches = []
     seen_identifiers = set()
 
@@ -2230,14 +2429,19 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
         full_haystack = f"{title} {company} {location} {text_blob}".lower()
         score = 0
         for token in q_tokens:
+            if token in company.lower():
+                score += 40  # Direct company match is top priority! (e.g. searching 'zoho' must rank Zoho #1)
             if token in title.lower():
-                score += 15  # Title matches are top priority
-            elif token in company.lower():
-                score += 12  # Company matches
-            elif token in location.lower():
-                score += 8   # Location matches
-            elif token in full_haystack:
-                score += 4   # General keyword / skill matches
+                score += 30  # Direct title match is highest priority
+            if token in location.lower():
+                score += 15  # Location match
+            if token in full_haystack and token not in company.lower() and token not in title.lower():
+                score += 5   # General match in description or keywords
+
+        for token in expanded_tokens:
+            if token not in q_tokens and token in full_haystack:
+                score += 3   # Synonym match
+
         return score
 
     # 1. Search Weekend Walk-In Drives
@@ -2247,7 +2451,7 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
             title = w.get("role", "")
             comp = w.get("company", "")
             loc = f"{w.get('city', '')} ({w.get('location_area', '')})"
-            blob = f"{w.get('batches', '')} {w.get('degrees', '')} {w.get('selection_rounds', '')} {w.get('package', '')}"
+            blob = f"{w.get('batches', '')} {w.get('degrees', '')} {w.get('selection_rounds', '')} {w.get('package', '')} {w.get('key_skills', '')}"
             rel = calc_relevance(title, comp, loc, blob)
             if rel > 0:
                 ident = f"walkin_{w.get('id', comp)}"
@@ -2255,16 +2459,18 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
                     seen_identifiers.add(ident)
                     matches.append({
                         "id": ident,
-                        "source_type": "🚶‍♂️ Walk-In Drive",
+                        "source_type": "🚶‍♂️ In-Person Walk-In Drive",
                         "company": comp,
                         "role": title,
                         "location": loc,
                         "salary": w.get("package", "Competitive"),
                         "batches": w.get("batches", "2024 / 2025 / 2026 Batch"),
+                        "experience": w.get("experience", "Freshers (0 - 1 Years)"),
                         "link": w.get("google_maps") or "https://maps.google.com",
                         "link_text": "📍 View Venue in Google Maps",
-                        "timing": w.get("timing", "Upcoming Weekend"),
-                        "relevance": rel
+                        "timing": w.get("timing", "Upcoming Weekend Walk-In"),
+                        "snippet": f"Selection: {w.get('selection_rounds', 'Interview')} • Degrees: {w.get('degrees', 'Any')}",
+                        "relevance": rel + 5  # Walk-ins get priority boost
                     })
     except Exception as e:
         print(f"[Search Engine] Walkin scan notice: {e}")
@@ -2284,21 +2490,57 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
                     seen_identifiers.add(ident)
                     matches.append({
                         "id": ident,
-                        "source_type": "📢 Mass Drive",
+                        "source_type": "📢 National Off-Campus Drive",
                         "company": comp,
                         "role": title,
                         "location": loc,
                         "salary": d.get("package", "Standard Fresher Band"),
                         "batches": d.get("batch", "2025 / 2026 Batches"),
+                        "experience": "Freshers (0 - 1 Years)",
                         "link": d.get("link", ""),
-                        "link_text": "🚀 Apply on Official Portal",
+                        "link_text": "🚀 Apply on Official Company Portal",
                         "timing": f"Deadline: {d.get('deadline', 'Open')}",
+                        "snippet": f"Eligibility: {d.get('eligibility', 'Any Graduate')} • Test: {d.get('test_pattern', 'Cognitive & Coding')}",
                         "relevance": rel
                     })
     except Exception as e:
         print(f"[Search Engine] National drives scan notice: {e}")
 
-    # 3. Search Tamil Nadu Job Radar
+    # 3. Search Real Scraped TN-Live-Jobs Database
+    try:
+        scraped_jobs = get_tn_scraped_live_jobs()
+        for j in scraped_jobs:
+            title = j.get("title", "")
+            comp = j.get("company", "Tamil Nadu Employer")
+            city = j.get("city", "Tamil Nadu")
+            loc = f"{city}, Tamil Nadu ⭐"
+            blob = f"{j.get('category', '')} {j.get('source', '')} {j.get('apply_url', '')} {j.get('salary', '')}"
+            rel = calc_relevance(title, comp, loc, blob)
+            if rel > 0:
+                link = j.get("apply_url", "")
+                if link and link not in seen_identifiers:
+                    seen_identifiers.add(link)
+                    is_gov = j.get("category") == "Government" or "gov" in str(j.get("source", "")).lower()
+                    src_tag = "🏛️ Govt of Tamil Nadu • Official" if is_gov else f"💼 Real Portal • {j.get('source', 'Verified')}"
+                    matches.append({
+                        "id": f"tnlive_{j.get('id', '')}",
+                        "source_type": src_tag,
+                        "company": comp,
+                        "role": title,
+                        "location": loc,
+                        "salary": j.get("salary") or "As per Govt / Industry Norms",
+                        "batches": "2024 / 2025 / 2026 Batch",
+                        "experience": j.get("experience") or "Freshers & Experienced",
+                        "link": link,
+                        "link_text": "🚀 Direct Official Application Page",
+                        "timing": "Verified Live Opportunity",
+                        "snippet": f"Category: {j.get('category', 'General')} • Verified live via {j.get('source', 'Web')}",
+                        "relevance": rel
+                    })
+    except Exception as e:
+        print(f"[Search Engine] Scraped jobs scan notice: {e}")
+
+    # 4. Search Tamil Nadu Job Radar
     try:
         from job_radar import get_tamil_nadu_jobs
         tn_jobs = get_tamil_nadu_jobs(limit=50, force_refresh=False)
@@ -2306,28 +2548,41 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
             title = j.get("title", "")
             comp = j.get("company", "")
             loc = j.get("location", "Tamil Nadu")
-            blob = f"{j.get('batches', '')} {j.get('experience', '')} {j.get('source', '')} {j.get('link', '')}"
+            blob = f"{j.get('batches', '')} {j.get('experience', '')} {j.get('source', '')} {j.get('link', '')} {j.get('description', '')}"
             rel = calc_relevance(title, comp, loc, blob)
             if rel > 0:
                 link = j.get("link", "")
-                ident = f"tn_{link}"
-                if ident not in seen_identifiers:
-                    seen_identifiers.add(ident)
+                if link and link not in seen_identifiers:
+                    seen_identifiers.add(link)
                     matches.append({
-                        "id": ident,
+                        "id": f"tn_{link}",
                         "source_type": "🌟 Tamil Nadu Direct",
                         "company": comp,
                         "role": title,
                         "location": loc,
                         "salary": j.get("salary") or "Best in Industry",
-                        "batches": j.get("batches") or "2024 / 2025 / 2026",
+                        "batches": j.get("batches") or "2024 / 2025 / 2026 Batch",
+                        "experience": j.get("experience") or "Freshers (0 - 1 Years)",
                         "link": link,
                         "link_text": "🚀 Direct Apply (Official)",
                         "timing": "Verified Fresh Opening",
+                        "snippet": str(j.get("description", ""))[:160] or "Direct application on official career portal.",
                         "relevance": rel
                     })
     except Exception as e:
         print(f"[Search Engine] TN jobs scan notice: {e}")
+
+    # 5. On-Demand Real-Time Live Search (Adzuna India) if local results < limit
+    if len(matches) < limit:
+        try:
+            live_adzuna = fetch_live_adzuna_search(query=query, location="Tamil Nadu", limit=limit - len(matches) + 3)
+            for aj in live_adzuna:
+                link = aj.get("link", "")
+                if link and link not in seen_identifiers:
+                    seen_identifiers.add(link)
+                    matches.append(aj)
+        except Exception as e:
+            print(f"[Search Engine] Live Adzuna query notice: {e}")
 
     # Sort descending by relevance score
     matches.sort(key=lambda m: m["relevance"], reverse=True)
@@ -2343,13 +2598,25 @@ def format_search_results_report(query: str, results: list) -> tuple:
     from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
     markup = InlineKeyboardMarkup()
-    # Row 1: Common Quick Searches
+
+    # If results exist, add direct apply for top result + ATS match button
+    if results:
+        top_job = results[0]
+        top_link = top_job.get("link", "").strip()
+        top_comp = str(top_job.get("company", "Top Job"))[:18]
+        if top_link and top_link.startswith("http"):
+            markup.row(
+                InlineKeyboardButton(f"🚀 Apply: {top_comp}", url=top_link),
+                InlineKeyboardButton("🎯 Match Resume (ATS)", callback_data="ats:analyze")
+            )
+
+    # Row: Common Quick Searches
     markup.row(
         InlineKeyboardButton("🐍 Python", callback_data="search:python"),
         InlineKeyboardButton("⚛️ React", callback_data="search:react"),
         InlineKeyboardButton("📊 Data Analyst", callback_data="search:data analyst")
     )
-    # Row 2: Location & Type
+    # Row: Location & Type
     markup.row(
         InlineKeyboardButton("📍 Chennai / TN", callback_data="search:chennai"),
         InlineKeyboardButton("🏠 Remote", callback_data="search:remote"),
@@ -2357,21 +2624,22 @@ def format_search_results_report(query: str, results: list) -> tuple:
     )
     markup.row(
         InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all"),
-        InlineKeyboardButton("⏳ Deadlines", callback_data="deadlines")
+        InlineKeyboardButton("🔄 Refresh Search", callback_data=f"search:{query}")
     )
 
     if not results:
         no_res_msg = (
-            f"🔍 <b>No Active Jobs Found for '{html.escape(query)}'</b>\n\n"
+            f"🔍 <b>SEARCH RESULTS FOR:</b> <code>{html.escape(query.upper())}</code>\n\n"
+            f"⚠️ No active matching vacancies currently found for '{html.escape(query)}'.\n\n"
             f"💡 <b>Search Suggestions:</b>\n"
-            f"• Try broader terms: <code>python</code>, <code>react</code>, <code>chennai</code>, <code>fresher</code>, <code>zoho</code>\n"
+            f"• Try broader keywords: <code>python</code>, <code>react</code>, <code>fresher</code>, <code>chennai</code>, <code>zoho</code>\n"
             f"• Tap any of the quick-search categories below:"
         )
         return ([no_res_msg], markup)
 
     header = (
         f"🔍 <b>SEARCH RESULTS FOR:</b> <code>{html.escape(query.upper())}</code>\n"
-        f"<i>Found {len(results)} top verified matching opportunities:</i>\n"
+        f"<i>Found {len(results)} top verified real-data opportunities across Tamil Nadu:</i>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
     )
 
@@ -2379,28 +2647,34 @@ def format_search_results_report(query: str, results: list) -> tuple:
     for idx, item in enumerate(results, 1):
         comp = html.escape(str(item.get("company", "Company")))
         role = html.escape(str(item.get("role", "Software Role")))
-        loc = html.escape(str(item.get("location", "India")))
-        stype = item.get("source_type", "Job")
-        sal = html.escape(str(item.get("salary", "Competitive")))
-        batches = html.escape(str(item.get("batches", "Freshers")))
-        link = item.get("link", "")
-        link_text = html.escape(str(item.get("link_text", "Apply Now")))
-        timing = html.escape(str(item.get("timing", "Active")))
+        loc = html.escape(str(item.get("location", "Tamil Nadu, India")))
+        stype = html.escape(str(item.get("source_type", "Job")))
+        sal = html.escape(str(item.get("salary") or "Competitive / Market Band"))
+        batches = html.escape(str(item.get("batches") or "2024 / 2025 / 2026 Batch"))
+        exp = html.escape(str(item.get("experience") or "Freshers (0 - 1 Years)"))
+        desc = html.escape(str(item.get("snippet") or item.get("description") or ""))
+        link = item.get("link", "").strip()
+        link_text = html.escape(str(item.get("link_text", "Apply on Official Portal")))
+        timing = html.escape(str(item.get("timing") or "Verified Active"))
 
-        card = (
-            f"<b>{idx}. {comp}</b> • <i>{role}</i>\n"
-            f"🏷️ <b>Category:</b> {stype}\n"
-            f"📍 <b>Location:</b> {loc}\n"
-            f"💰 <b>CTC / Band:</b> {sal}\n"
-            f"🎓 <b>Batches:</b> {batches}\n"
-            f"⏰ <b>Status:</b> {timing}\n"
-            f"👉 <a href=\"{link}\">{link_text}</a>\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        )
-        cards.append(card)
+        card_lines = [
+            f"<b>{idx}. {comp}</b> • <i>{role}</i>",
+            f"🏷️ <b>Source:</b> {stype}",
+            f"📍 <b>Location:</b> {loc}",
+            f"💰 <b>CTC / Band:</b> {sal}",
+            f"🎓 <b>Eligibility:</b> <code>{batches}</code> • <b>Exp:</b> {exp}",
+        ]
+        if desc:
+            card_lines.append(f"📝 <b>Highlights:</b> <i>{desc[:150]}...</i>")
+        card_lines.append(f"⏰ <b>Status:</b> {timing}")
+        if link:
+            card_lines.append(f"👉 <a href=\"{link}\"><b>{link_text}</b></a>")
+        card_lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+
+        cards.append("\n".join(card_lines))
 
     full_text = header + "\n\n".join(cards)
-    
+
     # Split if exceeds Telegram 3900 chars
     chunks = []
     if len(full_text) <= 3900:

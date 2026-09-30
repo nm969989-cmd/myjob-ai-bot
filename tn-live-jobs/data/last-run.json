@@ -1,0 +1,232 @@
+{
+  "status": "ok",
+  "started_at": "2026-09-30T17:12:51.914Z",
+  "finished_at": "2026-09-30T17:18:50.767Z",
+  "duration_seconds": 181,
+  "validate_seconds": 166,
+  "trigger": "local run",
+  "keywords": [
+    "software developer",
+    "fresher",
+    "data analyst",
+    "accountant",
+    "nurse",
+    "teacher",
+    "sales executive",
+    "data entry"
+  ],
+  "cities": [
+    "Chennai",
+    "Coimbatore",
+    "Madurai",
+    "Trichy",
+    "Salem",
+    "Tirunelveli",
+    "Erode",
+    "Vellore",
+    "Thanjavur",
+    "Tiruppur",
+    "Tamil Nadu"
+  ],
+  "scraped_records": 150,
+  "verified_jobs": 117,
+  "new_jobs": 54,
+  "removed_jobs": 54,
+  "login_required": 0,
+  "validate_stats": {
+    "checked": 150,
+    "live": 117,
+    "loginRequired": 0,
+    "dead": 8,
+    "noSignal": 25,
+    "redirected": 0,
+    "documents": 24,
+    "unreachable": 0
+  },
+  "source_status": [
+    {
+      "id": "averydennison.com",
+      "label": "Avery Dennison",
+      "tier": 1,
+      "status": "ok",
+      "detail": "4 opening(s) in Tamil Nadu"
+    },
+    {
+      "id": "cognizant.com",
+      "label": "Cognizant",
+      "tier": 1,
+      "status": "blocked",
+      "detail": "no job records could be read from this site"
+    },
+    {
+      "id": "coimbatore.nic.in",
+      "label": "Coimbatore District Collectorate",
+      "tier": 1,
+      "status": "no_listings",
+      "detail": "0 notice(s) on Coimbatore District portal"
+    },
+    {
+      "id": "freshersworld.com",
+      "label": "Freshersworld",
+      "tier": 1,
+      "status": "ok",
+      "detail": "60 job(s) from 4 listing page(s)"
+    },
+    {
+      "id": "freshworks.com",
+      "label": "Freshworks",
+      "tier": 1,
+      "status": "ok",
+      "detail": "15 opening(s) in Tamil Nadu"
+    },
+    {
+      "id": "hcltech.com",
+      "label": "HCLTech",
+      "tier": 1,
+      "status": "blocked",
+      "detail": "no job records could be read from this site"
+    },
+    {
+      "id": "infosys.com",
+      "label": "Infosys",
+      "tier": 1,
+      "status": "blocked",
+      "detail": "no job records could be read from this site"
+    },
+    {
+      "id": "madurai.nic.in",
+      "label": "Madurai District Collectorate",
+      "tier": 1,
+      "status": "ok",
+      "detail": "4 notice(s) on Madurai District portal"
+    },
+    {
+      "id": "bosch.in",
+      "label": "Robert Bosch India",
+      "tier": 1,
+      "status": "ok",
+      "detail": "15 opening(s) in Tamil Nadu"
+    },
+    {
+      "id": "salem.nic.in",
+      "label": "Salem District Collectorate",
+      "tier": 1,
+      "status": "ok",
+      "detail": "1 notice(s) on Salem District portal"
+    },
+    {
+      "id": "tcs.com",
+      "label": "Tata Consultancy Services",
+      "tier": 1,
+      "status": "blocked",
+      "detail": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
+    },
+    {
+      "id": "tirunelveli.nic.in",
+      "label": "Tirunelveli District Collectorate",
+      "tier": 1,
+      "status": "ok",
+      "detail": "1 notice(s) on Tirunelveli District portal"
+    },
+    {
+      "id": "tnvelaivaaippu.gov.in",
+      "label": "TN Employment & Training",
+      "tier": 1,
+      "status": "unreachable",
+      "detail": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed"
+    },
+    {
+      "id": "employment.tn.gov.in",
+      "label": "TN Employment Exchange",
+      "tier": 1,
+      "status": "unreachable",
+      "detail": "fetch failed for https://employment.tn.gov.in/: fetch failed"
+    },
+    {
+      "id": "tn.gov.in",
+      "label": "TN Government - Job Opportunity",
+      "tier": 1,
+      "status": "ok",
+      "detail": "4 government job notice(s)"
+    },
+    {
+      "id": "mrb.tn.gov.in",
+      "label": "TN Medical Services Recruitment Board (MRB)",
+      "tier": 1,
+      "status": "ok",
+      "detail": "2 notification(s) on Medical Services Recruitment Board"
+    },
+    {
+      "id": "protnnetc.tn.gov.in",
+      "label": "TN Private Employment Exchange",
+      "tier": 1,
+      "status": "unreachable",
+      "detail": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
+    },
+    {
+      "id": "tnpsc.gov.in",
+      "label": "TNPSC - Notifications",
+      "tier": 1,
+      "status": "ok",
+      "detail": "43 TNPSC notification(s)"
+    },
+    {
+      "id": "wipro.com",
+      "label": "Wipro",
+      "tier": 1,
+      "status": "blocked",
+      "detail": "no job records could be read from this site"
+    },
+    {
+      "id": "zohocorp.com",
+      "label": "Zoho Corporation",
+      "tier": 1,
+      "status": "ok",
+      "detail": "2 India opening(s)"
+    },
+    {
+      "id": "apna.co",
+      "label": "apna.co",
+      "tier": 2,
+      "status": "ok",
+      "detail": "97 job(s) from 4 category page(s)"
+    },
+    {
+      "id": "indeed.co.in",
+      "label": "Indeed India",
+      "tier": 2,
+      "status": "blocked",
+      "detail": "bot protection answered HTTP 403 on 3 request(s); source disabled"
+    },
+    {
+      "id": "linkedin.com",
+      "label": "LinkedIn Jobs",
+      "tier": 2,
+      "status": "ok",
+      "detail": "80 job(s) from 4 search request(s)"
+    },
+    {
+      "id": "naukri.com",
+      "label": "Naukri.com",
+      "tier": 2,
+      "status": "ok",
+      "detail": "160 job(s) from 4 search page(s)"
+    }
+  ],
+  "per_source": {
+    "govt-tn": 55,
+    "company-careers": 62,
+    "tech-ats": 34,
+    "naukri": 160,
+    "apna": 97,
+    "indeed": 0,
+    "linkedin": 80
+  },
+  "dead_domains": {
+    "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
+    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
+  },
+  "dropped_records": 201
+}

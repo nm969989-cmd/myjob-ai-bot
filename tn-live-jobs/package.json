@@ -1,0 +1,25 @@
+{
+  "name": "tn-live-jobs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Finds, verifies and publishes real, live job vacancies in Tamil Nadu, India. No invented data.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "src/cli.js",
+  "scripts": {
+    "scrape": "node src/cli.js --step=all",
+    "step:scrape": "node src/cli.js --step=scrape",
+    "step:validate": "node src/cli.js --step=validate",
+    "step:diff": "node src/cli.js --step=diff",
+    "step:export": "node src/cli.js --step=export",
+    "step:report": "node src/cli.js --step=report",
+    "serve": "node src/cli.js --step=serve",
+    "clean": "node -e \"require('fs').rmSync('work',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "playwright": "^1.49.0"
+  }
+}

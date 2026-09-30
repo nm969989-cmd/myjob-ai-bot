@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tamil Nadu Live Jobs | Real, Verified Vacancies</title>
+  <meta name="description" content="Discover verified, currently live job vacancies in Tamil Nadu, India. Re-verified by headless browser every 6 hours. Direct official links with no fake posts." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="wrap header-wrap">
+      <div class="header-main">
+        <div class="brand">
+          <div class="brand-badge">
+            <span class="pulse-dot"></span>
+            LIVE
+          </div>
+          <h1>Tamil Nadu Live Jobs</h1>
+        </div>
+        <p class="tagline">Real job vacancies verified live in Tamil Nadu. Every advert tested before publishing.</p>
+        <div class="header-meta">
+          <span id="updated" class="meta-item">Checking updates…</span>
+          <span class="meta-dot">•</span>
+          <span id="counts" class="meta-item">Loading live jobs…</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggle" class="btn-theme" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">
+          <span class="theme-icon light-icon" aria-hidden="true">&#9728;</span>
+          <span class="theme-icon dark-icon" aria-hidden="true">&#9790;</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="wrap main-wrap">
+    <!-- Controls Section -->
+    <section class="controls" aria-label="Search and filter jobs">
+      <!-- Search Input -->
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">&#128269;</span>
+        <input 
+          id="search" 
+          type="search" 
+          placeholder="Search by title, skills (Python, Tally, Nurse), company, or city… (Press '/' to focus)" 
+          autocomplete="off" 
+          aria-label="Search jobs"
+        />
+        <button id="searchClear" class="search-clear" type="button" aria-label="Clear search" hidden>&times;</button>
+        <kbd class="search-kbd" title="Press / to search">/</kbd>
+      </div>
+
+      <!-- Quick Filter Pills -->
+      <div class="quick-chips" id="quickChips" role="radiogroup" aria-label="Quick filters">
+        <button class="chip active" data-chip="all" type="button">All Jobs</button>
+        <button class="chip" data-chip="fresher" type="button">&#128293; Freshers Welcome</button>
+        <button class="chip" data-chip="govt" type="button">&#127963; Govt &amp; TNPSC</button>
+        <button class="chip" data-chip="it" type="button">&#128187; IT &amp; Software</button>
+        <button class="chip" data-chip="healthcare" type="button">&#127973; Healthcare &amp; Nursing</button>
+        <button class="chip" data-chip="finance" type="button">&#128188; Finance &amp; Accounts</button>
+        <button class="chip" data-chip="saved" type="button" id="savedChip">&#11088; Saved (<span id="savedCount">0</span>)</button>
+      </div>
+
+      <!-- Multi-select Filters Row -->
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label for="city" class="filter-label">City</label>
+          <select id="city" aria-label="Filter by city">
+            <option value="">All Cities</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="category" class="filter-label">Category</label>
+          <select id="category" aria-label="Filter by category">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="experience" class="filter-label">Experience</label>
+          <select id="experience" aria-label="Filter by experience">
+            <option value="">Any Experience</option>
+            <option value="fresher">Fresher (0–1 yrs)</option>
+            <option value="mid">1–3 Years</option>
+            <option value="senior">3+ Years</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="type" class="filter-label">Job Type</label>
+          <select id="type" aria-label="Filter by employment type">
+            <option value="">All Types</option>
+            <option value="Full-time">Full-Time</option>
+            <option value="Internship">Internship</option>
+            <option value="Contract">Contract</option>
+            <option value="Part-time">Part-Time</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="freshness" class="filter-label">Date Posted</label>
+          <select id="freshness" aria-label="Filter by posting date">
+            <option value="">Any Time</option>
+            <option value="24h">Past 24 Hours</option>
+            <option value="3d">Past 3 Days</option>
+            <option value="7d">Past Week</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="sort" class="filter-label">Sort By</label>
+          <select id="sort" aria-label="Sort jobs">
+            <option value="newest">Newest First</option>
+            <option value="salary">Salary (Disclosed first)</option>
+            <option value="city">By City</option>
+            <option value="company">By Company</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Active Filters Tag Bar -->
+      <div id="activeFilters" class="active-filters" hidden>
+        <span class="active-label">Active filters:</span>
+        <div id="activePills" class="active-pills"></div>
+        <button id="resetFilters" class="btn-reset" type="button">Reset All</button>
+      </div>
+    </section>
+
+    <!-- Stats & Result Meta -->
+    <section id="stats" class="stats-bar" aria-live="polite">
+      <div class="stats-pills">
+        <span class="pill pill-primary" id="statLive">… live jobs</span>
+        <span class="pill pill-fresh" id="statFresh">… in last 24h</span>
+      </div>
+      <div class="stats-count" id="statShowing">Showing all jobs</div>
+    </section>
+
+    <!-- Job Cards List -->
+    <section id="list" class="cards" aria-live="polite"></section>
+
+    <!-- Load More Button -->
+    <div id="loadMoreWrap" class="load-more-wrap" hidden>
+      <button id="loadMoreBtn" class="btn-load-more" type="button">
+        Load More Jobs (<span id="loadMoreCount">0</span> remaining)
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty" class="empty-state" hidden>
+      <div class="empty-icon">&#128269;</div>
+      <h3>No matching jobs found</h3>
+      <p>Try searching for broader keywords, clearing specific filters, or choosing "All Cities".</p>
+      <div class="empty-suggestions">
+        <span>Suggested:</span>
+        <button class="chip-suggest" data-query="Developer" type="button">Developer</button>
+        <button class="chip-suggest" data-query="Fresher" type="button">Fresher</button>
+        <button class="chip-suggest" data-query="Government" type="button">Govt</button>
+        <button class="chip-suggest" data-query="Accountant" type="button">Accountant</button>
+        <button class="chip-suggest" data-query="Nurse" type="button">Nurse</button>
+      </div>
+      <button id="emptyResetBtn" class="btn-secondary" type="button">Clear All Filters</button>
+    </div>
+  </main>
+
+  <!-- Job Details Modal / Drawer -->
+  <div id="jobModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-badge-row">
+          <span id="modalSource" class="tag tag-source"></span>
+          <span id="modalVerified" class="tag tag-verified">&#10003; Verified Live</span>
+        </div>
+        <button id="modalClose" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h2 id="modalTitle" class="modal-title"></h2>
+        <div class="modal-sub">
+          <span id="modalCompany" class="modal-company"></span>
+          <span class="meta-dot">•</span>
+          <span id="modalCity" class="modal-city"></span>
+        </div>
+
+        <!-- Highlights Grid -->
+        <div class="modal-grid">
+          <div class="modal-grid-item">
+            <span class="modal-grid-label">Salary</span>
+            <span id="modalSalary" class="modal-grid-val">Not stated</span>
+          </div>
+          <div class="modal-grid-item">
+            <span class="modal-grid-label">Experience</span>
+            <span id="modalExp" class="modal-grid-val">Not specified</span>
+          </div>
+          <div class="modal-grid-item">
+            <span class="modal-grid-label">Education / Qualification</span>
+            <span id="modalQual" class="modal-grid-val">Not stated</span>
+          </div>
+          <div class="modal-grid-item">
+            <span class="modal-grid-label">Employment Type</span>
+            <span id="modalType" class="modal-grid-val">Full-time</span>
+          </div>
+          <div class="modal-grid-item">
+            <span class="modal-grid-label">Date Posted</span>
+            <span id="modalPosted" class="modal-grid-val">Recent</span>
+          </div>
+          <div class="modal-grid-item">
+            <span class="modal-grid-label">Application Deadline</span>
+            <span id="modalDeadline" class="modal-grid-val">Check official page</span>
+          </div>
+        </div>
+
+        <!-- Skills Section -->
+        <div id="modalSkillsSection" class="modal-section" hidden>
+          <h3 class="modal-section-title">Key Skills &amp; Keywords</h3>
+          <div id="modalSkills" class="modal-skills"></div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="modal-section">
+          <h3 class="modal-section-title">Job Overview &amp; Details</h3>
+          <p id="modalDesc" class="modal-desc"></p>
+        </div>
+
+        <!-- Live Guarantee Card -->
+        <div class="verify-box">
+          <div class="verify-box-header">
+            <span class="verify-box-icon">&#128737;</span>
+            <strong>Automated Live Verification Guarantee</strong>
+          </div>
+          <p class="verify-box-text">
+            This vacancy was verified by opening the application URL directly in an automated browser.
+            HTTP Status: <strong id="modalHttpStatus">200 OK</strong>. No third-party agent or middleman fees.
+          </p>
+        </div>
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <button id="modalBookmarkBtn" class="btn-modal-bookmark" type="button">
+            <span class="bm-icon">&#9734;</span>
+            <span class="bm-text">Save Job</span>
+          </button>
+          <div class="modal-share-group">
+            <button id="modalShareWhatsapp" class="btn-share btn-whatsapp" type="button" title="Share via WhatsApp">&#128172; WhatsApp</button>
+            <button id="modalShareTelegram" class="btn-share btn-telegram" type="button" title="Share via Telegram">&#9992; Telegram</button>
+            <button id="modalShareCopy" class="btn-share btn-copy" type="button" title="Copy Job Link">&#128203; Copy</button>
+          </div>
+        </div>
+        <a id="modalApplyBtn" class="btn-apply-modal" href="#" target="_blank" rel="noopener noreferrer">
+          Apply on Official Site &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="wrap footer-wrap">
+      <div class="footer-info">
+        <p>
+          Every job advert on this site is re-verified every 6 hours by headless Chromium browser checks.
+          Postings that return HTTP 404, redirect to login walls, or are expired are removed automatically.
+        </p>
+        <p class="footer-links">
+          <a href="./data/jobs.json" target="_blank">Raw JSON Data</a>
+          <span class="meta-dot">•</span>
+          <a href="./data/jobs.csv" download>Download CSV (Excel)</a>
+          <span class="meta-dot">•</span>
+          <span>Updated automatically by GitHub Actions</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./data/jobs.js" defer></script>
+  <script src="./app.js" defer></script>
+</body>
+</html>

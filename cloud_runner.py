@@ -14,10 +14,9 @@ from dotenv import load_dotenv
 
 # Mark script start time
 START_TIME = time.time()
-# 18-minute scan budget: 3 deep sweeps/day (IST 10 AM / 5 PM / 9 PM) x ~20 min total
-# runner time stays inside the 2,000 free Linux-minutes/month private-repo allowance.
-# Ends gracefully ~90s before the workflow's 20-min hard timeout.
-MAX_EXECUTION_SECONDS = 18 * 60
+# 25-minute execution budget for twice-daily runs (11:00 AM & 7:00 PM IST).
+# Ends gracefully before the workflow's 30-minute hard timeout.
+MAX_EXECUTION_SECONDS = 25 * 60
 
 # Ensure environment is loaded
 load_dotenv(override=True)

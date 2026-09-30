@@ -5531,6 +5531,30 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
             )
             bot.send_message(chat_id, help_text, parse_mode=None)
 
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("walkin_detail:"))
+    def handle_walkin_detail_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        try:
+            bot.answer_callback_query(call.id, text="⚡ Fetching Drive Briefing...")
+        except Exception:
+            pass
+        drive_id = call.data.split(":", 1)[1].strip()
+        try:
+            from bot_optimizer import format_single_walkin_detail
+            msg = format_single_walkin_detail(drive_id)
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("🚶‍♂️ All Walk-In Drives", callback_data="walkins:all"),
+                InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+            )
+            try:
+                bot.send_message(chat_id, msg, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
+            except Exception:
+                bot.send_message(chat_id, re.sub(r'<[^>]+>', '', msg), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ Error fetching walk-in detail: {e}")
+
     @bot.callback_query_handler(func=lambda call: call.data.startswith("walkins"))
     def handle_walkins_callback(call):
         chat_id = call.message.chat.id
@@ -5541,8 +5565,8 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
             pass
         city_filter = None
         if ":" in call.data:
-            sub = call.data.split(":")[1]
-            if sub in ["chennai", "coimbatore"]:
+            sub = call.data.split(":")[1].strip().lower()
+            if sub in ["chennai", "coimbatore", "madurai", "trichy", "south", "hosur", "salem"]:
                 city_filter = sub
         try:
             from bot_optimizer import format_walkins_report, get_walkin_drives
@@ -5554,12 +5578,16 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 InlineKeyboardButton("📍 Coimbatore Walk-Ins", callback_data="walkins:coimbatore")
             )
             markup.row(
-                InlineKeyboardButton("📢 All TN Walk-Ins", callback_data="walkins:all"),
-                InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+                InlineKeyboardButton("📍 Madurai & Trichy", callback_data="walkins:south"),
+                InlineKeyboardButton("📢 All TN Walk-Ins", callback_data="walkins:all")
             )
             markup.row(
-                InlineKeyboardButton("📢 National Drives", callback_data="drives"),
-                InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines")
+                InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs"),
+                InlineKeyboardButton("📢 National Drives", callback_data="drives")
+            )
+            markup.row(
+                InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines"),
+                InlineKeyboardButton("🔄 Refresh Walk-Ins", callback_data="walkins:all")
             )
             for idx, chunk in enumerate(chunks):
                 is_last = (idx == len(chunks) - 1)
@@ -6119,6 +6147,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
     def send_walkin_drives(message):
         save_chat_id(message.chat.id)
         city_filter = None
+        target_company = None
         parts = message.text.strip().split()
         if len(parts) > 1:
             raw_c = parts[1].strip().lower()
@@ -6126,24 +6155,44 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 city_filter = "chennai"
             elif "coimbatore" in raw_c:
                 city_filter = "coimbatore"
+            elif any(k in raw_c for k in ["madurai", "trichy", "south", "hosur", "salem"]):
+                city_filter = raw_c
+            elif raw_c not in ["all", "tn"]:
+                target_company = raw_c
 
         try:
-            from bot_optimizer import format_walkins_report, get_walkin_drives
-            drives = get_walkin_drives(city=city_filter)
-            chunks = format_walkins_report(drives, city_filter=city_filter)
+            from bot_optimizer import format_walkins_report, format_single_walkin_detail, get_walkin_drives
             markup = InlineKeyboardMarkup()
             markup.row(
                 InlineKeyboardButton("📍 Chennai Walk-Ins", callback_data="walkins:chennai"),
                 InlineKeyboardButton("📍 Coimbatore Walk-Ins", callback_data="walkins:coimbatore")
             )
             markup.row(
-                InlineKeyboardButton("📢 All TN Walk-Ins", callback_data="walkins:all"),
-                InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+                InlineKeyboardButton("📍 Madurai & Trichy", callback_data="walkins:south"),
+                InlineKeyboardButton("📢 All TN Walk-Ins", callback_data="walkins:all")
             )
             markup.row(
-                InlineKeyboardButton("📢 National Drives", callback_data="drives"),
-                InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines")
+                InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs"),
+                InlineKeyboardButton("📢 National Drives", callback_data="drives")
             )
+            markup.row(
+                InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines"),
+                InlineKeyboardButton("🔄 Refresh Walk-Ins", callback_data="walkins:all")
+            )
+
+            if target_company:
+                drives = get_walkin_drives()
+                matched = next((d for d in drives if target_company in d.get("id", "").lower() or target_company in d.get("company", "").lower()), None)
+                if matched:
+                    detail = format_single_walkin_detail(matched["id"])
+                    try:
+                        bot.send_message(message.chat.id, detail, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
+                    except Exception:
+                        bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', detail), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
+                    return
+
+            drives = get_walkin_drives(city=city_filter)
+            chunks = format_walkins_report(drives, city_filter=city_filter)
             for idx, chunk in enumerate(chunks):
                 is_last = (idx == len(chunks) - 1)
                 try:
