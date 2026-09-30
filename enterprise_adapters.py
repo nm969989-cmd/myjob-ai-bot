@@ -424,3 +424,129 @@ def execute_workday_adapter(page, profile, bot_email, bot_password):
     except Exception as e:
         print(f"[Workday Adapter] Failed: {e}")
         return False
+
+
+# ─────────────────────────────────────────────────────
+# SMARTRECRUITERS ADAPTER (Freshworks, Bosch, Avery Dennison)
+# ─────────────────────────────────────────────────────
+def execute_smartrecruiters_adapter(page, profile):
+    """
+    Automated application adapter for SmartRecruiters (jobs.smartrecruiters.com / smrtr.io).
+    Powers 1-click apply for Freshworks, Robert Bosch India, Avery Dennison, etc.
+    """
+    print("[SmartRecruiters Adapter] 🚀 Intercepting SmartRecruiters application page...")
+    try:
+        # 1. Click initial apply button if on landing / description page
+        for btn_text in ["I'm interested", "Apply", "Apply Now", "Easy Apply"]:
+            try:
+                btn = page.locator(f"button:has-text('{btn_text}'), a:has-text('{btn_text}'), [data-test='apply-button']").first
+                if btn.is_visible(timeout=2000):
+                    btn.click()
+                    print(f"[SmartRecruiters Adapter] Clicked '{btn_text}'")
+                    time.sleep(2.5)
+                    break
+            except Exception:
+                pass
+
+        def sr_fill(selector, value):
+            if not value:
+                return False
+            try:
+                el = page.locator(selector).first
+                if el.is_visible(timeout=1500):
+                    el.scroll_into_view_if_needed()
+                    el.click()
+                    time.sleep(0.15)
+                    el.fill(str(value))
+                    page.evaluate("""
+                        ([sel, val]) => {
+                            const el = document.querySelector(sel);
+                            if (!el) return;
+                            ['input', 'change', 'blur'].forEach(ev =>
+                                el.dispatchEvent(new Event(ev, {bubbles: true}))
+                            );
+                        }
+                    """, [selector, str(value)])
+                    time.sleep(random.uniform(0.15, 0.35))
+                    return True
+            except Exception:
+                pass
+            return False
+
+        # 2. Extract profile details
+        full_name  = profile.get("full_name", profile.get("name", ""))
+        name_parts = full_name.strip().split(" ", 1)
+        first_name = name_parts[0] if name_parts else ""
+        last_name  = name_parts[1] if len(name_parts) > 1 else (first_name or "Applicant")
+        email = profile.get("email", "")
+        phone = profile.get("phone", "")
+        city = profile.get("city", "Chennai, Tamil Nadu, India")
+        linkedin = profile.get("linkedin", "")
+        github = profile.get("github", "")
+
+        # 3. Fill standard SmartRecruiters form fields
+        sr_fill("input[name='firstName'], #first-name-input, [data-test='first-name']", first_name)
+        sr_fill("input[name='lastName'], #last-name-input, [data-test='last-name']", last_name)
+        sr_fill("input[name='email'], #email-input, [data-test='email']", email)
+        sr_fill("input[name='confirmEmail'], #confirm-email-input", email)
+        sr_fill("input[name='phoneNumber'], #phone-number-input, [data-test='phone-number']", phone)
+        sr_fill("input[name='location'], #location-input, [data-test='location']", city)
+
+        # Web & Social profiles
+        sr_fill("input[name*='linkedin'], input[placeholder*='LinkedIn'], [data-test*='linkedin']", linkedin)
+        sr_fill("input[name*='website'], input[placeholder*='Website'], input[placeholder*='Portfolio']", github or linkedin)
+
+        # 4. Upload Resume
+        for resume_sel in [
+            "input[type='file'][name*='resume']",
+            "input[type='file'][data-test*='resume']",
+            "input[type='file']",
+        ]:
+            try:
+                file_el = page.locator(resume_sel).first
+                if file_el.count() > 0:
+                    resume_path = resolve_resume_path(profile)
+                    if resume_path:
+                        try:
+                            page.evaluate(f"document.querySelector('{resume_sel}').style.display='block'")
+                        except Exception:
+                            pass
+                        file_el.set_input_files(resume_path)
+                        print(f"[SmartRecruiters Adapter] ✅ Resume uploaded via {resume_sel}")
+                        time.sleep(2.0)
+                        break
+            except Exception:
+                continue
+
+        # 5. Handle consent checkboxes (Terms / Privacy)
+        try:
+            consents = page.locator("input[type='checkbox']")
+            count = consents.count()
+            for idx in range(count):
+                cb = consents.nth(idx)
+                if cb.is_visible(timeout=500):
+                    cb.check(force=True)
+                    time.sleep(0.2)
+        except Exception:
+            pass
+
+        # 6. Submit button
+        for submit_text in ["Submit", "Send", "Apply now", "Submit Application", "Next"]:
+            try:
+                btn = page.locator(f"button:has-text('{submit_text}'), input[value='{submit_text}'], [data-test='submit-button']").first
+                if btn.is_visible(timeout=2000):
+                    btn.scroll_into_view_if_needed()
+                    time.sleep(random.uniform(0.5, 1.0))
+                    btn.click()
+                    print(f"[SmartRecruiters Adapter] ✅ Clicked '{submit_text}' button!")
+                    time.sleep(4.0)
+                    break
+            except Exception:
+                pass
+
+        print("[SmartRecruiters Adapter] ✅ Application sequence finished successfully!")
+        return True
+    except Exception as e:
+        print(f"[SmartRecruiters Adapter] Execution notice: {e}")
+        return False
+

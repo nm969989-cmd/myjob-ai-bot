@@ -5,6 +5,7 @@ Features:
   4. Regex Fallback   — instantly fills common fields without calling Gemini
 """
 import re
+import html
 import time
 import random
 
@@ -1057,6 +1058,88 @@ def generate_fast_interview_cheat_sheet(company: str, role: str, skills: list = 
     lines.append(f"🌟 <b>Behavioral Pro-Tip for {comp_clean}:</b>")
     lines.append(f"<i>'When asked why {comp_clean}, mention their engineering impact, align with their core tech stack ({skills_clean[0] if skills_clean else 'software craftsmanship'}), and highlight your curiosity to learn and adapt quickly!'</i>")
 
+    return "\n".join(lines)
+
+
+# ─────────────────────────────────────────────────────────────────
+# 1-TAP ACTION STORES & COLD EMAIL GENERATOR (Shared cross-module cache)
+# ─────────────────────────────────────────────────────────────────
+
+_SHARED_PREP_STORE = {}
+_SHARED_NOTE_STORE = {}
+_SHARED_EMAIL_STORE = {}
+
+def store_prep_cache(key: str, data: dict):
+    if not key or not data:
+        return
+    _SHARED_PREP_STORE[key] = data
+    if len(_SHARED_PREP_STORE) > 500:
+        _SHARED_PREP_STORE.pop(next(iter(_SHARED_PREP_STORE)))
+
+def get_prep_cache(key: str) -> dict:
+    return _SHARED_PREP_STORE.get(key, {})
+
+def store_note_cache(key: str, note: str):
+    if not key or not note:
+        return
+    _SHARED_NOTE_STORE[key] = str(note)
+    if len(_SHARED_NOTE_STORE) > 500:
+        _SHARED_NOTE_STORE.pop(next(iter(_SHARED_NOTE_STORE)))
+
+def get_note_cache(key: str) -> str:
+    return _SHARED_NOTE_STORE.get(key, "")
+
+def store_email_cache(key: str, data: dict):
+    if not key or not data:
+        return
+    _SHARED_EMAIL_STORE[key] = data
+    if len(_SHARED_EMAIL_STORE) > 500:
+        _SHARED_EMAIL_STORE.pop(next(iter(_SHARED_EMAIL_STORE)))
+
+def get_email_cache(key: str) -> dict:
+    return _SHARED_EMAIL_STORE.get(key, {})
+
+def generate_cold_email_pitch(company: str, role: str, skills: list = None, profile: dict = None) -> str:
+    """
+    Generates a high-converting, personalized 3-paragraph cold email pitch tailored
+    to hiring managers for the specified role and company. Includes ready-to-copy HTML.
+    """
+    comp_clean = (company or "Hiring Team").strip()
+    role_clean = (role or "Software Engineer").strip()
+    cand_name = (profile.get("name") if profile else None) or "Candidate"
+    cand_phone = (profile.get("phone") if profile else None) or ""
+    cand_email = (profile.get("email") if profile else None) or ""
+    
+    if profile and profile.get("top_skills"):
+        top_skills = profile.get("top_skills")
+    elif skills:
+        top_skills = ", ".join(str(s) for s in skills[:3])
+    else:
+        top_skills = "Python, modern web technologies, and backend development"
+
+    subject = f"Application: {role_clean} — {cand_name}"
+
+    email_body = (
+        f"Dear Hiring Team at {comp_clean},\n\n"
+        f"I came across the {role_clean} opening at {comp_clean} and wanted to personally reach out to express my strong interest in contributing to your engineering team.\n\n"
+        f"With hands-on experience in {top_skills}, I have delivered scalable solutions, written clean maintainable code, and solved demanding problem statements. Having followed {comp_clean}'s technical trajectory, I am confident my background aligns strongly with your current objectives.\n\n"
+        f"Could we schedule a brief 10-minute introductory call this week to explore how my skills can support your upcoming roadmap?\n\n"
+        f"Thank you for your time and consideration.\n\n"
+        f"Warm regards,\n"
+        f"{cand_name}\n"
+        f"{cand_email}" + (f" | {cand_phone}" if cand_phone else "")
+    )
+
+    lines = [
+        "✉️ <b>1-TAP COLD OUTREACH EMAIL</b>",
+        f"🏢 <b>Target:</b> <code>{html.escape(comp_clean)}</code>",
+        f"💼 <b>Role:</b> <b>{html.escape(role_clean)}</b>",
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",
+        f"📋 <b>Subject:</b> <code>{html.escape(subject)}</code>\n",
+        f"<code>{html.escape(email_body)}</code>\n",
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        "💡 <i>Tip: Tap and hold the message above to copy directly into Gmail, Outlook, or LinkedIn!</i>"
+    ]
     return "\n".join(lines)
 
 

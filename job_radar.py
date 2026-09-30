@@ -1496,10 +1496,57 @@ def run_radar():
 
 TN_CACHE_FILE = "tn_jobs_cache.json"
 
-def get_tamil_nadu_jobs(limit=10, force_refresh=False):
+def _filter_and_paginate_tn_jobs(jobs, limit=10, category=None, city=None, page=1):
+    filtered = list(jobs)
+    if category:
+        c_str = str(category).lower().strip()
+        if c_str in ["tech", "it", "software"]:
+            filtered = [
+                j for j in filtered
+                if any(w in (str(j.get("title", "")) + " " + str(j.get("description", "")) + " " + str(j.get("source", "")) + " " + str(j.get("category", ""))).lower()
+                       for w in ["software", "developer", "engineer", "python", "java", "react", "data", "cloud", "devops", "qa", "test", "full stack", "backend", "frontend", "smartrecruiters", "freshworks", "bosch", "zoho", "programmer", "analyst", "node", "ai", "ml"])
+            ]
+        elif c_str in ["govt", "mrb", "tnpsc", "government"]:
+            filtered = [
+                j for j in filtered
+                if any(w in (str(j.get("company", "")) + " " + str(j.get("title", "")) + " " + str(j.get("source", ""))).lower()
+                       for w in ["govt", "mrb", "tnpsc", "district", "collectorate", "tamil nadu", "health", "hospital", "recruitment board", "medical services", "samagra", "nhm", "collector", "nic.in"])
+            ]
+        elif c_str in ["core", "auto", "manufacturing", "engineering"]:
+            filtered = [
+                j for j in filtered
+                if any(w in (str(j.get("title", "")) + " " + str(j.get("company", "")) + " " + str(j.get("description", ""))).lower()
+                       for w in ["bosch", "renault", "nissan", "ford", "caterpillar", "valeo", "auto", "mechanical", "electrical", "production", "avery dennison", "plant", "manufacturing", "quality", "design", "maintenance"])
+            ]
+        elif c_str in ["freshers", "fresher", "intern"]:
+            filtered = [
+                j for j in filtered
+                if "fresh" in str(j.get("experience", "")).lower()
+                or "0-1" in str(j.get("experience", "")).lower()
+                or "0-2" in str(j.get("experience", "")).lower()
+                or "intern" in str(j.get("title", "")).lower()
+                or any(b in str(j.get("batch", "")) for b in ["2024", "2025", "2026"])
+            ]
+    if city:
+        city_lower = str(city).lower().strip()
+        filtered = [
+            j for j in filtered
+            if city_lower in str(j.get("location", "")).lower()
+            or city_lower in str(j.get("city", "")).lower()
+        ]
+
+    total_matched = len(filtered)
+    start_idx = max(0, (page - 1) * limit)
+    end_idx = start_idx + limit
+    page_items = filtered[start_idx:end_idx]
+    return page_items, total_matched
+
+
+def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None, page=1, return_total=False):
     """
     Retrieves recently posted engineering and tech jobs in Tamil Nadu (Chennai, Coimbatore, Madurai, Trichy, Salem, Hosur, etc.)
     and verified Remote positions open to TN candidates.
+    Supports category filtering, city filtering, and pagination.
     Uses intelligent caching (30-min TTL) unless force_refresh is True.
     """
     now_ts = time.time()
@@ -1511,7 +1558,10 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
             cached_jobs = cached.get("jobs", [])
             if cached_jobs and (now_ts - cached_ts < 1800):
                 print(f"[TN Radar] Using cached Tamil Nadu jobs ({len(cached_jobs)} available, TTL: {int(1800 - (now_ts - cached_ts))}s remaining)")
-                return cached_jobs[:limit]
+                page_items, total_matched = _filter_and_paginate_tn_jobs(cached_jobs, limit=limit, category=category, city=city, page=page)
+                if return_total:
+                    return page_items, total_matched
+                return page_items
         except Exception as e:
             print(f"[TN Radar] Cache read warning: {e}")
 
@@ -1768,31 +1818,49 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
     except Exception as e:
         print(f"[TN Radar] Failed to write cache: {e}")
 
-    print(f"[TN Radar] Found {len(collected)} verified Tamil Nadu jobs.")
-    return collected[:limit]
+    page_items, total_matched = _filter_and_paginate_tn_jobs(collected, limit=limit, category=category, city=city, page=page)
+    print(f"[TN Radar] Found {len(collected)} verified Tamil Nadu jobs (Matched: {total_matched}).")
+    if return_total:
+        return page_items, total_matched
+    return page_items
 
 
-def format_tamil_nadu_telegram_digest(jobs, max_chars=3800):
+def format_tamil_nadu_telegram_digest(jobs, max_chars=3800, category=None, current_page=1, total_jobs=None):
     """
     Formats recently posted Tamil Nadu jobs into clean, high-aesthetic HTML chunks
-    with batch year & experience badges, direct links, and an inline keyboard.
+    with batch year & experience badges, direct links, 1-tap prep/note/cold-email buttons,
+    category filter chips, pagination, and WebApp live board link.
     Returns (chunks: list[str], reply_markup: InlineKeyboardMarkup).
     """
+    cat_labels = {
+        "tech": "💻 IT & Software",
+        "govt": "🏛️ Govt & TNPSC",
+        "core": "🏢 Core Engineering & Auto",
+        "freshers": "🎓 Freshers (0-1 yrs)",
+    }
+    cat_name = cat_labels.get(str(category).lower().strip()) if category else None
+
     if not jobs:
+        sub_info = f" in <b>{cat_name}</b>" if cat_name else ""
         msg = (
-            "🌟 <b>TAMIL NADU JOB RADAR</b> 🇮🇳\n\n"
-            "⚠️ No recent Tamil Nadu jobs found in this sweep.\n"
-            "Try running <code>/radar</code> for all-India tech roles, or refresh again in a few minutes."
+            f"🌟 <b>TAMIL NADU JOB RADAR</b> 🇮🇳\n\n"
+            f"⚠️ No active jobs currently listed{sub_info}.\n"
+            "Tap <b>All Jobs</b> or <b>Refresh</b> below to see fresh openings across Chennai, Coimbatore, and Remote."
         )
         markup = InlineKeyboardMarkup()
         markup.row(
-            InlineKeyboardButton(text="🔄 Refresh TN Jobs", callback_data="tnjobs:refresh"),
+            InlineKeyboardButton(text="🔄 All TN Jobs", callback_data="tnjobs:all"),
             InlineKeyboardButton(text="📡 All India Radar", callback_data="radar")
+        )
+        markup.row(
+            InlineKeyboardButton(text="🌐 Open Live Job Board", url="https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/")
         )
         return [msg], markup
 
+    cat_badge = f" • [{cat_name}]" if cat_name else ""
+    page_info = f" (Page {current_page})" if (current_page > 1 or (total_jobs and total_jobs > len(jobs))) else ""
     header = (
-        "🌟 <b>TAMIL NADU FRESH JOB RADAR</b> 🇮🇳\n"
+        f"🌟 <b>TAMIL NADU FRESH JOB RADAR</b> 🇮🇳{cat_badge}{page_info}\n"
         "📍 <i>Targeting: Chennai, Coimbatore, Madurai, Trichy, Salem & Remote</i>\n"
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
     )
@@ -1835,19 +1903,59 @@ def format_tamil_nadu_telegram_digest(jobs, max_chars=3800):
 
     # Attach interactive keyboard
     markup = InlineKeyboardMarkup()
-    top_job = jobs[0]
-    top_link = (top_job.get("link") or top_job.get("raw_link") or "").strip()
-    top_comp = str(top_job.get("company", "Top Job"))[:16]
-    if top_link.startswith("http"):
-        markup.row(InlineKeyboardButton(text=f"🚀 Apply to #1: {top_comp}", url=top_link))
+    top_job = jobs[0] if jobs else None
 
+    if top_job:
+        top_link = (top_job.get("link") or top_job.get("raw_link") or "").strip()
+        top_comp = str(top_job.get("company", "Top Job")).strip()
+        top_role = str(top_job.get("title", "Software Engineer")).strip()
+        top_skills = top_job.get("skills") or []
+
+        if top_link.startswith("http"):
+            markup.row(InlineKeyboardButton(text=f"🚀 Apply to #1: {top_comp[:18]}", url=top_link))
+
+        # 1-Tap Action Buttons for Top Job
+        try:
+            import hashlib
+            from bot_optimizer import store_prep_cache, store_note_cache, store_email_cache
+            prep_hash = hashlib.md5(f"tn_p_{top_comp}_{top_role}".encode()).hexdigest()[:8]
+            note_hash = hashlib.md5(f"tn_n_{top_comp}_{top_role}".encode()).hexdigest()[:8]
+            email_hash = hashlib.md5(f"tn_e_{top_comp}_{top_role}".encode()).hexdigest()[:8]
+
+            store_prep_cache(prep_hash, {"company": top_comp, "role": top_role, "skills": top_skills})
+            store_note_cache(note_hash, f"Hi! I noticed the {top_role} opening at {top_comp} in Tamil Nadu. With experience in software development, I would love to connect and learn more about your engineering team!")
+            store_email_cache(email_hash, {"company": top_comp, "role": top_role, "skills": top_skills})
+
+            markup.row(
+                InlineKeyboardButton(text="💡 Prep #1", callback_data=f"prep:{prep_hash}"),
+                InlineKeyboardButton(text="💬 Note #1", callback_data=f"note:{note_hash}"),
+                InlineKeyboardButton(text="✉️ Email #1", callback_data=f"email:{email_hash}")
+            )
+        except Exception:
+            pass
+
+    # Quick category filter chips
     markup.row(
-        InlineKeyboardButton(text="🔄 Refresh TN Jobs", callback_data="tnjobs:refresh"),
-        InlineKeyboardButton(text="📡 All India Radar", callback_data="radar")
+        InlineKeyboardButton(text="💻 Tech / IT", callback_data="tnjobs:tech"),
+        InlineKeyboardButton(text="🏛️ Govt / MRB", callback_data="tnjobs:govt"),
+        InlineKeyboardButton(text="🎓 Freshers", callback_data="tnjobs:freshers")
     )
+
+    # Pagination & Refresh row
+    nav_buttons = []
+    cat_tag = category or "all"
+    if current_page > 1:
+        nav_buttons.append(InlineKeyboardButton(text="⬅️ Prev", callback_data=f"tnjobs:p:{current_page - 1}:{cat_tag}"))
+    nav_buttons.append(InlineKeyboardButton(text="🔄 Refresh TN Jobs", callback_data=f"tnjobs:refresh:{cat_tag}"))
+    if total_jobs and (current_page * len(jobs) < total_jobs):
+        nav_buttons.append(InlineKeyboardButton(text="➡️ Next", callback_data=f"tnjobs:p:{current_page + 1}:{cat_tag}"))
+    if nav_buttons:
+        markup.row(*nav_buttons)
+
+    # Web Board & Radar row
     markup.row(
-        InlineKeyboardButton(text="📢 National Drives", callback_data="drives"),
-        InlineKeyboardButton(text="📊 Market Analytics", callback_data="analytics")
+        InlineKeyboardButton(text="🌐 Open Live Job Board", url="https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/"),
+        InlineKeyboardButton(text="📡 All India Radar", callback_data="radar")
     )
 
     return chunks, markup
