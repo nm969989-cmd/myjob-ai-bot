@@ -1520,10 +1520,10 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False):
     seen_links = set()
 
     # 0. Load high-confidence verified Tamil Nadu jobs from tn-live-jobs (Zero-Bot-Block ATS + TN Govt)
-    tn_live_json = os.path.join(os.path.dirname(__file__), "tn-live-jobs", "data", "jobs.json")
+    tn_live_json = os.path.abspath(os.path.join(os.path.dirname(__file__), "tn-live-jobs", "data", "jobs.json"))
     if os.path.exists(tn_live_json):
         try:
-            with open(tn_live_json, "r", encoding="utf-8") as f:
+            with open(tn_live_json, "r", encoding="utf-8-sig") as f:
                 tdata = json.load(f)
             for j in tdata.get("jobs", []):
                 link = normalize_job_url(j.get("url") or "")

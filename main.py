@@ -6433,6 +6433,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 "remoteok": "🌴 REMOTEOK"
             }
 
+            import string
             messages = []
             for source, src_jobs in grouped.items():
                 s_key = source.lower().replace(" ", "")
@@ -6451,7 +6452,6 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                     t_company = company[:25] + "..." if len(company) > 25 else company
                     t_desc = desc[:150] + "..." if len(desc) > 150 else desc
                     
-                    from datetime import datetime
                     time_display = date_str
                     if date_str and len(date_str) >= 10:
                         try:
@@ -6466,7 +6466,6 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                         except Exception:
                             pass
 
-                    import random, string
                     if "id" not in j:
                         j["id"] = "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
                     job_id = j["id"]
