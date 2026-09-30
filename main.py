@@ -39,6 +39,10 @@ from bot_optimizer import (
     generate_linkedin_outreach_note,
     record_learned_qa,
     calculate_skill_match_score,
+    analyze_jd_skill_gap,
+    format_skill_gap_report,
+    store_gap_cache,
+    get_gap_cache,
     is_job_link_alive,
     generate_fast_interview_cheat_sheet,
     generate_market_analytics_report,
@@ -71,6 +75,8 @@ _INTERVIEW_PREP_CACHE = {}
 _LINKEDIN_NOTE_CACHE = {}
 # Global in-memory cache for 1-Tap Cold Outreach Email button callbacks (capped to 500 items)
 _COLD_EMAIL_CACHE = {}
+# Global in-memory cache for CareerOps 3-Bucket Skill Gap callbacks (capped to 500 items)
+_SKILL_GAP_CACHE = {}
 
 
 class LoggerWriter:
@@ -3898,7 +3904,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                         f"🎓 <b>Batch:</b> {batch_val}\n"
                         f"💼 <b>Experience:</b> {exp_val}\n"
                         f"💰 <b>Salary:</b> {sal_val}\n"
-                        f"🎯 <b>Match:</b> {match_badge}\n"
+                        f"🎯 <b>Match:</b> {match_badge} • <b>Conviction:</b> {match_data.get('star_rating', 4.2)}/5.0 ⭐\n"
                         f"📡 <b>Source:</b> <a href=\"{html.escape(str(channel_post_url))}\">@{html.escape(str(channel_name))}</a>\n"
                         f"━━━━━━━━━━━━━━━━━━━━━━"
                     )
@@ -3913,6 +3919,19 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     }
                     if len(_INTERVIEW_PREP_CACHE) > 500:
                         _INTERVIEW_PREP_CACHE.pop(next(iter(_INTERVIEW_PREP_CACHE)))
+
+                    # CareerOps 3-Bucket Skill Gap Cache
+                    _SKILL_GAP_CACHE[prep_hash] = match_data
+                    store_gap_cache(prep_hash, match_data)
+                    if len(_SKILL_GAP_CACHE) > 500:
+                        _SKILL_GAP_CACHE.pop(next(iter(_SKILL_GAP_CACHE)))
+
+                    # 1-Tap Cold Outreach Email Cache
+                    _COLD_EMAIL_CACHE[prep_hash] = {
+                        "company": details.get("company", "Hiring Organization"),
+                        "role": details.get("role", "Software Engineer"),
+                        "skills": matched_list or match_data.get("job_skills", [])
+                    }
 
                     # 1-Tap LinkedIn Outreach Note Callback Cache
                     note_hash = hashlib.md5(f"note_{details.get('company','')}_{details.get('role','')}".encode()).hexdigest()[:8]
@@ -3932,7 +3951,11 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     )
                     markup.row(
                         InlineKeyboardButton("💡 Interview Prep", callback_data=f"prep:{prep_hash}"),
-                        InlineKeyboardButton("💬 LinkedIn Note", callback_data=f"note:{note_hash}")
+                        InlineKeyboardButton("📊 Skill Gap", callback_data=f"gap:{prep_hash}")
+                    )
+                    markup.row(
+                        InlineKeyboardButton("💬 LinkedIn Note", callback_data=f"note:{note_hash}"),
+                        InlineKeyboardButton("✉️ 1-Tap Pitch", callback_data=f"email:{prep_hash}")
                     )
                     markup.row(
                         InlineKeyboardButton("📢 View Channel Post", url=channel_post_url),
@@ -5902,6 +5925,30 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 bot.send_message(chat_id, re.sub(r'<[^>]+>', '', pitch), parse_mode=None)
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Unable to generate cold outreach email: {e}")
+
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("gap:"))
+    def handle_skill_gap_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        try:
+            bot.answer_callback_query(call.id, text="📊 Analyzing ATS Skill Gaps...")
+        except Exception:
+            pass
+
+        try:
+            from bot_optimizer import get_gap_cache, format_skill_gap_report, get_prep_cache
+            gap_key = call.data.split(":", 1)[1]
+            gap_info = _SKILL_GAP_CACHE.get(gap_key) or get_gap_cache(gap_key) or {}
+            prep_info = _INTERVIEW_PREP_CACHE.get(gap_key) or get_prep_cache(gap_key) or {}
+            company = prep_info.get("company", "Hiring Organization")
+            role = prep_info.get("role", "Software Engineer")
+            report = format_skill_gap_report(company, role, gap_info)
+            try:
+                bot.send_message(chat_id, report, parse_mode="HTML")
+            except Exception:
+                bot.send_message(chat_id, re.sub(r'<[^>]+>', '', report), parse_mode=None)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ Unable to generate skill gap report: {e}")
 
 
     @bot.message_handler(commands=['analytics', 'metrics'])
