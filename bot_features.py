@@ -10,6 +10,25 @@ from fpdf import FPDF
 import time
 from playwright.sync_api import sync_playwright
 
+# Load .env here, before any os.getenv at module scope. This module reads
+# GROQ_MODEL at import time, so it previously depended on some other module
+# (main.py / job_radar.py) calling load_dotenv first — otherwise a .env value
+# was silently ignored and the hardcoded default was used instead.
+# override=False keeps real environment variables (e.g. GitHub Actions secrets)
+# authoritative over a stray local .env file.
+try:
+    from dotenv import load_dotenv as _load_dotenv
+    # load_dotenv() with no path resolves relative to the *calling file*, which
+    # here is this module's directory — not the process cwd — so point it at the
+    # repo root explicitly and fall back to normal discovery.
+    _module_env = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    if os.path.isfile(_module_env):
+        _load_dotenv(_module_env, override=False)
+    else:
+        _load_dotenv(override=False)
+except Exception:
+    pass
+
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 def _sanitize_latin1(text):

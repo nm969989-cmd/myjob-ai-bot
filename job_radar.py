@@ -31,6 +31,8 @@ from bot_optimizer import (
     extract_eligible_batch,
     extract_experience_level,
     format_eligibility_badge,
+    _clean_str,
+    _safe_amount,
 )
 
 if sys.platform == "win32":
@@ -40,7 +42,9 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-load_dotenv(override=True)
+# override=False: a real environment variable (CI secret) must always win over a
+# stray local .env file, otherwise a developer's checkout silently shadows prod.
+load_dotenv(override=False)
 
 # ──────────────────────────────────────────────────
 # 🎯  FILTER & LOCATION CONFIGURATION
@@ -106,7 +110,12 @@ FILTER_YEAR = 2025
 _RADAR_KW_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(kw) for kw in sorted(RADAR_KEYWORDS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
 _FOREIGN_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(f) for f in sorted(EXCLUDED_FOREIGN_LOCATIONS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
 _REMOTE_RESTRICTIONS_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(r) for r in sorted(EXCLUDED_REMOTE_RESTRICTIONS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
-_TN_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(tn) for tn in sorted(TAMIL_NADU_LOCATIONS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
+_TN_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(tn) for tn in sorted(TAMIL_NADU_LOCATIONS, key=len, reverse=True) if tn.lower() != 'tn') + r')\b', re.IGNORECASE)
+# "TN" on its own is ambiguous: it is the ISO code for Tamil Nadu but also the US
+# postal abbreviation for Tennessee ("Memphis, TN", "Knoxville, TN"). Only treat a
+# bare "TN" as Tamil Nadu when the string also signals India.
+_TN_BARE_REGEX = re.compile(r'(?:^|[\s,(/])tn(?:$|[\s,)/])', re.IGNORECASE)
+_INDIA_HINT_REGEX = re.compile(r'\b(?:india|indian|in\b|bangalore|bengaluru|hyderabad|pune|mumbai|delhi|chennai|coimbatore|madurai|trichy|trichy|hosur|salem|tamil nadu)\b', re.IGNORECASE)
 _INDIA_REGEX = re.compile(r'\b(?:' + '|'.join(re.escape(i) for i in sorted(INDIA_OTHER_LOCATIONS, key=len, reverse=True)) + r')\b', re.IGNORECASE)
 _REMOTE_KW_REGEX = re.compile(r'\b(?:remote|work from home|wfh|worldwide|global|anywhere|telecommute)\b', re.IGNORECASE)
 
@@ -403,8 +412,11 @@ def classify_location(location_str, context_text=""):
 
     # 2. Check for Tamil Nadu (Highest Priority — Tier 1)
     tn_match = _TN_REGEX.search(loc_lower) or _TN_REGEX.search(ctx_lower)
+    matched_kw = tn_match.group(0).lower() if tn_match else ""
+    if not tn_match and _TN_BARE_REGEX.search(loc_lower) and _INDIA_HINT_REGEX.search(combined):
+        tn_match = True
+        matched_kw = "tn"
     if tn_match:
-        matched_kw = tn_match.group(0).lower()
         matched_name = matched_kw.title() if matched_kw not in ["tn", "tamilnadu"] else "Tamil Nadu"
         if loc_clean and loc_clean.lower() != "india" and not _FOREIGN_REGEX.search(loc_lower):
             display = f"{loc_clean} ⭐"
@@ -430,6 +442,55 @@ def classify_location(location_str, context_text=""):
 
     # Otherwise, reject unknown or foreign location
     return False, 99, "", False
+
+def tn_live_apply_url(record: dict) -> str:
+    """Extract the apply URL from a tn-live-jobs record, tolerating schema drift.
+
+    The Node engine emits `apply_url`; earlier Python readers expected `url`.
+    Falling back across both means a schema change degrades to "no data" loudly
+    rather than silently ingesting zero jobs while reporting success.
+    """
+    for key in ("apply_url", "url", "job_url", "job_url_direct", "link"):
+        value = _clean_str(record.get(key))
+        if value.startswith(("http://", "https://")):
+            return value
+    return ""
+
+
+def tn_live_posted_at(record: dict) -> str:
+    """Return an ISO date from whichever timestamp field the record carries."""
+    for key in ("posted_at", "date_posted", "created_at", "published_at"):
+        value = _clean_str(record.get(key))
+        if not value:
+            continue
+        head = value.split("T")[0].split(" ")[0]
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", head):
+            return head
+    return ""
+
+
+def tn_live_description(record: dict) -> str:
+    """Best-effort description across known field names."""
+    for key in ("description", "summary", "text", "snippet"):
+        value = _clean_str(record.get(key))
+        if value:
+            return value
+    return _clean_str(record.get("title"))
+
+
+def tn_live_salary(record: dict) -> str:
+    """Return a salary string, dropping the obvious junk the scraper emitted."""
+    for key in ("salary", "salary_raw", "salary_text"):
+        value = _clean_str(record.get(key))
+        if not value:
+            continue
+        # tn-live-jobs has emitted values like "RS22" for unparsed postings.
+        if re.fullmatch(r"[A-Za-z]{1,4}\d{1,4}", value):
+            continue
+        if re.search(r"\d{3}", value):
+            return value
+    return ""
+
 
 def _make_job(title, company, link, location, source, date_posted="", description="", priority_tier=2, is_tn=False, direct_link="", salary="", hr_email="", batch="", experience=""):
     if not date_posted:
@@ -1571,10 +1632,11 @@ def scrape_simplify_jobs(max_results=8):
                 norm_loc = "Remote"
                 is_tn = False
 
+            # The SimplifyJobs feed is overwhelmingly US/Canada onsite roles
+            # (2,384 live rows, only ~22 mentioning India). Without this the
+            # radar alerts on Austin TX / Toronto jobs the user cannot apply to.
             if not is_valid:
-                is_valid = True
-                tier = 3
-                norm_loc = loc[:30]
+                continue
 
             job_dict = _make_job(
                 title=j.get("role", "Software Engineer"),
@@ -1800,24 +1862,38 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
         try:
             with open(tn_live_json, "r", encoding="utf-8-sig") as f:
                 tdata = json.load(f)
-            for j in tdata.get("jobs", []):
-                link = normalize_job_url(j.get("url") or "")
-                if link and link not in seen_links:
-                    seen_links.add(link)
-                    city = j.get("city") or "Tamil Nadu"
-                    collected.append(_make_job(
-                        title=j.get("title", ""),
-                        company=j.get("company", "Verified Employer"),
-                        link=link,
-                        location=f"{city}, Tamil Nadu ⭐",
-                        source=f"TN Live ({j.get('source', 'Verified')})",
-                        date_posted=j.get("date_posted") or datetime.now().strftime("%Y-%m-%d"),
-                        description=j.get("summary") or j.get("title") or "",
-                        priority_tier=1,
-                        is_tn=True,
-                        salary=j.get("salary_raw") or ""
-                    ))
-            print(f"[TN Radar] 🌟 Loaded {len(tdata.get('jobs', []))} verified live jobs from tn-live-jobs suite.")
+            raw_records = tdata.get("jobs", [])
+            ingested = 0
+            skipped_no_link = 0
+            for j in raw_records:
+                link = normalize_job_url(tn_live_apply_url(j))
+                if not link:
+                    skipped_no_link += 1
+                    continue
+                if link in seen_links:
+                    continue
+                seen_links.add(link)
+                ingested += 1
+                city = _clean_str(j.get("city"), "Tamil Nadu")
+                collected.append(_make_job(
+                    title=_clean_str(j.get("title"), "Untitled role"),
+                    company=_clean_str(j.get("company"), "Employer not listed"),
+                    link=link,
+                    location=f"{city}, Tamil Nadu ⭐",
+                    source=f"TN Live ({_clean_str(j.get('source'), 'Verified')})",
+                    date_posted=tn_live_posted_at(j) or datetime.now().strftime("%Y-%m-%d"),
+                    description=tn_live_description(j),
+                    priority_tier=1,
+                    is_tn=True,
+                    salary=tn_live_salary(j),
+                    experience=_clean_str(j.get("experience")),
+                    batch=_clean_str(j.get("qualification")),
+                ))
+            # The old message printed the raw record count regardless of how many were
+            # actually ingested, so a total schema mismatch looked like a healthy run.
+            print(f"[TN Radar] 🌟 Ingested {ingested}/{len(raw_records)} verified live jobs from tn-live-jobs suite.")
+            if skipped_no_link:
+                print(f"[TN Radar] ⚠️  {skipped_no_link} tn-live-jobs records had no usable apply_url and were dropped.")
         except Exception as e:
             print(f"[TN Radar] Error reading tn-live-jobs data: {e}")
 

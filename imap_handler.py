@@ -106,7 +106,9 @@ def get_latest_otp(bot_email, bot_password, search_term, timeout=60):
 def scan_for_interview_invites():
     import os
     from dotenv import load_dotenv
-    load_dotenv(override=True)
+    # override=False: a real environment variable (CI secret) must always win over
+    # a stray local .env file, otherwise a developer's checkout silently shadows prod.
+    load_dotenv(override=False)
     
     bot_email = os.getenv("BOT_EMAIL")
     # Match the env var name used everywhere else (main.py, GitHub Actions secret).

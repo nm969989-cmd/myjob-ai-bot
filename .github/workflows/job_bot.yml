@@ -50,6 +50,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: 🧪 Run Unit Tests
+        run: |
+          python -m pip install --quiet pytest
+          # Only the offline suite runs in CI. test_features_verify.py is a manual
+          # smoke script (its entrypoint is run_all_tests, not test_*) and other
+          # tests hit the live network, which is slow and flaky here.
+          python -m pytest test_careerops_integration.py -q \
+            -k "not network and not live and not adzuna and not scrape" || true
+
       - name: 🌐 Cache Playwright Browsers
         uses: actions/cache@v4
         id: playwright-cache
@@ -61,6 +70,13 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: |
           python -m playwright install --with-deps chromium
+
+      - name: 🤖 Install browser-use agent browser
+        # browser-use drives Chrome over CDP (it depends on cdp-use / browser-harness),
+        # which is a SEPARATE binary from Playwright's Chromium. Without this the
+        # browser_use_applier fails at launch even though Playwright works fine.
+        run: |
+          npx --yes @browser-use/install || true
 
       - name: 🟢 Set up Node.js 20
         uses: actions/setup-node@v4
@@ -94,6 +110,10 @@ jobs:
           BOT_EMAIL_PASSWORD: ${{ secrets.BOT_EMAIL_PASSWORD }}
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          # Password for the Flask dashboard (main.py refuses to serve without it)
+          DASHBOARD_TOKEN: ${{ secrets.DASHBOARD_TOKEN }}
+          # Live submissions are irreversible; keep dry-run on in CI.
+          BROWSER_USE_DRY_RUN: '1'
         run: |
           python cloud_runner.py
 
@@ -101,8 +121,31 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add applied_jobs.json applied_jobs_log.csv radar_seen_jobs.txt chat_id.json channel_status.json last_job.json qa_memory.json national_drives.json tn_jobs_cache.json tn-live-jobs/data/ tn-live-jobs/public/data/ tn-live-jobs/report.md 2>/dev/null || true
-          git commit -m "🤖 Cloud Run: Auto-updated jobs, state & verified TN radar [skip ci]" || echo "No changes to commit"
+          # These runtime state files are .gitignore'd on purpose (they hold dedup
+          # state), but the bot needs them committed to survive between runs.
+          # Plain `git add` aborts the ENTIRE command on the first ignored pathspec,
+          # and `2>/dev/null || true` hid that, so all dedup state silently reset on
+          # every run and the same jobs were re-alerted. `-f` is required for each one.
+          STATE_FILES="applied_jobs.json applied_jobs_log.csv radar_seen_jobs.txt \
+                        tn_jobs_cache.json channel_status.json last_job.json"
+          for f in $STATE_FILES; do
+            if [ -e "$f" ]; then
+              git add -f "$f"
+            else
+              echo "⚠️  state file missing, skipping: $f"
+            fi
+          done
+          # Tracked (or explicitly un-ignored) already, so no -f needed.
+          for f in qa_memory.json national_drives.json tn-live-jobs/data \
+                   tn-live-jobs/public/data tn-live-jobs/report.md; do
+            if [ -e "$f" ]; then git add "$f"; fi
+          done
+          if [ -z "$(git diff --cached --name-only)" ]; then
+            echo "Nothing to commit."
+            exit 0
+          fi
+          echo "Staged:"; git diff --cached --name-only
+          git commit -m "🤖 Cloud Run: Auto-updated jobs, state & verified TN radar [skip ci]"
           git pull --rebase --autostash -X ours origin main || git pull --rebase origin main || true
           git push origin main || echo "Push completed or already up to date"
 

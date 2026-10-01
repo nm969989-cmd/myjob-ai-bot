@@ -9,6 +9,7 @@ import html
 import time
 import random
 import json
+import math
 import requests
 from typing import Optional, Dict, List, Any
 
@@ -2601,7 +2602,6 @@ def dispatch_walkin_alerts(bot=None, chat_id=None, city=None, once_per_day=True,
 # Google Maps navigation links, and ranks in-person walk-ins by proximity.
 # ─────────────────────────────────────────────────────────────────
 
-import math
 
 def haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """
@@ -2856,12 +2856,14 @@ def get_tn_scraped_live_jobs() -> list:
     import os
     import json
 
+    # base_dir is already the repo root, so a ".." prefix resolved one level ABOVE
+    # the repo and every candidate missed, silently returning [] on every call.
     base_dir = os.path.dirname(os.path.abspath(__file__))
     candidates = [
-        os.path.abspath(os.path.join(base_dir, "..", "tn-live-jobs", "public", "data", "jobs.json")),
-        os.path.abspath(os.path.join(base_dir, "..", "tn-live-jobs", "data", "jobs.json")),
-        os.path.abspath(os.path.join(base_dir, "..", "tn-live-jobs", "work", "validated.json")),
-        os.path.abspath(os.path.join(base_dir, "..", "tn-live-jobs", "work", "scraped.json")),
+        os.path.abspath(os.path.join(base_dir, "tn-live-jobs", "data", "jobs.json")),
+        os.path.abspath(os.path.join(base_dir, "tn-live-jobs", "public", "data", "jobs.json")),
+        os.path.abspath(os.path.join(base_dir, "tn-live-jobs", "work", "validated.json")),
+        os.path.abspath(os.path.join(base_dir, "tn-live-jobs", "work", "scraped.json")),
     ]
 
     for p in candidates:
@@ -3912,6 +3914,37 @@ _SIMPLIFY_CACHE = {
     "data": [],
     "last_fetched": 0
 }
+
+def _clean_str(value, default: str = "") -> str:
+    """Normalize a pandas/JSON cell to a clean string.
+
+    float('nan') stringifies to the literal "nan", which is truthy and would
+    otherwise leak into user-facing fields as a company called "nan".
+    """
+    if value is None:
+        return default
+    text = str(value).strip()
+    if not text or text.lower() == "nan":
+        return default
+    return text
+
+
+def _safe_amount(value) -> Optional[int]:
+    """Coerce a JobSpy/pandas amount cell to a positive int, or None.
+
+    pandas yields float('nan') for missing amounts, and float('nan') is truthy,
+    so a bare `if value:` guard lets int(nan) raise and kill the whole query.
+    """
+    if value is None:
+        return None
+    try:
+        num = float(value)
+    except (TypeError, ValueError):
+        return None
+    if math.isnan(num) or math.isinf(num) or num <= 0:
+        return None
+    return int(num)
+
 
 def fetch_simplify_jobs(keyword=None, limit=8, force_refresh=False) -> list:
     """

@@ -7,6 +7,14 @@ vault.json
 instahyre_auth.json
 chrome_profile/
 chrome_profile_session/
+# Plaintext ATS account passwords written by enterprise_adapters.py
+enterprise_vault.txt
+# Playwright storage_state (live session cookies) written by main.py
+state.json
+# Draft output the bot writes at runtime
+pending_qa.json
+cover_letters/
+screenshots/
 
 # Personal Profile & Application Logs
 profile.json
@@ -60,10 +68,9 @@ temp_js.js
 videos/
 .bot_profile_set
 
-# Temporary fix / scratch / helper scripts
-test_*.py
-!test_features_verify.py
-!test_careerops_integration.py
+# Temporary fix / scratch / helper scripts.
+# Note: test_*.py is deliberately NOT ignored here - CI runs pytest, so new test
+# files must be trackable by default. One-off scripts are listed by name below.
 scratch_*.py
 fix_*.py
 safe_fix.py
@@ -83,6 +90,12 @@ check_instahyre.py
 graphify-out/.graphify_*
 graphify-out/cache/
 graphify-out/20*
+# Generated graph artifacts (~1 MB, regenerated on demand, drifts every commit)
+graphify-out/graph.json
+graphify-out/graph.html
+graphify-out/manifest.json
+graphify-out/GRAPH_REPORT.md
+graphify-out/cost.json
 
 # TN Live Jobs artifacts
 tn-live-jobs/node_modules/

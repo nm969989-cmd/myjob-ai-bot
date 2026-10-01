@@ -19,7 +19,9 @@ START_TIME = time.time()
 MAX_EXECUTION_SECONDS = 25 * 60
 
 # Ensure environment is loaded
-load_dotenv(override=True)
+# override=False: a real environment variable (CI secret) must always win over a
+# stray local .env file, otherwise a developer's checkout silently shadows prod.
+load_dotenv(override=False)
 
 # Ensure UTF-8 output
 if sys.platform == "win32":

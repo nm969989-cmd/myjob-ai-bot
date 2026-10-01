@@ -4,7 +4,9 @@ import email
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv(override=True)
+# override=False: a real environment variable (CI secret) must always win over a
+# stray local .env file, otherwise a developer's checkout silently shadows prod.
+load_dotenv(override=False)
 
 BOT_EMAIL = os.getenv("BOT_EMAIL")
 BOT_EMAIL_PASSWORD = os.getenv("BOT_EMAIL_PASSWORD")

@@ -6,6 +6,8 @@ import random
 import requests
 import csv
 import html
+import hmac
+import secrets
 
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -4286,6 +4288,110 @@ import time as _time_module
 _server_start_time = _time_module.time()  # Track when server started (for uptime)
 app = Flask(__name__)
 
+# ─────────────────────────────────────────────────────────────────
+# 🔒  DASHBOARD AUTHENTICATION
+# Every route below drives a real job-application session (it can overwrite
+# resume.pdf, inject Google session cookies, launch mass-apply campaigns and
+# read the ATS log). The server binds 0.0.0.0, so without this anyone who can
+# reach the host owns the bot.
+# ─────────────────────────────────────────────────────────────────
+DASHBOARD_TOKEN = str(os.getenv("DASHBOARD_TOKEN", "")).strip()
+
+# Kept reachable without a token so the hosting platform's health probe still
+# succeeds. None of these expose job, profile, credential or browser data.
+_DASHBOARD_OPEN_PATHS = {"/", "/healthz", "/favicon.ico"}
+
+
+def _dashboard_health_response():
+    return jsonify({
+        "service": "myjob-ai-bot",
+        "status": "up",
+        "dashboard": "locked" if DASHBOARD_TOKEN else "disabled",
+    }), 200
+
+
+@app.route("/healthz")
+def _dashboard_healthz():
+    return _dashboard_health_response()
+
+
+def _dashboard_token_is_valid(candidate: str) -> bool:
+    return bool(candidate) and hmac.compare_digest(candidate, DASHBOARD_TOKEN)
+
+
+def _extract_dashboard_token(req):
+    header = req.headers.get("X-Admin-Token", "")
+    if header:
+        return header.strip()
+    auth = req.headers.get("Authorization", "")
+    if auth.lower().startswith("bearer "):
+        return auth[7:].strip()
+    if req.args.get("token"):
+        return req.args.get("token", "").strip()
+    return ""
+
+
+def _dashboard_unauthorised(req):
+    """Return a challenge for browser navigations, JSON for API/XHR callers."""
+    wants_json = (
+        req.path.startswith("/api/")
+        or req.headers.get("X-Requested-With") == "XMLHttpRequest"
+        or req.accept_mimetypes.best == "application/json"
+    )
+    if wants_json:
+        return jsonify({"error": "unauthorized", "detail": "X-Admin-Token header required"}), 401
+    from flask import make_response
+    resp = make_response(
+        "<h1>401 &mdash; Dashboard locked</h1>"
+        "<p>Send the <code>X-Admin-Token</code> header, "
+        "<code>?token=</code> query parameter, or a <code>Authorization: Bearer</code> "
+        "header matching <code>DASHBOARD_TOKEN</code>.</p>",
+        401,
+    )
+    resp.headers["WWW-Authenticate"] = 'Bearer realm="myjob-dashboard"'
+    return resp
+
+
+@app.before_request
+def _enforce_dashboard_auth():
+    from flask import request
+
+    if request.method == "OPTIONS":
+        return None
+
+    if not DASHBOARD_TOKEN:
+        # Fail loudly and closed: an unset token must never mean "no auth".
+        app.logger.error(
+            "DASHBOARD_TOKEN is not set - refusing to serve any dashboard route. "
+            "Set it in .env or as a Space secret."
+        )
+        if request.path in _DASHBOARD_OPEN_PATHS:
+            return None
+        return (
+            jsonify({"error": "dashboard_disabled",
+                     "detail": "DASHBOARD_TOKEN is not configured on the server"}),
+            503,
+        )
+
+    if request.path in _DASHBOARD_OPEN_PATHS:
+        return None
+
+    if _dashboard_token_is_valid(_extract_dashboard_token(request)):
+        return None
+
+    app.logger.warning(
+        "Rejected unauthenticated dashboard request: %s %s from %s",
+        request.method, request.path, request.remote_addr,
+    )
+    return _dashboard_unauthorised(request)
+
+@app.after_request
+def _dashboard_security_headers(resp):
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resp.headers.setdefault("X-Frame-Options", "DENY")
+    resp.headers.setdefault("Referrer-Policy", "no-referrer")
+    return resp
+
 @app.route("/live")
 def live_handoff():
     if not HANDOFF_ACTIVE:
@@ -5690,6 +5796,7 @@ if bot:
             bot.send_message(chat_id, help_text, parse_mode=None)
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("walkin_detail:"))
+    @admin_only
     def handle_walkin_detail_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -5714,6 +5821,7 @@ if bot:
             bot.send_message(chat_id, f"⚠️ Error fetching walk-in detail: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("walkins"))
+    @admin_only
     def handle_walkins_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -5762,6 +5870,7 @@ if bot:
             bot.send_message(chat_id, f"⚠️ Walk-In error: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("nearme:"))
+    @admin_only
     def handle_nearme_callbacks(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -5825,6 +5934,7 @@ if bot:
         prompt_user_for_location(chat_id)
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("jobspy:"))
+    @admin_only
     def handle_jobspy_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -5849,6 +5959,7 @@ if bot:
             bot.send_message(chat_id, f"⚠️ JobSpy error: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("simplify:") or call.data == "simplify")
+    @admin_only
     def handle_simplify_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -5890,6 +6001,7 @@ if bot:
             bot.send_message(chat_id, f"⚠️ SimplifyJobs feed error: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data == "ats:analyze" or call.data.startswith("ats:") or call.data == "ats")
+    @admin_only
     def handle_ats_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -5923,6 +6035,7 @@ if bot:
             bot.send_message(chat_id, re.sub(r'<[^>]+>', '', guide), parse_mode=None, reply_markup=markup)
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("apply:"))
+    @admin_only
     def handle_apply_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -5958,8 +6071,19 @@ if bot:
                 try:
                     from browser_use_applier import BrowserUseJobApplier, BROWSER_USE_AVAILABLE
                     if BROWSER_USE_AVAILABLE and os.getenv("GEMINI_API_KEY"):
-                        applier = BrowserUseJobApplier()
+                        # Submitting is irreversible, so live mode is opt-in.
+                        # Default is dry-run: the agent fills the form, screenshots the
+                        # review page, and stops. Set BROWSER_USE_DRY_RUN=0 to submit.
+                        _bu_dry = os.getenv("BROWSER_USE_DRY_RUN", "1").strip() not in ("0", "false", "False", "no")
+                        applier = BrowserUseJobApplier(dry_run=_bu_dry)
                         res = applier.apply_sync(final_url, "Software Developer", "Target Employer")
+                        if res.get("status") == "dry_run":
+                            try:
+                                bot.send_message(chat_id, "🧪 <b>Dry run complete</b> — the form was filled but <b>not submitted</b>.\n\n"
+                                                         f"Steps: {res.get('steps_taken', 0)} · {res.get('duration_seconds', 0)}s\n\n"
+                                                         f"<i>{html.escape(str(res.get('message', ''))[:600])}</i>", parse_mode="HTML")
+                            except Exception:
+                                pass
                         if res.get("status") in ["success", "completed"]:
                             confirm_card = (
                                 f"🎉 <b>AI APPLICATION SUBMITTED!</b> 🚀\n"
@@ -5998,6 +6122,7 @@ if bot:
         Thread(target=run).start()
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("search:"))
+    @admin_only
     def handle_search_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -6048,6 +6173,7 @@ if bot:
             bot.send_message(chat_id, f"⚠️ Search error: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("drive_info:"))
+    @admin_only
     def handle_drive_detail_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -6071,6 +6197,7 @@ if bot:
             bot.send_message(chat_id, f"⚠️ Unable to load drive syllabus: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("oa:"))
+    @admin_only
     def handle_oa_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -6089,6 +6216,7 @@ if bot:
             bot.send_message(chat_id, f"⚠️ Unable to load OA syllabus: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("unalert:"))
+    @admin_only
     def handle_unalert_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -6124,6 +6252,7 @@ if bot:
                 bot.send_message(chat_id, re.sub(r'<[^>]+>', '', msg), parse_mode=None, reply_markup=markup)
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("alerts:"))
+    @admin_only
     def handle_alerts_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -6183,6 +6312,7 @@ if bot:
             bot.send_message(chat_id, re.sub(r'<[^>]+>', '', msg), parse_mode=None, reply_markup=markup)
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("prep:"))
+    @admin_only
     def handle_interview_prep_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -6207,6 +6337,7 @@ if bot:
             bot.send_message(chat_id, f"⚠️ Unable to generate interview cheat sheet: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("note:") or call.data.startswith("linote:"))
+    @admin_only
     def handle_linkedin_note_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -6239,6 +6370,7 @@ if bot:
             bot.send_message(chat_id, f"Note: {note}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("email:"))
+    @admin_only
     def handle_cold_email_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -6264,6 +6396,7 @@ if bot:
             bot.send_message(chat_id, f"⚠️ Unable to generate cold outreach email: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("gap:"))
+    @admin_only
     def handle_skill_gap_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
@@ -6567,8 +6700,19 @@ if bot:
                 try:
                     from browser_use_applier import BrowserUseJobApplier, BROWSER_USE_AVAILABLE
                     if BROWSER_USE_AVAILABLE and os.getenv("GEMINI_API_KEY"):
-                        applier = BrowserUseJobApplier()
+                        # Submitting is irreversible, so live mode is opt-in.
+                        # Default is dry-run: the agent fills the form, screenshots the
+                        # review page, and stops. Set BROWSER_USE_DRY_RUN=0 to submit.
+                        _bu_dry = os.getenv("BROWSER_USE_DRY_RUN", "1").strip() not in ("0", "false", "False", "no")
+                        applier = BrowserUseJobApplier(dry_run=_bu_dry)
                         res = applier.apply_sync(final_url, "Software Developer", "Target Employer")
+                        if res.get("status") == "dry_run":
+                            try:
+                                bot.send_message(chat_id, "🧪 <b>Dry run complete</b> — the form was filled but <b>not submitted</b>.\n\n"
+                                                         f"Steps: {res.get('steps_taken', 0)} · {res.get('duration_seconds', 0)}s\n\n"
+                                                         f"<i>{html.escape(str(res.get('message', ''))[:600])}</i>", parse_mode="HTML")
+                            except Exception:
+                                pass
                         
                         if res.get("status") in ["success", "completed"]:
                             confirm_card = (

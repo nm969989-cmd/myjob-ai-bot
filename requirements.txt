@@ -11,8 +11,15 @@ groq>=1.0.0
 openai>=1.0.0
 playwright-stealth>=1.0.6
 fpdf2
-python-jobspy
+python-jobspy==1.1.82
 notion-client
 psutil
-browser-use>=0.13.0
-langchain-google-genai>=4.0.0
+
+# NOTE: browser-use 0.13.x hard-pins 61 transitive dependencies (aiohttp==3.14.3,
+# google-genai==1.65.0, pydantic==2.13.5, mcp==2.1.1, ...). Do NOT relax the pins
+# above to >= ranges that conflict with those, and do NOT add langchain-google-genai:
+# it requires google-genai>=2.20.0 while browser-use pins ==1.65.0, so pip cannot
+# satisfy both and `pip install -r requirements.txt` fails outright.
+# browser_use.llm.google.ChatGoogle talks to Gemini without langchain, so nothing
+# here needs it. Requires Python >= 3.11.
+browser-use>=0.13.0,<0.14.0
