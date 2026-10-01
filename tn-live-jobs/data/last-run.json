@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "started_at": "2026-09-30T17:12:51.914Z",
-  "finished_at": "2026-09-30T17:18:50.767Z",
-  "duration_seconds": 181,
-  "validate_seconds": 166,
-  "trigger": "local run",
+  "started_at": "2026-10-01T19:28:57.727Z",
+  "finished_at": "2026-10-01T19:34:37.698Z",
+  "duration_seconds": 163,
+  "validate_seconds": 177,
+  "trigger": "GitHub Actions (push)",
   "keywords": [
     "software developer",
     "fresher",
@@ -29,21 +29,28 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 117,
-  "new_jobs": 54,
-  "removed_jobs": 54,
-  "login_required": 0,
+  "verified_jobs": 93,
+  "new_jobs": 78,
+  "removed_jobs": 78,
+  "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 117,
-    "loginRequired": 0,
-    "dead": 8,
-    "noSignal": 25,
+    "live": 93,
+    "loginRequired": 1,
+    "dead": 55,
+    "noSignal": 1,
     "redirected": 0,
-    "documents": 24,
+    "documents": 8,
     "unreachable": 0
   },
   "source_status": [
+    {
+      "id": "astrazeneca.com",
+      "label": "astrazeneca.com",
+      "tier": 1,
+      "status": "unreachable",
+      "detail": "HTTP 400 for https://astrazeneca.wd3.myworkdayjobs.com/wday/cxs/astrazeneca/Careers/jobs"
+    },
     {
       "id": "averydennison.com",
       "label": "Avery Dennison",
@@ -62,50 +69,64 @@
       "id": "coimbatore.nic.in",
       "label": "Coimbatore District Collectorate",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Coimbatore District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Coimbatore District portal"
     },
     {
       "id": "freshersworld.com",
       "label": "Freshersworld",
       "tier": 1,
-      "status": "ok",
-      "detail": "60 job(s) from 4 listing page(s)"
+      "status": "no_listings",
+      "detail": "0 job(s) from 4 listing page(s)"
     },
     {
       "id": "freshworks.com",
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "15 opening(s) in Tamil Nadu"
+      "detail": "16 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
       "label": "HCLTech",
       "tier": 1,
       "status": "blocked",
-      "detail": "no job records could be read from this site"
+      "detail": "headless browser unavailable in this environment"
     },
     {
       "id": "infosys.com",
       "label": "Infosys",
       "tier": 1,
-      "status": "blocked",
-      "detail": "no job records could be read from this site"
+      "status": "ok",
+      "detail": "1 job(s)"
+    },
+    {
+      "id": "kyndryl.com",
+      "label": "kyndryl.com",
+      "tier": 1,
+      "status": "unreachable",
+      "detail": "HTTP 400 for https://kyndryl.wd5.myworkdayjobs.com/wday/cxs/kyndryl/KyndrylProfessionalCareers/jobs"
     },
     {
       "id": "madurai.nic.in",
       "label": "Madurai District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "4 notice(s) on Madurai District portal"
+      "detail": "5 notice(s) on Madurai District portal"
+    },
+    {
+      "id": "paypal.com",
+      "label": "paypal.com",
+      "tier": 1,
+      "status": "unreachable",
+      "detail": "HTTP 400 for https://paypal.wd1.myworkdayjobs.com/wday/cxs/paypal/jobs/jobs"
     },
     {
       "id": "bosch.in",
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "15 opening(s) in Tamil Nadu"
+      "detail": "14 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -146,15 +167,15 @@
       "id": "tn.gov.in",
       "label": "TN Government - Job Opportunity",
       "tier": 1,
-      "status": "ok",
-      "detail": "4 government job notice(s)"
+      "status": "unreachable",
+      "detail": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed"
     },
     {
       "id": "mrb.tn.gov.in",
       "label": "TN Medical Services Recruitment Board (MRB)",
       "tier": 1,
-      "status": "ok",
-      "detail": "2 notification(s) on Medical Services Recruitment Board"
+      "status": "unreachable",
+      "detail": "fetch failed for https://www.mrb.tn.gov.in/: fetch failed"
     },
     {
       "id": "protnnetc.tn.gov.in",
@@ -167,8 +188,8 @@
       "id": "tnpsc.gov.in",
       "label": "TNPSC - Notifications",
       "tier": 1,
-      "status": "ok",
-      "detail": "43 TNPSC notification(s)"
+      "status": "unreachable",
+      "detail": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed"
     },
     {
       "id": "wipro.com",
@@ -209,24 +230,26 @@
       "id": "naukri.com",
       "label": "Naukri.com",
       "tier": 2,
-      "status": "ok",
-      "detail": "160 job(s) from 4 search page(s)"
+      "status": "blocked",
+      "detail": "Naukri returned no job cards to a headless browser either"
     }
   ],
   "per_source": {
-    "govt-tn": 55,
-    "company-careers": 62,
+    "govt-tn": 8,
+    "company-careers": 3,
     "tech-ats": 34,
-    "naukri": 160,
+    "naukri": 0,
     "apna": 97,
     "indeed": 0,
     "linkedin": 80
   },
   "dead_domains": {
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 201
+  "dropped_records": 27
 }
