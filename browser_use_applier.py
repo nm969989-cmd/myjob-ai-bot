@@ -33,9 +33,26 @@ try:
     from browser_use.llm.google import ChatGoogle
     from browser_use.browser.session import BrowserSession
     BROWSER_USE_AVAILABLE = True
+    _IMPORT_ERROR = None
 except Exception as e:
     BROWSER_USE_AVAILABLE = False
     _IMPORT_ERROR = str(e)
+
+# browser-use is intentionally absent from requirements.txt: it and
+# python-jobspy pin incompatible markdownify versions (==1.2.2 vs <0.14), so
+# they cannot be installed into the same environment. python-jobspy powers the
+# live scrapers, so it wins. Install browser-use separately to enable this file.
+BROWSER_USE_INSTALL_HINT = (
+    "browser-use is not installed, so the AI applier is disabled.\n"
+    "It cannot share an environment with python-jobspy (conflicting markdownify "
+    "pins: browser-use wants ==1.2.2, python-jobspy wants <0.14), which is why it is "
+    "not in requirements.txt.\n"
+    "To enable it, use a separate environment:\n"
+    "    python -m venv .venv-applier\n"
+    "    .venv-applier/bin/pip install -r requirements.txt\n"
+    "    .venv-applier/bin/pip install browser-use\n"
+    "then run:  .venv-applier/bin/python browser_use_applier.py <url> --dry-run"
+)
 
 
 class BrowserUseJobApplier:
@@ -179,7 +196,7 @@ Instructions for the Application:
         if not BROWSER_USE_AVAILABLE:
             return {
                 "status": "error",
-                "message": f"browser-use library not initialized: {_IMPORT_ERROR}",
+                "message": f"browser-use library not initialized: {_IMPORT_ERROR}\n\n{BROWSER_USE_INSTALL_HINT}",
                 "job_url": job_url
             }
 

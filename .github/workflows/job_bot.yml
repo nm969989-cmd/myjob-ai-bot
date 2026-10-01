@@ -71,13 +71,6 @@ jobs:
         run: |
           python -m playwright install --with-deps chromium
 
-      - name: 🤖 Install browser-use agent browser
-        # browser-use drives Chrome over CDP (it depends on cdp-use / browser-harness),
-        # which is a SEPARATE binary from Playwright's Chromium. Without this the
-        # browser_use_applier fails at launch even though Playwright works fine.
-        run: |
-          npx --yes @browser-use/install || true
-
       - name: 🟢 Set up Node.js 20
         uses: actions/setup-node@v4
         with:

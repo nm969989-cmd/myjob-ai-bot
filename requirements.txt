@@ -15,11 +15,22 @@ python-jobspy==1.1.82
 notion-client
 psutil
 
-# NOTE: browser-use 0.13.x hard-pins 61 transitive dependencies (aiohttp==3.14.3,
-# google-genai==1.65.0, pydantic==2.13.5, mcp==2.1.1, ...). Do NOT relax the pins
-# above to >= ranges that conflict with those, and do NOT add langchain-google-genai:
-# it requires google-genai>=2.20.0 while browser-use pins ==1.65.0, so pip cannot
-# satisfy both and `pip install -r requirements.txt` fails outright.
-# browser_use.llm.google.ChatGoogle talks to Gemini without langchain, so nothing
-# here needs it. Requires Python >= 3.11.
-browser-use>=0.13.0,<0.14.0
+# NOTE: browser-use is deliberately NOT listed here.
+#
+# browser-use and python-jobspy cannot coexist in one environment:
+#     python-jobspy 1.1.82  requires  markdownify<0.14.0,>=0.13.1
+#     browser-use   0.13.x   requires  markdownify==1.2.2
+# Every published python-jobspy release pins markdownify<0.14, and every
+# browser-use 0.13.x release pins ==1.2.2, so `pip install -r requirements.txt`
+# fails with ResolutionImpossible and no version pair exists that works.
+#
+# python-jobspy is load-bearing here: it powers scrape_linkedin_indeed(),
+# scrape_jobspy() and fetch_jobspy_live_search() in the CI scrape path.
+# browser-use is only imported lazily inside two Telegram handlers, and it is
+# never reached by cloud_runner.py or CI. So it is the one to leave out.
+#
+# browser_use_applier.py handles the missing import and reports it clearly.
+# To use the AI applier, install it in a separate environment:
+#     python -m venv .venv-applier
+#     .venv-applier/bin/pip install -r requirements.txt browser-use
+#     .venv-applier/bin/pip install -r requirements_applier.txt   # if present
