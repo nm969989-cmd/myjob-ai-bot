@@ -2,13 +2,13 @@
 
 This guide details how your **Telegram Job Bot** runs 24/7 on **Hugging Face Spaces** (16GB RAM + 2 CPUs free).
 
-Space URL: **https://huggingface.co/spaces/manojprofessional007/myjob-bot**
+Space URL: **https://huggingface.co/spaces/nmnm969989/myjob-bot**
 
 ---
 
 ## 🚀 Step 1: Push Code to Hugging Face Space
 
-Your latest clean code has already been pushed to `https://huggingface.co/spaces/manojprofessional007/myjob-bot`.
+Your latest clean code is linked to `https://huggingface.co/spaces/nmnm969989/myjob-bot`.
 
 To deploy future updates with 1 click, simply double-click:
 👉 [DEPLOY.bat](file:///d:/insta%20gravity/Telegram_Job_Bot/DEPLOY.bat)
@@ -19,7 +19,7 @@ To deploy future updates with 1 click, simply double-click:
 
 Make sure the following secrets are configured inside your Hugging Face Space:
 
-1. Open your Space: **https://huggingface.co/spaces/manojprofessional007/myjob-bot**
+1. Open your Space: **https://huggingface.co/spaces/nmnm969989/myjob-bot**
 2. Click on **Settings** (top-right).
 3. Scroll down to **Variables and secrets**.
 4. Ensure these secrets exist:
