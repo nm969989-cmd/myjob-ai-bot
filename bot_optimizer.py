@@ -3307,6 +3307,17 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
     return matches[:limit]
 
 
+_URL_CACHE = {}
+
+def store_url_cache(key: str, url: str):
+    global _URL_CACHE
+    _URL_CACHE[key] = url
+
+def get_url_cache(key: str) -> str:
+    global _URL_CACHE
+    return _URL_CACHE.get(key, "")
+
+
 def format_search_results_report(query, results=None) -> tuple:
     """
     Formats search results into Telegram HTML cards and builds interactive filter markup.
@@ -3318,19 +3329,25 @@ def format_search_results_report(query, results=None) -> tuple:
         results = []
 
     import html
+    import hashlib
     from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
     markup = InlineKeyboardMarkup()
 
-    # If results exist, add direct apply for top result + ATS match button
+    # If results exist, add direct apply for top result + ATS match button + AI Auto-Apply
     if results:
         top_job = results[0]
         top_link = top_job.get("link", "").strip()
         top_comp = str(top_job.get("company", "Top Job"))[:18]
         if top_link and top_link.startswith("http"):
+            url_hash = hashlib.md5(top_link.encode()).hexdigest()[:10]
+            store_url_cache(url_hash, top_link)
             markup.row(
                 InlineKeyboardButton(f"🚀 Apply: {top_comp}", url=top_link),
                 InlineKeyboardButton("🎯 Match Resume (ATS)", callback_data="ats:analyze")
+            )
+            markup.row(
+                InlineKeyboardButton("🤖 Auto-Apply with AI Agent", callback_data=f"apply:{url_hash}")
             )
 
     # Row: Common Quick Searches

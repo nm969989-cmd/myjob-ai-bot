@@ -14,3 +14,5 @@ fpdf
 python-jobspy
 notion-client
 psutil
+browser-use>=0.13.0
+langchain-google-genai>=4.0.0

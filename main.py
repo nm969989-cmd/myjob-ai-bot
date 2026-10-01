@@ -5922,6 +5922,81 @@ if bot:
         except Exception:
             bot.send_message(chat_id, re.sub(r'<[^>]+>', '', guide), parse_mode=None, reply_markup=markup)
 
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("apply:"))
+    def handle_apply_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        raw_val = call.data.split("apply:", 1)[1].strip()
+        try:
+            bot.answer_callback_query(call.id, text="🤖 Launching AI Browser-Use Agent...")
+        except Exception:
+            pass
+
+        from bot_optimizer import get_url_cache
+        target_url = get_url_cache(raw_val) or raw_val
+        if not target_url.startswith("http"):
+            target_url = f"https://{target_url}"
+
+        status_card = (
+            f"🤖 <b>AI BROWSER-USE AGENT INITIATED</b> 🌐\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🔗 <b>Target URL:</b> <code>{html.escape(target_url[:80])}</code>\n"
+            f"🧠 <b>Vision Engine:</b> Gemini 2.5 Flash\n"
+            f"📄 <b>Resume:</b> <code>resume.pdf</code>\n\n"
+            f"⚡ <i>Launching autonomous AI agent to visually navigate, autofill profile fields, attach resume, and submit...</i>"
+        )
+        try:
+            bot.send_message(chat_id, status_card, parse_mode="HTML")
+        except Exception:
+            bot.send_message(chat_id, f"⌛ Initiating Browser-Use AI application for:\n{target_url}")
+
+        def run():
+            try:
+                final_url = bypass_blog_redirect(target_url)
+
+                # 1. Try Browser-Use AI Agent
+                try:
+                    from browser_use_applier import BrowserUseJobApplier, BROWSER_USE_AVAILABLE
+                    if BROWSER_USE_AVAILABLE and os.getenv("GEMINI_API_KEY"):
+                        applier = BrowserUseJobApplier()
+                        res = applier.apply_sync(final_url, "Software Developer", "Target Employer")
+                        if res.get("status") in ["success", "completed"]:
+                            confirm_card = (
+                                f"🎉 <b>AI APPLICATION SUBMITTED!</b> 🚀\n"
+                                f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                                f"🏢 <b>Target:</b> {html.escape(res.get('company') or 'Employer')}\n"
+                                f"💼 <b>Role:</b> {html.escape(res.get('role') or 'Software Developer')}\n"
+                                f"⏱️ <b>Duration:</b> {res.get('duration_seconds', 0)}s ({res.get('steps_taken', 0)} steps)\n"
+                                f"📝 <b>Summary:</b> {html.escape(str(res.get('message', 'Applied successfully'))[:250])}\n"
+                                f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                                f"✅ <i>Logged to applied_jobs.json & applied_jobs_log.csv</i>"
+                            )
+                            bot.send_message(chat_id, confirm_card, parse_mode="HTML")
+                            ss = res.get("screenshot")
+                            if ss and os.path.exists(ss):
+                                try:
+                                    with open(ss, "rb") as photo_file:
+                                        bot.send_photo(chat_id, photo_file, caption="📸 Proof of Submission")
+                                except Exception:
+                                    pass
+                            return
+                except Exception as bu_err:
+                    print(f"[BrowserUse Callback] Notice: {bu_err}")
+
+                # 2. Fallback to standard apply
+                success = run_playwright_apply(final_url, "Callback apply requested by user")
+                if success:
+                    bot.send_message(chat_id, f"✅ Application submitted for:\n{final_url}")
+                else:
+                    bot.send_message(chat_id, f"❌ Application could not be completed automatically for:\n{final_url}\nPlease apply manually.")
+            except Exception as e:
+                try:
+                    bot.send_message(chat_id, f"⚠️ Application error: {e}")
+                except Exception:
+                    pass
+
+        Thread(target=run).start()
+
     @bot.callback_query_handler(func=lambda call: call.data.startswith("search:"))
     def handle_search_callback(call):
         chat_id = call.message.chat.id
@@ -6470,29 +6545,74 @@ if bot:
         else:
             url = urls[0]
             
-        bot.reply_to(message, f"⌛ Manually initiating application for:\n{url}")
+        status_card = (
+            f"🤖 <b>AI BROWSER-USE AGENT INITIATED</b> 🌐\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🔗 <b>Target URL:</b> <code>{html.escape(url[:80])}</code>\n"
+            f"🧠 <b>Vision Engine:</b> Gemini 2.5 Flash\n"
+            f"📄 <b>Resume:</b> <code>resume.pdf</code>\n\n"
+            f"⚡ <i>Launching autonomous AI agent to visually navigate, autofill profile fields, attach resume, and submit...</i>"
+        )
+        try:
+            bot.reply_to(message, status_card, parse_mode="HTML")
+        except Exception:
+            bot.reply_to(message, f"⌛ Initiating Browser-Use AI application for:\n{url}")
         
         # Run in thread so bot doesn't freeze
         def run():
             try:
                 final_url = bypass_blog_redirect(url)
                 
+                # 1. Try Browser-Use AI Agent First
+                try:
+                    from browser_use_applier import BrowserUseJobApplier, BROWSER_USE_AVAILABLE
+                    if BROWSER_USE_AVAILABLE and os.getenv("GEMINI_API_KEY"):
+                        applier = BrowserUseJobApplier()
+                        res = applier.apply_sync(final_url, "Software Developer", "Target Employer")
+                        
+                        if res.get("status") in ["success", "completed"]:
+                            confirm_card = (
+                                f"🎉 <b>AI APPLICATION SUBMITTED!</b> 🚀\n"
+                                f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                                f"🏢 <b>Target:</b> {html.escape(res.get('company') or 'Target Employer')}\n"
+                                f"💼 <b>Role:</b> {html.escape(res.get('role') or 'Software Developer')}\n"
+                                f"⏱️ <b>Duration:</b> {res.get('duration_seconds', 0)}s ({res.get('steps_taken', 0)} steps)\n"
+                                f"📝 <b>Summary:</b> {html.escape(str(res.get('message', 'Applied successfully'))[:250])}\n"
+                                f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                                f"✅ <i>Logged to applied_jobs.json & applied_jobs_log.csv</i>"
+                            )
+                            bot.send_message(message.chat.id, confirm_card, parse_mode="HTML")
+                            
+                            ss = res.get("screenshot")
+                            if ss and os.path.exists(ss):
+                                try:
+                                    with open(ss, "rb") as photo_file:
+                                        bot.send_photo(message.chat.id, photo_file, caption="📸 Proof of Submission")
+                                except Exception as ss_err:
+                                    print(f"[BrowserUse] Screenshot send notice: {ss_err}")
+                            return
+                        else:
+                            print(f"[BrowserUse] Concluded with: {res.get('message')}. Proceeding with standard fallback.")
+                except Exception as bu_err:
+                    print(f"[BrowserUse] Notice: {bu_err}")
+
+                # 2. Fallback to existing Playwright form filler
                 if any(domain in final_url.lower() for domain in UNSUPPORTED_DOMAINS):
-                    bot.send_message(message.chat.id, f"⚠️ Skipped: The platform or link ({final_url}) is not supported for auto-filling (e.g. Naukri, LinkedIn, YouTube, Telegram).")
+                    bot.send_message(message.chat.id, f"⚠️ Notice: The platform or link ({final_url}) requires manual direct apply.")
                     log_job(final_url, "Manual /apply", False, "Unsupported platform or social media")
                     return
                     
                 success = run_playwright_apply(final_url, "Manual application requested by user")
                 log_job(final_url, "Manual /apply", success, "Manual apply")
                 if success:
-                    bot.send_message(message.chat.id, f"✅ Manual application submitted for:\n{url}")
+                    bot.send_message(message.chat.id, f"✅ Application submitted for:\n{url}")
                 else:
-                    bot.send_message(message.chat.id, f"❌ Manual application failed for:\n{url}")
+                    bot.send_message(message.chat.id, f"❌ Application could not be completed automatically for:\n{url}\nPlease apply manually.")
             except Exception as e:
                 print(f"[Manual Apply] Error in run thread: {e}")
                 try:
                     bot.send_message(message.chat.id, f"⚠️ Bot error: {e}")
-                except:
+                except Exception:
                     pass
                 
         Thread(target=run).start()
