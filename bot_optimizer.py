@@ -823,7 +823,14 @@ def analyze_jd_skill_gap(job_text: str, profile: dict = None) -> dict:
             "job_skills": ["Software Development"]
         }
 
-    prof = profile or {}
+    if isinstance(profile, list):
+        prof = {"skills": profile}
+    elif isinstance(profile, str):
+        prof = {"skills": profile}
+    elif isinstance(profile, dict):
+        prof = profile
+    else:
+        prof = {}
 
     # 1. Parse Candidate Declared Skills
     raw_user_skills = prof.get("skills", "")
@@ -3264,16 +3271,52 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
         except Exception as e:
             print(f"[Search Engine] Live JobSpy query notice: {e}")
 
+    # 7. Check SimplifyJobs (New Grad / Entry Level / Direct ATS)
+    if len(matches) < limit:
+        try:
+            simplify_positions = fetch_simplify_jobs(limit=100, force_refresh=False)
+            for sj in simplify_positions:
+                comp = sj.get("company", "")
+                title = sj.get("title", "")
+                loc = sj.get("location", "")
+                rel = calc_relevance(title, comp, loc, f"{sj.get('terms', '')} {sj.get('sponsorship', '')}")
+                if rel > 0:
+                    link = sj.get("link", "")
+                    if link and link not in seen_identifiers:
+                        seen_identifiers.add(link)
+                        matches.append({
+                            "id": f"simplify_{sj.get('id', comp)}",
+                            "source_type": "⚡ SimplifyJobs • Official ATS",
+                            "company": comp,
+                            "role": title,
+                            "location": loc or "Remote / Global",
+                            "salary": "Competitive / Industry Standard",
+                            "batches": "2025 / 2026 Batch",
+                            "experience": "New Grad / Entry Level",
+                            "link": link,
+                            "link_text": "🚀 Apply on Company ATS",
+                            "timing": f"Posted: {sj.get('date_posted', 'Recent')}",
+                            "snippet": f"Terms: {sj.get('terms', 'Full Time')} • Sponsorship: {sj.get('sponsorship', 'Available')}",
+                            "relevance": rel
+                        })
+        except Exception as e:
+            print(f"[Search Engine] SimplifyJobs query notice: {e}")
+
     # Sort descending by relevance score
     matches.sort(key=lambda m: m["relevance"], reverse=True)
     return matches[:limit]
 
 
-def format_search_results_report(query: str, results: list) -> tuple:
+def format_search_results_report(query, results=None) -> tuple:
     """
     Formats search results into Telegram HTML cards and builds interactive filter markup.
     Returns: (chunks: list[str], reply_markup: InlineKeyboardMarkup)
     """
+    if isinstance(query, list) and (isinstance(results, str) or results is None):
+        results, query = query, (results or "Jobs")
+    elif results is None:
+        results = []
+
     import html
     from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -3950,8 +3993,10 @@ def fetch_simplify_jobs(keyword=None, limit=8, force_refresh=False) -> list:
             all_jobs.append({
                 "company": html.unescape(company),
                 "role": html.unescape(role),
+                "title": html.unescape(role),
                 "location": html.unescape(loc) or "Remote / Global",
                 "apply_url": apply_url or "https://simplify.jobs",
+                "link": apply_url or "https://simplify.jobs",
                 "age": age or "Recent",
                 "portal": portal
             })
