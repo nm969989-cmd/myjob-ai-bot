@@ -1,6 +1,41 @@
 {
-  "generated_at": "2026-10-01T20:29:32.356Z",
-  "count": 0,
+  "generated_at": "2026-10-01T20:38:13.278Z",
+  "count": 1,
   "note": "Jobs whose id was not present in the previous data/jobs.json.",
-  "jobs": []
+  "jobs": [
+    {
+      "id": "0f4aa07ecbed",
+      "title": "Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, Azure Cloud",
+      "company": "UPS",
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "category": "Software",
+      "employment_type": null,
+      "experience": null,
+      "is_fresher": false,
+      "qualification": null,
+      "skills": [
+        ".NET",
+        "Angular",
+        "Azure",
+        "Full Stack",
+        "Cloud Computing"
+      ],
+      "description": "Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, Azure Cloud Chennai, Tamil Nadu, India",
+      "deadline": null,
+      "salary": null,
+      "posted_at": "2026-09-29",
+      "expires_at": null,
+      "apply_url": "https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248974223",
+      "source": "linkedin.com",
+      "source_type": "job_portal",
+      "scraped_at": "2026-10-01T20:35:14.514Z",
+      "verified": false,
+      "verify_reason": "http_429",
+      "http_status": 429,
+      "verified_at": "2026-10-01T20:35:53.694Z",
+      "final_url": "https://www.linkedin.com/authwall?trk=qf&original_referer=&sessionRedirect=https%3A%2F%2Fin.linkedin.com%2Fjobs%2Fview%2Fintermediate-software-engineer-full-stack-c%2523-dotnet-mvc-angular-azure-cloud-at-ups-4248974223",
+      "page_title": "Sign Up | LinkedIn"
+    }
+  ]
 }

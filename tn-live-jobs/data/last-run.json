@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-01T20:23:55.292Z",
-  "finished_at": "2026-10-01T20:29:32.356Z",
-  "duration_seconds": 164,
-  "validate_seconds": 174,
+  "started_at": "2026-10-01T20:32:35.667Z",
+  "finished_at": "2026-10-01T20:38:13.278Z",
+  "duration_seconds": 167,
+  "validate_seconds": 171,
   "trigger": "GitHub Actions (push)",
   "keywords": [
     "software developer",
@@ -29,15 +29,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 90,
-  "new_jobs": 0,
-  "removed_jobs": 0,
+  "verified_jobs": 91,
+  "new_jobs": 1,
+  "removed_jobs": 1,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 90,
+    "live": 91,
     "loginRequired": 1,
-    "dead": 58,
+    "dead": 57,
     "noSignal": 1,
     "redirected": 0,
     "documents": 8,
@@ -244,9 +244,9 @@
     "linkedin": 80
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
