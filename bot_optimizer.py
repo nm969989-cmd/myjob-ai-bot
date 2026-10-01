@@ -2942,6 +2942,97 @@ def fetch_live_adzuna_search(query: str, location: str = "Tamil Nadu", limit: in
         return []
 
 
+def fetch_jobspy_live_search(query: str, location: str = "Tamil Nadu, India", limit: int = 6) -> list:
+    """
+    Queries python-jobspy across LinkedIn, Indeed India, and Google Jobs
+    for verified, live openings with direct ATS URLs.
+    """
+    if not query or not str(query).strip():
+        return []
+    try:
+        from jobspy import scrape_jobs
+    except ImportError:
+        return []
+
+    try:
+        df = scrape_jobs(
+            site_name=["indeed", "google", "linkedin"],
+            search_term=str(query).strip(),
+            location=str(location).strip(),
+            results_wanted=max(limit, 4),
+            hours_old=72,
+            country_indeed="india",
+            linkedin_fetch_description=False,
+            verbose=0,
+        )
+        if df is None or df.empty:
+            return []
+
+        results = []
+        for _, row in df.iterrows():
+            title = str(row.get("title", "")).strip()
+            company = str(row.get("company", "Tech Company")).strip()
+            # Prioritize direct company ATS application URL over aggregator redirect
+            link = str(row.get("job_url_direct") or row.get("job_url") or "").strip()
+            if not title or not link or link == "nan":
+                continue
+
+            site_raw = str(row.get("site", "portal")).lower()
+            if "linkedin" in site_raw:
+                badge = "LinkedIn 🔵"
+            elif "indeed" in site_raw:
+                badge = "Indeed India 🟢"
+            elif "google" in site_raw:
+                badge = "Google Jobs 🌐"
+            elif "glassdoor" in site_raw:
+                badge = "Glassdoor 🚪"
+            else:
+                badge = f"{site_raw.title()} 💼"
+
+            raw_loc = str(row.get("location", location)).strip()
+            if raw_loc == "nan":
+                raw_loc = location
+
+            min_sal = row.get("min_amount")
+            max_sal = row.get("max_amount")
+            cur = str(row.get("currency", "INR")).strip()
+            if min_sal and max_sal:
+                sal = f"{cur} {int(min_sal):,} - {int(max_sal):,}"
+            elif min_sal:
+                sal = f"From {cur} {int(min_sal):,}"
+            else:
+                sal = "Competitive Market Package"
+
+            desc = str(row.get("description", "")).strip()
+            if desc == "nan":
+                desc = ""
+
+            clean_snippet = re.sub(r'<[^>]+>', ' ', desc).strip()
+
+            results.append({
+                "id": f"jobspy_{site_raw}_{abs(hash(link)) % 1000000}",
+                "source_type": f"⚡ Live • {badge}",
+                "company": company,
+                "role": title,
+                "location": f"{raw_loc} ⭐",
+                "salary": sal,
+                "batches": "2024 / 2025 / 2026 Batch",
+                "experience": "Freshers & Entry-Level",
+                "link": link,
+                "link_text": f"🚀 Apply on {badge.split()[0]} Direct ATS",
+                "timing": "🔥 Verified Live",
+                "snippet": clean_snippet[:180] if clean_snippet else "Verified live job posting with direct company application portal.",
+                "relevance": 25,
+                "full_description": desc
+            })
+            if len(results) >= limit:
+                break
+        return results
+    except Exception as e:
+        print(f"[JobSpy Search Engine] Query error for '{query}': {e}")
+        return []
+
+
 def search_jobs_multi_source(query: str, limit: int = 6) -> list:
     """
     Performs comprehensive search across all real-data pipelines:
@@ -3140,6 +3231,18 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
                     matches.append(aj)
         except Exception as e:
             print(f"[Search Engine] Live Adzuna query notice: {e}")
+
+    # 6. On-Demand Real-Time Multi-Portal Search via JobSpy (LinkedIn, Indeed India, Google Jobs)
+    if len(matches) < limit:
+        try:
+            live_jobspy = fetch_jobspy_live_search(query=query, location="Tamil Nadu, India", limit=limit - len(matches) + 2)
+            for jj in live_jobspy:
+                link = jj.get("link", "")
+                if link and link not in seen_identifiers:
+                    seen_identifiers.add(link)
+                    matches.append(jj)
+        except Exception as e:
+            print(f"[Search Engine] Live JobSpy query notice: {e}")
 
     # Sort descending by relevance score
     matches.sort(key=lambda m: m["relevance"], reverse=True)

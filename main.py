@@ -63,6 +63,7 @@ from bot_optimizer import (
     geocode_location_text,
     get_walkin_checklist_text,
     search_jobs_multi_source,
+    fetch_jobspy_live_search,
     format_search_results_report,
     match_job_compatibility,
     format_oa_report,
@@ -5085,6 +5086,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
 
 ⚡️ *DISCOVERY & SEARCH OPERATIONS*
 🔹 `/search <keyword>` - 🔍 Instant search across TN, mass drives, walk-ins & radar (e.g. `/search python`).
+🔹 `/jobspy <keyword>` - ⚡ Live multi-portal scraper (LinkedIn, Indeed India, Google Jobs) with direct ATS links.
 🔹 `/match <text or URL>` - 🎯 Instant ATS resume compatibility score, keyword gaps & prep sheet.
 🔹 `/oa [company]` - 🎓 Company OA pattern & coding exam syllabus (TCS, Zoho, CTS, Accenture, etc.).
 🔹 `/alertme <keyword>` - 🔔 Subscribe to live keyword alerts (e.g. `/alertme python chennai`).
@@ -5740,6 +5742,30 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         except Exception:
             pass
         prompt_user_for_location(chat_id)
+
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("jobspy:"))
+    def handle_jobspy_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        query = call.data.split(":", 1)[1].strip() if ":" in call.data else ""
+        try:
+            bot.answer_callback_query(call.id, text=f"⚡ Live JobSpy scraping for '{query}'...")
+        except Exception:
+            pass
+        try:
+            results = fetch_jobspy_live_search(query=query, location="Tamil Nadu, India", limit=6)
+            if not results:
+                results = search_jobs_multi_source(query=query, limit=6)
+            chunks, markup = format_search_results_report(query=f"JobSpy: {query}", results=results)
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ JobSpy error: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("search:"))
     def handle_search_callback(call):
@@ -6572,6 +6598,66 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 except Exception:
                     bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
                 time.sleep(0.3)
+
+    @bot.message_handler(commands=['jobspy', 'livejobs', 'spy'])
+    @admin_only
+    def handle_jobspy_command(message):
+        save_chat_id(message.chat.id)
+        raw_cmd = message.text.strip().split(maxsplit=1)
+        query = raw_cmd[1].strip() if len(raw_cmd) > 1 else ""
+        if not query:
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("🐍 Python Fresher", callback_data="jobspy:python fresher"),
+                InlineKeyboardButton("⚛️ React Developer", callback_data="jobspy:react developer")
+            )
+            markup.row(
+                InlineKeyboardButton("📊 Data Analyst", callback_data="jobspy:data analyst"),
+                InlineKeyboardButton("☕ Java Fresher", callback_data="jobspy:java fresher")
+            )
+            markup.row(
+                InlineKeyboardButton("📍 Chennai Tech Jobs", callback_data="jobspy:software engineer chennai"),
+                InlineKeyboardButton("🔍 Multi-Source /search", callback_data="search:menu")
+            )
+            help_msg = (
+                "⚡ <b>JobSpy Live Multi-Portal Search</b> 🌐\n\n"
+                "Real-time scraping across <b>LinkedIn, Indeed India, and Google Jobs</b> with direct ATS links and full descriptions!\n\n"
+                "<b>Usage:</b>\n"
+                "• <code>/jobspy python fresher</code>\n"
+                "• <code>/jobspy react developer chennai</code>\n"
+                "• <code>/jobspy data analyst</code>\n"
+                "• <code>/jobspy zoho</code>\n\n"
+                "<i>Tap any quick category below for instant live scraping:</i>"
+            )
+            bot.send_message(message.chat.id, help_msg, parse_mode="HTML", reply_markup=markup)
+            return
+
+        try:
+            status_msg = bot.send_message(message.chat.id, f"⚡ <i>Scraping LinkedIn, Indeed India & Google Jobs live for '<b>{html.escape(query)}</b>'...</i>", parse_mode="HTML")
+        except Exception:
+            status_msg = None
+
+        try:
+            results = fetch_jobspy_live_search(query=query, location="Tamil Nadu, India", limit=6)
+            if not results:
+                results = search_jobs_multi_source(query=query, limit=6)
+
+            chunks, markup = format_search_results_report(query=f"JobSpy: {query}", results=results)
+            if status_msg:
+                try:
+                    bot.delete_message(message.chat.id, status_msg.message_id)
+                except Exception:
+                    pass
+
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
+        except Exception as e:
+            bot.send_message(message.chat.id, f"⚠️ JobSpy query error: {e}")
 
     @bot.message_handler(commands=['search', 'find'])
     @admin_only

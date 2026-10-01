@@ -1110,8 +1110,12 @@ def scrape_remoteok():
 # ──────────────────────────────────────────────────
 
 def scrape_linkedin_indeed():
-    """Uses python-jobspy for Chennai, Coimbatore, Tamil Nadu & Bangalore India jobs."""
-    print("[Radar] Scanning LinkedIn + Indeed India (JobSpy)...")
+    """
+    Uses python-jobspy to aggregate fresh tech openings across Indeed India, Google Jobs,
+    and LinkedIn for Chennai, Coimbatore, Tamil Nadu & Bangalore.
+    Extracts direct company ATS application links wherever available.
+    """
+    print("[Radar] Scanning Multi-Portal via JobSpy (Indeed India + Google Jobs + LinkedIn)...")
     jobs_found = []
     try:
         from jobspy import scrape_jobs
@@ -1120,14 +1124,15 @@ def scrape_linkedin_indeed():
             ("python developer fresher", "Chennai, Tamil Nadu, India"),
             ("junior software engineer", "Coimbatore, Tamil Nadu, India"),
             ("data analyst fresher", "Chennai, Tamil Nadu, India"),
+            ("frontend react developer fresher", "Tamil Nadu, India"),
         ]
         for query, loc in queries:
             try:
                 df = scrape_jobs(
-                    site_name=["linkedin", "indeed"],
+                    site_name=["indeed", "google", "linkedin"],
                     search_term=query,
                     location=loc,
-                    results_wanted=2,
+                    results_wanted=3,
                     hours_old=72,
                     country_indeed="India",
                     linkedin_fetch_description=False,
@@ -1137,11 +1142,12 @@ def scrape_linkedin_indeed():
                     continue
 
                 for _, row in df.iterrows():
-                    title    = str(row.get("title", ""))
-                    company  = str(row.get("company", "Unknown"))
-                    link     = str(row.get("job_url", ""))
-                    location = str(row.get("location", loc))
-                    site     = str(row.get("site", "linkedin")).title()
+                    title    = str(row.get("title", "")).strip()
+                    company  = str(row.get("company", "Unknown")).strip()
+                    # Direct ATS URL prioritized over aggregator redirect
+                    link     = str(row.get("job_url_direct") or row.get("job_url") or "").strip()
+                    location = str(row.get("location", loc)).strip()
+                    site     = str(row.get("site", "portal")).lower()
 
                     if not link or link == "nan" or not _keyword_match(title):
                         continue
@@ -1150,24 +1156,57 @@ def scrape_linkedin_indeed():
                     if not is_valid:
                         continue
 
-                    source = f"LinkedIn 🔵" if "linkedin" in site.lower() else f"Indeed India 🟢"
+                    if "linkedin" in site:
+                        source = "LinkedIn 🔵"
+                    elif "indeed" in site:
+                        source = "Indeed India 🟢"
+                    elif "google" in site:
+                        source = "Google Jobs 🌐"
+                    elif "glassdoor" in site:
+                        source = "Glassdoor 🚪"
+                    else:
+                        source = f"JobSpy ({site.title()}) ⚡"
+
+                    min_sal = row.get("min_amount")
+                    max_sal = row.get("max_amount")
+                    cur = str(row.get("currency", "INR")).strip()
+                    if min_sal and max_sal:
+                        sal_val = f"{cur} {int(min_sal):,} - {int(max_sal):,}"
+                    elif min_sal:
+                        sal_val = f"From {cur} {int(min_sal):,}"
+                    else:
+                        sal_val = ""
+
                     desc_val = str(row.get("description", ""))
                     desc = clean_html(desc_val) if desc_val and desc_val != "nan" else ""
+
                     jobs_found.append(_make_job(
-                        title=title, company=company, link=normalize_job_url(link), location=loc_tag,
-                        source=source, description=desc, priority_tier=tier, is_tn=is_tn
+                        title=title,
+                        company=company,
+                        link=normalize_job_url(link),
+                        location=loc_tag,
+                        source=source,
+                        description=desc,
+                        priority_tier=tier,
+                        is_tn=is_tn,
+                        salary=sal_val,
+                        direct_link=link
                     ))
                     if len(jobs_found) >= MAX_PER_SOURCE:
                         break
             except Exception as e:
-                print(f"  [JobSpy] Isolated error for '{query}': {e}")
-            time.sleep(1.5)
+                print(f"  [JobSpy Radar] Isolated error for '{query}': {e}")
+            time.sleep(1.0)
     except ImportError:
-        pass
+        print("  [JobSpy Radar] python-jobspy library not installed. Skipping.")
     except Exception as e:
-        print(f"  [LinkedIn/Indeed] Error: {e}")
-    print(f"  [LinkedIn + Indeed] Found {len(jobs_found)} jobs.")
+        print(f"  [JobSpy Radar] Error: {e}")
+
+    print(f"  [JobSpy Multi-Portal] Found {len(jobs_found)} verified live jobs.")
     return jobs_found
+
+# Alias for external modules
+scrape_jobspy_multi_portal = scrape_linkedin_indeed
 
 # ──────────────────────────────────────────────────
 # 📤  TELEGRAM SENDER (WITH TAMIL NADU PRIORITY DISPLAY)
