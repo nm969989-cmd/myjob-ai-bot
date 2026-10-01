@@ -5176,6 +5176,34 @@ if bot:
             "Use the interactive buttons below to control your automation empire instantly.",
             parse_mode=None, reply_markup=markup)
 
+    def get_main_reply_keyboard():
+        markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        markup.row(
+            KeyboardButton("🌟 TN Freshers"),
+            KeyboardButton("🚶 Walk-In Drives")
+        )
+        markup.row(
+            KeyboardButton("📢 National Drives"),
+            KeyboardButton("⚡ Live Search")
+        )
+        markup.row(
+            KeyboardButton("🎯 ATS Score Match"),
+            KeyboardButton("💰 CTC Calculator")
+        )
+        return markup
+
+    @bot.message_handler(commands=['menu', 'keyboard'])
+    @admin_only
+    def send_menu_keyboard(message):
+        save_chat_id(message.chat.id)
+        bot.reply_to(
+            message,
+            "🎛️ <b>Quick Navigation Menu Enabled</b>\n\n"
+            "Use the 6 persistent mobile buttons below for instant 1-tap discovery without typing commands!",
+            parse_mode="HTML",
+            reply_markup=get_main_reply_keyboard()
+        )
+
     @bot.message_handler(commands=['start'])
     @admin_only
     def send_welcome(message):
@@ -5186,8 +5214,9 @@ if bot:
             "🤖 <b>Status:</b> Locked to your Chat ID and actively scanning 47+ verified channels!\n\n"
             "🌟 <b>Target:</b> Freshers & Entry-Level Engineering Roles in India (Tamil Nadu ⭐ Priority).\n"
             "🔗 <b>Mode:</b> Verified Search & Direct ATS Link Extraction (No auto-apply, 100% manual review).\n\n"
-            "Type <code>/help</code> or tap the menu to see all available commands.",
-            parse_mode="HTML"
+            "💡 <i>Tap any of the 6 quick-navigation buttons below or type /help:</i>",
+            parse_mode="HTML",
+            reply_markup=get_main_reply_keyboard()
         )
 
     @bot.message_handler(commands=['help'])
@@ -6423,6 +6452,26 @@ if bot:
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Unable to generate skill gap report: {e}")
 
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("ctc:") or call.data == "ctc")
+    @admin_only
+    def handle_ctc_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        ctc_val = call.data.split(":", 1)[1] if ":" in call.data else "4.5"
+        try:
+            bot.answer_callback_query(call.id, text=f"💰 Calculating in-hand salary for ₹{ctc_val} LPA...")
+        except Exception:
+            pass
+        try:
+            from bot_optimizer import calculate_inhand_salary, format_ctc_report
+            data = calculate_inhand_salary(ctc_val)
+            card, markup = format_ctc_report(data, ctc_input_raw=ctc_val)
+            try:
+                bot.edit_message_text(card, chat_id=chat_id, message_id=call.message.message_id, parse_mode="HTML", reply_markup=markup)
+            except Exception:
+                bot.send_message(chat_id, card, parse_mode="HTML", reply_markup=markup)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ CTC calculation error: {e}")
 
     @bot.message_handler(commands=['analytics', 'metrics'])
     @admin_only
@@ -7236,6 +7285,115 @@ if bot:
         except Exception:
             bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', report_text), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
 
+    @bot.message_handler(commands=['ctc', 'salary', 'inhand', 'takehome'])
+    @admin_only
+    def handle_ctc_command(message):
+        save_chat_id(message.chat.id)
+        raw_cmd = message.text.strip().split(maxsplit=1)
+        ctc_arg = raw_cmd[1].strip() if len(raw_cmd) > 1 else "4.5"
+        try:
+            from bot_optimizer import calculate_inhand_salary, format_ctc_report
+            data = calculate_inhand_salary(ctc_arg)
+            card, markup = format_ctc_report(data, ctc_input_raw=ctc_arg)
+            try:
+                bot.send_message(message.chat.id, card, parse_mode="HTML", reply_markup=markup)
+            except Exception:
+                bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', card), parse_mode=None, reply_markup=markup)
+        except Exception as e:
+            bot.send_message(message.chat.id, f"⚠️ CTC calculation error: {e}")
+
+    @bot.message_handler(commands=['pitch', 'coldemail', 'outreach'])
+    @admin_only
+    def handle_pitch_command(message):
+        save_chat_id(message.chat.id)
+        raw_cmd = message.text.strip().split(maxsplit=2)
+        company = raw_cmd[1].strip() if len(raw_cmd) > 1 else "Target Employer"
+        role = raw_cmd[2].strip() if len(raw_cmd) > 2 else "Software Developer"
+        try:
+            from bot_optimizer import generate_cold_email_pitch
+            profile = load_profile()
+            pitch_card = generate_cold_email_pitch(company, role, profile=profile)
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("🌟 Tamil Nadu Jobs", callback_data="tnjobs"),
+                InlineKeyboardButton("🔙 Dashboard", callback_data="dashboard")
+            )
+            try:
+                bot.send_message(message.chat.id, pitch_card, parse_mode="HTML", reply_markup=markup)
+            except Exception:
+                bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', pitch_card), parse_mode=None, reply_markup=markup)
+        except Exception as e:
+            bot.send_message(message.chat.id, f"⚠️ Error generating pitch: {e}")
+
+    @bot.message_handler(content_types=['document'])
+    @admin_only
+    def handle_resume_document(message):
+        save_chat_id(message.chat.id)
+        doc = message.document
+        if not doc or not (doc.file_name or "").lower().endswith(".pdf"):
+            bot.reply_to(message, "📄 Please send a <b>PDF document</b> (e.g. <code>resume.pdf</code>) for ATS skill extraction and job matching.", parse_mode="HTML")
+            return
+
+        loading_msg = bot.reply_to(message, "📄 <i>Downloading & auditing your Resume PDF with the AI ATS Engine...</i>", parse_mode="HTML")
+        try:
+            from bot_optimizer import parse_resume_pdf, format_resume_ats_audit
+            # Download file
+            file_info = bot.get_file(doc.file_id)
+            downloaded_bytes = bot.download_file(file_info.file_path)
+
+            # Save locally to resume.pdf so auto-applier can use it
+            with open("resume.pdf", "wb") as f:
+                f.write(downloaded_bytes)
+
+            parsed = parse_resume_pdf("resume.pdf")
+
+            # Update candidate profile
+            profile = load_profile()
+            if parsed.get("name") and parsed["name"] != "Candidate":
+                profile["full_name"] = parsed["name"]
+            if parsed.get("email"):
+                profile["email"] = parsed["email"]
+            if parsed.get("phone"):
+                profile["phone"] = parsed["phone"]
+            if parsed.get("skills"):
+                profile["skills"] = parsed["skills_str"]
+            safe_save_json(PROFILE_FILE, profile)
+
+            # Find matching jobs from radar or TN jobs
+            top_matches = []
+            try:
+                from job_radar import get_tamil_nadu_jobs
+                tn_jobs = get_tamil_nadu_jobs(limit=15, force_refresh=False)
+                skills_lower = [s.lower() for s in parsed.get("skills", [])]
+                for j in tn_jobs:
+                    j_text = (j.get("title", "") + " " + j.get("company", "") + " " + j.get("description", "")).lower()
+                    overlap = sum(1 for s in skills_lower if s in j_text)
+                    if overlap > 0:
+                        score = min(96, 60 + overlap * 10)
+                        top_matches.append({
+                            "company": j.get("company", "Tech Company"),
+                            "role": j.get("title", "Developer"),
+                            "link": j.get("link", "#"),
+                            "match_score": score
+                        })
+                top_matches.sort(key=lambda x: x["match_score"], reverse=True)
+            except Exception:
+                pass
+
+            chunks, markup = format_resume_ats_audit(parsed, top_matches=top_matches[:3])
+            try:
+                bot.delete_message(message.chat.id, loading_msg.message_id)
+            except Exception:
+                pass
+
+            for chunk in chunks:
+                try:
+                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
+        except Exception as e:
+            bot.send_message(message.chat.id, f"⚠️ Error processing resume PDF: {e}")
+
     @bot.message_handler(commands=['oa', 'syllabus', 'exam', 'pattern'])
     @admin_only
     def handle_oa_command(message):
@@ -7434,6 +7592,32 @@ if bot:
                 time.sleep(0.4)
         except Exception as e:
             bot.send_message(message.chat.id, f"❌ Error retrieving Tamil Nadu jobs: {e}")
+
+    # --- Quick-Access Mobile Reply Keyboard Handler ---
+    @bot.message_handler(func=lambda m: (m.text or "").strip() in [
+        "🌟 TN Freshers", "🚶 Walk-In Drives", "📢 National Drives",
+        "⚡ Live Search", "🎯 ATS Score Match", "🩺 Bot Status", "💰 CTC Calculator",
+        "🌟 TN Jobs", "🚶 Walk-Ins", "📢 Drives", "⚡ Search", "🎯 Match", "📊 Status", "💰 CTC Calc", "💰 Salary"
+    ])
+    @admin_only
+    def handle_quick_keyboard_tap(message):
+        text = str(message.text or "")
+        chat_id = message.chat.id
+        save_chat_id(chat_id)
+        if "TN" in text:
+            show_tamil_nadu_jobs(message)
+        elif "Walk-In" in text or "Walk-ins" in text:
+            send_walkin_drives(message)
+        elif "National" in text or "Drive" in text:
+            send_national_drives(message)
+        elif "Search" in text:
+            handle_search_command(message)
+        elif "ATS" in text or "Match" in text:
+            handle_match_command(message)
+        elif "CTC" in text or "Salary" in text:
+            handle_ctc_command(message)
+        elif "Status" in text:
+            send_status(message)
 
     @bot.message_handler(commands=['radar', 'jobs'])
     @admin_only
@@ -7679,6 +7863,7 @@ def run_telegram_polling():
         from telebot.types import BotCommand
         commands = [
             BotCommand("start",      "❤️ Wake up & lock your Chat ID"),
+            BotCommand("menu",       "🎛️ Show Quick-Access Navigation Keyboard"),
             BotCommand("help",       "📖 Full guide & all commands"),
             BotCommand("status",     "🚑 Bot health, API & stats"),
             BotCommand("oa",         "🎓 Company OA Syllabus & Exam Pattern"),
@@ -7705,6 +7890,8 @@ def run_telegram_polling():
             BotCommand("jobspy",     "⚡ Live LinkedIn & Indeed fresher search"),
             BotCommand("simplify",   "🎓 SimplifyJobs fresher tech openings"),
             BotCommand("match",      "🎯 Instant ATS resume score & gap report"),
+            BotCommand("ctc",        "💰 Fresher CTC vs In-Hand Take-Home"),
+            BotCommand("pitch",      "✉️ Generate 1-Tap Cold Outreach Pitch"),
             BotCommand("nearme",     "🧭 Nearest walk-in venue with GPS map"),
             BotCommand("deadlines",  "⏳ Mass drive deadlines & countdown"),
             BotCommand("clearqa",    "🗑️ Delete a saved answer"),

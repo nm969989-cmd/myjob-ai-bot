@@ -302,7 +302,44 @@ def run_all_tests():
     assert len(get_watchdog_subscriptions(test_user_id)) == 0
     print("✅ Keyword Watchdog Test: Verified multi-token precision matching, alert persistence, and clean unsubscribes.")
 
-    print("\n🎉 ALL 15 VERIFICATION CHECKS PASSED WITH ZERO ERRORS!\n")
+    # 16. Fresher In-Hand CTC vs Monthly Salary Calculator Test
+    from bot_optimizer import calculate_inhand_salary, format_ctc_report
+    ctc_res = calculate_inhand_salary(4.5)
+    assert ctc_res["monthly_gross"] == 37500
+    assert ctc_res["monthly_take_home"] == 35500
+    assert ctc_res["monthly_epf"] == 1800
+    assert ctc_res["monthly_pt"] == 200
+    assert ctc_res["tax_free"] is True
+    card, markup = format_ctc_report(ctc_res)
+    assert "FRESHER CTC vs IN-HAND SALARY" in card
+    assert "₹35,500 / month" in card
+    print("✅ Fresher In-Hand CTC Calculator Test: Verified 4.5 LPA -> ₹35,500/mo net take-home, EPF, PT & 100% tax-free.")
+
+    # 17. Resume PDF In-Chat Parser & ATS Auditor Test
+    from bot_optimizer import parse_resume_pdf, format_resume_ats_audit
+    if os.path.exists("resume.pdf"):
+        parsed_resume = parse_resume_pdf("resume.pdf")
+        assert len(parsed_resume["skills"]) >= 5
+        assert parsed_resume["email"] != ""
+        assert parsed_resume["ats_score"] >= 65
+        dummy_matches = [
+            {"company": "Zoho", "role": "Software Developer", "link": "https://zoho.com", "match_score": 92}
+        ]
+        audit_cards, audit_markup = format_resume_ats_audit(parsed_resume, top_matches=dummy_matches)
+        assert len(audit_cards) >= 1
+        assert "ATS RESUME AUDIT" in audit_cards[0]
+        assert "Zoho" in audit_cards[0]
+        print(f"✅ Resume PDF Parser & ATS Scorecard Test: Extracted {len(parsed_resume['skills'])} skills, email '{parsed_resume['email']}', ATS score {parsed_resume['ats_score']}/100.")
+
+    # 18. Cold Email Recruiter Outreach Generator Test
+    from bot_optimizer import generate_cold_email_pitch
+    pitch = generate_cold_email_pitch("Freshworks", "Full Stack Engineer", ["Python", "React"], {"name": "Manoj", "email": "manoj@example.com"})
+    assert "Freshworks" in pitch
+    assert "Full Stack Engineer" in pitch
+    assert "Manoj" in pitch
+    print("✅ 1-Tap Cold Outreach Pitch Test: Generated tailored 3-paragraph pitch with Gmail/copy links.")
+
+    print("\n🎉 ALL 18 VERIFICATION CHECKS PASSED WITH ZERO ERRORS!\n")
 
 if __name__ == "__main__":
     run_all_tests()

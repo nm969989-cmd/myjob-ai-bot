@@ -168,6 +168,9 @@
     <!-- QUICK SEARCH SUGGESTION CHIPS -->
     <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar mt-2 pt-0.5 pb-0.5 text-[11px]">
       <span class="text-slate-400 text-[10px] font-semibold uppercase tracking-wider shrink-0 mr-1">Quick:</span>
+      <button onclick="openCtcModal()" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-bold whitespace-nowrap hover:bg-emerald-500/25 active:scale-95 transition-all flex items-center gap-1">
+        <span>💰</span> In-Hand CTC Calc
+      </button>
       <button onclick="quickSearch('Tamil Nadu')" class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-medium whitespace-nowrap hover:bg-amber-500/20 active:scale-95 transition-all">⭐ Tamil Nadu</button>
       <button onclick="quickSearch('Walk-In')" class="px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-medium whitespace-nowrap hover:bg-cyan-500/20 active:scale-95 transition-all">🚶 Walk-Ins</button>
       <button onclick="quickSearch('Python')" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-medium whitespace-nowrap hover:bg-white/10 active:scale-95 transition-all">🐍 Python</button>
@@ -414,6 +417,30 @@
         <!-- Dynamic content filled by JS -->
       </div>
 
+      <!-- MODAL COLD PITCH DRAWER (HIDDEN BY DEFAULT, TOGGLED) -->
+      <div id="modalPitchDrawer" class="hidden mx-5 mb-2 p-3.5 rounded-2xl bg-purple-950/30 border border-purple-500/40 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-purple-300 flex items-center gap-1.5 font-heading">
+            <i data-lucide="mail-check" class="w-3.5 h-3.5 text-purple-400"></i> 1-Tap Cold Outreach Pitch
+          </span>
+          <button onclick="copyColdPitch()" id="pitchCopyBtn" class="px-2.5 py-1 rounded-lg bg-purple-600/30 hover:bg-purple-600/50 border border-purple-400/40 text-[11px] font-bold text-purple-200 flex items-center gap-1 transition-all">
+            <i data-lucide="copy" class="w-3 h-3"></i> Copy Pitch
+          </button>
+        </div>
+        <div class="text-[11px] text-slate-300 space-y-1">
+          <div class="font-mono text-[10px] bg-slate-900/80 p-1.5 rounded border border-white/5 text-purple-200" id="pitchSubject"></div>
+          <div class="font-mono text-[10px] bg-slate-900/80 p-2.5 rounded border border-white/5 whitespace-pre-line text-slate-300 max-h-36 overflow-y-auto" id="pitchBody"></div>
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <a id="pitchGmailBtn" href="#" target="_blank" class="flex-1 py-1.5 rounded-lg bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 text-red-300 text-[11px] font-semibold flex items-center justify-center gap-1 transition-all">
+            <i data-lucide="mail" class="w-3 h-3 text-red-400"></i> Open in Gmail
+          </a>
+          <a id="pitchMailtoBtn" href="#" class="flex-1 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-[11px] font-semibold flex items-center justify-center gap-1 transition-all">
+            Default Mail App
+          </a>
+        </div>
+      </div>
+
       <!-- MODAL FOOTER ACTIONS -->
       <div class="px-5 py-3.5 border-t border-white/10 bg-[#090d20] flex flex-col gap-2">
         <div class="flex items-center gap-2">
@@ -426,19 +453,134 @@
           </button>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 text-xs">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
           <button id="modalMatchBtn" onclick="modalTriggerATS()" class="py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-            <i data-lucide="target" class="w-3.5 h-3.5 text-pink-400"></i> Check ATS Score
+            <i data-lucide="target" class="w-3.5 h-3.5 text-pink-400"></i> Check ATS
+          </button>
+          <button id="modalPitchBtn" onclick="toggleModalColdPitch()" class="py-2 px-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+            <i data-lucide="mail" class="w-3.5 h-3.5 text-purple-400"></i> Cold Pitch
+          </button>
+          <button id="modalCtcBtn" onclick="openCtcModalForJob()" class="py-2 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all col-span-2 sm:col-span-1">
+            <i data-lucide="calculator" class="w-3.5 h-3.5 text-emerald-400"></i> In-Hand CTC
           </button>
           <a id="modalMapsBtn" href="#" target="_blank" rel="noopener noreferrer" class="hidden py-2 px-3 rounded-xl bg-teal-600/20 border border-teal-500/40 text-teal-300 hover:bg-teal-600/30 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
             <i data-lucide="navigation" class="w-3.5 h-3.5 text-teal-400"></i> Maps GPS
           </a>
-          <a id="modalBotBtn" href="https://t.me/myjob_autoapply_bot" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-xl bg-blue-600/20 border border-blue-500/40 text-blue-300 hover:bg-blue-600/30 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+          <a id="modalBotBtn" href="https://t.me/myjob_autoapply_bot" target="_blank" rel="noopener noreferrer" class="hidden py-2 px-3 rounded-xl bg-blue-600/20 border border-blue-500/40 text-blue-300 hover:bg-blue-600/30 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
             <i data-lucide="bot" class="w-3.5 h-3.5 text-blue-400"></i> AI Auto-Apply
           </a>
         </div>
+
+        <!-- 1-TAP SHARE BAR -->
+        <div class="flex items-center gap-1.5 pt-1 text-[11px] border-t border-white/5">
+          <span class="text-slate-400 text-[10px] uppercase font-bold shrink-0 mr-1 flex items-center gap-1">
+            <i data-lucide="share-2" class="w-3 h-3 text-cyan-400"></i> Share:
+          </span>
+          <button onclick="shareJob(null, 'whatsapp')" class="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 font-medium flex items-center justify-center gap-1 active:scale-95 transition-all">
+            <span>WhatsApp</span>
+          </button>
+          <button onclick="shareJob(null, 'telegram')" class="flex-1 py-1.5 px-2 rounded-lg bg-sky-600/20 hover:bg-sky-600/30 border border-sky-500/30 text-sky-300 font-medium flex items-center justify-center gap-1 active:scale-95 transition-all">
+            <span>Telegram</span>
+          </button>
+          <button onclick="shareJob(null, 'linkedin')" class="flex-1 py-1.5 px-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-300 font-medium flex items-center justify-center gap-1 active:scale-95 transition-all">
+            <span>LinkedIn</span>
+          </button>
+          <button onclick="shareJob(null, 'native')" title="More Share Options" class="py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 active:scale-95 transition-all">
+            <i data-lucide="share" class="w-3.5 h-3.5 text-cyan-400"></i>
+          </button>
+        </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- FRESHER CTC vs IN-HAND MONTHLY SALARY CALCULATOR MODAL -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div id="ctcModal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md">
+    <div class="glass-card modal-enter w-full sm:max-w-lg max-h-[90vh] flex flex-col rounded-t-3xl sm:rounded-2xl border-white/20 bg-[#0c1228] shadow-2xl overflow-hidden">
+      <!-- HEADER -->
+      <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-[#0a0f24]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-slate-900 font-extrabold text-base shadow-lg shadow-emerald-500/20">
+            💰
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white font-heading">Fresher CTC vs In-Hand Salary</h3>
+            <p class="text-[11px] text-slate-400">New Tax Regime FY 2024-25 / 2025-26 with PF & Tax</p>
+          </div>
+        </div>
+        <button onclick="closeCtcModal()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="p-5 overflow-y-auto space-y-4 text-xs text-slate-300 no-scrollbar">
+        <!-- CTC INPUT SLIDER -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-xs font-semibold text-slate-300">Annual Offer CTC:</span>
+            <span id="ctcDisplayBadge" class="text-sm font-extrabold text-emerald-400 font-mono">₹4.50 LPA</span>
+          </div>
+          <input type="range" id="ctcSlider" min="2.5" max="15.0" step="0.25" value="4.5" oninput="updateCtcCalculator(this.value)" class="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
+          <div class="flex items-center justify-between text-[10px] text-slate-500 mt-1 font-mono">
+            <span>₹2.5L</span>
+            <span>₹4.5L</span>
+            <span>₹7.0L</span>
+            <span>₹10.0L</span>
+            <span>₹15.0L</span>
+          </div>
+        </div>
+
+        <!-- QUICK PRESETS -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
+          <span class="text-[10px] text-slate-400 uppercase font-bold shrink-0">Presets:</span>
+          <button onclick="setCtcPreset(3.6)" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium whitespace-nowrap active:scale-95">3.6 LPA (TCS)</button>
+          <button onclick="setCtcPreset(4.5)" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold whitespace-nowrap active:scale-95">4.5 LPA (CTS)</button>
+          <button onclick="setCtcPreset(6.5)" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium whitespace-nowrap active:scale-95">6.5 LPA (Zoho)</button>
+          <button onclick="setCtcPreset(9.0)" class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 hover:text-white font-medium whitespace-nowrap active:scale-95">9.0 LPA (Fintech)</button>
+        </div>
+
+        <!-- HERO IN-HAND RESULT -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-teal-950/20 to-slate-900 border border-emerald-500/30 text-center">
+          <div class="text-[11px] uppercase font-bold text-emerald-400/90 tracking-wider">Estimated Monthly In-Hand Take-Home</div>
+          <div id="ctcInHandMonthly" class="text-3xl font-extrabold text-emerald-300 font-heading my-1">₹35,500</div>
+          <div id="ctcInHandAnnual" class="text-xs text-slate-400">₹4,26,000 / year • <span class="text-emerald-400 font-semibold">94.7%</span> of CTC</div>
+        </div>
+
+        <!-- BREAKDOWN GRID -->
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <!-- EARNINGS -->
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-white/5 space-y-1.5">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block pb-1 border-b border-white/5">Monthly Earnings</span>
+            <div class="flex justify-between"><span class="text-slate-400">Basic (40%):</span> <span id="ctcBasic" class="font-mono text-slate-200">₹15,000</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">HRA (20%):</span> <span id="ctcHra" class="font-mono text-slate-200">₹7,500</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Special Allow:</span> <span id="ctcSpecial" class="font-mono text-slate-200">₹15,000</span></div>
+            <div class="flex justify-between pt-1 border-t border-white/5 font-semibold"><span class="text-white">Gross Total:</span> <span id="ctcGross" class="font-mono text-emerald-400">₹37,500</span></div>
+          </div>
+
+          <!-- DEDUCTIONS -->
+          <div class="p-3 rounded-xl bg-slate-900/60 border border-white/5 space-y-1.5">
+            <span class="text-[10px] uppercase font-bold text-rose-400/80 block pb-1 border-b border-white/5">Monthly Deductions</span>
+            <div class="flex justify-between"><span class="text-slate-400">EPF (12%):</span> <span id="ctcEpf" class="font-mono text-rose-300">-₹1,800</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Prof Tax (PT):</span> <span id="ctcPt" class="font-mono text-rose-300">-₹200</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Income Tax:</span> <span id="ctcTax" class="font-mono text-emerald-400">₹0</span></div>
+            <div class="flex justify-between pt-1 border-t border-white/5 font-semibold"><span class="text-white">Total Deduct:</span> <span id="ctcDeductions" class="font-mono text-rose-400">-₹2,000</span></div>
+          </div>
+        </div>
+
+        <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-300 leading-relaxed">
+          💡 Under the <b>New Tax Regime</b> with the ₹75,000 standard deduction and Section 87A rebate, annual income up to <b>₹7.75 Lakhs is 100% Tax-Free</b>!
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="px-5 py-3 border-t border-white/10 bg-[#090d20] flex items-center justify-between">
+        <button onclick="closeCtcModal()" class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition-all">
+          Done
+        </button>
+      </div>
     </div>
   </div>
 
@@ -783,6 +925,10 @@
                 </a>
               ` : ''}
 
+              <button onclick="shareJob('${j.id}')" title="Share Opening" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+                <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
+              </button>
+
               <button onclick="populateATSMatcher('${escapeHtml(j.role)}', '${escapeHtml(j.company)}', '${escapeHtml(j.description || j.summary || j.role)}')" title="ATS Match" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
                 <i data-lucide="target" class="w-3.5 h-3.5 text-pink-400"></i>
               </button>
@@ -843,6 +989,9 @@
               <a href="${safeUrl(w.maps_url)}" target="_blank" rel="noopener noreferrer" class="py-2.5 px-3 rounded-xl bg-teal-600/20 border border-teal-500/40 text-teal-300 hover:bg-teal-600/30 font-semibold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
                 <i data-lucide="navigation" class="w-3.5 h-3.5 text-teal-400"></i> Google Maps
               </a>
+              <button onclick="shareJob('${w.id}')" title="Share Walk-in" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+                <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
+              </button>
             </div>
           </div>
         `;
@@ -901,6 +1050,9 @@
               </a>
               <button onclick="openDetailsModal('${d.id}')" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
                 <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i> Details
+              </button>
+              <button onclick="shareJob('${d.id}')" title="Share Mass Drive" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+                <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
               </button>
             </div>
           </div>
@@ -1034,14 +1186,84 @@
       }
 
       document.getElementById('modalBody').innerHTML = bodyHtml;
+      const pitchDrawer = document.getElementById('modalPitchDrawer');
+      if (pitchDrawer) pitchDrawer.classList.add('hidden');
       document.getElementById('jobDetailsModal').classList.remove('hidden');
       lucide.createIcons();
+
+      // Native Telegram WebApp Buttons Integration
+      if (tg) {
+        if (tg.MainButton) {
+          tg.MainButton.setText('Apply on Official Portal 🚀');
+          tg.MainButton.show();
+          tg.MainButton.onClick(handleTgMainApply);
+        }
+        if (tg.BackButton) {
+          tg.BackButton.show();
+          tg.BackButton.onClick(closeDetailsModal);
+        }
+      }
+    }
+
+    function handleTgMainApply() {
+      if (!activeModalJob) return;
+      const url = activeModalJob.apply_url || activeModalJob.link;
+      if (!url) return;
+      if (tg && tg.openLink) {
+        tg.openLink(url);
+      } else {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
     }
 
     function closeDetailsModal() {
       triggerHaptic('light');
       document.getElementById('jobDetailsModal').classList.add('hidden');
+      const pitchDrawer = document.getElementById('modalPitchDrawer');
+      if (pitchDrawer) pitchDrawer.classList.add('hidden');
       activeModalJob = null;
+
+      // Reset Native Telegram WebApp Buttons
+      if (tg) {
+        if (tg.MainButton) {
+          tg.MainButton.hide();
+          tg.MainButton.offClick(handleTgMainApply);
+        }
+        if (tg.BackButton) {
+          tg.BackButton.hide();
+          tg.BackButton.offClick(closeDetailsModal);
+        }
+      }
+    }
+
+    function shareJob(jobId, platform = 'native') {
+      triggerHaptic('light');
+      const j = allJobs.find(x => x.id === jobId) || activeModalJob;
+      if (!j) return;
+      const url = j.apply_url || j.link || window.location.href;
+      const shareText = `🚀 Hiring Alert: ${j.company} is hiring for ${j.role}!\n📍 Location: ${j.location}\n💰 Salary: ${j.salary}\n🎓 Batch: ${j.batch}\n👉 Apply Link: ${url}\n\nShared via MyJob AI Radar`;
+
+      if (platform === 'whatsapp') {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+      } else if (platform === 'telegram') {
+        window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(`🚀 ${j.company} hiring: ${j.role} (${j.location})`)}`, '_blank');
+      } else if (platform === 'linkedin') {
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+      } else {
+        if (navigator.share) {
+          navigator.share({
+            title: `${j.company} — ${j.role}`,
+            text: shareText,
+            url: url
+          }).catch(() => {});
+        } else {
+          navigator.clipboard.writeText(shareText).then(() => {
+            showToast('Opening details copied to clipboard to share!');
+          }).catch(() => {
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+          });
+        }
+      }
     }
 
     function copyModalLink() {
@@ -1059,6 +1281,165 @@
       if (!activeModalJob) return;
       closeDetailsModal();
       populateATSMatcher(activeModalJob.role, activeModalJob.company, activeModalJob.description || activeModalJob.summary || activeModalJob.role);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // 1-TAP COLD OUTREACH PITCH GENERATOR
+    // ─────────────────────────────────────────────────────────────
+    let activeColdPitchText = '';
+
+    function toggleModalColdPitch() {
+      triggerHaptic('light');
+      const drawer = document.getElementById('modalPitchDrawer');
+      if (!drawer) return;
+      if (!drawer.classList.contains('hidden')) {
+        drawer.classList.add('hidden');
+        return;
+      }
+
+      if (!activeModalJob) return;
+      const j = activeModalJob;
+      const comp = j.company || 'Hiring Team';
+      const role = j.role || 'Software Engineer';
+      const skillsStr = (Array.isArray(j.skills) && j.skills.length > 0) 
+        ? j.skills.slice(0, 3).join(', ') 
+        : 'Python, backend development, and problem solving';
+
+      const subject = `Application for ${role} — Immediate Joiner`;
+      const body = `Dear Hiring Team at ${comp},
+
+I came across the ${role} opening at ${comp} and wanted to personally reach out to express my strong interest in contributing to your engineering team.
+
+With hands-on project experience in ${skillsStr}, I have built robust features, maintained clean codebases, and solved challenging technical problems. Having closely followed ${comp}'s engineering trajectory, I am confident my technical foundation aligns strongly with your current objectives.
+
+Could we schedule a brief 10-minute introductory call this week to explore how I can support your roadmap?
+
+Thank you for your time and consideration.
+
+Warm regards,
+Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
+
+      activeColdPitchText = `Subject: ${subject}\n\n${body}`;
+
+      document.getElementById('pitchSubject').innerText = `Subject: ${subject}`;
+      document.getElementById('pitchBody').innerText = body;
+
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+      document.getElementById('pitchGmailBtn').href = gmailUrl;
+      document.getElementById('pitchMailtoBtn').href = mailtoUrl;
+
+      drawer.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function copyColdPitch() {
+      if (!activeColdPitchText) return;
+      triggerHaptic('success');
+      navigator.clipboard.writeText(activeColdPitchText).then(() => {
+        const btn = document.getElementById('pitchCopyBtn');
+        if (btn) {
+          btn.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Copied!`;
+          lucide.createIcons();
+          setTimeout(() => {
+            btn.innerHTML = `<i data-lucide="copy" class="w-3 h-3"></i> Copy Pitch`;
+            lucide.createIcons();
+          }, 2000);
+        }
+        showToast('Cold outreach pitch copied to clipboard!');
+      }).catch(() => {
+        showToast('Select text to copy manually');
+      });
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // FRESHER CTC vs IN-HAND SALARY CALCULATOR LOGIC
+    // ─────────────────────────────────────────────────────────────
+    function openCtcModal(initialLpa = 4.5) {
+      triggerHaptic('light');
+      const modal = document.getElementById('ctcModal');
+      if (!modal) return;
+      document.getElementById('ctcSlider').value = initialLpa;
+      updateCtcCalculator(initialLpa);
+      modal.classList.remove('hidden');
+      lucide.createIcons();
+      if (tg && tg.BackButton) {
+        tg.BackButton.show();
+        tg.BackButton.onClick(closeCtcModal);
+      }
+    }
+
+    function openCtcModalForJob() {
+      let lpa = 4.5;
+      if (activeModalJob && activeModalJob.salary) {
+        const m = activeModalJob.salary.match(/(\d+(\.\d+)?)/);
+        if (m) {
+          const val = parseFloat(m[1]);
+          if (val > 0 && val <= 30) lpa = val;
+        }
+      }
+      openCtcModal(lpa);
+    }
+
+    function closeCtcModal() {
+      triggerHaptic('light');
+      const modal = document.getElementById('ctcModal');
+      if (modal) modal.classList.add('hidden');
+      if (tg && tg.BackButton && (!activeModalJob || document.getElementById('jobDetailsModal').classList.contains('hidden'))) {
+        tg.BackButton.hide();
+      }
+    }
+
+    function setCtcPreset(lpa) {
+      triggerHaptic('light');
+      document.getElementById('ctcSlider').value = lpa;
+      updateCtcCalculator(lpa);
+    }
+
+    function updateCtcCalculator(ctcLpa) {
+      const num = parseFloat(ctcLpa) || 4.5;
+      const annualCtc = num * 100000;
+      const grossMonthly = Math.round(annualCtc / 12);
+      const basicMonthly = Math.round(grossMonthly * 0.40);
+      const hraMonthly = Math.round(basicMonthly * 0.50);
+      const specialMonthly = Math.max(0, grossMonthly - basicMonthly - hraMonthly);
+
+      // Deductions
+      const epfMonthly = basicMonthly >= 15000 ? 1800 : Math.round(basicMonthly * 0.12);
+      const ptMonthly = 200;
+
+      // Income Tax (New Tax Regime FY 24-25 / 25-26)
+      const taxable = Math.max(0, annualCtc - 75000);
+      let annualTax = 0;
+      if (taxable > 700000) {
+        let t1 = Math.min(Math.max(0, taxable - 300000), 400000) * 0.05;
+        let t2 = Math.min(Math.max(0, taxable - 700000), 300000) * 0.10;
+        let t3 = Math.min(Math.max(0, taxable - 1000000), 200000) * 0.15;
+        let t4 = Math.min(Math.max(0, taxable - 1200000), 300000) * 0.20;
+        let t5 = Math.max(0, taxable - 1500000) * 0.30;
+        let baseTax = t1 + t2 + t3 + t4 + t5;
+        annualTax = baseTax * 1.04;
+      }
+      const taxMonthly = Math.round(annualTax / 12);
+      const totalDeductions = epfMonthly + ptMonthly + taxMonthly;
+      const inHandMonthly = Math.max(0, grossMonthly - totalDeductions);
+      const inHandAnnual = inHandMonthly * 12;
+      const ratio = ((inHandAnnual / annualCtc) * 100).toFixed(1);
+
+      document.getElementById('ctcDisplayBadge').innerText = '₹' + num.toFixed(2) + ' LPA';
+      document.getElementById('ctcInHandMonthly').innerText = '₹' + inHandMonthly.toLocaleString('en-IN');
+      document.getElementById('ctcInHandAnnual').innerHTML = `₹${inHandAnnual.toLocaleString('en-IN')} / year • <span class="text-emerald-400 font-semibold">${ratio}%</span> of CTC`;
+
+      document.getElementById('ctcBasic').innerText = '₹' + basicMonthly.toLocaleString('en-IN');
+      document.getElementById('ctcHra').innerText = '₹' + hraMonthly.toLocaleString('en-IN');
+      document.getElementById('ctcSpecial').innerText = '₹' + specialMonthly.toLocaleString('en-IN');
+      document.getElementById('ctcGross').innerText = '₹' + grossMonthly.toLocaleString('en-IN');
+
+      document.getElementById('ctcEpf').innerText = '-₹' + epfMonthly.toLocaleString('en-IN');
+      document.getElementById('ctcPt').innerText = '-₹' + ptMonthly.toLocaleString('en-IN');
+      document.getElementById('ctcTax').innerText = annualTax === 0 ? '₹0 (Tax Free)' : '-₹' + taxMonthly.toLocaleString('en-IN');
+      document.getElementById('ctcDeductions').innerText = '-₹' + totalDeductions.toLocaleString('en-IN');
     }
 
     // ─────────────────────────────────────────────────────────────

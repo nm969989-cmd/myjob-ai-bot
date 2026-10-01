@@ -13,6 +13,110 @@ import math
 import requests
 from typing import Optional, Dict, List, Any
 
+
+# ─────────────────────────────────────────────────────────────────
+# FEATURE 0: 🎨 SHARED TELEGRAM CARD DESIGN SYSTEM
+# Every digest below (walk-ins, national drives, TN jobs, mass deadlines)
+# renders through these helpers so that:
+#   • long comma-separated values break on ITEM boundaries instead of
+#     mid-word (Telegram hard-wraps at ~45 chars on a phone), and
+#   • every card keeps the same scannable rhythm:
+#     title → hero chips → rule → eligibility → venue → documents → links.
+# ─────────────────────────────────────────────────────────────────
+
+TG_BULLET = "▫️"
+TG_INDENT = "   "
+
+
+def tg_rule(width: int = 25) -> str:
+    """Horizontal rule sized to survive one mobile line inside a card."""
+    return "━" * max(6, int(width))
+
+
+def tg_clip(value: str = "", limit: int = 60) -> str:
+    """Collapses whitespace and word-truncates a value for a one-line summary chip."""
+    text = re.sub(r"\s+", " ", str(value or "")).strip()
+    if len(text) <= limit:
+        return text
+    head = text[:limit].rsplit(" ", 1)[0] or text[:limit]
+    # Never leave a dangling '+'/'&' or half an HTML entity ("&amp") behind.
+    head = re.sub(r"&[a-zA-Z#]{0,7}$", "", head).rstrip(" ,/-+")
+    return head + "…"
+
+
+def tg_wrap_list(value: str = "", bullet: str = TG_BULLET, indent: str = TG_INDENT,
+                 max_line: int = 42, sep: str = None, joiner: str = ", ") -> str:
+    """
+    Breaks a long delimited value onto short continuation lines so Telegram never
+    splits a word in half on a phone.
+
+    "Updated Resume, College ID & Aadhar Card, Degree / Provisional Certificate"
+    -> "Updated Resume, College ID & Aadhar Card,\\n   ▫️ Degree / Provisional Certificate"
+
+    Pass sep (for example r"\\s*➔\\s*") for non-comma lists such as interview rounds.
+    Returns the value untouched when it holds only a single item.
+    """
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+
+    if sep:
+        parts = [p.strip(" .") for p in re.split(sep, raw) if p.strip(" .")]
+    else:
+        # NOTE: ';' is deliberately NOT treated as a separator — html.escape()
+        # turns '&' into '&amp;' and splitting on ';' would shred the entity.
+        norm = re.sub(r"\s*[•|]\s*", ", ", raw)
+        parts = [p.strip(" .") for p in norm.split(",") if p.strip(" .")]
+
+    if len(parts) <= 1:
+        return raw
+
+    tail = "," if joiner.strip().startswith(",") else ""
+    lines, current = [], ""
+    for part in parts:
+        candidate = f"{current}{joiner}{part}" if current else part
+        if current and len(candidate) > max_line:
+            lines.append(current + tail)
+            current = part
+        else:
+            current = candidate
+    if current:
+        lines.append(current)
+    if len(lines) <= 1:
+        return raw
+    return lines[0] + "\n" + "\n".join(f"{indent}{bullet} {ln}" for ln in lines[1:])
+
+
+def tg_field(emoji: str, label: str, value: str = "", max_line: int = 42,
+             bullet: str = TG_BULLET, sep: str = None, joiner: str = ", ") -> str:
+    """
+    Renders one '<emoji> <b>Label:</b> value' card line with aligned continuation
+    lines for long values. Returns "" when the value is empty so callers can append
+    the result unconditionally.
+    """
+    val = str(value or "").strip()
+    if not val:
+        return ""
+    return f"{emoji} <b>{label}:</b> {tg_wrap_list(val, bullet=bullet, max_line=max_line, sep=sep, joiner=joiner)}"
+
+
+def tg_chips(items: list) -> str:
+    """Joins short hero chips ('💰 5.5 LPA', '📍 Coimbatore') into one glance line."""
+    clean = [str(i).strip() for i in items if str(i or "").strip()]
+    return "  •  ".join(clean)
+
+
+def tg_day_chip(timing: str = "") -> str:
+    """Pulls a compact 'Sat 9:00 AM' chip out of a long walk-in timing sentence."""
+    text = str(timing or "")
+    day = re.search(r"\b(Saturday|Sunday|Monday|Tuesday|Wednesday|Thursday|Friday)\b", text, re.IGNORECASE)
+    clock = re.search(r"\b(\d{1,2}[:.]\d{2})\s*(AM|PM)\b", text, re.IGNORECASE)
+    chip = day.group(1)[:3].title() if day else ""
+    if clock:
+        chip = (chip + " " + clock.group(1) + " " + clock.group(2).upper()).strip()
+    return chip
+
+
 # ─────────────────────────────────────────────────────────────────
 # FEATURE 1: HTML MINIFIER  (reduces Gemini token usage by ~80%)
 # ─────────────────────────────────────────────────────────────────
@@ -1912,17 +2016,16 @@ def format_national_drives_report(drives: list = None, query: str = None) -> lis
         status = html.escape(str(d.get("status", "Active")))
         link = html.escape(str(d.get("link", "")).strip())
         exam = html.escape(str(d.get("exam_mode", "National Assessment")))
-        cutoff = html.escape(str(d.get("cgpa_cutoff", "60% or 6.0 CGPA")))[:85]
+        cutoff = html.escape(str(d.get("cgpa_cutoff", "60% or 6.0 CGPA")))
 
         entry = (
             f"<b>{idx}.</b> <a href=\"{link}\"><b>{name}</b></a>\n"
-            f"   🏢 <b>Company:</b> <code>{comp}</code>\n"
-            f"   🎓 <b>Batches:</b> <code>{batches}</code>\n"
-            f"   📊 <b>Cutoff:</b> <i>{cutoff}...</i>\n"
-            f"   💰 <b>Package:</b> <code>{pkg}</code>\n"
-            f"   📡 <b>Status:</b> <b>{status}</b>\n"
-            f"   📝 <b>Format:</b> <i>{exam}</i>\n"
-            f"   👉 <i>Tip: Tap button below for full syllabus & pattern</i>\n\n"
+            f"🏢 <b>{comp}</b>\n"
+            f"{tg_chips([f'💰 {tg_clip(pkg, 32)}', f'🎓 {tg_clip(batches, 28)}', f'📡 {tg_clip(status, 24)}'])}\n"
+            f"{tg_rule(20)}\n"
+            f"{tg_field('📊', 'CGPA / % Cutoff', cutoff, max_line=46)}\n"
+            f"{tg_field('📝', 'Exam Format', exam, max_line=46)}\n"
+            f"👉 <i>Tap the title or the button below for the full syllabus & pattern</i>\n\n"
         )
 
         if len(current_chunk) + len(entry) > 3400:
@@ -2201,14 +2304,13 @@ def format_deadlines_radar_report(drives: list = None, urgent_only: bool = False
 
             entry = (
                 f"{color} <b>{name}</b>\n"
-                f"   🏢 <b>Company:</b> <code>{comp}</code>\n"
-                f"   ⏰ <b>Cutoff:</b> <b>{deadline}</b>\n"
-                f"   ⚡ <b>Countdown:</b> <code>{badge}</code>\n"
-                f"   💰 <b>Package:</b> {pkg}\n"
-                f"   🎓 <b>Batches:</b> <i>{batches}</i>\n"
+                f"🏢 <b>{comp}</b>\n"
+                f"{tg_chips([f'⏰ {tg_clip(deadline, 26)}', f'⚡ {tg_clip(badge, 26)}'])}\n"
+                f"{tg_field('💰', 'Package', pkg, max_line=44)}\n"
+                f"{tg_field('🎓', 'Batches', batches, max_line=44)}\n"
             )
             if link:
-                entry += f"   👉 <a href=\"{link}\">Register on Official Portal</a>\n\n"
+                entry += f"👉 <a href=\"{link}\">Register on Official Portal</a>\n\n"
             else:
                 entry += "\n"
 
@@ -2260,7 +2362,11 @@ def get_urgent_deadlines_summary(drives: list = None, ref_date=None) -> str:
         name = html.escape(str(d.get("name", "Drive")))
         badge = html.escape(str(d.get("urgency_badge", "")))
         link = d.get("link", "")
-        lines.append(f"{d['urgency_color']} <b>{comp}</b> – {name}\n   <code>{badge}</code>\n   👉 <a href=\"{link}\">Apply Now</a>")
+        lines.append(
+            f"{d['urgency_color']} <b>{comp}</b> — {tg_clip(name, 44)}\n"
+            f"   ⚡ <code>{badge}</code>\n"
+            f"   👉 <a href=\"{link}\">Apply Now</a>"
+        )
     
     return "\n\n".join(lines)
 
@@ -2333,7 +2439,8 @@ def format_walkins_report(drives: list = None, city_filter: str = None, max_char
     header = (
         f"🚶‍♂️ <b>TAMIL NADU WEEKEND WALK-IN TRACKER{filter_title}</b> 🇮🇳\n"
         f"📍 <i>Direct In-Person Drives with Same-Day Interviews & Offer Letters</i>\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"🕘 <i>Carry originals • Reach 45 min early • Token counter shuts on capacity</i>\n"
+        f"{tg_rule(27)}\n\n"
     )
 
     chunks = []
@@ -2353,6 +2460,7 @@ def format_walkins_report(drives: list = None, city_filter: str = None, max_char
         degrees = html.escape(str(d.get("degrees", "Any Graduate")))
         timing = html.escape(str(d.get("timing", "Upcoming Saturday (9:00 AM)")))
         pkg = html.escape(str(d.get("package", "As per Industry Standards")))
+        venue_name = html.escape(str(d.get("venue_name", "")))
         venue = html.escape(str(d.get("venue_address", "")))
         landmarks = html.escape(str(d.get("landmarks", "")))
         docs = html.escape(str(d.get("mandatory_docs", "Resume, Govt ID")))
@@ -2363,34 +2471,56 @@ def format_walkins_report(drives: list = None, city_filter: str = None, max_char
         reg_link = str(d.get("registration_link", "")).strip()
         maps_link = str(d.get("google_maps", "#")).strip()
 
+        # ── Hero chips: the three facts a candidate scans for first ──
+        day_chip = tg_day_chip(timing)
+        glance = tg_chips([
+            f"💰 {tg_clip(pkg, 24)}" if pkg else "",
+            f"📍 {city}" if city else "",
+            f"🗓️ {day_chip}" if day_chip else "",
+        ])
+
         card_lines = [
-            f"{num} <b>{comp}</b> • <i>{role}</i>",
+            f"{num} <b>{comp}</b>",
+            f"💼 <i>{role}</i>",
             f"🏷️ <b>Status:</b> {status}",
-            f"📍 <b>City & Hub:</b> {city} ({area}) ⭐",
-            f"🗓️ <b>Walk-In Timing:</b> {timing}",
-            f"🎓 <b>Eligible:</b> <code>{batches}</code> • <b>Exp:</b> {exp}",
-            f"🎯 <b>Degree/Stream:</b> {degrees}",
-            f"💰 <b>Package:</b> {pkg}",
-            f"🏢 <b>Venue:</b> {venue}",
         ]
+        if glance:
+            card_lines.append(glance)
+        card_lines.append(tg_rule())
+
+        card_lines += [line for line in (
+            tg_field("🎓", "Eligible Batches", batches, max_line=40),
+            tg_field("🎯", "Degree / Stream", degrees, max_line=48),
+            tg_field("💼", "Experience", exp, max_line=48),
+            tg_field("🗓️", "Walk-In Timing", timing, max_line=48),
+            f"📍 <b>City & Hub:</b> {city} ({area}) ⭐",
+            tg_field("💰", "Package / CTC", pkg, max_line=48),
+            tg_field("🏢", "Venue", f"{venue_name} — {venue}" if venue_name and venue else (venue_name or venue), max_line=52),
+        ) if line]
         if landmarks:
-            card_lines.append(f"📌 <b>Landmark:</b> {landmarks}")
-        card_lines.append(f"🎒 <b>Carry:</b> {docs}")
-        card_lines.append(f"👔 <b>Dress Code:</b> {dress}")
+            card_lines.append(tg_field("📌", "Landmark", landmarks, max_line=48))
+        card_lines += [line for line in (
+            tg_field("🎒", "Carry", docs, max_line=48),
+            tg_field("👔", "Dress Code", dress, max_line=48),
+        ) if line]
         if rounds:
-            card_lines.append(f"🔄 <b>Selection Process:</b> {rounds}")
+            card_lines.append(
+                f"🔄 <b>Selection Process:</b>\n"
+                f"{TG_INDENT}{tg_wrap_list(rounds, bullet='➔', max_line=48, sep='➔', joiner=' ➔ ')}"
+            )
         if prep:
-            card_lines.append(f"💡 <b>Prep Tip:</b> <i>{prep}</i>")
+            card_lines.append(f"💡 <b>Prep Tip:</b>\n{TG_INDENT}<i>{prep}</i>")
         if contact:
             card_lines.append(f"📞 <b>Contact / Desk:</b> <code>{contact}</code>")
 
         action_links = []
         if reg_link:
-            action_links.append(f"<a href=\"{reg_link}\">👉 <b>Official Portal / Register</b></a>")
-        action_links.append(f"<a href=\"{maps_link}\">🗺️ <b>Open in Google Maps</b></a>")
+            action_links.append(f"<a href=\"{reg_link}\">📝 <b>Official Portal / Pre-Register</b></a>")
+        action_links.append(f"<a href=\"{maps_link}\">🗺️ <b>Google Maps Route</b></a>")
 
-        card_lines.append(" • ".join(action_links))
-        card = "\n".join(card_lines) + "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        card_lines.append(tg_rule(20))
+        card_lines.append("  •  ".join(action_links))
+        card = "\n".join(card_lines) + "\n\n" + tg_rule(27) + "\n\n"
 
         if len(current_chunk) + len(card) > max_chars:
             chunks.append(current_chunk.strip())
@@ -2437,45 +2567,52 @@ def format_single_walkin_detail(walkin_id: str, json_path: str = "walkin_drives.
     reg_link = str(drive.get("registration_link", "")).strip()
 
     detail_lines = [
-        f"🏢 <b>{comp} — Complete In-Person Walk-In Briefing</b>",
+        f"🏢 <b>{comp}</b>",
         f"💼 <i>{role}</i>",
         f"🏷️ <b>Status:</b> {status}",
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+        tg_rule(27),
         f"📍 <b>Location:</b> {city} ({area})",
-        f"🗓️ <b>Reporting Timing:</b> {timing}",
-        f"🎓 <b>Eligible Batches:</b> <code>{batches}</code>",
-        f"💼 <b>Experience Level:</b> {exp}",
-        f"🎯 <b>Academic Criteria:</b> {degrees}",
+        "🎯 <b>ELIGIBILITY & PACKAGE</b>",
+    ]
+    detail_lines += [line for line in (
+        tg_field("🎓", "Eligible Batches", batches, max_line=48),
+        tg_field("💼", "Experience Level", exp, max_line=48),
+        tg_field("🎯", "Academic Criteria", degrees, max_line=52),
+    ) if line]
+    detail_lines += [
         f"💰 <b>Package / CTC:</b> {pkg}",
         "",
-        "🏢 <b>Venue & Landmarks:</b>",
-        f"<b>{venue_name}</b>",
-        f"<code>{venue}</code>",
+        "🏢 <b>VENUE, TIMING & ROUTE</b>",
+        f"🗓️ <b>Reporting Timing:</b> {timing}",
     ]
+    if venue_name:
+        detail_lines.append(f"<b>{venue_name}</b>")
+    detail_lines.append(f"<code>{venue}</code>")
     if landmarks:
-        detail_lines.append(f"📌 <i>Landmarks: {landmarks}</i>")
+        detail_lines.append(f"{TG_INDENT}{TG_BULLET} <i>{landmarks}</i>")
     detail_lines.append(f"🗺️ <a href=\"{maps_link}\">👉 <b>Open Location in Google Maps (GPS Navigation)</b></a>")
     detail_lines.append("")
-    detail_lines.append("🎒 <b>Mandatory Documents to Carry:</b>")
-    detail_lines.append(docs)
+    detail_lines.append("🎒 <b>MANDATORY DOCUMENTS TO CARRY</b>")
+    detail_lines.append(tg_wrap_list(docs or "Check the official notification for the document list", max_line=52))
     detail_lines.append("")
     detail_lines.append(f"👔 <b>Dress Code:</b> {dress}")
     detail_lines.append("")
-    detail_lines.append("📝 <b>Selection Process & Interview Rounds:</b>")
-    detail_lines.append(rounds)
-    detail_lines.append("")
+    if rounds:
+        detail_lines.append("📝 <b>SELECTION PROCESS & INTERVIEW ROUNDS</b>")
+        detail_lines.append(f"{TG_INDENT}{tg_wrap_list(rounds, bullet='➔', max_line=52, sep='➔', joiner=' ➔ ')}")
+        detail_lines.append("")
     if skills:
         detail_lines.append(f"🔑 <b>Key Skills Tested:</b> <code>{skills}</code>")
         detail_lines.append("")
     if prep:
-        detail_lines.append(f"💡 <b>Insider Interview Tips:</b>\n<i>{prep}</i>")
+        detail_lines.append(f"💡 <b>Insider Interview Tips:</b>\n{TG_INDENT}<i>{prep}</i>")
         detail_lines.append("")
-    detail_lines.append("📞 <b>Contact & Official Helpdesk:</b>")
-    detail_lines.append(contact)
+    detail_lines.append("📞 <b>CONTACT & OFFICIAL HELPDESK</b>")
+    detail_lines.append(f"{TG_INDENT}{contact}")
     if reg_link:
         detail_lines.append(f"🔗 <a href=\"{reg_link}\">👉 <b>Official Career Page / Pre-Register</b></a>")
-    detail_lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    detail_lines.append("⚠️ <i>Important: Arrive 30–45 minutes before reporting time. Walk-in token distribution closes once candidate quota is reached.</i>")
+    detail_lines.append(tg_rule(27))
+    detail_lines.append("⚠️ <i>Arrive 30–45 minutes before reporting time — walk-in token counters close once the candidate quota is filled.</i>")
 
     return "\n".join(detail_lines)
 
@@ -2772,32 +2909,33 @@ def format_nearby_walkins_report(nearby_drives: list, user_coords: tuple, locati
             badge_line = f"🔵 {dist_badge} • <i>{commute}</i> 🛣️ <b>COMMUTE READY</b>"
 
         card_lines = [
-            f"{medal} <b>{comp}</b> • <i>{role}</i>",
+            f"{medal} <b>{comp}</b>",
+            f"💼 <i>{role}</i>",
             badge_line,
-            f"📍 <b>Area:</b> {area}",
-            f"🏢 <b>Venue:</b> <code>{venue}</code>",
+            tg_rule(),
         ]
-        if landmarks:
-            card_lines.append(f"📌 <b>Landmark:</b> {landmarks}")
-        card_lines.extend([
-            f"🗓️ <b>Timing:</b> {timing}",
-            f"🎓 <b>Eligible:</b> <code>{batches}</code> ({exp})",
-            f"💰 <b>Package:</b> {pkg}",
-            f"🎒 <b>Carry:</b> {docs}",
-            f"👔 <b>Dress:</b> {dress}",
-            f"👉 <a href=\"{nav_url}\">🚗 <b>Start Google Maps Turn-by-Turn GPS</b></a>",
-        ])
+        card_lines += [line for line in (
+            tg_field("📍", "Area", area, max_line=44),
+            tg_field("🏢", "Venue", venue, max_line=48),
+            tg_field("📌", "Landmark", landmarks, max_line=48),
+            tg_field("🗓️", "Timing", timing, max_line=48),
+            tg_field("🎓", "Eligible", f"{batches} ({exp})", max_line=48),
+            tg_field("💰", "Package", pkg, max_line=48),
+            tg_field("🎒", "Carry", docs, max_line=48),
+            tg_field("👔", "Dress", dress, max_line=48),
+        ) if line]
+        card_lines.append(f"👉 <a href=\"{nav_url}\">🚗 <b>Start Google Maps Turn-by-Turn GPS</b></a>")
         cards.append("\n".join(card_lines))
 
     footer = (
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        "💡 <i>Tip: Tap any 'Start GPS' link for live real-time traffic route. Arrive 30 mins early before token counters close!</i>"
+        tg_rule(27) + "\n"
+        "💡 <i>Tip: Tap any 'Start GPS' link for live real-time traffic routes. Arrive 30 mins early before token counters close!</i>"
     )
 
     chunks = []
     current_chunk = header
     for card in cards:
-        block = card + "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        block = card + "\n\n" + tg_rule(27) + "\n\n"
         if len(current_chunk) + len(block) > max_chars:
             chunks.append(current_chunk.strip())
             current_chunk = f"🧭 <b>GPS WALK-IN NAVIGATOR (Part {len(chunks)+1})</b>\n\n" + block
@@ -4162,6 +4300,293 @@ def format_simplify_jobs_report(jobs: list, keyword: str = None) -> tuple:
     )
 
     return chunks, markup
+
+
+# ─────────────────────────────────────────────────────────────────
+# FEATURE 21: 💰 FRESHER CTC vs IN-HAND SALARY ESTIMATOR
+# Calculates take-home monthly pay, EPF, PT, and Income Tax (New Regime)
+# ─────────────────────────────────────────────────────────────────
+def calculate_inhand_salary(ctc_input) -> dict:
+    """
+    Calculates detailed take-home in-hand monthly salary breakdown from annual CTC
+    under Indian corporate structure and New Tax Regime (FY 2024-25 / FY 2025-26).
+    """
+    if ctc_input is None:
+        ctc_input = 4.5
+
+    if isinstance(ctc_input, (int, float)):
+        num = float(ctc_input)
+    else:
+        raw = str(ctc_input).upper().replace(",", "").replace("₹", "").replace("RS.", "").replace("RS", "").strip()
+        m = re.search(r"(\d+(\.\d+)?)", raw)
+        num = float(m.group(1)) if m else 4.5
+
+    if num > 100:  # Direct rupees, e.g. 450000
+        annual_ctc = num
+        ctc_lakhs = round(num / 100000.0, 2)
+    else:  # In Lakhs, e.g. 4.5
+        ctc_lakhs = round(num, 2)
+        annual_ctc = round(num * 100000.0, 2)
+
+    if annual_ctc <= 0:
+        annual_ctc = 450000.0
+        ctc_lakhs = 4.5
+
+    gross_annual = annual_ctc
+    basic_annual = gross_annual * 0.40
+    hra_annual = basic_annual * 0.50
+    special_annual = max(0.0, gross_annual - basic_annual - hra_annual)
+
+    monthly_gross = gross_annual / 12.0
+    monthly_basic = basic_annual / 12.0
+    monthly_hra = hra_annual / 12.0
+    monthly_special = special_annual / 12.0
+
+    # EPF: 12% of basic, statutory ceiling is usually ₹1,800/mo (12% of ₹15,000) for private sector freshers
+    if monthly_basic >= 15000.0:
+        monthly_epf = 1800.0
+    else:
+        monthly_epf = round(monthly_basic * 0.12, 2)
+    annual_epf = monthly_epf * 12.0
+
+    # Professional Tax: standard ₹200/mo in South India tech hubs
+    monthly_pt = 200.0
+    annual_pt = 2400.0
+
+    # Income Tax (New Tax Regime FY 2024-25 & 2025-26):
+    # Salaried Standard deduction: ₹75,000
+    std_deduction = 75000.0
+    taxable_income = max(0.0, gross_annual - std_deduction)
+
+    annual_tax = 0.0
+    # Under Section 87A rebate, if taxable income <= 7,00,000 (Gross up to 7.75 LPA), tax is 0!
+    if taxable_income > 700000.0:
+        slab1 = min(max(0.0, taxable_income - 300000.0), 400000.0) * 0.05
+        slab2 = min(max(0.0, taxable_income - 700000.0), 300000.0) * 0.10
+        slab3 = min(max(0.0, taxable_income - 1000000.0), 200000.0) * 0.15
+        slab4 = min(max(0.0, taxable_income - 1200000.0), 300000.0) * 0.20
+        slab5 = max(0.0, taxable_income - 1500000.0) * 0.30
+        base_tax = slab1 + slab2 + slab3 + slab4 + slab5
+        cess = base_tax * 0.04
+        annual_tax = base_tax + cess
+
+    monthly_tax = annual_tax / 12.0
+    total_monthly_deductions = monthly_epf + monthly_pt + monthly_tax
+    monthly_take_home = max(0.0, monthly_gross - total_monthly_deductions)
+    annual_take_home = monthly_take_home * 12.0
+    take_home_ratio = round((annual_take_home / gross_annual) * 100.0, 1)
+
+    return {
+        "ctc_lakhs": ctc_lakhs,
+        "annual_ctc": round(annual_ctc),
+        "monthly_gross": round(monthly_gross),
+        "monthly_basic": round(monthly_basic),
+        "monthly_hra": round(monthly_hra),
+        "monthly_special": round(monthly_special),
+        "monthly_epf": round(monthly_epf),
+        "monthly_pt": round(monthly_pt),
+        "monthly_tax": round(monthly_tax),
+        "total_monthly_deductions": round(total_monthly_deductions),
+        "monthly_take_home": round(monthly_take_home),
+        "annual_take_home": round(annual_take_home),
+        "take_home_ratio": take_home_ratio,
+        "tax_regime": "New Tax Regime (FY 2024-25 / 2025-26)",
+        "tax_free": annual_tax == 0.0
+    }
+
+
+def format_ctc_report(ctc_data: dict, ctc_input_raw: str = None) -> tuple:
+    """
+    Renders an executive-grade Telegram HTML card showing exact In-Hand take-home salary,
+    earnings components, and statutory deductions with quick preset buttons.
+    Returns (card_text: str, reply_markup: InlineKeyboardMarkup)
+    """
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+    c = ctc_data
+    tax_note = "✅ <b>100% Tax-Free</b> (Sec 87A rebate)" if c["tax_free"] else f"₹{c['monthly_tax']:,}/mo TDS"
+
+    lines = [
+        "💰 <b>FRESHER CTC vs IN-HAND SALARY ESTIMATOR</b> 🇮🇳",
+        tg_rule(27),
+        f"🎯 <b>Annual CTC:</b> <code>₹{c['ctc_lakhs']:.2f} LPA</code> (₹{c['annual_ctc']:,} / year)",
+        f"💵 <b>NET IN-HAND MONTHLY TAKE-HOME:</b>",
+        f"👉 <b>₹{c['monthly_take_home']:,} / month</b> <i>(~{c['take_home_ratio']}% of CTC)</i>",
+        f"💼 <b>Annual Take-Home:</b> <code>₹{c['annual_take_home']:,} / year</code>",
+        "",
+        "📊 <b>MONTHLY EARNINGS BREAKDOWN:</b>",
+        f"▫️ Basic Pay (40%): <code>₹{c['monthly_basic']:,}</code>",
+        f"▫️ House Rent (HRA 20%): <code>₹{c['monthly_hra']:,}</code>",
+        f"▫️ Special Allowance: <code>₹{c['monthly_special']:,}</code>",
+        f"<b>Gross Total:</b> <code>₹{c['monthly_gross']:,} / month</code>",
+        "",
+        "✂️ <b>STATUTORY DEDUCTIONS:</b>",
+        f"▫️ EPF (Provident Fund): <code>-₹{c['monthly_epf']:,}</code>",
+        f"▫️ Professional Tax (PT): <code>-₹{c['monthly_pt']:,}</code>",
+        f"▫️ Income Tax: <code>-₹{c['monthly_tax']:,}</code> ({tax_note})",
+        f"<b>Total Deductions:</b> <code>-₹{c['total_monthly_deductions']:,} / month</code>",
+        tg_rule(27),
+        "💡 <i>Based on New Tax Regime with ₹75k standard deduction. Tap any preset below or type <code>/ctc &lt;amount&gt;</code>:</i>"
+    ]
+
+    markup = InlineKeyboardMarkup()
+    markup.row(
+        InlineKeyboardButton("💰 3.6 LPA (TCS/Wipro)", callback_data="ctc:3.6"),
+        InlineKeyboardButton("💰 4.5 LPA (CTS/Accenture)", callback_data="ctc:4.5")
+    )
+    markup.row(
+        InlineKeyboardButton("💰 6.5 LPA (Zoho)", callback_data="ctc:6.5"),
+        InlineKeyboardButton("💰 9.0 LPA (Fintech)", callback_data="ctc:9.0")
+    )
+    markup.row(
+        InlineKeyboardButton("🌟 Matching Fresh Jobs", callback_data="tnjobs"),
+        InlineKeyboardButton("🔙 Dashboard", callback_data="dashboard")
+    )
+
+    return "\n".join(lines), markup
+
+
+# ─────────────────────────────────────────────────────────────────
+# FEATURE 22: 📄 RESUME PDF IN-CHAT PARSER & ATS AUDITOR
+# Extracts text, candidate info, and technical skills from PDF uploads
+# ─────────────────────────────────────────────────────────────────
+def parse_resume_pdf(pdf_path_or_bytes) -> dict:
+    """
+    Parses a candidate's resume PDF using pypdf.
+    Extracts name, email, phone, and technical skills against a rich taxonomy.
+    """
+    import pypdf
+    import io
+
+    if isinstance(pdf_path_or_bytes, (str, bytes, os.PathLike)):
+        if isinstance(pdf_path_or_bytes, bytes):
+            reader = pypdf.PdfReader(io.BytesIO(pdf_path_or_bytes))
+        else:
+            reader = pypdf.PdfReader(str(pdf_path_or_bytes))
+    else:
+        reader = pypdf.PdfReader(pdf_path_or_bytes)
+
+    full_text = ""
+    for page in reader.pages:
+        txt = page.extract_text() or ""
+        full_text += txt + "\n"
+
+    # 1. Candidate Name (usually from top non-header lines)
+    lines = [line.strip() for line in full_text.splitlines() if line.strip()]
+    candidate_name = "Candidate"
+    for l in lines[:5]:
+        if not any(k in l.lower() for k in ["curriculum", "resume", "page", "phone", "email", "http", "+91", "github", "linkedin"]):
+            if len(l.split()) <= 4 and len(l) <= 35:
+                candidate_name = l
+                break
+
+    # 2. Email Address
+    email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', full_text)
+    email = email_match.group(0) if email_match else ""
+
+    # 3. Phone Number
+    phone_match = re.search(r'(\+91[\s-]?)?[6-9]\d{9}', full_text)
+    phone = phone_match.group(0) if phone_match else ""
+
+    # 4. Tech Skills Catalog
+    TECH_SKILLS = [
+        "Python", "Java", "C++", "C#", "JavaScript", "TypeScript", "HTML", "CSS",
+        "React", "Angular", "Vue", "Next.js", "Node.js", "Express", "Django", "FastAPI",
+        "Flask", "Spring Boot", "SQL", "PostgreSQL", "MySQL", "MongoDB", "Redis",
+        "Docker", "Kubernetes", "AWS", "Azure", "GCP", "Git", "GitHub", "Linux",
+        "Playwright", "Selenium", "Pandas", "NumPy", "Scikit-Learn", "Machine Learning",
+        "REST API", "GraphQL", "Tailwind CSS", "Bootstrap", "PHP", "Go", "Rust"
+    ]
+
+    detected_skills = []
+    for skill in TECH_SKILLS:
+        pattern = rf"(?<!\w){re.escape(skill)}(?!\w)"
+        if re.search(pattern, full_text, re.IGNORECASE):
+            detected_skills.append(skill)
+
+    is_fresher = bool(re.search(r'\b(fresher|entry-level|intern|new grad|2024|2025|2026)\b', full_text, re.I))
+
+    # Calculate ATS Health Score (based on contact completeness and skill density)
+    score = 50
+    if email:
+        score += 15
+    if phone:
+        score += 10
+    if len(detected_skills) >= 5:
+        score += 15
+    if len(detected_skills) >= 9:
+        score += 10
+    score = min(score, 98)
+
+    return {
+        "name": candidate_name,
+        "email": email,
+        "phone": phone,
+        "skills": detected_skills,
+        "skills_str": ", ".join(detected_skills),
+        "is_fresher": is_fresher,
+        "ats_score": score,
+        "char_count": len(full_text),
+        "page_count": len(reader.pages)
+    }
+
+
+def format_resume_ats_audit(parsed_data: dict, top_matches: list = None) -> tuple:
+    """
+    Renders an ATS Resume Audit Scorecard with detected candidate details,
+    extracted tech skills, ATS score, and top matching live vacancies.
+    Returns (chunks: list[str], reply_markup: InlineKeyboardMarkup)
+    """
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+    p = parsed_data
+    skills_list = p.get("skills", [])
+    skills_preview = ", ".join(skills_list[:10]) if skills_list else "General Software Development"
+    if len(skills_list) > 10:
+        skills_preview += f" +{len(skills_list) - 10} more"
+
+    badge = "🟢 Strong Fit" if p.get("ats_score", 70) >= 80 else "🟠 Moderate Fit"
+
+    lines = [
+        "📄 <b>ATS RESUME AUDIT & CANDIDATE PROFILE</b> 🎯",
+        tg_rule(27),
+        f"👤 <b>Candidate:</b> <b>{html.escape(p.get('name', 'Candidate'))}</b>" + (" <i>(Fresher)</i>" if p.get("is_fresher") else ""),
+        f"📧 <b>Email:</b> <code>{html.escape(p.get('email', 'Not detected'))}</code>",
+        f"📞 <b>Phone:</b> <code>{html.escape(p.get('phone', 'Not detected'))}</code>",
+        "",
+        f"🛠️ <b>Extracted Tech Stack ({len(skills_list)} Skills):</b>",
+        f"<code>{html.escape(skills_preview)}</code>",
+        "",
+        f"📊 <b>ATS Profile Strength:</b> <b>{p.get('ats_score', 75)}/100</b> ({badge})",
+        f"✅ <i>Profile updated & synchronized for auto-matching!</i>",
+        tg_rule(27)
+    ]
+
+    markup = InlineKeyboardMarkup()
+
+    if top_matches:
+        lines.append("🎯 <b>TOP MATCHING OPENINGS FOR YOU:</b>\n")
+        for i, match in enumerate(top_matches[:3], 1):
+            comp = html.escape(match.get("company", "Company"))
+            role = html.escape(match.get("role", match.get("title", "Role")))
+            url = match.get("link", match.get("url", "#"))
+            m_score = match.get("match_score", 85)
+            lines.append(f"<b>{i}. {comp}</b> • <i>{role}</i>")
+            lines.append(f"   🟢 <b>Fit Score:</b> {m_score}% • <a href=\"{url}\"><b>Apply Portal</b></a>\n")
+            if url and url != "#":
+                markup.row(InlineKeyboardButton(f"🚀 Apply #{i}: {comp[:12]} ({m_score}%)", url=url))
+
+    markup.row(
+        InlineKeyboardButton("⚡ Live Search by My Skills", callback_data=f"search:{skills_list[0] if skills_list else 'python'}"),
+        InlineKeyboardButton("💰 Calculate Take-Home CTC", callback_data="ctc:4.5")
+    )
+    markup.row(
+        InlineKeyboardButton("🌟 Tamil Nadu Fresh Jobs", callback_data="tnjobs"),
+        InlineKeyboardButton("🔙 Dashboard", callback_data="dashboard")
+    )
+
+    card = "\n".join(lines)
+    return [card], markup
 
 
 if __name__ == "__main__":

@@ -31,6 +31,11 @@ from bot_optimizer import (
     extract_eligible_batch,
     extract_experience_level,
     format_eligibility_badge,
+    tg_chips,
+    tg_clip,
+    tg_field,
+    tg_rule,
+    tg_wrap_list,
     _clean_str,
     _safe_amount,
 )
@@ -2163,7 +2168,8 @@ def format_tamil_nadu_telegram_digest(jobs, max_chars=3800, category=None, curre
     header = (
         f"🌟 <b>TAMIL NADU FRESH JOB RADAR</b> 🇮🇳{cat_badge}{page_info}\n"
         "📍 <i>Targeting: Chennai, Coimbatore, Madurai, Trichy, Salem & Remote</i>\n"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "🔗 <i>Every card carries a direct apply link — no redirect chains</i>\n"
+        f"{tg_rule(27)}\n\n"
     )
 
     chunks = []
@@ -2185,12 +2191,11 @@ def format_tamil_nadu_telegram_digest(jobs, max_chars=3800, category=None, curre
             f"{num} <b>{title}</b>\n"
             f"🏢 <b>{company}</b>\n"
             f"📍 <i>{location}</i>\n"
-            f"🎓 <b>Eligible:</b> <code>{batch}</code>\n"
+            f"{tg_chips([f'💰 {sal}', f'🎓 {batch}', f'🗓️ {date_posted}'])}\n"
+            f"{tg_rule(20)}\n"
             f"💼 <b>Experience:</b> <code>{exp}</code>\n"
-            f"💰 <b>Package:</b> {sal}\n"
-            f"🗓️ <b>Posted:</b> {date_posted}\n"
             f"🔗 <a href=\"{link}\">👉 <b>Tap to Apply Online</b></a>\n\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            f"{tg_rule(27)}\n\n"
         )
 
         if len(current_chunk) + len(card) > max_chars:
