@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-01T20:32:35.667Z
-- **Finished:** 2026-10-01T20:38:13.278Z
-- **Duration:** 167 s
+- **Started:** 2026-10-01T20:48:47.273Z
+- **Finished:** 2026-10-01T20:54:28.995Z
+- **Duration:** 164 s
 - **Trigger:** GitHub Actions (push)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, nurse, teacher, sales executive, data entry | cities = Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Vellore, Thanjavur, Tiruppur, Tamil Nadu
-- **Live verified jobs: 91** (kept this run: 150, new: 1, gone since last run: 1)
+- **Live verified jobs: 95** (kept this run: 150, new: 0, gone since last run: 0)
 
 ## Results per source
 
@@ -46,23 +46,17 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 91 |
+| :white_check_mark: Verified live | 95 |
 | Government documents verified | 8 |
 | Login required (kept, not published) | 1 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 57 |
+| Dead link (HTTP 4xx/5xx) | 53 |
 | Could not be reached | 0 |
 
-## New this run (1)
+## New this run
 
-| Title | Company | City | Category | Verified | Apply |
-| --- | --- | --- | --- | --- | --- |
-| Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC,… | UPS | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248974223 |
-
-## Gone since last run (1)
-
-- Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, … (UPS)
+No new jobs this run - the board is unchanged.
 
 ## Data integrity
 
