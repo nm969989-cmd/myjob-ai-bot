@@ -44,7 +44,7 @@ Hugging Face Spaces sleep after idle periods. Keep it awake 24/7 with a free pin
 2. Click **Add New Monitor**:
    * **Monitor Type:** `HTTP(s)`
    * **Friendly Name:** `Job Bot HuggingFace`
-   * **URL:** `https://manojprofessional007-myjob-bot.hf.space`
+   * **URL:** `https://nmnm969989-myjob-bot.hf.space`
    * **Monitoring Interval:** `Every 15 minutes`
 3. Click **Create Monitor**.
 

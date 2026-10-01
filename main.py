@@ -150,6 +150,9 @@ TARGET_CHANNELS = [c.strip().lstrip("@") for c in _channels_env.split(",") if c.
     "jobopenings_india",
 ]
 
+# Dashboard URL (GitHub Pages / Mini-App)
+DASHBOARD_URL = os.getenv("DASHBOARD_URL", "https://nm969989-cmd.github.io/myjob-ai-bot/")
+
 # Files
 STATE_FILE = "applied_jobs.json"
 RESUME_FILE = "resume.pdf"
@@ -4215,7 +4218,7 @@ def job_monitor_loop():
                     
                     markup.row(
                         InlineKeyboardButton("📋 Notion CRM", url=notion_link),
-                        InlineKeyboardButton("📱 Dashboard", url="https://manojprofessional007-myjob-bot.hf.space")
+                        InlineKeyboardButton("📱 Dashboard", url=DASHBOARD_URL)
                     )
                     
                     bot.send_message(active_chat_id_local, briefing, parse_mode=None, reply_markup=markup)
@@ -4259,7 +4262,7 @@ def job_monitor_loop():
                     )
                     markup = InlineKeyboardMarkup()
                     markup.add(InlineKeyboardButton("📋 Open Notion CRM", url=notion_link))
-                    markup.add(InlineKeyboardButton("📱 Open Dashboard", url="https://manojprofessional007-myjob-bot.hf.space"))
+                    markup.add(InlineKeyboardButton("📱 Open Dashboard", url=DASHBOARD_URL))
                     bot.send_message(active_chat_id_local, digest, parse_mode=None, reply_markup=markup)
                     
                     last_notion_digest_date = now.date()
@@ -5292,7 +5295,7 @@ if bot:
         )
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("📋 Open Notion CRM", url=notion_link))
-        markup.add(InlineKeyboardButton("📱 Open Dashboard", url="https://gokuuc-myjob-bot.hf.space"))
+        markup.add(InlineKeyboardButton("📱 Open Dashboard", url=DASHBOARD_URL))
         bot.reply_to(message, msg, parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['status'])
@@ -5710,7 +5713,7 @@ if bot:
                     InlineKeyboardButton("🩺 Bot Status", callback_data="status")
                 )
                 markup.row(
-                    InlineKeyboardButton("📱 Open Web Dashboard", url="https://gokuuc-myjob-bot.hf.space")
+                    InlineKeyboardButton("📱 Open Web Dashboard", url=DASHBOARD_URL)
                 )
                 bot.send_message(chat_id, report, parse_mode="HTML", reply_markup=markup)
             except Exception as e:
@@ -6434,7 +6437,7 @@ if bot:
                 InlineKeyboardButton("🩺 Bot Status", callback_data="status")
             )
             markup.row(
-                InlineKeyboardButton("📱 Open Web Dashboard", url="https://gokuuc-myjob-bot.hf.space")
+                InlineKeyboardButton("📱 Open Web Dashboard", url=DASHBOARD_URL)
             )
             try:
                 bot.send_message(chat_id, report, parse_mode="HTML", reply_markup=markup)
