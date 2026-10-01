@@ -7701,6 +7701,12 @@ def run_telegram_polling():
             BotCommand("setprofile", "✏️ Update a profile field"),
             BotCommand("qa",         "🧠 View saved Q&A answers"),
             BotCommand("answer",     "💡 Teach bot an answer"),
+            BotCommand("search",     "🔍 Multi-source job search (/search python)"),
+            BotCommand("jobspy",     "⚡ Live LinkedIn & Indeed fresher search"),
+            BotCommand("simplify",   "🎓 SimplifyJobs fresher tech openings"),
+            BotCommand("match",      "🎯 Instant ATS resume score & gap report"),
+            BotCommand("nearme",     "🧭 Nearest walk-in venue with GPS map"),
+            BotCommand("deadlines",  "⏳ Mass drive deadlines & countdown"),
             BotCommand("clearqa",    "🗑️ Delete a saved answer"),
             BotCommand("download",   "📥 Export full CSV log"),
         ]

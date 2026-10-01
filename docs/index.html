@@ -691,7 +691,22 @@
 
       document.getElementById('emptyState').classList.add('hidden');
 
-      container.innerHTML = filtered.map(j => {
+      let exportBanner = '';
+      if (currentFilter === 'saved' && filtered.length > 0) {
+        exportBanner = `
+          <div class="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-pink-950/40 via-purple-950/30 to-indigo-950/40 border border-pink-500/30 mb-2">
+            <div class="flex items-center gap-2">
+              <i data-lucide="bookmark-check" class="w-4 h-4 text-pink-400"></i>
+              <span class="text-xs font-bold text-pink-200">${filtered.length} Bookmarked Opportunities</span>
+            </div>
+            <button onclick="exportSavedJobsToCSV()" class="px-3 py-1.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-pink-500/20 active:scale-95">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV
+            </button>
+          </div>
+        `;
+      }
+
+      container.innerHTML = exportBanner + filtered.map(j => {
         const isSaved = savedJobIds.includes(j.id);
         const isTN = j.is_tamil_nadu;
         const isWalkin = j.is_walkin;
@@ -1174,6 +1189,34 @@ ${summary}`;
       localStorage.setItem('myjob_saved', JSON.stringify(savedJobIds));
       updateMetrics();
       renderCurrentView();
+    }
+
+    function exportSavedJobsToCSV() {
+      triggerHaptic('medium');
+      const saved = allJobs.filter(j => savedJobIds.includes(j.id));
+      if (saved.length === 0) {
+        showToast('No saved jobs to export!');
+        return;
+      }
+      const headers = ['Role', 'Company', 'Location', 'Salary', 'Batch', 'Platform', 'Apply URL'];
+      const rows = saved.map(j => [
+        `"${(j.role || '').replace(/"/g, '""')}"`,
+        `"${(j.company || '').replace(/"/g, '""')}"`,
+        `"${(j.location || '').replace(/"/g, '""')}"`,
+        `"${(j.salary || '').replace(/"/g, '""')}"`,
+        `"${(j.batch || '').replace(/"/g, '""')}"`,
+        `"${(j.platform || j.source || '').replace(/"/g, '""')}"`,
+        `"${(j.apply_url || j.link || '').replace(/"/g, '""')}"`
+      ]);
+      const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `shortlisted_jobs_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Exported shortlisted jobs as CSV!');
     }
 
     function updateMetrics() {
