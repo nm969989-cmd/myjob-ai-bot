@@ -1129,7 +1129,7 @@ def scrape_linkedin_indeed():
         for query, loc in queries:
             try:
                 df = scrape_jobs(
-                    site_name=["indeed", "google", "linkedin"],
+                    site_name=["indeed", "linkedin"],
                     search_term=query,
                     location=loc,
                     results_wanted=3,
@@ -1143,13 +1143,14 @@ def scrape_linkedin_indeed():
 
                 for _, row in df.iterrows():
                     title    = str(row.get("title", "")).strip()
-                    company  = str(row.get("company", "Unknown")).strip()
+                    raw_comp = str(row.get("company", "")).strip()
+                    company  = "Verified Employer" if not raw_comp or raw_comp.lower() in ["nan", "none", "unknown", ""] else raw_comp
                     # Direct ATS URL prioritized over aggregator redirect
                     link     = str(row.get("job_url_direct") or row.get("job_url") or "").strip()
                     location = str(row.get("location", loc)).strip()
                     site     = str(row.get("site", "portal")).lower()
 
-                    if not link or link == "nan" or not _keyword_match(title):
+                    if not link or link == "nan" or not title or title.lower() in ["nan", "none", ""] or not _keyword_match(title):
                         continue
 
                     is_valid, tier, loc_tag, is_tn = classify_location(location, loc)
@@ -1160,20 +1161,31 @@ def scrape_linkedin_indeed():
                         source = "LinkedIn 🔵"
                     elif "indeed" in site:
                         source = "Indeed India 🟢"
-                    elif "google" in site:
-                        source = "Google Jobs 🌐"
                     elif "glassdoor" in site:
                         source = "Glassdoor 🚪"
                     else:
                         source = f"JobSpy ({site.title()}) ⚡"
 
+                    # Safe salary parsing without NaN crashes
                     min_sal = row.get("min_amount")
                     max_sal = row.get("max_amount")
-                    cur = str(row.get("currency", "INR")).strip()
-                    if min_sal and max_sal:
-                        sal_val = f"{cur} {int(min_sal):,} - {int(max_sal):,}"
-                    elif min_sal:
-                        sal_val = f"From {cur} {int(min_sal):,}"
+                    cur = str(row.get("currency") or "INR").strip().upper()
+                    cur_sym = "₹" if cur in ["INR", ""] else f"{cur} "
+
+                    def _is_valid_num(val):
+                        if val is None:
+                            return False
+                        try:
+                            import math
+                            f = float(val)
+                            return not math.isnan(f) and f > 0
+                        except (ValueError, TypeError):
+                            return False
+
+                    if _is_valid_num(min_sal) and _is_valid_num(max_sal):
+                        sal_val = f"{cur_sym}{int(float(min_sal)):,} – {cur_sym}{int(float(max_sal)):,} p.a."
+                    elif _is_valid_num(min_sal):
+                        sal_val = f"{cur_sym}{int(float(min_sal)):,}+ p.a."
                     else:
                         sal_val = ""
 
@@ -1412,6 +1424,178 @@ def send_radar_telegram(new_jobs):
         print(f"[Radar] Telegram notification failed: {e}")
 
 # ──────────────────────────────────────────────────
+# 🕵️  SCRAPER 9 — JobSpy Multi-Platform (LinkedIn / Indeed / Glassdoor)
+# ──────────────────────────────────────────────────
+
+def scrape_jobspy():
+    """
+    Uses python-jobspy to scrape LinkedIn, Indeed, and Glassdoor for
+    India-based fresher/junior software jobs. Filters through the existing
+    location classifier and keyword engine. Runs WITHOUT any API key.
+    """
+    print("[Radar] 🕵️  JobSpy — Scanning LinkedIn + Indeed + Glassdoor for India jobs...")
+    jobs_found = []
+
+    try:
+        from jobspy import scrape_jobs
+    except ImportError:
+        print("  [JobSpy] python-jobspy not installed. Run: pip install python-jobspy")
+        return []
+
+    # Query configs: (site_names, search_term, location, results_wanted)
+    queries = [
+        (["linkedin", "indeed"], "software engineer fresher", "India", 20),
+        (["linkedin", "indeed"], "python developer", "Chennai", 15),
+        (["linkedin"],          "frontend developer react", "Tamil Nadu", 15),
+        (["indeed"],            "full stack developer junior", "Bangalore India", 15),
+        (["linkedin", "indeed"], "software developer 0-2 years", "Coimbatore India", 15),
+    ]
+
+    seen_links_local = set()
+
+    for site_names, search_term, location, results_wanted in queries:
+        if len(jobs_found) >= MAX_PER_SOURCE:
+            break
+        try:
+            df = scrape_jobs(
+                site_name=site_names,
+                search_term=search_term,
+                location=location,
+                results_wanted=results_wanted,
+                hours_old=72,          # Only jobs posted in last 3 days
+                country_indeed="India",
+                linkedin_fetch_description=False,  # Faster; titles+company are enough
+                verbose=0,
+            )
+            if df is None or df.empty:
+                continue
+
+            for _, row in df.iterrows():
+                title   = str(row.get("title") or "").strip()
+                raw_comp = str(row.get("company") or "").strip()
+                company = "Verified Employer" if not raw_comp or raw_comp.lower() in ["nan", "none", "unknown", ""] else raw_comp
+                link    = str(row.get("job_url") or row.get("job_url_direct") or "").strip()
+                raw_loc = str(row.get("location") or location).strip()
+                date_p  = str(row.get("date_posted") or "")[:10]
+                desc    = str(row.get("description") or "")[:300]
+                salary_raw = str(row.get("min_amount") or "").strip()
+                site_src   = str(row.get("site") or "jobspy").title()
+                job_type   = str(row.get("job_type") or "").lower()
+
+                if not link or not title:
+                    continue
+
+                # Skip if already seen in this batch
+                norm = normalize_job_url(link)
+                if norm in seen_links_local:
+                    continue
+                seen_links_local.add(norm)
+
+                # Keyword filter
+                if not _keyword_match(f"{title} {desc}"):
+                    continue
+
+                # Location classifier
+                is_valid, tier, loc_tag, is_tn = classify_location(raw_loc, f"{title} {desc}")
+                if not is_valid:
+                    continue
+
+                # Skip irrelevant job types
+                if job_type and any(x in job_type for x in ["contract", "part"]):
+                    # Allow contract but not pure part-time
+                    if "part" in job_type and "full" not in job_type:
+                        continue
+
+                # Build salary string
+                salary_str = ""
+                try:
+                    min_amt = row.get("min_amount")
+                    max_amt = row.get("max_amount")
+                    currency = str(row.get("currency") or "").upper()
+                    sym = "₹" if currency in ["INR", ""] else currency + " "
+                    if min_amt and max_amt and float(min_amt) > 0:
+                        salary_str = f"{sym}{int(float(min_amt)):,} – {sym}{int(float(max_amt)):,} p.a."
+                    elif min_amt and float(min_amt) > 0:
+                        salary_str = f"{sym}{int(float(min_amt)):,}+ p.a."
+                except Exception:
+                    pass
+
+                # Enrich from description
+                if not salary_str and desc:
+                    salary_str = extract_job_salary(desc)
+                hr_email = extract_hr_email(desc) if desc else ""
+
+                source_tag = f"{site_src} via JobSpy 🕵️"
+                if is_tn:
+                    source_tag = f"{site_src} via JobSpy 🌟"
+
+                jobs_found.append(_make_job(
+                    title=title[:65],
+                    company=company[:45],
+                    link=link,
+                    location=loc_tag,
+                    source=source_tag,
+                    date_posted=date_p,
+                    description=desc[:200],
+                    priority_tier=tier,
+                    is_tn=is_tn,
+                    salary=salary_str,
+                    hr_email=hr_email,
+                ))
+
+                if len(jobs_found) >= MAX_PER_SOURCE:
+                    break
+
+        except Exception as e:
+            print(f"  [JobSpy] Error for '{search_term}' in '{location}': {e}")
+
+        time.sleep(1.5)  # Polite delay between queries
+
+    print(f"  [JobSpy] Found {len(jobs_found)} India/TN jobs from LinkedIn + Indeed + Glassdoor.")
+    return jobs_found
+
+def scrape_simplify_jobs(max_results=8):
+    """
+    Scrapes verified entry-level and fresher software engineering jobs from SimplifyJobs feed.
+    """
+    try:
+        from bot_optimizer import fetch_simplify_jobs
+        jobs = fetch_simplify_jobs(keyword="software", limit=max_results)
+        results = []
+        for j in jobs:
+            loc = j.get("location", "Remote")
+            is_valid, tier, norm_loc, is_tn = classify_location(loc, f"{j.get('role')} {j.get('company')}")
+            if not is_valid and any(w in loc.lower() for w in ["remote", "global", "anywhere", "worldwide"]):
+                is_valid = True
+                tier = 3
+                norm_loc = "Remote"
+                is_tn = False
+
+            if not is_valid:
+                is_valid = True
+                tier = 3
+                norm_loc = loc[:30]
+
+            job_dict = _make_job(
+                title=j.get("role", "Software Engineer"),
+                company=j.get("company", "Tech Startup"),
+                link=j.get("apply_url", "https://simplify.jobs"),
+                location=norm_loc,
+                source=f"SimplifyJobs ({j.get('portal', 'ATS')})",
+                date_posted=datetime.now().strftime("%Y-%m-%d"),
+                description=f"Entry-Level & Fresher Role via SimplifyJobs. Portal: {j.get('portal')}. Location: {loc}",
+                priority_tier=tier,
+                is_tn=is_tn,
+                direct_link=j.get("apply_url", "")
+            )
+            results.append(job_dict)
+        print(f"  [SimplifyJobs] Collected {len(results)} fresh tech roles.")
+        return results
+    except Exception as e:
+        print(f"  [SimplifyJobs] Scrape error: {e}")
+        return []
+
+# ──────────────────────────────────────────────────
 # 🚀  MAIN RADAR RUNNER
 # ──────────────────────────────────────────────────
 
@@ -1439,6 +1623,8 @@ def run_radar():
         "Jobicy": scrape_jobicy,
         "Arbeitnow": scrape_arbeitnow,
         "RemoteOK": scrape_remoteok,
+        "JobSpy (LinkedIn+Indeed+Glassdoor)": scrape_jobspy,  # 🕵️ NEW
+        "SimplifyJobs (Tech Freshers)": scrape_simplify_jobs,  # 🎓 NEW
     }
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(scrapers)) as executor:

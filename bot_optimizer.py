@@ -8,6 +8,8 @@ import re
 import html
 import time
 import random
+import json
+import requests
 from typing import Optional, Dict, List, Any
 
 # ─────────────────────────────────────────────────────────────────
@@ -2955,11 +2957,14 @@ def fetch_jobspy_live_search(query: str, location: str = "Tamil Nadu, India", li
         return []
 
     try:
+        import math
+        # Prioritize LinkedIn and Indeed for sub-2s execution and guaranteed ATS links
+        sites = ["linkedin", "indeed"]
         df = scrape_jobs(
-            site_name=["indeed", "google", "linkedin"],
+            site_name=sites,
             search_term=str(query).strip(),
             location=str(location).strip(),
-            results_wanted=max(limit, 4),
+            results_wanted=max(limit, 8),
             hours_old=72,
             country_indeed="india",
             linkedin_fetch_description=False,
@@ -2971,10 +2976,16 @@ def fetch_jobspy_live_search(query: str, location: str = "Tamil Nadu, India", li
         results = []
         for _, row in df.iterrows():
             title = str(row.get("title", "")).strip()
-            company = str(row.get("company", "Tech Company")).strip()
+            raw_company = str(row.get("company", "")).strip()
+            # Sanitize company name to prevent 'nan' strings
+            if not raw_company or raw_company.lower() in ["nan", "none", "unknown", ""]:
+                company = "Verified Tech Recruiter"
+            else:
+                company = raw_company
+
             # Prioritize direct company ATS application URL over aggregator redirect
             link = str(row.get("job_url_direct") or row.get("job_url") or "").strip()
-            if not title or not link or link == "nan":
+            if not title or title.lower() in ["nan", "none", ""] or not link or link == "nan":
                 continue
 
             site_raw = str(row.get("site", "portal")).lower()
@@ -2982,26 +2993,35 @@ def fetch_jobspy_live_search(query: str, location: str = "Tamil Nadu, India", li
                 badge = "LinkedIn 🔵"
             elif "indeed" in site_raw:
                 badge = "Indeed India 🟢"
-            elif "google" in site_raw:
-                badge = "Google Jobs 🌐"
             elif "glassdoor" in site_raw:
                 badge = "Glassdoor 🚪"
             else:
                 badge = f"{site_raw.title()} 💼"
 
-            raw_loc = str(row.get("location", location)).strip()
-            if raw_loc == "nan":
+            raw_loc = str(row.get("location") or location).strip()
+            if not raw_loc or raw_loc.lower() in ["nan", "none", ""]:
                 raw_loc = location
 
+            # Safe salary parsing: rigorously check for NaN and float issues
+            sal = "Competitive Market Package"
             min_sal = row.get("min_amount")
             max_sal = row.get("max_amount")
-            cur = str(row.get("currency", "INR")).strip()
-            if min_sal and max_sal:
-                sal = f"{cur} {int(min_sal):,} - {int(max_sal):,}"
-            elif min_sal:
-                sal = f"From {cur} {int(min_sal):,}"
-            else:
-                sal = "Competitive Market Package"
+            cur = str(row.get("currency") or "INR").strip().upper()
+            cur_sym = "₹" if cur in ["INR", ""] else f"{cur} "
+
+            def _is_valid_num(val):
+                if val is None:
+                    return False
+                try:
+                    f = float(val)
+                    return not math.isnan(f) and f > 0
+                except (ValueError, TypeError):
+                    return False
+
+            if _is_valid_num(min_sal) and _is_valid_num(max_sal):
+                sal = f"{cur_sym}{int(float(min_sal)):,} – {cur_sym}{int(float(max_sal)):,} p.a."
+            elif _is_valid_num(min_sal):
+                sal = f"{cur_sym}{int(float(min_sal)):,}+ p.a."
 
             desc = str(row.get("description", "")).strip()
             if desc == "nan":
@@ -3020,7 +3040,7 @@ def fetch_jobspy_live_search(query: str, location: str = "Tamil Nadu, India", li
                 "experience": "Freshers & Entry-Level",
                 "link": link,
                 "link_text": f"🚀 Apply on {badge.split()[0]} Direct ATS",
-                "timing": "🔥 Verified Live",
+                "timing": "🔥 Verified Live Opening",
                 "snippet": clean_snippet[:180] if clean_snippet else "Verified live job posting with direct company application portal.",
                 "relevance": 25,
                 "full_description": desc
@@ -3299,17 +3319,21 @@ def format_search_results_report(query: str, results: list) -> tuple:
 
     header = (
         f"🔍 <b>SEARCH RESULTS FOR:</b> <code>{html.escape(query.upper())}</code>\n"
-        f"<i>Found {len(results)} top verified real-data opportunities across Tamil Nadu:</i>\n"
+        f"📍 <i>Found {len(results)} verified opportunities with direct application links:</i>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
     )
 
+    num_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟",
+                  "1️⃣1️⃣", "1️⃣2️⃣", "1️⃣3️⃣", "1️⃣4️⃣", "1️⃣5️⃣", "1️⃣6️⃣", "1️⃣7️⃣", "1️⃣8️⃣"]
+
     cards = []
-    for idx, item in enumerate(results, 1):
-        comp = html.escape(str(item.get("company", "Company")))
+    for idx, item in enumerate(results):
+        num = num_emojis[idx] if idx < len(num_emojis) else f"#{idx+1}"
+        comp = html.escape(str(item.get("company", "Verified Company")))
         role = html.escape(str(item.get("role", "Software Role")))
         loc = html.escape(str(item.get("location", "Tamil Nadu, India")))
-        stype = html.escape(str(item.get("source_type", "Job")))
-        sal = html.escape(str(item.get("salary") or "Competitive / Market Band"))
+        stype = html.escape(str(item.get("source_type", "Job Feed")))
+        sal = html.escape(str(item.get("salary") or "Competitive / Market Standard"))
         batches = html.escape(str(item.get("batches") or "2024 / 2025 / 2026 Batch"))
         exp = html.escape(str(item.get("experience") or "Freshers (0 - 1 Years)"))
         desc = html.escape(str(item.get("snippet") or item.get("description") or ""))
@@ -3318,16 +3342,16 @@ def format_search_results_report(query: str, results: list) -> tuple:
         timing = html.escape(str(item.get("timing") or "Verified Active"))
 
         card_lines = [
-            f"<b>{idx}. {comp}</b> • <i>{role}</i>",
-            f"🏷️ <b>Source:</b> {stype}",
-            f"📍 <b>Location:</b> {loc}",
-            f"💰 <b>CTC / Band:</b> {sal}",
-            f"🎓 <b>Eligibility:</b> <code>{batches}</code> • <b>Exp:</b> {exp}",
+            f"{num} <b>{comp}</b> • <i>{role}</i>",
+            f"🏷️ <b>Portal & Source:</b> {stype}",
+            f"📍 <b>Location & Hub:</b> {loc}",
+            f"💰 <b>Package / CTC:</b> <code>{sal}</code>",
+            f"🎓 <b>Eligible:</b> <code>{batches}</code> • <b>Exp:</b> {exp}",
         ]
         if desc:
-            card_lines.append(f"📝 <b>Highlights:</b> <i>{desc[:150]}...</i>")
+            card_lines.append(f"📝 <b>Key Highlights:</b> <i>{desc[:160]}...</i>")
         card_lines.append(f"⏰ <b>Status:</b> {timing}")
-        if link:
+        if link and link.startswith("http"):
             card_lines.append(f"👉 <a href=\"{link}\"><b>{link_text}</b></a>")
         card_lines.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
@@ -3335,20 +3359,20 @@ def format_search_results_report(query: str, results: list) -> tuple:
 
     full_text = header + "\n\n".join(cards)
 
-    # Split if exceeds Telegram 3900 chars
+    # Split if exceeds Telegram 3800 chars
     chunks = []
-    if len(full_text) <= 3900:
+    if len(full_text) <= 3800:
         chunks.append(full_text)
     else:
         current_chunk = header
         for card in cards:
-            if len(current_chunk) + len(card) + 4 > 3800:
-                chunks.append(current_chunk)
+            if len(current_chunk) + len(card) + 4 > 3700:
+                chunks.append(current_chunk.strip())
                 current_chunk = card + "\n\n"
             else:
                 current_chunk += card + "\n\n"
         if current_chunk.strip():
-            chunks.append(current_chunk)
+            chunks.append(current_chunk.strip())
 
     return (chunks, markup)
 
@@ -3818,6 +3842,231 @@ def check_job_against_watchdogs(job: dict, subscriptions: list) -> list:
         if sub_tokens and all(token in haystack for token in sub_tokens):
             matched_subs.append(sub_clean)
     return matched_subs
+
+
+# ─────────────────────────────────────────────────────────────────
+# FEATURE: SIMPLIFYJOBS LIVE TECH FRESHER FEED
+# ─────────────────────────────────────────────────────────────────
+
+_SIMPLIFY_CACHE = {
+    "data": [],
+    "last_fetched": 0
+}
+
+def fetch_simplify_jobs(keyword=None, limit=8, force_refresh=False) -> list:
+    """
+    Fetches real-time tech fresher and new grad job listings from the official
+    SimplifyJobs repository (SimplifyJobs/New-Grad-Positions).
+    Cached in-memory for 30 minutes for instantaneous sub-millisecond responses.
+    Supports sub-company inheritance, HTML sanitization, and direct ATS extraction.
+    """
+    global _SIMPLIFY_CACHE
+    now = time.time()
+    
+    # 30-minute cache TTL (1800s)
+    if not force_refresh and _SIMPLIFY_CACHE["data"] and (now - _SIMPLIFY_CACHE["last_fetched"] < 1800):
+        all_jobs = _SIMPLIFY_CACHE["data"]
+    else:
+        url = "https://raw.githubusercontent.com/SimplifyJobs/New-Grad-Positions/dev/README.md"
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        try:
+            resp = requests.get(url, headers=headers, timeout=12)
+            if resp.status_code != 200:
+                return _SIMPLIFY_CACHE["data"][:limit] if _SIMPLIFY_CACHE["data"] else []
+            text = resp.text
+        except Exception as e:
+            return _SIMPLIFY_CACHE["data"][:limit] if _SIMPLIFY_CACHE["data"] else []
+
+        # Parse table rows: <tr><td>Company</td><td>Role</td><td>Location</td><td>Links</td><td>Age</td></tr>
+        row_pattern = re.compile(
+            r"<tr>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>",
+            re.DOTALL | re.IGNORECASE
+        )
+        
+        all_jobs = []
+        last_company = "Tech Company"
+        
+        for match in row_pattern.finditer(text):
+            comp_raw, role_raw, loc_raw, app_raw, age_raw = match.groups()
+            
+            # Clean company & handle sub-role arrow inheritance
+            company = re.sub(r"<[^>]+>", "", comp_raw).strip()
+            if not company or "\u21b3" in company or company in ("↳", "•", "-"):
+                company = last_company
+            else:
+                company = company.replace("\u21b3", "").strip()
+                last_company = company
+            
+            # Clean role
+            role = re.sub(r"<[^>]+>", "", role_raw).strip()
+            role = role.replace("\u21b3", "").strip()
+            
+            # Clean location
+            loc = re.sub(r"<br\s*/?>", " / ", loc_raw, flags=re.IGNORECASE)
+            loc = re.sub(r"<[^>]+>", " ", loc).strip()
+            loc = loc.replace("\u21b3", "").strip()
+            loc = re.sub(r"\s+", " ", loc)
+            
+            age = re.sub(r"<[^>]+>", "", age_raw).strip()
+            
+            # Extract application URL
+            links = re.findall(r'href="([^"]+)"', app_raw)
+            apply_url = None
+            for l in links:
+                if "simplify.jobs/p/" not in l and "simplify.jobs/c/" not in l:
+                    apply_url = l
+                    break
+            if not apply_url and links:
+                apply_url = links[0]
+
+            # Filter out closed roles
+            if "🔒" in role or "🔒" in comp_raw or "closed" in age.lower():
+                continue
+
+            if not company or not role:
+                continue
+
+            # Detect ATS / portal type
+            portal = "Direct ATS"
+            if apply_url:
+                low = apply_url.lower()
+                if "greenhouse.io" in low:
+                    portal = "Greenhouse ATS"
+                elif "lever.co" in low:
+                    portal = "Lever ATS"
+                elif "ashbyhq.com" in low:
+                    portal = "Ashby ATS"
+                elif "workday" in low or "myworkdayjobs.com" in low:
+                    portal = "Workday Portal"
+                elif "workable.com" in low:
+                    portal = "Workable ATS"
+                elif "icims.com" in low:
+                    portal = "iCIMS Portal"
+                elif "smartrecruiters.com" in low:
+                    portal = "SmartRecruiters"
+                elif "simplify.jobs" in low:
+                    portal = "Simplify Direct"
+
+            all_jobs.append({
+                "company": html.unescape(company),
+                "role": html.unescape(role),
+                "location": html.unescape(loc) or "Remote / Global",
+                "apply_url": apply_url or "https://simplify.jobs",
+                "age": age or "Recent",
+                "portal": portal
+            })
+
+        _SIMPLIFY_CACHE["data"] = all_jobs
+        _SIMPLIFY_CACHE["last_fetched"] = now
+
+    filtered = all_jobs
+    if keyword:
+        kw = keyword.lower().strip()
+        filtered = [
+            j for j in filtered
+            if kw in j["role"].lower() or kw in j["company"].lower() or kw in j["location"].lower()
+        ]
+
+    return filtered[:limit]
+
+
+def format_simplify_jobs_report(jobs: list, keyword: str = None) -> tuple:
+    """
+    Formats SimplifyJobs listings into Telegram HTML cards matching the
+    premium Walk-in Drives aesthetic with direct interactive buttons.
+    Returns (chunks: list[str], reply_markup: InlineKeyboardMarkup)
+    """
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+    if not jobs:
+        msg = (
+            "🎓 <b>SIMPLIFYJOBS LIVE TECH FEED</b> 🌐\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            f"⚠️ <i>No active fresher roles found matching '<b>{html.escape(keyword or '')}</b>'.</i>\n\n"
+            "💡 <b>Tips:</b>\n"
+            "• Try broader terms: <code>/simplify software</code>, <code>/simplify ai</code>, <code>/simplify remote</code>\n"
+            "• Browse all fresh roles: <code>/simplify</code>"
+        )
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("💻 Software", callback_data="simplify:software"),
+            InlineKeyboardButton("🤖 AI & ML", callback_data="simplify:ai")
+        )
+        markup.row(
+            InlineKeyboardButton("🌐 Remote", callback_data="simplify:remote"),
+            InlineKeyboardButton("🔙 Dashboard", callback_data="dashboard")
+        )
+        return [msg], markup
+
+    num_emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
+    header = (
+        "🎓 <b>SIMPLIFYJOBS LIVE TECH FEED</b> 🌐\n"
+        f"<i>Verified Entry-Level & Fresher Tech Roles {'(' + html.escape(keyword.title()) + ')' if keyword else ''}</i>\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    )
+
+    chunks = []
+    current_chunk = header
+    markup = InlineKeyboardMarkup()
+
+    for i, job in enumerate(jobs):
+        badge = num_emojis[i] if i < len(num_emojis) else f"<b>[{i+1}]</b>"
+        comp = html.escape(job.get("company", "Tech Company"))
+        role = html.escape(job.get("role", "Software Engineer"))
+        loc = html.escape(job.get("location", "Remote / Hybrid"))
+        portal = html.escape(job.get("portal", "Direct ATS"))
+        age = html.escape(job.get("age", "Recent"))
+        url = job.get("apply_url", "https://simplify.jobs")
+
+        # Portal styling
+        if "Greenhouse" in portal:
+            portal_badge = "🏢 <b>Portal:</b> 🟢 <code>Greenhouse ATS</code>"
+        elif "Ashby" in portal:
+            portal_badge = "🏢 <b>Portal:</b> 🟣 <code>Ashby ATS</code>"
+        elif "Lever" in portal:
+            portal_badge = "🏢 <b>Portal:</b> 🟠 <code>Lever Direct</code>"
+        elif "Workday" in portal:
+            portal_badge = "🏢 <b>Portal:</b> 🔵 <code>Workday Enterprise</code>"
+        elif "Workable" in portal:
+            portal_badge = "🏢 <b>Portal:</b> 🟢 <code>Workable ATS</code>"
+        else:
+            portal_badge = f"🏢 <b>Portal / ATS:</b> <code>{portal}</code>"
+
+        entry = (
+            f"{badge} <b>{comp}</b> • <i>{role}</i>\n"
+            f"  {portal_badge}\n"
+            f"  📍 <b>Location:</b> {loc}\n"
+            f"  ⏳ <b>Posted:</b> <code>{age} ago</code> • 🎯 <b>Batch:</b> <code>2024 / 2025 / 2026 Batch</code>\n"
+            f"  👉 <a href=\"{url}\"><b>Official Apply / Careers Portal</b></a>\n\n"
+        )
+
+        if len(current_chunk) + len(entry) > 3800:
+            chunks.append(current_chunk.strip())
+            current_chunk = entry
+        else:
+            current_chunk += entry
+
+        # Add apply button for top 4 jobs
+        if i < 4:
+            btn_title = f"{badge} Apply: {job['company'][:14]}"
+            markup.row(InlineKeyboardButton(btn_title, url=url))
+
+    if current_chunk.strip():
+        chunks.append(current_chunk.strip())
+
+    # Add filter row and dashboard
+    markup.row(
+        InlineKeyboardButton("💻 SWE", callback_data="simplify:software"),
+        InlineKeyboardButton("🤖 AI & ML", callback_data="simplify:ai"),
+        InlineKeyboardButton("📊 Data", callback_data="simplify:data")
+    )
+    markup.row(
+        InlineKeyboardButton("🌐 Remote", callback_data="simplify:remote"),
+        InlineKeyboardButton("🔄 Refresh Feed", callback_data="simplify:refresh"),
+        InlineKeyboardButton("🔙 Dashboard", callback_data="dashboard")
+    )
+
+    return chunks, markup
 
 
 if __name__ == "__main__":

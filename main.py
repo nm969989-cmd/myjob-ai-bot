@@ -71,7 +71,9 @@ from bot_optimizer import (
     get_watchdog_subscriptions,
     add_watchdog_subscription,
     remove_watchdog_subscription,
-    check_job_against_watchdogs
+    check_job_against_watchdogs,
+    fetch_simplify_jobs,
+    format_simplify_jobs_report
 )
 
 # Global in-memory cache for 1-Tap Interview Prep button callbacks (capped to 500 items)
@@ -5033,6 +5035,10 @@ if bot:
             InlineKeyboardButton("🌟 Tamil Nadu Jobs", callback_data="tnjobs")
         )
         markup.add(
+            InlineKeyboardButton("⚡ JobSpy Live", callback_data="jobspy:python fresher"),
+            InlineKeyboardButton("🎓 Simplify Freshers", callback_data="simplify:all")
+        )
+        markup.add(
             InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all"),
             InlineKeyboardButton("📢 National Drives", callback_data="drives")
         )
@@ -5079,47 +5085,55 @@ if bot:
     @admin_only
     def send_help(message):
         save_chat_id(message.chat.id)
-        help_text = """
-🤖 *ELITE JOB AUTO-APPLY BOT | COMMAND CENTER* 🤖
-
-_Welcome to your fully autonomous AI job-hunting engine! Here is your complete manual:_
-
-⚡️ *DISCOVERY & SEARCH OPERATIONS*
-🔹 `/search <keyword>` - 🔍 Instant search across TN, mass drives, walk-ins & radar (e.g. `/search python`).
-🔹 `/jobspy <keyword>` - ⚡ Live multi-portal scraper (LinkedIn, Indeed India, Google Jobs) with direct ATS links.
-🔹 `/match <text or URL>` - 🎯 Instant ATS resume compatibility score, keyword gaps & prep sheet.
-🔹 `/oa [company]` - 🎓 Company OA pattern & coding exam syllabus (TCS, Zoho, CTS, Accenture, etc.).
-🔹 `/alertme <keyword>` - 🔔 Subscribe to live keyword alerts (e.g. `/alertme python chennai`).
-🔹 `/alerts` - 📋 View & manage your active keyword watchdog subscriptions.
-🔹 `/unalert <keyword>` - ❌ Remove a keyword watchdog subscription.
-🔹 `/board` - 🌐 Launch interactive Tamil Nadu Live Jobs Web Board & MiniApp.
-🔹 `/tnjobs [tech|govt|core|freshers]` - 🌟 Tamil Nadu jobs with 1-tap prep, cold email & category filters.
-🔹 `/walkins` - 🚶‍♂️ Tamil Nadu weekend walk-in drives (e.g. `/walkins chennai`).
-🔹 `/nearme [area]` - 🧭 GPS Walk-In Navigator: finds closest in-person drives with driving time & turn-by-turn Google Maps links (e.g. `/nearme omr` or share GPS location).
-🔹 `/drives` - 📢 National mass off-campus hiring drives (TCS, Infosys, Zoho).
-🔹 `/deadlines` - ⏳ Mass drive deadlines countdown radar.
-🔹 `/radar` - 📡 Multi-platform job radar (Adzuna, Unstop, Telegram).
-🔹 `/analytics` - 📊 Live engineering market & career analytics.
-🔹 `/dashboard` - 🎛️ Interactive Telegram control panel.
-🔹 `/status` - 🩺 Check the heartbeat of the bot, API keys, and total jobs processed.
-🔹 `/pause` - 🛑 Temporarily stop the background 24/7 scanning.
-🔹 `/resume` - 🟢 Turn the background scanning back on.
-
-🧠 *AI MEMORY & PROFILE*
-🔹 `/profile` - 📋 View all your current resume details the bot uses to fill forms.
-🔹 `/setprofile <field> | <value>` - ✍️ Update a specific field dynamically (e.g., `/setprofile phone | +19876543210`).
-🔹 `/qa` - 🗂 View all the tricky company questions the bot has permanently memorized.
-🔹 `/answer <num> | <text>` - 💡 Teach the bot how to answer a specific question so it never asks you again!
-🔹 `/clearqa <num>` - 🗑 Delete a saved answer from the bot's brain.
-
-📊 *ACTIONS & TRACKING*
-🔹 `/apply <url>` - 🎯 Force the bot to immediately apply to a specific job link you found.
-🔹 `/instahyre <email> | <password>` - 🚀 Trigger the Instahyre Mass-Applier (Submits 20 jobs instantly).
-🔹 `/notion` - 📋 Open your Notion Job Tracker with full CRM details.
-🔹 `/history` - 🕒 View the last 10 jobs the bot attempted, including success/fail status.
-🔹 `/download` - 📥 Export a massive CSV Excel file of every single job ever applied to.
-"""
-        bot.reply_to(message, help_text, parse_mode=None)
+        help_text = (
+            "🤖 <b>ELITE JOB BOT | COMMAND CENTER</b> 🇮🇳\n"
+            "<i>Your Autonomous AI Engineering Career & Job Radar Engine</i>\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            "⚡ <b>DISCOVERY & LIVE SEARCH</b>\n"
+            "• <code>/jobspy &lt;role&gt;</code> — ⚡ Live LinkedIn & Indeed India search with direct ATS links\n"
+            "• <code>/simplify &lt;keyword&gt;</code> — 🎓 Live SimplifyJobs feed (fresher tech & new grad roles)\n"
+            "• <code>/search &lt;keyword&gt;</code> — 🔍 Unified search across TN, drives, walk-ins & radar\n"
+            "• <code>/walkins [city]</code> — 🚶‍♂️ Weekend walk-in drives with venues & Google Maps\n"
+            "• <code>/nearme [area]</code> — 🧭 GPS Walk-In Navigator (finds closest in-person drives)\n"
+            "• <code>/tnjobs [tech|core]</code> — 🌟 Verified Tamil Nadu freshers feed & 1-tap prep\n"
+            "• <code>/drives</code> — 📢 National mass off-campus hiring drives (TCS, Zoho, CTS)\n"
+            "• <code>/deadlines</code> — ⏳ Upcoming drive registration deadlines countdown\n"
+            "• <code>/radar</code> — 📡 Multi-platform job radar (Adzuna, Unstop, Telegram)\n\n"
+            "🎯 <b>ATS ANALYSIS & EXAM BLUEPRINTS</b>\n"
+            "• <code>/match &lt;text|URL&gt;</code> — 🎯 Instant ATS resume compatibility %, gaps & prep\n"
+            "• <code>/oa [company]</code> — 🎓 Company OA pattern & coding syllabus (Zoho, TCS, CTS)\n"
+            "• <code>/alertme &lt;keyword&gt;</code> — 🔔 Subscribe to real-time keyword notifications\n"
+            "• <code>/alerts</code> — 📋 Manage active keyword watchdog triggers\n"
+            "• <code>/unalert &lt;keyword&gt;</code> — ❌ Remove a watchdog alert trigger\n\n"
+            "🧠 <b>PROFILE & AI MEMORY</b>\n"
+            "• <code>/profile</code> — 📋 View active candidate profile details\n"
+            "• <code>/setprofile &lt;field&gt; | &lt;val&gt;</code> — ✍️ Dynamically update a profile field\n"
+            "• <code>/qa</code> — 🗂 View memorized application questions & answers\n"
+            "• <code>/answer &lt;num&gt; | &lt;text&gt;</code> — 💡 Teach the bot how to answer custom questions\n\n"
+            "🎛️ <b>CONTROL & SYSTEM HEALTH</b>\n"
+            "• <code>/dashboard</code> — 🎛️ Interactive command control panel\n"
+            "• <code>/status</code> — 🩺 System heartbeat, API keys & daily statistics\n"
+            "• <code>/pause</code> / <code>/resume</code> — ⏸️ Pause or resume 24/7 background scans\n"
+            "• <code>/history</code> / <code>/download</code> — 🕒 Export application CSV history\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        )
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("⚡ JobSpy Live", callback_data="jobspy:python fresher"),
+            InlineKeyboardButton("🎓 Simplify Freshers", callback_data="simplify:all")
+        )
+        markup.row(
+            InlineKeyboardButton("🚶 Weekend Walk-Ins", callback_data="walkins:all"),
+            InlineKeyboardButton("🎯 ATS Matcher", callback_data="ats:analyze")
+        )
+        markup.row(
+            InlineKeyboardButton("🌟 TN Jobs", callback_data="tnjobs"),
+            InlineKeyboardButton("🎛️ Open Dashboard", callback_data="dashboard")
+        )
+        try:
+            bot.reply_to(message, help_text, parse_mode="HTML", reply_markup=markup)
+        except Exception:
+            bot.reply_to(message, re.sub(r'<[^>]+>', '', help_text), parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['instahyre'])
     @admin_only
@@ -5181,39 +5195,75 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         save_chat_id(message.chat.id)
         applied = load_applied_jobs()
         stats = load_stats()
-        resume_ok = "✅" if os.path.exists(RESUME_FILE) else "❌"
-        gemini_ok = "✅" if gemini_client else "❌"
-        groq_ok = "✅" if groq_client else "❌"
-        bot_state = "⏸️ PAUSED" if BOT_PAUSED else "▶️ RUNNING"
-        markup = InlineKeyboardMarkup(row_width=2)
+        resume_ok = "🟢 Ready" if os.path.exists(RESUME_FILE) else "🔴 Missing"
+        gemini_ok = "🟢 Online" if gemini_client else "🔴 Offline"
+        groq_ok = "🟢 Online" if groq_client else "🔴 Offline"
+        bot_state = "⏸️ PAUSED" if BOT_PAUSED else "🟢 RUNNING (24/7 Engine)"
+        markup = InlineKeyboardMarkup()
         if BOT_PAUSED:
-            markup.add(InlineKeyboardButton("▶️ Resume Bot", callback_data="resume"))
+            markup.row(InlineKeyboardButton("▶️ Resume Bot", callback_data="resume"))
         else:
-            markup.add(InlineKeyboardButton("⏸️ Pause Bot", callback_data="pause"))
-        markup.add(
+            markup.row(InlineKeyboardButton("⏸️ Pause Bot", callback_data="pause"))
+        markup.row(
             InlineKeyboardButton("🕒 History", callback_data="history"),
             InlineKeyboardButton("🔄 Refresh Status", callback_data="status")
         )
-        status_text = (
-            f"🤖 *Elite Job Bot — Live Status*\n\n"
-            f"⚙️ Bot State: `{bot_state}`\n"
-            f"🎯 Total Jobs Processed: `{len(applied)}`\n"
-            f"🚀 Applied Today: `{stats.get('applied', 0)}`\n"
-            f"⏭️ Skipped Today: `{stats.get('skipped', 0)}`\n"
-            f"🔥 Day Streak: `{stats.get('current_streak', 0)}`\n\n"
-            f"🧠 Gemini AI: {gemini_ok}\n"
-            f"⚡ Groq AI: {groq_ok}\n"
-            f"📄 Resume: {resume_ok}\n"
-            f"📡 Channel: @{TARGET_CHANNEL}"
+        markup.row(
+            InlineKeyboardButton("⚡ JobSpy Live", callback_data="jobspy:python fresher"),
+            InlineKeyboardButton("🚶 Walk-Ins", callback_data="walkins:all")
         )
-        bot.reply_to(message, status_text, parse_mode=None, reply_markup=markup)
+        status_text = (
+            f"🤖 <b>Elite Job Bot — Live Command Center</b> 🇮🇳\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"⚙️ <b>Engine State:</b> <code>{bot_state}</code>\n"
+            f"🎯 <b>Total Processed:</b> <code>{len(applied)}</code> jobs\n"
+            f"🚀 <b>Applied Today:</b> <code>{stats.get('applied', 0)}</code>\n"
+            f"⏭️ <b>Skipped / Filtered:</b> <code>{stats.get('skipped', 0)}</code>\n"
+            f"🔥 <b>Active Streak:</b> <code>{stats.get('current_streak', 0)} Days</code>\n\n"
+            f"🧠 <b>Gemini AI Engine:</b> {gemini_ok}\n"
+            f"⚡ <b>Groq Inference:</b> {groq_ok}\n"
+            f"📄 <b>Resume Profile:</b> {resume_ok}\n"
+            f"📡 <b>Target Feed:</b> <code>@{TARGET_CHANNEL}</code>\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"💡 <i>Tip: Tap /help or quick buttons below to control your bot.</i>"
+        )
+        try:
+            bot.reply_to(message, status_text, parse_mode="HTML", reply_markup=markup)
+        except Exception:
+            bot.reply_to(message, re.sub(r'<[^>]+>', '', status_text), parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['profile'])
     @admin_only
     def send_profile(message):
         save_chat_id(message.chat.id)
         profile = load_profile()
-        bot.reply_to(message, f"📋 Profile details loaded:\n\n{json.dumps(profile, indent=2)}")
+        if not profile:
+            bot.reply_to(message, "⚠️ Profile is empty! Use <code>/setprofile &lt;field&gt; | &lt;value&gt;</code> to add your details.", parse_mode="HTML")
+            return
+
+        msg = (
+            "📋 <b>Your Active Candidate Profile:</b>\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        )
+        for k, v in profile.items():
+            clean_k = html.escape(k.replace('_', ' ').title())
+            clean_v = html.escape(str(v))
+            msg += f"• <b>{clean_k}:</b> <code>{clean_v}</code>\n"
+        msg += (
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "✏️ <i>To update any field:</i>\n"
+            "<code>/setprofile &lt;field&gt; | &lt;new_value&gt;</code>\n"
+            "<i>Example:</i> <code>/setprofile phone | +91 9876543210</code>"
+        )
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("🎯 Match Resume (ATS)", callback_data="ats:analyze"),
+            InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard")
+        )
+        try:
+            bot.reply_to(message, msg, parse_mode="HTML", reply_markup=markup)
+        except Exception:
+            bot.reply_to(message, re.sub(r'<[^>]+>', '', msg), parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['history'])
     @admin_only
@@ -5311,7 +5361,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 bot.send_message(message.chat.id, f"⚠️ *Error scanning inbox:* {e}", parse_mode=None)
         threading.Thread(target=_bg_scan).start()
 
-    @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost", "analytics", "drives", "tnjobs", "tnjobs:refresh"])
+    @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "dashboard", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost", "analytics", "drives", "tnjobs", "tnjobs:refresh"])
     @admin_only
     def handle_button(call):
         global BOT_PAUSED
@@ -5327,39 +5377,31 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
             markup = InlineKeyboardMarkup()
             markup.add(InlineKeyboardButton("▶️ Resume Bot", callback_data="resume"))
             try:
-                bot.edit_message_text("⏸️ *Bot Paused!*\n\nAuto job scanning is stopped.\nTap below to resume.",
+                bot.edit_message_text("⏸️ <b>Bot Paused!</b>\n\nAuto job scanning is stopped.\nTap below to resume.",
                     chat_id=chat_id, message_id=call.message.message_id,
-                    parse_mode=None, reply_markup=markup)
+                    parse_mode="HTML", reply_markup=markup)
             except Exception:
-                bot.send_message(chat_id, "⏸️ *Bot Paused!*", parse_mode=None, reply_markup=markup)
+                bot.send_message(chat_id, "⏸️ <b>Bot Paused!</b>", parse_mode="HTML", reply_markup=markup)
 
         elif call.data == "resume":
             BOT_PAUSED = False
             markup = InlineKeyboardMarkup()
             markup.add(InlineKeyboardButton("⏸️ Pause Bot", callback_data="pause"))
             try:
-                bot.edit_message_text("▶️ *Bot Resumed!*\n\nScanning jobs 24/7 again!",
+                bot.edit_message_text("▶️ <b>Bot Resumed!</b>\n\nScanning jobs 24/7 again!",
                     chat_id=chat_id, message_id=call.message.message_id,
-                    parse_mode=None, reply_markup=markup)
+                    parse_mode="HTML", reply_markup=markup)
             except Exception:
-                bot.send_message(chat_id, "▶️ *Bot Resumed!*", parse_mode=None, reply_markup=markup)
+                bot.send_message(chat_id, "▶️ <b>Bot Resumed!</b>", parse_mode="HTML", reply_markup=markup)
 
-        elif call.data == "status":
+        elif call.data in ["status", "dashboard"]:
             applied = load_applied_jobs()
             stats = load_stats()
-            resume_ok = "✅" if os.path.exists(RESUME_FILE) else "❌"
-            gemini_ok = "✅" if gemini_client else "❌"
-            groq_ok = "✅" if groq_client else "❌"
-            bot_state = "⏸️ PAUSED" if BOT_PAUSED else "▶️ RUNNING"
-            markup = InlineKeyboardMarkup(row_width=2)
-            if BOT_PAUSED:
-                markup.add(InlineKeyboardButton("▶️ Resume Bot", callback_data="resume"))
-            else:
-                markup.add(InlineKeyboardButton("⏸️ Pause Bot", callback_data="pause"))
-            markup.add(
-                InlineKeyboardButton("🕒 History", callback_data="history"),
-                InlineKeyboardButton("🔄 Refresh", callback_data="status")
-            )
+            resume_ok = "🟢 Ready" if os.path.exists(RESUME_FILE) else "🔴 Missing"
+            gemini_ok = "🟢 Online" if gemini_client else "🔴 Offline"
+            groq_ok = "🟢 Online" if groq_client else "🔴 Offline"
+            bot_state = "⏸️ PAUSED" if BOT_PAUSED else "🟢 RUNNING (24/7 Engine)"
+
             # Calculate Success Rate
             success_count = 0
             total_logs = 0
@@ -5370,12 +5412,11 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                         reader = csv.reader(f)
                         next(reader, None) # skip header
                         for row in reader:
-                            # CSV columns: [Date, Job Title, URL, Status, Notes]
                             if len(row) > 3:
                                 total_logs += 1
                                 if "Applied" in row[3]:
                                     success_count += 1
-            except:
+            except Exception:
                 pass
             
             success_rate = "0%"
@@ -5383,21 +5424,43 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 success_rate = f"{int((success_count/total_logs)*100)}%"
             
             status_text = (
-                f"🤖 *Elite Job Bot — Live Status*\n\n"
-                f"⚙️ Bot State: `{bot_state}`\n"
-                f"🎯 Total Processed: `{len(applied)}`\n"
-                f"🚀 Applied Today: `{stats.get('applied', 0)}`\n"
-                f"🔥 Day Streak: `{stats.get('current_streak', 0)}`\n"
-                f"📈 *Success Rate:* `{success_rate}` _({success_count}/{total_logs})_\n\n"
-                f"✨ Gemini AI: {gemini_ok} | ⚡ Groq: {groq_ok}\n"
-                f"📄 Resume: {resume_ok} | 📡 @{TARGET_CHANNEL}"
+                f"🤖 <b>Elite Job Bot — Live Command Center</b> 🇮🇳\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"⚙️ <b>Engine State:</b> <code>{bot_state}</code>\n"
+                f"🎯 <b>Total Processed:</b> <code>{len(applied)}</code> jobs\n"
+                f"🚀 <b>Applied Today:</b> <code>{stats.get('applied', 0)}</code>\n"
+                f"🔥 <b>Active Streak:</b> <code>{stats.get('current_streak', 0)} Days</code>\n"
+                f"📈 <b>Success Rate:</b> <code>{success_rate}</code> <i>({success_count}/{total_logs})</i>\n\n"
+                f"🧠 <b>Gemini AI Engine:</b> {gemini_ok}\n"
+                f"⚡ <b>Groq Inference:</b> {groq_ok}\n"
+                f"📄 <b>Resume Profile:</b> {resume_ok}\n"
+                f"📡 <b>Target Feed:</b> <code>@{TARGET_CHANNEL}</code>\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"💡 <i>Tip: Tap buttons below for instant live radar & walk-ins.</i>"
+            )
+            markup = InlineKeyboardMarkup()
+            if BOT_PAUSED:
+                markup.row(InlineKeyboardButton("▶️ Resume Bot", callback_data="resume"))
+            else:
+                markup.row(InlineKeyboardButton("⏸️ Pause Bot", callback_data="pause"))
+            markup.row(
+                InlineKeyboardButton("🕒 History", callback_data="history"),
+                InlineKeyboardButton("🔄 Refresh", callback_data="status")
+            )
+            markup.row(
+                InlineKeyboardButton("⚡ JobSpy Live", callback_data="jobspy:python fresher"),
+                InlineKeyboardButton("🚶 Weekend Walk-Ins", callback_data="walkins:all")
+            )
+            markup.row(
+                InlineKeyboardButton("🎯 Match Resume (ATS)", callback_data="ats:analyze"),
+                InlineKeyboardButton("🌟 Tamil Nadu Feeds", callback_data="tnjobs")
             )
             try:
                 bot.edit_message_text(status_text, chat_id=chat_id,
                     message_id=call.message.message_id,
-                    parse_mode=None, reply_markup=markup)
+                    parse_mode="HTML", reply_markup=markup)
             except Exception:
-                bot.send_message(chat_id, status_text, parse_mode=None, reply_markup=markup)
+                bot.send_message(chat_id, status_text, parse_mode="HTML", reply_markup=markup)
 
         elif call.data == "history":
             csv_file = "applied_jobs_log.csv"
@@ -5413,12 +5476,30 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         elif call.data == "profile":
             profile = load_profile()
             if not profile:
-                bot.send_message(chat_id, "⚠️ Profile is empty! Use `/setprofile` to add your details.")
+                bot.send_message(chat_id, "⚠️ Profile is empty! Use <code>/setprofile &lt;field&gt; | &lt;value&gt;</code> to add your details.", parse_mode="HTML")
             else:
-                msg = "📋 *Your Current Profile:*\n\n"
+                msg = (
+                    "📋 <b>Your Active Candidate Profile:</b>\n"
+                    "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                )
                 for k, v in profile.items():
-                    msg += f"• *{k.replace('_', ' ').title()}:* `{v}`\n"
-                bot.send_message(chat_id, msg, parse_mode=None)
+                    clean_k = html.escape(k.replace('_', ' ').title())
+                    clean_v = html.escape(str(v))
+                    msg += f"• <b>{clean_k}:</b> <code>{clean_v}</code>\n"
+                msg += (
+                    "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                    "✏️ <i>To update any field:</i>\n"
+                    "<code>/setprofile &lt;field&gt; | &lt;new_value&gt;</code>"
+                )
+                markup = InlineKeyboardMarkup()
+                markup.row(
+                    InlineKeyboardButton("🎯 Match Resume (ATS)", callback_data="ats:analyze"),
+                    InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard")
+                )
+                try:
+                    bot.send_message(chat_id, msg, parse_mode="HTML", reply_markup=markup)
+                except Exception:
+                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', msg), parse_mode=None, reply_markup=markup)
                 
         elif call.data == "last_job":
             if os.path.exists("after_submit.png"):
@@ -5767,6 +5848,80 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ JobSpy error: {e}")
 
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("simplify:") or call.data == "simplify")
+    def handle_simplify_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        raw_target = call.data.split(":", 1)[1].strip() if ":" in call.data else ""
+        force = False
+        query = None
+
+        if raw_target == "refresh":
+            force = True
+            query = None
+            try:
+                bot.answer_callback_query(call.id, text="🔄 Refreshing SimplifyJobs feed...")
+            except Exception:
+                pass
+        elif raw_target in ("all", ""):
+            query = None
+            try:
+                bot.answer_callback_query(call.id, text="🎓 Fetching latest Simplify tech freshers...")
+            except Exception:
+                pass
+        else:
+            query = raw_target
+            try:
+                bot.answer_callback_query(call.id, text=f"🔍 Searching SimplifyJobs for '{query}'...")
+            except Exception:
+                pass
+
+        try:
+            jobs = fetch_simplify_jobs(keyword=query, limit=8, force_refresh=force)
+            chunks, markup = format_simplify_jobs_report(jobs, keyword=query)
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ SimplifyJobs feed error: {e}")
+
+    @bot.callback_query_handler(func=lambda call: call.data == "ats:analyze" or call.data.startswith("ats:") or call.data == "ats")
+    def handle_ats_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        try:
+            bot.answer_callback_query(call.id, text="🎯 ATS Resume & Compatibility Matcher")
+        except Exception:
+            pass
+        guide = (
+            "🎯 <b>ATS RESUME & JOB COMPATIBILITY ENGINE</b> 🇮🇳\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "Compare your candidate profile against any job description or career URL in seconds!\n\n"
+            "<b>Commands & Usage:</b>\n"
+            "• <code>/match &lt;Job Title or JD Text&gt;</code>\n"
+            "• <code>/match https://careers.company.com/job/12345</code>\n"
+            "• <code>/ats python developer fresher</code>\n\n"
+            "<i>The AI engine analyzes required skills, calculates your exact ATS match percentage, "
+            "and highlights missing keywords to optimize your resume!</i>"
+        )
+        markup = InlineKeyboardMarkup()
+        markup.row(
+            InlineKeyboardButton("🐍 Match Python Fresher", callback_data="jobspy:python fresher"),
+            InlineKeyboardButton("⚛️ Match React Developer", callback_data="jobspy:react developer")
+        )
+        markup.row(
+            InlineKeyboardButton("📋 View Profile", callback_data="profile"),
+            InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard")
+        )
+        try:
+            bot.send_message(chat_id, guide, parse_mode="HTML", reply_markup=markup)
+        except Exception:
+            bot.send_message(chat_id, re.sub(r'<[^>]+>', '', guide), parse_mode=None, reply_markup=markup)
+
     @bot.callback_query_handler(func=lambda call: call.data.startswith("search:"))
     def handle_search_callback(call):
         chat_id = call.message.chat.id
@@ -5976,15 +6131,24 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Unable to generate interview cheat sheet: {e}")
 
-    @bot.callback_query_handler(func=lambda call: call.data.startswith("note:"))
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("note:") or call.data.startswith("linote:"))
     def handle_linkedin_note_callback(call):
         chat_id = call.message.chat.id
         save_chat_id(chat_id)
         from bot_optimizer import get_note_cache
-        note_key = call.data.split(":", 1)[1]
-        note = _LINKEDIN_NOTE_CACHE.get(note_key) or get_note_cache(note_key) or ""
-        if not note:
-            note = "Hi! I noticed your opening and would love to connect and explore how my engineering background can add value to your team!"
+        if call.data.startswith("linote:"):
+            # Format: linote:Company:Role
+            parts = call.data.split(":", 2)
+            comp = parts[1] if len(parts) > 1 else "Hiring Team"
+            role = parts[2] if len(parts) > 2 else "Software Engineer"
+            profile = load_profile()
+            skills = profile.get("top_skills", "Python, software engineering, problem solving")
+            note = f"Hi! I noticed the {role} opening at {comp}. With hands-on experience in {skills}, I would love to connect and explore how I can add value to your engineering team!"
+        else:
+            note_key = call.data.split(":", 1)[1]
+            note = _LINKEDIN_NOTE_CACHE.get(note_key) or get_note_cache(note_key) or ""
+            if not note:
+                note = "Hi! I noticed your opening and would love to connect and explore how my engineering background can add value to your team!"
         try:
             bot.answer_callback_query(call.id, text="💬 LinkedIn note sent below!")
         except Exception:
@@ -6152,21 +6316,21 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         text = message.text.replace("/setprofile", "", 1).strip()
         if "|" not in text:
             profile = load_profile()
-            fields = ", ".join(profile.keys())
-            bot.reply_to(message, f"📝 *Update your profile:*\n`/setprofile <field> | <value>`\n\nAvailable fields: `{fields}`\n\nExample:\n`/setprofile phone | +91 9876543210`", parse_mode=None)
+            fields = ", ".join([f"<code>{html.escape(k)}</code>" for k in profile.keys()])
+            bot.reply_to(message, f"📝 <b>Update Candidate Profile:</b>\n<code>/setprofile &lt;field&gt; | &lt;value&gt;</code>\n\n<b>Available fields:</b>\n{fields}\n\n<b>Example:</b>\n<code>/setprofile phone | +91 9876543210</code>", parse_mode="HTML")
             return
         parts = text.split("|", 1)
         field = parts[0].strip().lower()
         value = parts[1].strip()
         profile = load_profile()
         if field not in profile:
-            bot.reply_to(message, f"❌ Unknown field: `{field}`\n\nValid fields: {', '.join(profile.keys())}", parse_mode=None)
+            bot.reply_to(message, f"❌ Unknown field: <code>{html.escape(field)}</code>\n\nValid fields: {', '.join(profile.keys())}", parse_mode="HTML")
             return
         profile[field] = value
         try:
             with open(PROFILE_FILE, "w", encoding="utf-8") as f:
                 json.dump(profile, f, indent=2)
-            bot.reply_to(message, f"✅ Profile updated!\n\n*{field}* → `{value}`", parse_mode=None)
+            bot.reply_to(message, f"✅ <b>Profile Updated!</b>\n\n<b>{html.escape(field.title())}</b> → <code>{html.escape(value)}</code>", parse_mode="HTML")
         except Exception as e:
             bot.reply_to(message, f"⚠️ Error saving profile: {e}")
 
@@ -6180,10 +6344,10 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
             if not qa_memory:
                 bot.reply_to(message, "📭 No saved answers to clear.")
                 return
-            msg = "🗑️ *Which answer to delete?*\nSend `/clearqa <number>`\n\n"
+            msg = "🗑️ <b>Which answer to delete?</b>\nSend <code>/clearqa &lt;number&gt;</code>\n\n"
             for i, q in enumerate(qa_memory.keys(), 1):
-                msg += f"*{i}.* {q}\n"
-            bot.reply_to(message, msg, parse_mode=None)
+                msg += f"<b>{i}.</b> {html.escape(q)}\n"
+            bot.reply_to(message, msg, parse_mode="HTML")
             return
         if text.isdigit():
             keys = list(qa_memory.keys())
@@ -6192,14 +6356,14 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 deleted_q = keys[idx]
                 del qa_memory[deleted_q]
                 save_qa_memory(qa_memory)
-                bot.reply_to(message, f"🗑️ Deleted answer for:\n_{deleted_q}_", parse_mode=None)
+                bot.reply_to(message, f"🗑️ <b>Deleted answer for:</b>\n<i>{html.escape(deleted_q)}</i>", parse_mode="HTML")
             else:
-                bot.reply_to(message, "❌ Invalid number.")
+                bot.reply_to(message, "❌ Invalid question number.")
         else:
             if text in qa_memory:
                 del qa_memory[text]
                 save_qa_memory(qa_memory)
-                bot.reply_to(message, f"🗑️ Deleted answer for:\n_{text}_", parse_mode=None)
+                bot.reply_to(message, f"🗑️ <b>Deleted answer for:</b>\n<i>{html.escape(text)}</i>", parse_mode="HTML")
             else:
                 bot.reply_to(message, "❌ Question not found in memory.")
 
@@ -6214,8 +6378,8 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         markup = ForceReply(selective=True)
         sent = bot.send_message(
             call.message.chat.id,
-            f"✏️ *Answer for Q{num}:*\n_{question}_\n\nType your answer below 👇",
-            parse_mode=None,
+            f"✏️ <b>Answer for Q{num}:</b>\n<i>{html.escape(question)}</i>\n\nType your answer below 👇",
+            parse_mode="HTML",
             reply_markup=markup
         )
         bot.answer_callback_query(call.id)
@@ -6230,7 +6394,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         qa_memory = load_qa_memory()
         qa_memory[question] = answer
         save_qa_memory(qa_memory)
-        bot.reply_to(message, f"✅ *Saved!*\n\n❓ {question}\n💬 *{answer}*\n\n_I'll use this automatically in all future applications!_", parse_mode=None)
+        bot.reply_to(message, f"✅ <b>Saved to AI Brain!</b>\n\n❓ <b>Question:</b> {html.escape(question)}\n💬 <b>Answer:</b> <code>{html.escape(answer)}</code>\n\n<i>Will use this automatically in all future applications!</i>", parse_mode="HTML")
 
     @bot.message_handler(commands=['answer'])
     @admin_only
@@ -6239,7 +6403,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         text = message.text.replace("/answer", "", 1).strip()
         
         if "|" not in text:
-            bot.reply_to(message, "❌ Format: `/answer <number> | <your answer>`\n\nExample:\n`/answer 1 | Yes`", parse_mode=None)
+            bot.reply_to(message, "❌ <b>Format:</b> <code>/answer &lt;number&gt; | &lt;your answer&gt;</code>\n\n<b>Example:</b>\n<code>/answer 1 | Yes, I am available immediately</code>", parse_mode="HTML")
             return
         
         parts = text.split("|", 1)
@@ -6263,7 +6427,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         qa_memory[question] = answer
         save_qa_memory(qa_memory)
         
-        bot.reply_to(message, f"✅ *Saved!*\n\n❓ {question}\n💬 *{answer}*\n\n_I will use this answer automatically from now on!_", parse_mode=None)
+        bot.reply_to(message, f"✅ <b>Saved to AI Brain!</b>\n\n❓ <b>Question:</b> {html.escape(question)}\n💬 <b>Answer:</b> <code>{html.escape(answer)}</code>\n\n<i>Will use this automatically in all future applications!</i>", parse_mode="HTML")
 
     @bot.message_handler(commands=['qa'])
     @admin_only
@@ -6271,13 +6435,22 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
         save_chat_id(message.chat.id)
         qa_memory = load_qa_memory()
         if not qa_memory:
-            bot.reply_to(message, "📭 No answers saved yet.\n\nWhen the bot encounters unknown questions, it will ask you via Telegram. Use `/answer <question> | <answer>` to teach it!", parse_mode=None)
+            bot.reply_to(message, "📭 <b>AI Memory is empty.</b>\n\nWhen the bot encounters unknown questions, it will alert you. Use <code>/answer &lt;num&gt; | &lt;answer&gt;</code> to teach it!", parse_mode="HTML")
             return
-        msg = f"🧠 *Saved Q&A Memory ({len(qa_memory)} answers):*\n\n"
-        for i, (q, a) in enumerate(qa_memory.items(), 1):
-            msg += f"*Q{i}.* {q}\n💬 _{a}_\n\n"
-        msg += "To update an answer, just use `/answer` again with the same question."
-        bot.reply_to(message, msg, parse_mode=None)
+        msg = (
+            f"🧠 <b>Saved Q&A Memory ({len(qa_memory)} answers):</b>\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        )
+        for i, (q, a) in enumerate(list(qa_memory.items())[:15], 1):
+            msg += f"<b>Q{i}.</b> {html.escape(q)}\n💬 <code>{html.escape(a)}</code>\n\n"
+        msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n💡 <i>To update an answer:</i> <code>/answer &lt;num&gt; | &lt;new answer&gt;</code>"
+        markup = InlineKeyboardMarkup()
+        markup.row(InlineKeyboardButton("🗑️ Clear an Answer", callback_data="qa_clear"))
+        markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
+        try:
+            bot.reply_to(message, msg, parse_mode="HTML", reply_markup=markup)
+        except Exception:
+            bot.reply_to(message, re.sub(r'<[^>]+>', '', msg), parse_mode=None, reply_markup=markup)
 
     @bot.message_handler(commands=['apply'])
     @admin_only
@@ -6599,7 +6772,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                     bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
                 time.sleep(0.3)
 
-    @bot.message_handler(commands=['jobspy', 'livejobs', 'spy'])
+    @bot.message_handler(commands=['jobspy', 'livejobs', 'spy', 'glassdoor'])
     @admin_only
     def handle_jobspy_command(message):
         save_chat_id(message.chat.id)
@@ -6616,17 +6789,27 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 InlineKeyboardButton("☕ Java Fresher", callback_data="jobspy:java fresher")
             )
             markup.row(
-                InlineKeyboardButton("📍 Chennai Tech Jobs", callback_data="jobspy:software engineer chennai"),
+                InlineKeyboardButton("🌐 Full Stack", callback_data="jobspy:full stack developer"),
+                InlineKeyboardButton("🤖 ML / AI Engineer", callback_data="jobspy:machine learning engineer")
+            )
+            markup.row(
+                InlineKeyboardButton("📍 Chennai IT Jobs", callback_data="jobspy:software engineer chennai"),
+                InlineKeyboardButton("🏢 Coimbatore", callback_data="jobspy:software developer coimbatore")
+            )
+            markup.row(
+                InlineKeyboardButton("🏠 Remote India", callback_data="jobspy:remote software engineer india"),
                 InlineKeyboardButton("🔍 Multi-Source /search", callback_data="search:menu")
             )
             help_msg = (
-                "⚡ <b>JobSpy Live Multi-Portal Search</b> 🌐\n\n"
-                "Real-time scraping across <b>LinkedIn, Indeed India, and Google Jobs</b> with direct ATS links and full descriptions!\n\n"
+                "⚡ <b>JobSpy Live Multi-Portal Search</b> 🕵️\n\n"
+                "Real-time scraping across <b>LinkedIn, Indeed India, Google Jobs & Glassdoor</b> — "
+                "direct ATS links, salary info, and job descriptions!\n\n"
                 "<b>Usage:</b>\n"
                 "• <code>/jobspy python fresher</code>\n"
                 "• <code>/jobspy react developer chennai</code>\n"
                 "• <code>/jobspy data analyst</code>\n"
-                "• <code>/jobspy zoho</code>\n\n"
+                "• <code>/jobspy zoho</code>\n"
+                "• <code>/jobspy full stack bangalore</code>\n\n"
                 "<i>Tap any quick category below for instant live scraping:</i>"
             )
             bot.send_message(message.chat.id, help_msg, parse_mode="HTML", reply_markup=markup)
@@ -6658,6 +6841,71 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 time.sleep(0.3)
         except Exception as e:
             bot.send_message(message.chat.id, f"⚠️ JobSpy query error: {e}")
+
+    @bot.message_handler(commands=['simplify', 'simplifyjobs', 'freshers', 'entrylevel', 'internships'])
+    @admin_only
+    def handle_simplify_command(message):
+        save_chat_id(message.chat.id)
+        raw_cmd = message.text.strip().split(maxsplit=1)
+        query = raw_cmd[1].strip() if len(raw_cmd) > 1 else ""
+        if not query:
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("💻 Software Engineer", callback_data="simplify:software"),
+                InlineKeyboardButton("🤖 AI & ML Engineer", callback_data="simplify:ai")
+            )
+            markup.row(
+                InlineKeyboardButton("📊 Data Science / Analyst", callback_data="simplify:data"),
+                InlineKeyboardButton("🌐 Remote Tech Roles", callback_data="simplify:remote")
+            )
+            markup.row(
+                InlineKeyboardButton("🎓 All Latest Freshers", callback_data="simplify:all"),
+                InlineKeyboardButton("🔄 Refresh Cache", callback_data="simplify:refresh")
+            )
+            markup.row(
+                InlineKeyboardButton("🎛️ Open Dashboard", callback_data="dashboard")
+            )
+            menu_msg = (
+                "🎓 <b>SIMPLIFYJOBS LIVE TECH FEED</b> 🌐\n\n"
+                "Real-time tech fresher and new grad job postings directly from the "
+                "open-source <b>SimplifyJobs</b> repository!\n\n"
+                "🌟 <b>Highlights:</b>\n"
+                "• 100% verified official careers portals (Greenhouse, Ashby, Lever, Workday)\n"
+                "• Target: <b>2024 / 2025 / 2026 Batch Freshers</b> & Early Career Engineers\n"
+                "• Zero fake consultancies or middleman portals\n\n"
+                "<b>Usage:</b>\n"
+                "• <code>/simplify software</code>\n"
+                "• <code>/simplify ai</code>\n"
+                "• <code>/simplify python</code>\n"
+                "• <code>/freshers remote</code>\n\n"
+                "<i>Tap any quick category below to fetch active openings:</i>"
+            )
+            bot.send_message(message.chat.id, menu_msg, parse_mode="HTML", reply_markup=markup)
+            return
+
+        try:
+            status_msg = bot.send_message(message.chat.id, f"🎓 <i>Querying SimplifyJobs live feed for '<b>{html.escape(query)}</b>'...</i>", parse_mode="HTML")
+        except Exception:
+            status_msg = None
+
+        try:
+            jobs = fetch_simplify_jobs(keyword=query, limit=8)
+            chunks, markup = format_simplify_jobs_report(jobs, keyword=query)
+            if status_msg:
+                try:
+                    bot.delete_message(message.chat.id, status_msg.message_id)
+                except Exception:
+                    pass
+
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
+        except Exception as e:
+            bot.send_message(message.chat.id, f"⚠️ SimplifyJobs query error: {e}")
 
     @bot.message_handler(commands=['search', 'find'])
     @admin_only
