@@ -2587,6 +2587,248 @@ def dispatch_walkin_alerts(bot=None, chat_id=None, city=None, once_per_day=True,
 
 
 # ─────────────────────────────────────────────────────────────────
+# FEATURE 12.5: 🧭 GPS / LOCATION-AWARE WALK-IN DRIVE NAVIGATOR
+# Calculates distance using Haversine formula, generates turn-by-turn
+# Google Maps navigation links, and ranks in-person walk-ins by proximity.
+# ─────────────────────────────────────────────────────────────────
+
+import math
+
+def haversine_distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """
+    Computes great-circle distance between two geographic coordinates in kilometers.
+    """
+    R = 6371.0  # Mean radius of Earth in km
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = (math.sin(dlat / 2) ** 2 +
+         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
+         math.sin(dlon / 2) ** 2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return round(R * c, 1)
+
+def estimate_commute_time(dist_km: float) -> str:
+    """Estimates typical road commute time for city driving or highway in Tamil Nadu."""
+    if dist_km <= 3.0:
+        return "~5–10 mins"
+    elif dist_km <= 8.0:
+        return "~15–20 mins"
+    elif dist_km <= 15.0:
+        return "~25–35 mins"
+    elif dist_km <= 30.0:
+        return "~45–60 mins"
+    elif dist_km <= 60.0:
+        return "~1 hr 15 mins"
+    else:
+        hrs = round(dist_km / 50.0, 1)
+        return f"~{hrs} hrs drive"
+
+KNOWN_GEO_HUBS = {
+    # Chennai Tech Corridors & Suburbs
+    "omr": (12.9026, 80.2281, "OMR IT Corridor, Chennai"),
+    "sholinganallur": (12.9026, 80.2281, "Sholinganallur, Chennai"),
+    "siruseri": (12.8290, 80.2185, "SIPCOT IT Park, Siruseri, Chennai"),
+    "navallur": (12.8465, 80.2265, "Navallur / OMR, Chennai"),
+    "perungudi": (12.9644, 80.2464, "Perungudi / Kandanchavadi, Chennai"),
+    "taramani": (12.9863, 80.2432, "Taramani (Ascendas IT Park), Chennai"),
+    "guindy": (13.0097, 80.2078, "Guindy Industrial Estate, Chennai"),
+    "manapakkam": (13.0183, 80.1764, "DLF Cybercity, Manapakkam, Chennai"),
+    "porur": (13.0382, 80.1565, "Porur, Chennai"),
+    "tambaram": (12.9249, 80.1000, "Tambaram / MEPZ SEZ, Chennai"),
+    "sanatorium": (12.9352, 80.1287, "Tambaram Sanatorium, Chennai"),
+    "chengalpattu": (12.8252, 80.0385, "Chengalpattu / GST Road, Chennai"),
+    "velachery": (12.9791, 80.2185, "Velachery, Chennai"),
+    "thiruvanmiyur": (12.9830, 80.2594, "Thiruvanmiyur, Chennai"),
+    "adyar": (13.0012, 80.2565, "Adyar, Chennai"),
+    "t nagar": (13.0418, 80.2341, "T. Nagar, Chennai"),
+    "vadapalani": (13.0500, 80.2121, "Vadapalani, Chennai"),
+    "koyambedu": (13.0732, 80.1943, "Koyambedu, Chennai"),
+    "ambattur": (13.1143, 80.1548, "Ambattur Industrial Estate, Chennai"),
+    "central": (13.0827, 80.2707, "Chennai Central Station"),
+    "chennai": (13.0827, 80.2707, "Chennai City Center"),
+
+    # Coimbatore Tech Hubs
+    "saravanampatti": (11.0825, 76.9942, "Saravanampatti (CHIL SEZ), Coimbatore"),
+    "chil sez": (11.0825, 76.9942, "CHIL SEZ, Coimbatore"),
+    "peelamedu": (11.0253, 77.0142, "Peelamedu (TIDEL Park), Coimbatore"),
+    "tidel coimbatore": (11.0253, 77.0142, "TIDEL Park Coimbatore"),
+    "gandhipuram": (11.0168, 76.9558, "Gandhipuram, Coimbatore"),
+    "coimbatore": (11.0168, 76.9558, "Coimbatore Center"),
+
+    # Madurai, Trichy, Hosur & Salem
+    "madurai": (9.9472, 78.1565, "ELCOT IT Park, Madurai"),
+    "trichy": (10.7483, 78.7360, "ELCOT IT Park, Trichy"),
+    "hosur": (12.7342, 77.8285, "Hosur Industrial Belt"),
+    "salem": (11.6643, 78.1460, "Salem City Center"),
+
+    # Bengaluru Hubs
+    "whitefield": (12.9698, 77.7500, "Whitefield, Bengaluru"),
+    "electronic city": (12.8399, 77.6770, "Electronic City, Bengaluru"),
+    "bengaluru": (12.9716, 77.5946, "Bengaluru City Center"),
+    "bangalore": (12.9716, 77.5946, "Bengaluru City Center"),
+}
+
+def geocode_location_text(query: str):
+    """
+    Matches an area name against known South India tech corridors.
+    Returns (latitude, longitude, formatted_label) or None.
+    """
+    if not query:
+        return None
+    q = query.strip().lower()
+    if q in KNOWN_GEO_HUBS:
+        return KNOWN_GEO_HUBS[q]
+    for k, v in KNOWN_GEO_HUBS.items():
+        if k in q or q in k:
+            return v
+    return None
+
+def find_nearby_walkin_drives(user_lat: float, user_lon: float, max_radius_km: float = 75.0, limit: int = 5, json_path: str = "walkin_drives.json") -> list:
+    """
+    Ranks walk-in drives by direct distance from user_lat, user_lon.
+    Returns enriched list of drive dicts with distance_km, commute_time, and turn-by-turn navigation URLs.
+    """
+    drives = get_walkin_drives(json_path=json_path)
+    results = []
+
+    for d in drives:
+        v_lat = d.get("latitude")
+        v_lon = d.get("longitude")
+        if v_lat is None or v_lon is None:
+            continue
+        try:
+            v_lat = float(v_lat)
+            v_lon = float(v_lon)
+        except Exception:
+            continue
+
+        dist = haversine_distance_km(user_lat, user_lon, v_lat, v_lon)
+        d_copy = dict(d)
+        d_copy["distance_km"] = dist
+        d_copy["commute_time"] = estimate_commute_time(dist)
+        d_copy["nav_url"] = f"https://www.google.com/maps/dir/?api=1&origin={user_lat},{user_lon}&destination={v_lat},{v_lon}&travelmode=driving"
+        results.append(d_copy)
+
+    results.sort(key=lambda x: x["distance_km"])
+    filtered = [r for r in results if r["distance_km"] <= max_radius_km]
+    if filtered:
+        return filtered[:limit]
+    # Fallback: nearest 3 drives even if outside max_radius_km
+    return results[:3]
+
+def format_nearby_walkins_report(nearby_drives: list, user_coords: tuple, location_label: str = None, max_chars: int = 3800) -> tuple:
+    """
+    Builds a high-aesthetic Telegram HTML report for nearby walk-in drives sorted by distance.
+    Returns (chunks: list[str], nearby_drives: list[dict]).
+    """
+    import html
+    user_lat, user_lon = user_coords
+    loc_display = location_label or f"{user_lat:.4f}° N, {user_lon:.4f}° E"
+
+    header = (
+        "🧭 <b>GPS WALK-IN DRIVE NAVIGATOR</b> 📍\n"
+        f"📍 <i>Current Origin: <b>{html.escape(loc_display)}</b></i>\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+    )
+
+    if not nearby_drives:
+        return [header + "⚠️ No walk-in drives found nearby. Use <code>/walkins all</code> to view all Tamil Nadu drives."], []
+
+    cards = []
+    medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣"]
+
+    for idx, d in enumerate(nearby_drives):
+        medal = medals[idx] if idx < len(medals) else f"#{idx+1}"
+        dist_km = d.get("distance_km", 0.0)
+        commute = d.get("commute_time", "")
+        comp = html.escape(str(d.get("company", "Company")))
+        role = html.escape(str(d.get("role", "Software Role")))
+        area = html.escape(str(d.get("location_area", "")))
+        venue = html.escape(str(d.get("venue_name", "")))
+        timing = html.escape(str(d.get("timing", "")))
+        batches = html.escape(str(d.get("batches", "")))
+        exp = html.escape(str(d.get("experience", "Freshers")))
+        pkg = html.escape(str(d.get("package", "As per industry standard")))
+        docs = html.escape(str(d.get("mandatory_docs", "2 Resumes, Govt ID, Marksheets")))
+        dress = html.escape(str(d.get("dress_code", "Formal Attire")))
+        nav_url = d.get("nav_url", "#")
+        landmarks = html.escape(str(d.get("landmarks", "")))
+
+        dist_badge = f"<b>{dist_km} km away</b>"
+        if dist_km <= 5.0:
+            badge_line = f"🟢 {dist_badge} • <i>{commute}</i> ⚡ <b>VERY CLOSE</b>"
+        elif dist_km <= 15.0:
+            badge_line = f"🟡 {dist_badge} • <i>{commute}</i> 🚗 <b>QUICK DRIVE</b>"
+        else:
+            badge_line = f"🔵 {dist_badge} • <i>{commute}</i> 🛣️ <b>COMMUTE READY</b>"
+
+        card_lines = [
+            f"{medal} <b>{comp}</b> • <i>{role}</i>",
+            badge_line,
+            f"📍 <b>Area:</b> {area}",
+            f"🏢 <b>Venue:</b> <code>{venue}</code>",
+        ]
+        if landmarks:
+            card_lines.append(f"📌 <b>Landmark:</b> {landmarks}")
+        card_lines.extend([
+            f"🗓️ <b>Timing:</b> {timing}",
+            f"🎓 <b>Eligible:</b> <code>{batches}</code> ({exp})",
+            f"💰 <b>Package:</b> {pkg}",
+            f"🎒 <b>Carry:</b> {docs}",
+            f"👔 <b>Dress:</b> {dress}",
+            f"👉 <a href=\"{nav_url}\">🚗 <b>Start Google Maps Turn-by-Turn GPS</b></a>",
+        ])
+        cards.append("\n".join(card_lines))
+
+    footer = (
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        "💡 <i>Tip: Tap any 'Start GPS' link for live real-time traffic route. Arrive 30 mins early before token counters close!</i>"
+    )
+
+    chunks = []
+    current_chunk = header
+    for card in cards:
+        block = card + "\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        if len(current_chunk) + len(block) > max_chars:
+            chunks.append(current_chunk.strip())
+            current_chunk = f"🧭 <b>GPS WALK-IN NAVIGATOR (Part {len(chunks)+1})</b>\n\n" + block
+        else:
+            current_chunk += block
+
+    if current_chunk.strip():
+        current_chunk += footer
+        chunks.append(current_chunk.strip())
+
+    return chunks, nearby_drives
+
+def get_walkin_checklist_text() -> str:
+    """Returns official packing and preparation checklist for attending walk-in interviews."""
+    return (
+        "🎒 <b>OFFICIAL WALK-IN PACKING & READINESS CHECKLIST</b> 📋\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "<b>Before you step out the door, verify you have packed:</b>\n\n"
+        "1. 📄 <b>3–4 Hard Copies of Updated Resume</b>\n"
+        "   • Crisp printouts on clean white paper (no folds or staples).\n\n"
+        "2. 🪪 <b>Original Govt Photo ID + 2 Photocopies</b>\n"
+        "   • Aadhar Card / PAN Card / Driving License / Passport.\n\n"
+        "3. 🎓 <b>Academic Certificates & Marksheets</b>\n"
+        "   • 10th & 12th Marksheets (Originals + Copies)\n"
+        "   • Semester-wise grade sheets & Provisional / Degree Certificate.\n\n"
+        "4. 📸 <b>4 Passport-Size Photographs</b>\n"
+        "   • Formal attire, white/light background, taken recently.\n\n"
+        "5. 🖊️ <b>Stationery & Writing Kit</b>\n"
+        "   • 2 Black/Blue ballpoint pens (many campuses disallow mobile phones in written rounds) + mini writing pad.\n\n"
+        "6. 👔 <b>Professional Dress Code:</b>\n"
+        "   • <b>Men:</b> Ironed formal button-down shirt, formal trousers, polished leather shoes.\n"
+        "   • <b>Women:</b> Formal shirt & trousers or professional salwar/churidar.\n\n"
+        "7. ⏰ <b>Crucial Arrival Rule:</b>\n"
+        "   • <b>Arrive 45 minutes BEFORE official reporting time.</b> Security gates close and token distribution halts once candidate capacity is hit!\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        "<i>Good luck! Keep your phone charged for campus entry QR codes.</i> 🚀"
+    )
+
+
+# ─────────────────────────────────────────────────────────────────
 # ─────────────────────────────────────────────────────────────────
 # FEATURE 13: 🔍 MULTI-SOURCE UNIFIED REAL-DATA SEARCH ENGINE
 # Searches across live Tamil Nadu feeds, tn-live-jobs verified database,

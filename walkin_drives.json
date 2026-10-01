@@ -21,7 +21,9 @@
     "prep_tips": "Revise DNS, DHCP, IP addressing, basic OS troubleshooting steps, and practice crisp English self-introduction.",
     "contact_info": "HR Desk: careers.chennai@techmahindra.com",
     "registration_link": "https://careers.techmahindra.com/",
-    "status": "🟢 Weekend Walk-In Live"
+    "status": "🟢 Weekend Walk-In Live",
+    "latitude": 12.9026,
+    "longitude": 80.2281
   },
   {
     "id": "zoho_chengalpattu_walkin",
@@ -45,7 +47,9 @@
     "prep_tips": "No calculators/IDE allowed! Practice manual dry-running of pointers, loops, recursion, and patterns on paper.",
     "contact_info": "careers@zohocorp.com",
     "registration_link": "https://www.zoho.com/careers/",
-    "status": "🌟 Top Tamil Nadu Flagship"
+    "status": "🌟 Top Tamil Nadu Flagship",
+    "latitude": 12.8252,
+    "longitude": 80.0385
   },
   {
     "id": "cognizant_mepz_walkin",
@@ -69,7 +73,9 @@
     "prep_tips": "Brush up SQL Joins, GROUP BY, Aggregate functions, and prepare a 90-second clear self-intro for the GD round.",
     "contact_info": "campus.chennai@cognizant.com",
     "registration_link": "https://careers.cognizant.com/global/en",
-    "status": "🟢 Active Walk-In"
+    "status": "🟢 Active Walk-In",
+    "latitude": 12.9352,
+    "longitude": 80.1287
   },
   {
     "id": "hcltech_navallur_walkin",
@@ -93,7 +99,9 @@
     "prep_tips": "Be ready to explain your final year engineering project in depth and write simple code for sorting/searching.",
     "contact_info": "talentacquisition.tn@hcl.com",
     "registration_link": "https://www.hcltech.com/careers",
-    "status": "🟢 Regular Saturday Walk-In"
+    "status": "🟢 Regular Saturday Walk-In",
+    "latitude": 12.8465,
+    "longitude": 80.2265
   },
   {
     "id": "bosch_coimbatore_walkin",
@@ -117,7 +125,9 @@
     "prep_tips": "Focus heavily on volatile keyword, bitwise operations, interrupt handling, pointer arithmetic, and SPI/I2C protocols.",
     "contact_info": "bgsw.campus@in.bosch.com",
     "registration_link": "https://www.bosch-softwaretechnologies.com/en/careers/",
-    "status": "🌟 Top Coimbatore Priority"
+    "status": "🌟 Top Coimbatore Priority",
+    "latitude": 11.0825,
+    "longitude": 76.9942
   },
   {
     "id": "sutherland_coimbatore_walkin",
@@ -141,7 +151,9 @@
     "prep_tips": "Demonstrate clear fluency, neutral accent, flexibility for rotational shifts, and enthusiasm for tech support.",
     "contact_info": "coimbatore.jobs@sutherlandglobal.com",
     "registration_link": "https://jobs.sutherlandglobal.com/",
-    "status": "🟢 Daily Walk-In Active"
+    "status": "🟢 Daily Walk-In Active",
+    "latitude": 11.0772,
+    "longitude": 76.9981
   },
   {
     "id": "hexaware_siruseri_walkin",
@@ -165,7 +177,9 @@
     "prep_tips": "Practice standard array manipulation, string algorithms, polymorphism, interface vs abstract classes, and SQL JOINs.",
     "contact_info": "campus@hexaware.com",
     "registration_link": "https://jobs.hexaware.com/",
-    "status": "🟢 Weekend Drive"
+    "status": "🟢 Weekend Drive",
+    "latitude": 12.829,
+    "longitude": 80.2185
   },
   {
     "id": "wipro_guindy_walkin",
@@ -189,7 +203,9 @@
     "prep_tips": "Wipro includes a higher-education sponsorship (WILP M.Tech from BITS Pilani); highlight your desire to upskill while working.",
     "contact_info": "wipro.chennai@wipro.com",
     "registration_link": "https://careers.wipro.com/",
-    "status": "🟢 Active Walk-In"
+    "status": "🟢 Active Walk-In",
+    "latitude": 13.0097,
+    "longitude": 80.2078
   },
   {
     "id": "amazon_perungudi_walkin",
@@ -213,7 +229,9 @@
     "prep_tips": "Review Linux CLI commands, understand basic client-server architecture, and format answers using STAR method aligning with Amazon Leadership Principles.",
     "contact_info": "chennai-hiring@amazon.com",
     "registration_link": "https://www.amazon.jobs/en/locations/chennai-india",
-    "status": "🌟 Top Tier-1 Tech Drive"
+    "status": "🌟 Top Tier-1 Tech Drive",
+    "latitude": 12.9644,
+    "longitude": 80.2464
   },
   {
     "id": "ltts_manapakkam_walkin",
@@ -237,7 +255,9 @@
     "prep_tips": "Revise memory management in C/C++, difference between process & thread, timers, and your core academic projects.",
     "contact_info": "talent.ltts@ltts.com",
     "registration_link": "https://www.ltts.com/careers",
-    "status": "🟢 Verified Saturday Drive"
+    "status": "🟢 Verified Saturday Drive",
+    "latitude": 13.0183,
+    "longitude": 80.1764
   },
   {
     "id": "infosys_sholinganallur_walkin",
@@ -261,7 +281,9 @@
     "prep_tips": "Practice Infosys pseudocode questions, basic data structures (Stacks, Queues, Linked Lists) and normalization in databases.",
     "contact_info": "talent_acquisition@infosys.com",
     "registration_link": "https://career.infosys.com/",
-    "status": "🌟 Weekend Mass Drive"
+    "status": "🌟 Weekend Mass Drive",
+    "latitude": 12.908,
+    "longitude": 80.2274
   },
   {
     "id": "capgemini_siruseri_walkin",
@@ -285,7 +307,9 @@
     "prep_tips": "Capgemini uses gamified cognitive challenges (grid challenge, switch challenge); stay calm and solve methodically.",
     "contact_info": "fresherhiring.in@capgemini.com",
     "registration_link": "https://www.capgemini.com/in-en/careers/",
-    "status": "🟢 Verified Weekend Drive"
+    "status": "🟢 Verified Weekend Drive",
+    "latitude": 12.8277,
+    "longitude": 80.2223
   },
   {
     "id": "tata_elxsi_coimbatore_walkin",
@@ -309,7 +333,9 @@
     "prep_tips": "Focus on bit manipulation, struct padding, volatile keyword, function pointers, and communication bus architecture.",
     "contact_info": "careers@tataelxsi.com",
     "registration_link": "https://www.tataelxsi.com/careers",
-    "status": "🌟 Top Coimbatore Priority"
+    "status": "🌟 Top Coimbatore Priority",
+    "latitude": 11.085,
+    "longitude": 76.996
   },
   {
     "id": "hcltech_madurai_walkin",
@@ -333,7 +359,9 @@
     "prep_tips": "Top opportunity for southern Tamil Nadu candidates. Be clear on basic programming logic, SQL queries, and final year projects.",
     "contact_info": "madurai.campus@hcl.com",
     "registration_link": "https://www.hcltech.com/careers",
-    "status": "🟢 Madurai Flagship Walk-In"
+    "status": "🟢 Madurai Flagship Walk-In",
+    "latitude": 9.9472,
+    "longitude": 78.1565
   },
   {
     "id": "vuram_trichy_walkin",
@@ -357,7 +385,9 @@
     "prep_tips": "Study basic workflows, flowcharts, relational database schema design, and basic web technologies.",
     "contact_info": "trichy.careers@vuram.com",
     "registration_link": "https://www.vuram.com/careers/",
-    "status": "🟢 Trichy Flagship Walk-In"
+    "status": "🟢 Trichy Flagship Walk-In",
+    "latitude": 10.7483,
+    "longitude": 78.736
   },
   {
     "id": "rntbci_chennai_walkin",
@@ -381,7 +411,9 @@
     "prep_tips": "Brush up on automotive software basics, connected vehicle concepts, CAN protocol, and C programming fundamentals.",
     "contact_info": "campus.rntbci@rntbci.com",
     "registration_link": "https://www.rntbci.in/careers",
-    "status": "🟢 Automotive Tech Drive"
+    "status": "🟢 Automotive Tech Drive",
+    "latitude": 12.7431,
+    "longitude": 80.0076
   },
   {
     "id": "tvs_hosur_walkin",
@@ -405,7 +437,9 @@
     "prep_tips": "Focus on EV tech, motors, sensors, microcontrollers, and demonstrate enthusiasm for automotive manufacturing.",
     "contact_info": "careers@tvsmotor.com",
     "registration_link": "https://www.tvsmotor.com/careers",
-    "status": "🌟 Hosur / TN Hub Drive"
+    "status": "🌟 Hosur / TN Hub Drive",
+    "latitude": 12.7342,
+    "longitude": 77.8285
   },
   {
     "id": "paypal_sholinganallur_walkin",
@@ -429,6 +463,8 @@
     "prep_tips": "Understand how digital payments work (UPI, Card authorization, Payment Gateway architecture) and prepare strong behavioral STAR examples.",
     "contact_info": "indiacareers@paypal.com",
     "registration_link": "https://www.paypal.com/us/webapps/mpp/jobs",
-    "status": "🌟 Premium Product MNC"
+    "status": "🌟 Premium Product MNC",
+    "latitude": 12.8988,
+    "longitude": 80.2295
   }
 ]

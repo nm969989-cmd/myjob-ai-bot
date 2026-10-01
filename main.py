@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from flask import Flask
 from threading import Thread
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from playwright.sync_api import sync_playwright
 # pyrefly: ignore [missing-import]
 from playwright_stealth import stealth_sync
@@ -58,6 +58,10 @@ from bot_optimizer import (
     get_walkin_drives,
     format_walkins_report,
     format_single_walkin_detail,
+    find_nearby_walkin_drives,
+    format_nearby_walkins_report,
+    geocode_location_text,
+    get_walkin_checklist_text,
     search_jobs_multi_source,
     format_search_results_report,
     match_job_compatibility,
@@ -5089,6 +5093,7 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
 🔹 `/board` - 🌐 Launch interactive Tamil Nadu Live Jobs Web Board & MiniApp.
 🔹 `/tnjobs [tech|govt|core|freshers]` - 🌟 Tamil Nadu jobs with 1-tap prep, cold email & category filters.
 🔹 `/walkins` - 🚶‍♂️ Tamil Nadu weekend walk-in drives (e.g. `/walkins chennai`).
+🔹 `/nearme [area]` - 🧭 GPS Walk-In Navigator: finds closest in-person drives with driving time & turn-by-turn Google Maps links (e.g. `/nearme omr` or share GPS location).
 🔹 `/drives` - 📢 National mass off-campus hiring drives (TCS, Infosys, Zoho).
 🔹 `/deadlines` - ⏳ Mass drive deadlines countdown radar.
 🔹 `/radar` - 📡 Multi-platform job radar (Adzuna, Unstop, Telegram).
@@ -5644,6 +5649,10 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
             chunks = format_walkins_report(drives, city_filter=city_filter)
             markup = InlineKeyboardMarkup()
             markup.row(
+                InlineKeyboardButton("🧭 Walk-Ins Near Me (GPS)", callback_data="nearme:prompt"),
+                InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist")
+            )
+            markup.row(
                 InlineKeyboardButton("📍 Chennai Walk-Ins", callback_data="walkins:chennai"),
                 InlineKeyboardButton("📍 Coimbatore Walk-Ins", callback_data="walkins:coimbatore")
             )
@@ -5668,6 +5677,69 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 time.sleep(0.3)
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Walk-In error: {e}")
+
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("nearme:"))
+    def handle_nearme_callbacks(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        action = call.data.split(":", 1)[1] if ":" in call.data else ""
+        if action == "checklist":
+            try:
+                bot.answer_callback_query(call.id, text="📋 Loading Packing Checklist...")
+            except Exception:
+                pass
+            txt = get_walkin_checklist_text()
+            markup = InlineKeyboardMarkup()
+            markup.row(
+                InlineKeyboardButton("🧭 Find Walk-Ins Near Me", callback_data="nearme:prompt"),
+                InlineKeyboardButton("🚶‍♂️ All Walk-In Drives", callback_data="walkins:all")
+            )
+            bot.send_message(chat_id, txt, parse_mode="HTML", reply_markup=markup)
+            return
+
+        if action.startswith("hub:"):
+            hub_key = action.split("hub:", 1)[1].strip()
+            try:
+                bot.answer_callback_query(call.id, text=f"📍 Locating near {hub_key.upper()}...")
+            except Exception:
+                pass
+            geo = geocode_location_text(hub_key)
+            if geo:
+                lat, lon, label = geo
+                drives = find_nearby_walkin_drives(lat, lon, max_radius_km=75.0, limit=5)
+                chunks, nearby_list = format_nearby_walkins_report(drives, (lat, lon), location_label=label)
+                markup = InlineKeyboardMarkup()
+                for d in nearby_list[:4]:
+                    dist_km = d.get("distance_km", 0.0)
+                    comp = d.get("company", "Company")
+                    nav_url = d.get("nav_url", "#")
+                    markup.row(
+                        InlineKeyboardButton(f"🚗 {comp} ({dist_km} km)", url=nav_url),
+                        InlineKeyboardButton(f"📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
+                    )
+                markup.row(
+                    InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist"),
+                    InlineKeyboardButton("🧭 Search Other Area", callback_data="nearme:prompt")
+                )
+                markup.row(
+                    InlineKeyboardButton("🚶‍♂️ All Walk-In Drives", callback_data="walkins:all"),
+                    InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+                )
+                for idx, chunk in enumerate(chunks):
+                    is_last = (idx == len(chunks) - 1)
+                    try:
+                        bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                    except Exception:
+                        bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                    time.sleep(0.3)
+            return
+
+        # Default action: nearme:prompt
+        try:
+            bot.answer_callback_query(call.id, text="🧭 Share your location or pick an area!")
+        except Exception:
+            pass
+        prompt_user_for_location(chat_id)
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("search:"))
     def handle_search_callback(call):
@@ -6286,6 +6358,10 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
             from bot_optimizer import format_walkins_report, format_single_walkin_detail, get_walkin_drives
             markup = InlineKeyboardMarkup()
             markup.row(
+                InlineKeyboardButton("🧭 Walk-Ins Near Me (GPS)", callback_data="nearme:prompt"),
+                InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist")
+            )
+            markup.row(
                 InlineKeyboardButton("📍 Chennai Walk-Ins", callback_data="walkins:chennai"),
                 InlineKeyboardButton("📍 Coimbatore Walk-Ins", callback_data="walkins:coimbatore")
             )
@@ -6324,6 +6400,178 @@ _Welcome to your fully autonomous AI job-hunting engine! Here is your complete m
                 time.sleep(0.3)
         except Exception as e:
             bot.send_message(message.chat.id, f"⚠️ Walk-In error: {e}")
+
+    def prompt_user_for_location(chat_id):
+        reply_kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+        reply_kb.row(KeyboardButton("📍 Share My Current Location (GPS)", request_location=True))
+        reply_kb.row(KeyboardButton("📍 Near OMR"), KeyboardButton("📍 Near Guindy"))
+        reply_kb.row(KeyboardButton("📍 Near Tambaram"), KeyboardButton("📍 Near Coimbatore"))
+
+        inline_kb = InlineKeyboardMarkup()
+        inline_kb.row(
+            InlineKeyboardButton("📍 OMR IT Corridor", callback_data="nearme:hub:omr"),
+            InlineKeyboardButton("📍 Guindy / DLF", callback_data="nearme:hub:guindy")
+        )
+        inline_kb.row(
+            InlineKeyboardButton("📍 Tambaram / MEPZ", callback_data="nearme:hub:tambaram"),
+            InlineKeyboardButton("📍 Coimbatore (CHIL)", callback_data="nearme:hub:saravanampatti")
+        )
+        inline_kb.row(
+            InlineKeyboardButton("📍 Madurai ELCOT", callback_data="nearme:hub:madurai"),
+            InlineKeyboardButton("📍 Trichy ELCOT", callback_data="nearme:hub:trichy")
+        )
+        inline_kb.row(
+            InlineKeyboardButton("🎒 Walk-In Packing Checklist", callback_data="nearme:checklist"),
+            InlineKeyboardButton("🚶‍♂️ All Walk-In Drives", callback_data="walkins:all")
+        )
+
+        msg = (
+            "🧭 <b>GPS WALK-IN DRIVE NAVIGATOR</b> 📍\n\n"
+            "Find in-person walk-in interviews happening closest to where you are right now, complete with <b>exact driving distance</b>, <b>commute time</b>, and <b>turn-by-turn Google Maps GPS links</b>!\n\n"
+            "<b>Choose how to locate:</b>\n"
+            "1. 📱 Tap <b>'📍 Share My Current Location (GPS)'</b> on your keyboard below.\n"
+            "2. 🏙️ Or tap any major Tamil Nadu IT hub button.\n"
+            "3. ⌨️ Or type: <code>/nearme omr</code>, <code>/nearme guindy</code>, <code>/nearme coimbatore</code>, <code>/nearme velachery</code>."
+        )
+        bot.send_message(chat_id, msg, parse_mode="HTML", reply_markup=inline_kb)
+        try:
+            bot.send_message(chat_id, "👇 Tap the button below to send your live GPS location:", reply_markup=reply_kb)
+        except Exception:
+            pass
+
+    @bot.message_handler(commands=['nearme', 'nearby', 'gps', 'walkin_near'])
+    @admin_only
+    def handle_nearme_command(message):
+        save_chat_id(message.chat.id)
+        parts = message.text.strip().split(maxsplit=1)
+        if len(parts) > 1 and parts[1].strip():
+            query_area = parts[1].strip()
+            geo = geocode_location_text(query_area)
+            if geo:
+                lat, lon, label = geo
+                drives = find_nearby_walkin_drives(lat, lon, max_radius_km=75.0, limit=5)
+                chunks, nearby_list = format_nearby_walkins_report(drives, (lat, lon), location_label=label)
+                markup = InlineKeyboardMarkup()
+                for d in nearby_list[:4]:
+                    dist_km = d.get("distance_km", 0.0)
+                    comp = d.get("company", "Company")
+                    nav_url = d.get("nav_url", "#")
+                    markup.row(
+                        InlineKeyboardButton(f"🚗 Navigate {comp} ({dist_km} km)", url=nav_url),
+                        InlineKeyboardButton(f"📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
+                    )
+                markup.row(
+                    InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist"),
+                    InlineKeyboardButton("🧭 Search Other Area", callback_data="nearme:prompt")
+                )
+                markup.row(
+                    InlineKeyboardButton("🚶‍♂️ All Walk-In Drives", callback_data="walkins:all"),
+                    InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+                )
+                for idx, chunk in enumerate(chunks):
+                    is_last = (idx == len(chunks) - 1)
+                    try:
+                        bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                    except Exception:
+                        bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                    time.sleep(0.3)
+                return
+            else:
+                bot.send_message(message.chat.id, f"⚠️ Area '<code>{html.escape(query_area)}</code>' not recognized in local tech hubs. Pick from below or share your live GPS location:", parse_mode="HTML")
+
+        prompt_user_for_location(message.chat.id)
+
+    @bot.message_handler(content_types=['location'])
+    @admin_only
+    def handle_user_location(message):
+        save_chat_id(message.chat.id)
+        if not message.location:
+            return
+        user_lat = message.location.latitude
+        user_lon = message.location.longitude
+
+        try:
+            bot.send_message(message.chat.id, "📍 <i>GPS Location acquired! Scanning Tamil Nadu walk-in venues closest to you...</i>", parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+        except Exception:
+            pass
+
+        try:
+            drives = find_nearby_walkin_drives(user_lat, user_lon, max_radius_km=80.0, limit=5)
+            chunks, nearby_list = format_nearby_walkins_report(drives, (user_lat, user_lon), location_label=f"Your GPS ({user_lat:.4f}° N, {user_lon:.4f}° E)")
+
+            markup = InlineKeyboardMarkup()
+            for d in nearby_list[:4]:
+                dist_km = d.get("distance_km", 0.0)
+                comp = d.get("company", "Company")
+                nav_url = d.get("nav_url", "#")
+                markup.row(
+                    InlineKeyboardButton(f"🚗 Navigate {comp} ({dist_km} km)", url=nav_url),
+                    InlineKeyboardButton(f"📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
+                )
+            markup.row(
+                InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist"),
+                InlineKeyboardButton("🧭 Refresh Location", callback_data="nearme:prompt")
+            )
+            markup.row(
+                InlineKeyboardButton("🚶‍♂️ All Walk-In Drives", callback_data="walkins:all"),
+                InlineKeyboardButton("🌟 TN Online Jobs", callback_data="tnjobs")
+            )
+
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
+
+            if nearby_list:
+                closest = nearby_list[0]
+                c_lat = closest.get("latitude")
+                c_lon = closest.get("longitude")
+                if c_lat and c_lon:
+                    try:
+                        bot.send_venue(
+                            message.chat.id,
+                            latitude=float(c_lat),
+                            longitude=float(c_lon),
+                            title=f"🥇 Closest: {closest.get('company')}",
+                            address=f"{closest.get('venue_name')}, {closest.get('location_area')}"
+                        )
+                    except Exception:
+                        pass
+        except Exception as e:
+            bot.send_message(message.chat.id, f"⚠️ Error calculating proximity: {e}")
+
+    @bot.message_handler(func=lambda msg: msg.text and msg.text.strip().startswith("📍 Near "))
+    @admin_only
+    def handle_quick_near_text(message):
+        clean_area = message.text.replace("📍 Near ", "").strip().lower()
+        geo = geocode_location_text(clean_area)
+        if geo:
+            lat, lon, label = geo
+            drives = find_nearby_walkin_drives(lat, lon, max_radius_km=75.0, limit=5)
+            chunks, nearby_list = format_nearby_walkins_report(drives, (lat, lon), location_label=label)
+            markup = InlineKeyboardMarkup()
+            for d in nearby_list[:4]:
+                dist_km = d.get("distance_km", 0.0)
+                comp = d.get("company", "Company")
+                nav_url = d.get("nav_url", "#")
+                markup.row(
+                    InlineKeyboardButton(f"🚗 {comp} ({dist_km} km)", url=nav_url),
+                    InlineKeyboardButton(f"📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
+                )
+            markup.row(
+                InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist"),
+                InlineKeyboardButton("🧭 Search Other Area", callback_data="nearme:prompt")
+            )
+            for idx, chunk in enumerate(chunks):
+                is_last = (idx == len(chunks) - 1)
+                try:
+                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                except Exception:
+                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+                time.sleep(0.3)
 
     @bot.message_handler(commands=['search', 'find'])
     @admin_only
