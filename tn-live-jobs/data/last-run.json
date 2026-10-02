@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "started_at": "2026-10-01T20:48:47.273Z",
-  "finished_at": "2026-10-01T20:54:28.995Z",
-  "duration_seconds": 164,
-  "validate_seconds": 177,
-  "trigger": "GitHub Actions (push)",
+  "started_at": "2026-10-02T11:14:16.782Z",
+  "finished_at": "2026-10-02T11:19:59.256Z",
+  "duration_seconds": 168,
+  "validate_seconds": 175,
+  "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
     "fresher",
@@ -29,18 +29,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 95,
-  "new_jobs": 0,
-  "removed_jobs": 0,
+  "verified_jobs": 94,
+  "new_jobs": 10,
+  "removed_jobs": 10,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 95,
+    "live": 94,
     "loginRequired": 1,
-    "dead": 53,
+    "dead": 54,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 8,
+    "documents": 9,
     "unreachable": 0
   },
   "source_status": [
@@ -147,7 +147,7 @@
       "label": "Tirunelveli District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Tirunelveli District portal"
+      "detail": "2 notice(s) on Tirunelveli District portal"
     },
     {
       "id": "tnvelaivaaippu.gov.in",
@@ -210,7 +210,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "97 job(s) from 4 category page(s)"
+      "detail": "94 job(s) from 4 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -235,11 +235,11 @@
     }
   ],
   "per_source": {
-    "govt-tn": 8,
+    "govt-tn": 9,
     "company-careers": 3,
     "tech-ats": 34,
     "naukri": 0,
-    "apna": 97,
+    "apna": 94,
     "indeed": 0,
     "linkedin": 80
   },
@@ -251,5 +251,5 @@
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 27
+  "dropped_records": 28
 }
