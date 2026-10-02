@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-02T11:14:16.782Z",
-  "finished_at": "2026-10-02T11:19:59.256Z",
-  "duration_seconds": 168,
-  "validate_seconds": 175,
+  "started_at": "2026-10-02T18:36:20.829Z",
+  "finished_at": "2026-10-02T18:42:07.572Z",
+  "duration_seconds": 165,
+  "validate_seconds": 181,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -29,15 +29,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 94,
-  "new_jobs": 10,
-  "removed_jobs": 10,
+  "verified_jobs": 100,
+  "new_jobs": 6,
+  "removed_jobs": 6,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 94,
+    "live": 100,
     "loginRequired": 1,
-    "dead": 54,
+    "dead": 48,
     "noSignal": 1,
     "redirected": 0,
     "documents": 9,
@@ -126,7 +126,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "14 opening(s) in Tamil Nadu"
+      "detail": "12 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -210,7 +210,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "94 job(s) from 4 category page(s)"
+      "detail": "91 job(s) from 4 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -237,19 +237,19 @@
   "per_source": {
     "govt-tn": 9,
     "company-careers": 3,
-    "tech-ats": 34,
+    "tech-ats": 32,
     "naukri": 0,
-    "apna": 94,
+    "apna": 91,
     "indeed": 0,
     "linkedin": 80
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 28
+  "dropped_records": 23
 }
