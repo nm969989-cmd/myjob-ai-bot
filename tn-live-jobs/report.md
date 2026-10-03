@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-03T10:31:30.115Z
-- **Finished:** 2026-10-03T10:37:12.369Z
+- **Started:** 2026-10-03T17:30:35.442Z
+- **Finished:** 2026-10-03T17:36:17.847Z
 - **Duration:** 167 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, nurse, teacher, sales executive, data entry | cities = Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Vellore, Thanjavur, Tiruppur, Tamil Nadu
-- **Live verified jobs: 97** (kept this run: 150, new: 9, gone since last run: 9)
+- **Live verified jobs: 99** (kept this run: 150, new: 2, gone since last run: 2)
 
 ## Results per source
 
@@ -34,7 +34,7 @@
 | TNPSC - Notifications | 1 | :x: unreachable | 0 | 0 | fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 21 | 66 | 90 job(s) from 4 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 21 | 66 | 91 job(s) from 4 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 3 request(s); source disabled |
 | LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 40 | 80 job(s) from 4 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
@@ -46,39 +46,25 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 97 |
-| Government documents verified | 8 |
+| :white_check_mark: Verified live | 99 |
+| Government documents verified | 9 |
 | Login required (kept, not published) | 1 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 50 |
-| Could not be reached | 1 |
+| Dead link (HTTP 4xx/5xx) | 49 |
+| Could not be reached | 0 |
 
-## New this run (9)
+## New this run (2)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Applications are invited for the posts of 1)Assistant cum B… | Government of Tamil Nadu | Tirunelveli | Government | yes | https://cdn.s3waas.gov.in/s36a9aeddfc689c1d0e3b9ccc3ab651bc5/uploads/2026/09/17910107662469.pdf |
-| Bancassurance Manager | Vinpogo Facility Management Servic… | Chennai | Other | yes | https://apna.co/job/chennai/bancassurance-manager-738293289 |
-| Agency Manager | Supro Info Solutions Private Limit… | Chennai | Other | no (http_481) | https://apna.co/job/chennai/agency-manager-288563320 |
-| Accountant | Krish Electro Technologies Private… | Chennai | Accounting & Finance | no (http_481) | https://apna.co/job/chennai/accountant-566864608 |
-| Team Leader | Netambit Value First Services Priv… | Coimbatore | Other | no (http_481) | https://apna.co/job/coimbatore/team-leader-537295257 |
-| Business Development Executive (BDE) | Hirein Solutions | Coimbatore | Sales & Marketing | no (http_481) | https://apna.co/job/coimbatore/business-development-executive-bde-425922477 |
-| Credit Card Sales Executive | Sbi credit cards Sales | Coimbatore | Sales & Marketing | no (http_481) | https://apna.co/job/coimbatore/credit-card-sales-executive-34603013 |
-| Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC,… | UPS | Chennai | Software | yes | https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248973372 |
-| Full Stack Developer | EverythingEasy Technology | Madurai | Software | yes | https://in.linkedin.com/jobs/view/full-stack-developer-at-everythingeasy-technology-4430240326 |
+| Senior Accountant | Charteredways Services Private Lim… | Madurai | Accounting & Finance | yes | https://apna.co/job/madurai-region/senior-accountant-224036245 |
+| .NET Developers | Covenant Technologies | Madurai | Software | yes | https://in.linkedin.com/jobs/view/net-developers-at-covenant-technologies-4441017783 |
 
-## Gone since last run (9)
+## Gone since last run (2)
 
-- Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, … (UPS)
-- .NET Developers (Covenant Technologies)
-- Accounts and Finance Executive (Logskim Solutions Private Limited)
-- Applications are invited for the posts of 1)Assistant cum Bench Clerk… (Government of Tamil Nadu)
-- Business Development Executive (BDE) (Aarthi Associates)
-- Sales Executive (Scopehr Services)
-- Credit Card Sales Executive (RBL CREDIT CARD)
-- Video & Poster Editor (Rise And Shine Learning Solutions Priva…)
-- Walkin Drive- Store Managers & Team Leadres (More Retail Private Limited)
+- Full Stack Developer (EverythingEasy Technology)
+- Foreign Exchange Officer (Muthoot Fincorp Limited)
 
 ## Data integrity
 
