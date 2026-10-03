@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-02T18:36:20.829Z",
-  "finished_at": "2026-10-02T18:42:07.572Z",
-  "duration_seconds": 165,
-  "validate_seconds": 181,
+  "started_at": "2026-10-03T10:31:30.115Z",
+  "finished_at": "2026-10-03T10:37:12.369Z",
+  "duration_seconds": 167,
+  "validate_seconds": 175,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -29,19 +29,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 100,
-  "new_jobs": 6,
-  "removed_jobs": 6,
+  "verified_jobs": 97,
+  "new_jobs": 9,
+  "removed_jobs": 9,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 100,
+    "live": 97,
     "loginRequired": 1,
-    "dead": 48,
+    "dead": 50,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 9,
-    "unreachable": 0
+    "documents": 8,
+    "unreachable": 1
   },
   "source_status": [
     {
@@ -210,7 +210,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "91 job(s) from 4 category page(s)"
+      "detail": "90 job(s) from 4 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -239,7 +239,7 @@
     "company-careers": 3,
     "tech-ats": 32,
     "naukri": 0,
-    "apna": 91,
+    "apna": 90,
     "indeed": 0,
     "linkedin": 80
   },
@@ -251,5 +251,5 @@
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 23
+  "dropped_records": 21
 }
