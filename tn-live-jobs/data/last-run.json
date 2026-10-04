@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "started_at": "2026-10-03T17:30:35.442Z",
-  "finished_at": "2026-10-03T17:36:17.847Z",
+  "started_at": "2026-10-04T10:12:15.301Z",
+  "finished_at": "2026-10-04T10:18:01.120Z",
   "duration_seconds": 167,
-  "validate_seconds": 176,
-  "trigger": "GitHub Actions (schedule)",
+  "validate_seconds": 179,
+  "trigger": "GitHub Actions (push)",
   "keywords": [
     "software developer",
     "fresher",
@@ -16,6 +16,9 @@
     "data entry"
   ],
   "cities": [
+    "Tiruvannamalai",
+    "Vellore",
+    "Puducherry",
     "Chennai",
     "Coimbatore",
     "Madurai",
@@ -23,24 +26,23 @@
     "Salem",
     "Tirunelveli",
     "Erode",
-    "Vellore",
     "Thanjavur",
     "Tiruppur",
     "Tamil Nadu"
   ],
-  "scraped_records": 150,
-  "verified_jobs": 99,
-  "new_jobs": 2,
-  "removed_jobs": 2,
+  "scraped_records": 135,
+  "verified_jobs": 81,
+  "new_jobs": 61,
+  "removed_jobs": 76,
   "login_required": 1,
   "validate_stats": {
-    "checked": 150,
-    "live": 99,
+    "checked": 135,
+    "live": 81,
     "loginRequired": 1,
-    "dead": 49,
+    "dead": 52,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 9,
+    "documents": 8,
     "unreachable": 0
   },
   "source_status": [
@@ -112,7 +114,7 @@
       "label": "Madurai District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "5 notice(s) on Madurai District portal"
+      "detail": "4 notice(s) on Madurai District portal"
     },
     {
       "id": "paypal.com",
@@ -210,21 +212,21 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "91 job(s) from 4 category page(s)"
+      "detail": "100 job(s) from 4 category page(s)"
     },
     {
       "id": "indeed.co.in",
       "label": "Indeed India",
       "tier": 2,
       "status": "blocked",
-      "detail": "bot protection answered HTTP 403 on 3 request(s); source disabled"
+      "detail": "bot protection answered HTTP 403 on 4 request(s); source disabled"
     },
     {
       "id": "linkedin.com",
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "80 job(s) from 4 search request(s)"
+      "detail": "54 job(s) from 4 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -235,21 +237,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 9,
+    "govt-tn": 8,
     "company-careers": 3,
     "tech-ats": 32,
     "naukri": 0,
-    "apna": 91,
+    "apna": 100,
     "indeed": 0,
-    "linkedin": 80
+    "linkedin": 54
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 21
+  "dropped_records": 0
 }
