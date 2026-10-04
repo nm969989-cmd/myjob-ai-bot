@@ -17,6 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 const { log } = require('./util');
+const { PRIORITY_CITIES, canonicalCity } = require('./config');
 
 const CSV_COLUMNS = [
   'id',
@@ -76,9 +77,12 @@ function writeCsv(filePath, jobs) {
   fs.writeFileSync(filePath, toCsv(jobs), 'utf8');
 }
 
-/** Newest first: real posting date when we have one, otherwise scrape time. */
+/** Preferred cities first, then real posting dates and verification within each tier. */
 function sortJobs(jobs) {
   return jobs.slice().sort((a, b) => {
+    const aPriority = PRIORITY_CITIES.includes(canonicalCity(a.city));
+    const bPriority = PRIORITY_CITIES.includes(canonicalCity(b.city));
+    if (aPriority !== bPriority) return aPriority ? -1 : 1;
     if (a.posted_at && b.posted_at && a.posted_at !== b.posted_at) return a.posted_at < b.posted_at ? 1 : -1;
     if (a.posted_at && !b.posted_at) return -1;
     if (!a.posted_at && b.posted_at) return 1;

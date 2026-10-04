@@ -5,16 +5,16 @@
  * If you want to search different cities or add job categories, edit here.
  */
 
-// The Tamil Nadu cities we search in. "Tamil Nadu" = the whole state.
+// Search the four preferred cities before broader Tamil Nadu coverage.
+const PRIORITY_CITIES = ['Tiruvannamalai', 'Vellore', 'Puducherry', 'Chennai'];
 const CITIES = [
-  'Chennai',
+  ...PRIORITY_CITIES,
   'Coimbatore',
   'Madurai',
   'Trichy',
   'Salem',
   'Tirunelveli',
   'Erode',
-  'Vellore',
   'Thanjavur',
   'Tiruppur',
   'Tamil Nadu',
@@ -23,6 +23,9 @@ const CITIES = [
 // When we read a page, how do we know which city it is talking about?
 // Each city maps to the different spellings that appear on real web pages.
 const CITY_ALIASES = {
+  Tiruvannamalai: ['tiruvannamalai', 'thiruvannamalai', 'thiruannamalai', 'tiruvanamalai'],
+  Vellore: ['vellore'],
+  Puducherry: ['puducherry', 'pondicherry', 'pondi'],
   Chennai: ['chennai', 'madras', 'chengalpattu', 'sriperumbudur', 'guindy', 'ambattur', 'omr'],
   Coimbatore: ['coimbatore', 'kovai'],
   Madurai: ['madurai'],
@@ -30,11 +33,21 @@ const CITY_ALIASES = {
   Salem: ['salem'],
   Tirunelveli: ['tirunelveli', 'thirunelveli', 'nellai'],
   Erode: ['erode'],
-  Vellore: ['vellore'],
   Thanjavur: ['thanjavur', 'tanjore'],
   Tiruppur: ['tiruppur', 'tirupur'],
   'Tamil Nadu': ['tamil nadu', 'tamilnadu', 'across tamil nadu'],
 };
+
+function canonicalCity(value) {
+  const text = String(value || '').trim().toLowerCase();
+  return Object.entries(CITY_ALIASES).find(([city, aliases]) => city.toLowerCase() === text || aliases.includes(text))?.[0] || value;
+}
+
+function cityLocation(value) {
+  const city = canonicalCity(value);
+  if (city === 'Puducherry') return 'Puducherry, India';
+  return city === 'Tamil Nadu' ? 'Tamil Nadu, India' : `${city}, Tamil Nadu, India`;
+}
 
 /**
  * Job categories for a fresher, in priority order.
@@ -163,6 +176,9 @@ const MAX_ATTEMPTS = 2;
 const ENABLE_TIER3 = process.env.ENABLE_TIER3 === 'true';
 
 module.exports = {
+  PRIORITY_CITIES,
+  canonicalCity,
+  cityLocation,
   CITIES,
   CITY_ALIASES,
   CATEGORIES,

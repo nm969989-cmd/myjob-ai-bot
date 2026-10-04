@@ -18,6 +18,7 @@ import requests
 from dotenv import load_dotenv
 import functools
 import html
+from job_discovery import PRIORITY_CITIES, PRIORITY_LABEL, priority_city, city_matches, source_lines, fetch_priority_search
 
 try:
     from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -83,7 +84,8 @@ TAMIL_NADU_LOCATIONS = [
     "tirunelveli", "vellore", "erode", "tiruppur", "tiruvannamalai", "hosur",
     "thanjavur", "dindigul", "kanchipuram", "nagercoil", "tuticorin", "thoothukudi",
     "karur", "cuddalore", "neyveli", "kumbakonam", "sivakasi", "ranipet",
-    "tamil nadu", "tamilnadu", "tn",
+    "tamil nadu", "tamilnadu", "tn", "thiruvannamalai", "thiruannamalai",
+    "puducherry", "pondicherry",
 ]
 
 INDIA_OTHER_LOCATIONS = [
@@ -415,6 +417,10 @@ def classify_location(location_str, context_text=""):
     if _REMOTE_RESTRICTIONS_REGEX.search(combined):
         return False, 99, "", False
 
+    preferred = priority_city(loc_clean)
+    if preferred:
+        return True, 1, f"{loc_clean} ⭐", preferred != 'Puducherry'
+
     # 2. Check for Tamil Nadu (Highest Priority — Tier 1)
     tn_match = _TN_REGEX.search(loc_lower) or _TN_REGEX.search(ctx_lower)
     matched_kw = tn_match.group(0).lower() if tn_match else ""
@@ -427,7 +433,7 @@ def classify_location(location_str, context_text=""):
             display = f"{loc_clean} ⭐"
         else:
             display = f"{matched_name}, Tamil Nadu ⭐"
-        return True, 1, display, True
+        return True, 1, display, priority_city(display) != 'Puducherry'
 
     # 3. Check for Other India Tech Hubs (Tier 2)
     in_match = _INDIA_REGEX.search(loc_lower) or _INDIA_REGEX.search(ctx_lower)
@@ -498,9 +504,7 @@ def tn_live_salary(record: dict) -> str:
 
 
 def _make_job(title, company, link, location, source, date_posted="", description="", priority_tier=2, is_tn=False, direct_link="", salary="", hr_email="", batch="", experience=""):
-    if not date_posted:
-        date_posted = datetime.now().strftime("%Y-%m-%d")
-
+    # Retrieval time and publication date are different facts; leave missing dates unknown.
     # Smart auto-extraction if not explicitly provided
     if not salary and description:
         try:
@@ -540,7 +544,9 @@ def _make_job(title, company, link, location, source, date_posted="", descriptio
         "batch":              batch.strip() if batch else "",
         "experience":         experience.strip() if experience else "",
         "eligibility_badge":  badge,
-        "found_at":           datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "found_at":           datetime.now().astimezone().isoformat(timespec='minutes'),
+        "verification_status": "unconfirmed",
+        "source_url":          link.strip(),
     }
 
 def is_social_or_promo_link(url):
@@ -837,6 +843,7 @@ def scrape_adzuna_india():
         return []
 
     queries = [
+        *[("fresher", city) for city in PRIORITY_CITIES],
         ("software engineer", "Tamil Nadu"),
         ("frontend developer", "Chennai"),
         ("python developer", "Coimbatore"),
@@ -1318,9 +1325,11 @@ def send_radar_telegram(new_jobs):
 
         radar_bot = telebot.TeleBot(bot_token, parse_mode=None)
 
-        tn_jobs = [j for j in new_jobs if j.get("is_tamil_nadu", False) or j.get("priority_tier") == 1]
-        india_jobs = [j for j in new_jobs if not j.get("is_tamil_nadu", False) and j.get("priority_tier") == 2]
-        remote_jobs = [j for j in new_jobs if j.get("priority_tier") == 3]
+        preferred_jobs = [j for j in new_jobs if priority_city(j.get('location'))]
+        remaining = [j for j in new_jobs if not priority_city(j.get('location'))]
+        tn_jobs = [j for j in remaining if j.get("is_tamil_nadu", False) or j.get("priority_tier") == 1]
+        india_jobs = [j for j in remaining if not j.get("is_tamil_nadu", False) and j.get("priority_tier") == 2]
+        remote_jobs = [j for j in remaining if j.get("priority_tier") == 3]
 
         total = len(new_jobs)
         now_str = datetime.now().strftime('%I:%M %p, %d %b %Y')
@@ -1344,7 +1353,7 @@ def send_radar_telegram(new_jobs):
                 desc    = html.escape(clean_html(job.get("description", "")))[:120]
                 src     = html.escape(str(job.get("source", "Radar")))
 
-                time_tag = "🟢 Today"
+                time_tag = "Not reported"
                 if date_str:
                     ts = safe_date_timestamp(date_str)
                     if ts > 0:
@@ -1368,7 +1377,7 @@ def send_radar_telegram(new_jobs):
                     f"<b>{global_idx}.</b> <a href=\"{link}\"><b>{title}</b></a>\n"
                     f"   🏢 <b>Company:</b> <code>{company}</code>\n"
                     f"   📍 <b>Location:</b> <code>{loc}</code>\n"
-                    f"   📡 <b>Source:</b> <i>{src}</i>\n"
+                    f"{source_lines(job)}\n"
                     f"   🕒 <b>Posted:</b> {time_tag}"
                 )
                 if fit_badge:
@@ -1382,6 +1391,9 @@ def send_radar_telegram(new_jobs):
 
                 job_entries.append(entry)
                 global_idx += 1
+
+        if preferred_jobs:
+            _format_section(f"⭐ <b>PRIORITY CITIES ({len(preferred_jobs)} JOBS)</b>\n{PRIORITY_LABEL}", preferred_jobs)
 
         # 1. TAMIL NADU HIGH PRIORITY SECTION
         if tn_jobs:
@@ -1415,7 +1427,8 @@ def send_radar_telegram(new_jobs):
         header = (
             f"📡 <b>JOB RADAR REPORT (INDIA & TN PRIORITY)</b>\n"
             f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🆕 Found <b>{total}</b> Verified Opportunities!\n"
+            f"🆕 Found <b>{total}</b> job listings (check sources before applying)\n"
+                        f"⭐ <b>Preferred cities:</b> {len(preferred_jobs)} jobs\n"
             f"🌟 <b>Tamil Nadu Priority:</b> <b>{len(tn_jobs)}</b> jobs\n"
             f"🇮🇳 <b>Pan-India:</b> <b>{len(india_jobs)}</b> jobs | 🌐 <b>Remote:</b> <b>{len(remote_jobs)}</b> jobs\n"
             f"🕒 {now_str}\n"
@@ -1510,6 +1523,7 @@ def scrape_jobspy():
 
     # Query configs: (site_names, search_term, location, results_wanted)
     queries = [
+        *[(["linkedin", "indeed"], "fresher", f"{city}, India", 8) for city in PRIORITY_CITIES],
         (["linkedin", "indeed"], "software engineer fresher", "India", 20),
         (["linkedin", "indeed"], "python developer", "Chennai", 15),
         (["linkedin"],          "frontend developer react", "Tamil Nadu", 15),
@@ -1519,8 +1533,8 @@ def scrape_jobspy():
 
     seen_links_local = set()
 
-    for site_names, search_term, location, results_wanted in queries:
-        if len(jobs_found) >= MAX_PER_SOURCE:
+    for query_index, (site_names, search_term, location, results_wanted) in enumerate(queries):
+        if query_index >= len(PRIORITY_CITIES) and len(jobs_found) >= MAX_PER_SOURCE:
             break
         try:
             df = scrape_jobs(
@@ -1609,7 +1623,7 @@ def scrape_jobspy():
                     hr_email=hr_email,
                 ))
 
-                if len(jobs_found) >= MAX_PER_SOURCE:
+                if query_index >= len(PRIORITY_CITIES) and len(jobs_found) >= MAX_PER_SOURCE:
                     break
 
         except Exception as e:
@@ -1754,7 +1768,7 @@ def run_radar():
     def _priority_sort_key(job):
         tier = job.get("priority_tier", 2)
         # Sort by tier ascending (1 first: TN, 2: India, 3: Remote), then date descending (newest first)
-        return (tier, -safe_date_timestamp(job.get("date_posted")))
+        return (0 if priority_city(job.get('location')) else tier, -safe_date_timestamp(job.get("date_posted")))
 
     new_jobs.sort(key=_priority_sort_key)
 
@@ -1789,7 +1803,7 @@ def run_radar():
 TN_CACHE_FILE = "tn_jobs_cache.json"
 
 def _filter_and_paginate_tn_jobs(jobs, limit=10, category=None, city=None, page=1):
-    filtered = list(jobs)
+    filtered = sorted(jobs, key=lambda j: (0 if priority_city(j.get('location') or j.get('city')) else 1, -safe_date_timestamp(j.get('date_posted'))))
     if category:
         c_str = str(category).lower().strip()
         if c_str in ["tech", "it", "software"]:
@@ -1823,8 +1837,7 @@ def _filter_and_paginate_tn_jobs(jobs, limit=10, category=None, city=None, page=
         city_lower = str(city).lower().strip()
         filtered = [
             j for j in filtered
-            if city_lower in str(j.get("location", "")).lower()
-            or city_lower in str(j.get("city", "")).lower()
+            if city_matches(str(j.get('location', '')) + ' ' + str(j.get('city', '')), city_lower)
         ]
 
     total_matched = len(filtered)
@@ -1879,12 +1892,12 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
                     continue
                 seen_links.add(link)
                 ingested += 1
-                city = _clean_str(j.get("city"), "Tamil Nadu")
+                record_city = _clean_str(j.get("city"), "Tamil Nadu")
                 collected.append(_make_job(
                     title=_clean_str(j.get("title"), "Untitled role"),
                     company=_clean_str(j.get("company"), "Employer not listed"),
                     link=link,
-                    location=f"{city}, Tamil Nadu ⭐",
+                    location=f"{record_city}, {'India' if priority_city(record_city) == 'Puducherry' else 'Tamil Nadu'} ⭐",
                     source=f"TN Live ({_clean_str(j.get('source'), 'Verified')})",
                     date_posted=tn_live_posted_at(j) or datetime.now().strftime("%Y-%m-%d"),
                     description=tn_live_description(j),
@@ -1894,6 +1907,8 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
                     experience=_clean_str(j.get("experience")),
                     batch=_clean_str(j.get("qualification")),
                 ))
+                collected[-1]['retrieved_at'] = j.get('scraped_at') or 'Not recorded'
+                collected[-1]['source_checked_at'] = j.get('verified_at')
             # The old message printed the raw record count regardless of how many were
             # actually ingested, so a total schema mismatch looked like a healthy run.
             print(f"[TN Radar] 🌟 Ingested {ingested}/{len(raw_records)} verified live jobs from tn-live-jobs suite.")
@@ -1909,7 +1924,7 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
                 rdata = json.load(f)
             for j in rdata.get("jobs", []):
                 loc = (j.get("location") or "").lower()
-                is_tn = j.get("is_tamil_nadu") or any(k in loc for k in TAMIL_NADU_LOCATIONS)
+                is_tn = j.get("is_tamil_nadu") or priority_city(loc) or bool(_TN_REGEX.search(loc))
                 link = normalize_job_url(j.get("link") or j.get("raw_link") or "")
                 if is_tn and link and link not in seen_links:
                     seen_links.add(link)
@@ -1922,6 +1937,7 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
     app_key = os.getenv("ADZUNA_APP_KEY", "")
     if app_id and app_key:
         tn_queries = [
+            *[("fresher", city) for city in PRIORITY_CITIES],
             ("software engineer", "Chennai"),
             ("developer", "Tamil Nadu"),
             ("fresher", "Chennai"),
@@ -1957,7 +1973,7 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
                             title=title,
                             company=comp,
                             link=link,
-                            location=f"{where}, Tamil Nadu ⭐",
+                            location=classify_location(raw_loc)[2] or raw_loc,
                             source="Adzuna India 🇮🇳",
                             date_posted=str(job.get("created", ""))[:10],
                             description=desc,
@@ -1968,6 +1984,20 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
                         collected.append(item)
             except Exception as adz_e:
                 print(f"[TN Radar] Adzuna error: {adz_e}")
+
+    # Explicit preferred-city discovery on LinkedIn/Indeed, including Puducherry.
+    from bot_optimizer import fetch_jobspy_live_search
+    for result in fetch_priority_search('fresher', [fetch_jobspy_live_search], limit=8):
+        link = normalize_job_url(result.get('link', ''))
+        valid, tier, location, is_tn = classify_location(result.get('location', ''))
+        if valid and link and link not in seen_links:
+            seen_links.add(link)
+            collected.append(_make_job(
+                title=result.get('role', ''), company=result.get('company', ''),
+                link=link, location=location, source=result.get('source_type', 'JobSpy'),
+                description=result.get('full_description', ''), priority_tier=tier,
+                is_tn=is_tn, salary=result.get('salary', ''),
+            ))
 
     # 3. Targeted scrape of dedicated Tamil Nadu & top fresher Telegram channels
     tn_channels = [
@@ -2107,7 +2137,7 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
 
     # Sort newest first
     def _tn_sort_key(job):
-        return -safe_date_timestamp(job.get("date_posted"))
+        return (0 if priority_city(job.get('location')) else 1, -safe_date_timestamp(job.get("date_posted")))
 
     collected.sort(key=_tn_sort_key)
 
@@ -2167,8 +2197,8 @@ def format_tamil_nadu_telegram_digest(jobs, max_chars=3800, category=None, curre
     page_info = f" (Page {current_page})" if (current_page > 1 or (total_jobs and total_jobs > len(jobs))) else ""
     header = (
         f"🌟 <b>TAMIL NADU FRESH JOB RADAR</b> 🇮🇳{cat_badge}{page_info}\n"
-        "📍 <i>Targeting: Chennai, Coimbatore, Madurai, Trichy, Salem & Remote</i>\n"
-        "🔗 <i>Every card carries a direct apply link — no redirect chains</i>\n"
+        f"⭐ <i>Priority: {PRIORITY_LABEL}</i>\n"
+        "🔗 <i>Source links provided; employer confirmation may be pending.</i>\n"
         f"{tg_rule(27)}\n\n"
     )
 
@@ -2181,11 +2211,11 @@ def format_tamil_nadu_telegram_digest(jobs, max_chars=3800, category=None, curre
         title = html.escape(str(j.get("title", "Software Engineer"))[:50])
         company = html.escape(str(j.get("company", "Tech Company"))[:35])
         location = html.escape(str(j.get("location", "Chennai, Tamil Nadu ⭐")))
-        batch = html.escape(str(j.get("batch") or "2024 / 2025 / 2026 Batch"))
-        exp = html.escape(str(j.get("experience") or "Freshers (0-1 yrs)"))
+        batch = html.escape(str(j.get("batch") or "Batch not stated — check source"))
+        exp = html.escape(str(j.get("experience") or "Experience not stated — check source"))
         sal = html.escape(str(j.get("salary") or "As per Industry Standards"))
         link = (j.get("link") or j.get("raw_link") or "#").strip()
-        date_posted = html.escape(str(j.get("date_posted", "Recently"))[:10])
+        date_posted = html.escape(str(j.get("date_posted") or "Not reported")[:20])
 
         card = (
             f"{num} <b>{title}</b>\n"
@@ -2194,7 +2224,8 @@ def format_tamil_nadu_telegram_digest(jobs, max_chars=3800, category=None, curre
             f"{tg_chips([f'💰 {sal}', f'🎓 {batch}', f'🗓️ {date_posted}'])}\n"
             f"{tg_rule(20)}\n"
             f"💼 <b>Experience:</b> <code>{exp}</code>\n"
-            f"🔗 <a href=\"{link}\">👉 <b>Tap to Apply Online</b></a>\n\n"
+            f"{source_lines(j)}\n"
+            f"🔗 <a href=\"{html.escape(link, quote=True)}\">👉 <b>Tap to Apply Online</b></a>\n\n"
             f"{tg_rule(27)}\n\n"
         )
 
@@ -2239,6 +2270,9 @@ def format_tamil_nadu_telegram_digest(jobs, max_chars=3800, category=None, curre
             )
         except Exception:
             pass
+
+    from job_discovery import add_priority_buttons
+    add_priority_buttons(markup)
 
     # Quick category filter chips
     markup.row(

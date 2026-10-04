@@ -37,6 +37,7 @@ print("=" * 60)
 
 import telebot
 from job_radar import run_radar, escape_md
+from job_discovery import PRIORITY_LABEL, priority_city, source_lines
 
 # Load credentials with smart sanitization
 _raw_token = os.getenv("TELEGRAM_TOKEN", os.getenv("TELEGRAM_BOT_TOKEN", ""))
@@ -79,12 +80,26 @@ def run_cloud():
     global channels_scanned, channel_jobs_found, channel_attempts
     global follow_up_count, new_radar_jobs, step_errors, stage_times, stage_notes
 
+    # Send preferred-city discoveries before long channel scans can consume the budget.
+    print(f'\n🌟 [0/3] Automatic priority-city search: {PRIORITY_LABEL}')
+    try:
+        if bot and chat_id:
+            from job_radar import dispatch_tamil_nadu_alerts
+            _tn_start = time.time()
+            sent = dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=True, only_unseen=True)
+            tn_alerts_sent = int(sent) if isinstance(sent, (int, float)) else 0
+            stage_times['priority_city_search'] = int(time.time() - _tn_start)
+            print(f'✅ Automatic regional search finished. Telegram alerts sent: {tn_alerts_sent}')
+        else:
+            step_errors.append('Automatic search requires TELEGRAM_TOKEN and TELEGRAM_CHAT_ID secrets')
+    except Exception as tn_auto_err:
+        step_errors.append(f'Priority-city search: {tn_auto_err}')
+        print(f'⚠️ Automatic priority-city search error: {tn_auto_err}')
+
     # -------------------------------------------------------------
     # STEP 1: Telegram Channel Scrape & Direct Link Extraction
     # -------------------------------------------------------------
-    # Channels run FIRST: run history proves them the highest-yield stage (18 alerts
-    # vs 0 from radar in one cycle), so the slower multi-platform radar farm can never
-    # starve them. 5 minutes of budget are reserved for Radar + follow-ups + report.
+    # Channels follow the priority search; reserve runway for radar and reporting.
     print("\n📢 [1/3] Scraping Telegram Channels & Extracting Direct Links...")
     try:
         from main import scrape_single_channel, load_applied_jobs, TARGET_CHANNELS
@@ -174,7 +189,7 @@ def run_cloud():
                     j_source = str(job.get("source", "Multi-Platform Radar")).strip()
                     is_tn = job.get("is_tamil_nadu", False)
 
-                    banner = "🌟 <b>TAMIL NADU PRIORITY</b> 🇮🇳" if is_tn else "📡 <b>VERIFIED RADAR MATCH</b> 🇮🇳"
+                    banner = '⭐ <b>PREFERRED CITY MATCH</b> 🇮🇳' if priority_city(j_location) else ('🌟 <b>TAMIL NADU MATCH</b> 🇮🇳' if is_tn else '📡 <b>RADAR MATCH</b> 🇮🇳')
 
                     share_text = urllib.parse.quote(f"🚀 Job Alert: {j_company} - {j_title}\nApply Link: {j_link}")
                     share_url = f"https://t.me/share/url?url={urllib.parse.quote(j_link)}&text={share_text}"
@@ -198,13 +213,13 @@ def run_cloud():
                         f"🏢 <b>{html.escape(j_company)}</b> • <i>{html.escape(j_title)}</i>\n\n"
                         f"📍 <b>Location:</b> {html.escape(j_location)}\n"
                         f"{meta_block}"
-                        f"📡 <b>Platform:</b> {html.escape(j_source)}\n"
+                        f"{source_lines(job)}\n"
                         f"━━━━━━━━━━━━━━━━━━━━━━"
                     )
 
                     kb = InlineKeyboardMarkup()
                     kb.row(
-                        InlineKeyboardButton("🚀 Direct Apply (Official)", url=j_link)
+                        InlineKeyboardButton("🔗 Open listing / Apply", url=j_link)
                     )
                     kb.row(
                         InlineKeyboardButton("📤 Share Alert", url=share_url)
@@ -224,21 +239,6 @@ def run_cloud():
         step_errors.append(f"Radar stage: {e}")
         print(f"⚠️ Radar Scan error: {e}")
 
-    # -------------------------------------------------------------
-    # STEP 2B: Dedicated Tamil Nadu Vacancies Digest Dispatch
-    # -------------------------------------------------------------
-    print("\n🌟 [2B] Sweeping & Dispatching Fresh Tamil Nadu Vacancies...")
-    try:
-        if bot and chat_id:
-            from job_radar import dispatch_tamil_nadu_alerts
-            _tn_start = time.time()
-            sent = dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=True, only_unseen=True)
-            tn_alerts_sent = int(sent) if isinstance(sent, (int, float)) else (6 if sent else 0)
-            stage_times["tn_digest"] = int(time.time() - _tn_start)
-            print(f"✅ [Cloud Runner] Automated Tamil Nadu digest sweep finished! Dispatched: {tn_alerts_sent}")
-    except Exception as tn_auto_err:
-        step_errors.append(f"Tamil Nadu stage: {tn_auto_err}")
-        print(f"⚠️ Automated Tamil Nadu dispatch error: {tn_auto_err}")
 
     # -------------------------------------------------------------
     # STEP 2C: Automated Weekend Walk-In Tracker Dispatch (Once per day)
@@ -336,7 +336,9 @@ def run_cloud():
             f"📢 Channels Scanned: *{channels_scanned}*\n"
             f"🚀 Direct Channel Alerts Sent: *{channel_jobs_found}*\n"
             f"📡 Radar Jobs (India): *{radar_jobs_count}* (_{radar_alerts_sent} alerts sent_)\n"
-            f"🌟 Tamil Nadu Priority: *{tn_found}* available (_{tn_alerts_sent} digest alerts sent_)\n"
+            f"🌟 Regional Listings: *{tn_found}* available (_{tn_alerts_sent} automatic alerts sent_)\n"
+            f"⭐ Priority: {escape_md(PRIORITY_LABEL)}\n"
+            "⏰ Scheduled GitHub searches: 11 AM & 7 PM IST\n"
             f"👻 7-Day Follow-ups: *{follow_up_count}*\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"{health_line}"

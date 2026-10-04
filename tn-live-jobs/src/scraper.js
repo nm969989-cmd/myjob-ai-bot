@@ -451,12 +451,13 @@ function makeJob(raw) {
   const summary = (raw.description ? cleanSummary(raw.description) : cleanSummary(raw.extra)) ||
     `${title} opportunity at ${company} in ${tidy(raw.city) || 'Tamil Nadu'}. Re-verified live official vacancy.`;
 
+  const city = detectCity(tidy(raw.city)) || tidy(raw.city) || detectCity(...evidence, title) || 'Tamil Nadu';
   return {
     id: jobId(applyUrl),
     title,
     company,
-    city: tidy(raw.city) || detectCity(...evidence, title) || 'Tamil Nadu',
-    state: 'Tamil Nadu',
+    city,
+    state: city === 'Puducherry' ? 'Puducherry' : 'Tamil Nadu',
     category: tidy(raw.category) || detectCategory(title, raw.extra),
     employment_type: raw.employment_type || detectEmploymentType(...evidence),
     experience,

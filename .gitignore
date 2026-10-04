@@ -29,6 +29,7 @@ radar_seen_jobs.txt
 tn_jobs_cache.json
 last_walkin_dispatch.json
 watchdog_subscriptions.json
+job_discovery_state.json
 stats_daily.json
 weekly_stats.json
 channel_status.json

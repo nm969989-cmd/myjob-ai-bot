@@ -17,6 +17,7 @@ on:
       - 'applied_jobs.json'
       - 'channel_status.json'
       - 'last_job.json'
+      - 'last_walkin_dispatch.json'
       - 'chat_id.json'
       - 'qa_memory.json'
       - 'national_drives.json'
@@ -59,6 +60,9 @@ jobs:
           python -m pytest test_careerops_integration.py -q \
             -k "not network and not live and not adzuna and not scrape" || true
 
+      - name: 🧪 Verify Regional Search and Automatic Delivery
+        run: python -m unittest test_job_discovery -v
+
       - name: 🌐 Cache Playwright Browsers
         uses: actions/cache@v4
         id: playwright-cache
@@ -82,6 +86,9 @@ jobs:
         run: |
           cd tn-live-jobs
           npm ci
+
+      - name: 🧪 Verify Priority-City Website Search
+        run: node --test tn-live-jobs/test_priority_cities.js
 
       - name: 🔍 Refresh Verified TN Jobs (Zero-Bot-Block ATS & Govt)
         run: |
@@ -120,7 +127,7 @@ jobs:
           # and `2>/dev/null || true` hid that, so all dedup state silently reset on
           # every run and the same jobs were re-alerted. `-f` is required for each one.
           STATE_FILES="applied_jobs.json applied_jobs_log.csv radar_seen_jobs.txt \
-                        tn_jobs_cache.json channel_status.json last_job.json"
+                        tn_jobs_cache.json channel_status.json last_job.json last_walkin_dispatch.json"
           for f in $STATE_FILES; do
             if [ -e "$f" ]; then
               git add -f "$f"

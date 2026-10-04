@@ -13,6 +13,7 @@ const cheerio = require('cheerio');
 const { fetchText, makeJob } = require('../scraper');
 const { tidy, clip, registrableDomain, detectCity, detectEmploymentType, relativeDateToIso, toIsoDate } = require('../util');
 
+const { cityLocation } = require('../config');
 const BASE = 'https://www.linkedin.com';
 const SEARCH = `${BASE}/jobs-guest/jobs/api/seeMoreJobPostings/search`;
 
@@ -59,7 +60,7 @@ module.exports = {
         if (Date.now() > ctx.deadline) break;
         attempts += 1;
 
-        const location = city === 'Tamil Nadu' ? 'Tamil Nadu, India' : `${city}, Tamil Nadu, India`;
+        const location = cityLocation(city);
         const url = `${SEARCH}?keywords=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}&start=0`;
 
         try {

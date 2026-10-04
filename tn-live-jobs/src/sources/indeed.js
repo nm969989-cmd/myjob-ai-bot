@@ -13,8 +13,9 @@ const cheerio = require('cheerio');
 const { fetchText, makeJob } = require('../scraper');
 const { tidy, clip, registrableDomain, detectCity, relativeDateToIso } = require('../util');
 
+const { cityLocation } = require('../config');
 const BASE = 'https://in.indeed.com';
-const MAX_TRIES = 3;
+const MAX_TRIES = 4;
 
 /** Best-effort reader for Indeed's server-rendered cards. */
 function parseIndeed(html, fallbackLocation) {
@@ -53,7 +54,7 @@ module.exports = {
         if (Date.now() > ctx.deadline) break;
         attempts += 1;
 
-        const location = `${city === 'Tamil Nadu' ? 'Tamil Nadu' : city}, Tamil Nadu`;
+        const location = cityLocation(city);
         const url = `${BASE}/jobs?q=${encodeURIComponent(keyword)}&l=${encodeURIComponent(location)}`;
         try {
           const response = await fetchText(url, { attempts: 1, headers: { referer: `${BASE}/` } });

@@ -81,8 +81,7 @@ function readNumber(value, fallback) {
 function resolveCities() {
   const requested = tidy(process.env.CITY || '');
   if (!requested) return config.CITIES;
-  const known = config.CITIES.find((city) => city.toLowerCase() === requested.toLowerCase());
-  return [known || requested];
+  return [config.canonicalCity(requested)];
 }
 
 /** Which keywords to search. */

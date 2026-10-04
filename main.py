@@ -32,6 +32,10 @@ import sys
 from bot_features import generate_dynamic_cover_letter, generate_interview_prep, send_cold_email_if_found, check_for_interviews, sync_to_notion, wait_for_otp
 from enterprise_adapters import execute_workday_adapter, execute_lever_adapter, execute_greenhouse_adapter, execute_smartrecruiters_adapter
 from instahyre_engine import run_instahyre_mass_apply
+from job_discovery import (priority_city, send_walkin_cards, walkin_keyboard, source_lines,
+                           get_card, schedule_reminder, list_reminders, cancel_reminders,
+                           dispatch_due_reminders, add_priority_buttons, calendar_event,
+                           automatic_search_interval_minutes, IST)
 from bot_optimizer import (
     minify_form_html,
     apply_regex_fallback,
@@ -287,8 +291,14 @@ def admin_only(handler_func):
 def enforce_bot_security_profile(tg_bot):
     """Enforces verified bot metadata (description, short description, name, commands) on Telegram."""
     marker_file = ".bot_profile_set"
+    profile_version = 'regional-discovery-v1'
     if os.path.exists(marker_file):
-        return
+        try:
+            with open(marker_file, encoding='utf-8') as marker:
+                if marker.read().strip() == profile_version:
+                    return
+        except OSError:
+            pass
     try:
         tg_bot.set_my_name("Myjob")
         tg_bot.set_my_description("🚀 MyJob AI Radar — Automated pan-India fresher & engineering job intelligence bot.")
@@ -301,8 +311,9 @@ def enforce_bot_security_profile(tg_bot):
             BotCommand("match", "🎯 ATS Resume & Job Matcher"),
             BotCommand("oa", "🎓 Company OA Patterns & Coding Exam Syllabus"),
             BotCommand("alerts", "🔔 Keyword Watchdogs & Custom Alerts"),
-            BotCommand("tnjobs", "🌟 Tamil Nadu & Chennai Fresh Jobs"),
-            BotCommand("walkins", "🚶‍♂️ Tamil Nadu Weekend Walk-In Drives"),
+            BotCommand("tnjobs", "🌟 TN & Puducherry Priority Jobs"),
+            BotCommand("walkins", "🚶‍♂️ Regional Walk-In Drives"),
+            BotCommand("reminders", "🔔 View or cancel walk-in reminders"),
             BotCommand("drives", "📢 National Mass Off-Campus Drives"),
             BotCommand("deadlines", "⏳ Mass Drive Deadlines Radar"),
             BotCommand("analytics", "📊 Live Market & Career Analytics"),
@@ -317,7 +328,7 @@ def enforce_bot_security_profile(tg_bot):
         print("[Telegram Security] Bot profile & description verified and locked!")
         try:
             with open(marker_file, "w", encoding="utf-8") as f:
-                f.write("locked")
+                f.write(profile_version)
         except Exception:
             pass
     except Exception as e:
@@ -5212,7 +5223,7 @@ if bot:
             message,
             "👋 <b>Welcome to MyJob AI Radar Bot!</b>\n\n"
             "🤖 <b>Status:</b> Locked to your Chat ID and actively scanning 47+ verified channels!\n\n"
-            "🌟 <b>Target:</b> Freshers & Entry-Level Engineering Roles in India (Tamil Nadu ⭐ Priority).\n"
+            "🌟 <b>Priority:</b> Tiruvannamalai, Vellore, Puducherry/Pondicherry &amp; Chennai; other India jobs remain available.\n"
             "🔗 <b>Mode:</b> Verified Search & Direct ATS Link Extraction (No auto-apply, 100% manual review).\n\n"
             "💡 <i>Tap any of the 6 quick-navigation buttons below or type /help:</i>",
             parse_mode="HTML",
@@ -5827,6 +5838,46 @@ if bot:
             )
             bot.send_message(chat_id, help_text, parse_mode=None)
 
+    @bot.callback_query_handler(func=lambda call: call.data.startswith('jobcard:'))
+    @admin_only
+    def handle_job_card(call):
+        _, action, key = call.data.split(':', 2)
+        job = get_card(key)
+        bot.answer_callback_query(call.id)
+        if not job:
+            bot.send_message(call.message.chat.id, '⚠️ Listing no longer available. Please refresh /walkins.')
+            return
+        if action == 'remind':
+            bot.send_message(call.message.chat.id, schedule_reminder(call.message.chat.id, job))
+        elif action == 'calendar':
+            import io
+            try:
+                document = io.BytesIO(calendar_event(job))
+                document.name = 'walkin.ics'
+                bot.send_document(call.message.chat.id, document, caption='📅 Import this event into your calendar. Confirm availability with the employer before travelling.')
+            except ValueError as exc:
+                bot.send_message(call.message.chat.id, str(exc))
+        elif action == 'details':
+            text = format_single_walkin_detail(str(job.get('id', '')))
+            bot.send_message(call.message.chat.id, text, parse_mode='HTML', reply_markup=walkin_keyboard(job), disable_web_page_preview=True)
+
+    @bot.message_handler(commands=['reminders'])
+    @admin_only
+    def show_walkin_reminders(message):
+        if message.text.strip().split()[-1].lower() == 'cancel':
+            cancel_reminders(message.chat.id)
+            bot.reply_to(message, '🔕 Your walk-in reminders have been cancelled.')
+            return
+        entries = list_reminders(message.chat.id)
+        lines = ['🔔 Walk-in reminders (IST):']
+        for reminder, job in entries:
+            due = datetime.fromisoformat(reminder['due']).astimezone(IST)
+            lines.append(f"• {job.get('company', 'Company')}: {due:%d %b %Y, %I:%M %p}")
+        if not entries:
+            lines.append('No pending reminders. Tap Remind me on a dated walk-in card.')
+        lines.append('Use /reminders cancel to cancel all your reminders.')
+        bot.reply_to(message, '\n'.join(lines)[:4000])
+
     @bot.callback_query_handler(func=lambda call: call.data.startswith("walkin_detail:"))
     @admin_only
     def handle_walkin_detail_callback(call):
@@ -5864,7 +5915,7 @@ if bot:
         city_filter = None
         if ":" in call.data:
             sub = call.data.split(":")[1].strip().lower()
-            if sub in ["chennai", "coimbatore", "madurai", "trichy", "south", "hosur", "salem"]:
+            if priority_city(sub) or sub in ["chennai", "coimbatore", "madurai", "trichy", "south", "hosur", "salem"]:
                 city_filter = sub
         try:
             from bot_optimizer import format_walkins_report, get_walkin_drives
@@ -5891,13 +5942,10 @@ if bot:
                 InlineKeyboardButton("⏳ Mass Deadlines", callback_data="deadlines"),
                 InlineKeyboardButton("🔄 Refresh Walk-Ins", callback_data="walkins:all")
             )
-            for idx, chunk in enumerate(chunks):
-                is_last = (idx == len(chunks) - 1)
-                try:
-                    bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                except Exception:
-                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                time.sleep(0.3)
+            if drives:
+                send_walkin_cards(bot, chat_id, drives, navigation=markup)
+            else:
+                bot.send_message(chat_id, chunks[0], parse_mode='HTML', reply_markup=markup)
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Walk-In error: {e}")
 
@@ -5976,9 +6024,7 @@ if bot:
         except Exception:
             pass
         try:
-            results = fetch_jobspy_live_search(query=query, location="Tamil Nadu, India", limit=6)
-            if not results:
-                results = search_jobs_multi_source(query=query, limit=6)
+            results = search_jobs_multi_source(query=query, limit=6)
             chunks, markup = format_search_results_report(query=f"JobSpy: {query}", results=results)
             for idx, chunk in enumerate(chunks):
                 is_last = (idx == len(chunks) - 1)
@@ -6188,10 +6234,12 @@ if bot:
                 "<b>Usage:</b> <code>/search python</code>, <code>/search react</code>, <code>/search chennai</code>\n\n"
                 "<i>Or tap any popular category below for instant results:</i>"
             )
+            add_priority_buttons(markup)
             bot.send_message(chat_id, help_msg, parse_mode="HTML", reply_markup=markup)
             return
 
         try:
+            bot.send_message(chat_id, '🔍 Searching priority cities: Tiruvannamalai, Vellore, Puducherry/Pondicherry and Chennai…')
             results = search_jobs_multi_source(query=query, limit=6)
             chunks, markup = format_search_results_report(query=query, results=results)
             for idx, chunk in enumerate(chunks):
@@ -6860,7 +6908,9 @@ if bot:
         parts = message.text.strip().split()
         if len(parts) > 1:
             raw_c = parts[1].strip().lower()
-            if "chennai" in raw_c:
+            if priority_city(raw_c):
+                city_filter = raw_c
+            elif "chennai" in raw_c:
                 city_filter = "chennai"
             elif "coimbatore" in raw_c:
                 city_filter = "coimbatore"
@@ -6906,13 +6956,10 @@ if bot:
 
             drives = get_walkin_drives(city=city_filter)
             chunks = format_walkins_report(drives, city_filter=city_filter)
-            for idx, chunk in enumerate(chunks):
-                is_last = (idx == len(chunks) - 1)
-                try:
-                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                except Exception:
-                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                time.sleep(0.3)
+            if drives:
+                send_walkin_cards(bot, message.chat.id, drives, navigation=markup)
+            else:
+                bot.send_message(message.chat.id, chunks[0], parse_mode='HTML', reply_markup=markup)
         except Exception as e:
             bot.send_message(message.chat.id, f"⚠️ Walk-In error: {e}")
 
@@ -7118,8 +7165,9 @@ if bot:
             )
             help_msg = (
                 "⚡ <b>JobSpy Live Multi-Portal Search</b> 🕵️\n\n"
-                "Real-time scraping across <b>LinkedIn, Indeed India, Google Jobs & Glassdoor</b> — "
-                "direct ATS links, salary info, and job descriptions!\n\n"
+                "Search across <b>LinkedIn and Indeed India</b> plus configured feeds — "
+                "source links, reported salaries, and job descriptions. Availability depends on each source.\n\n"
+                "⭐ Priority: Tiruvannamalai, Vellore, Puducherry/Pondicherry and Chennai.\n\n"
                 "<b>Usage:</b>\n"
                 "• <code>/jobspy python fresher</code>\n"
                 "• <code>/jobspy react developer chennai</code>\n"
@@ -7137,9 +7185,7 @@ if bot:
             status_msg = None
 
         try:
-            results = fetch_jobspy_live_search(query=query, location="Tamil Nadu, India", limit=6)
-            if not results:
-                results = search_jobs_multi_source(query=query, limit=6)
+            results = search_jobs_multi_source(query=query, limit=6)
 
             chunks, markup = format_search_results_report(query=f"JobSpy: {query}", results=results)
             if status_msg:
@@ -7256,10 +7302,12 @@ if bot:
                 "• <code>/search zoho</code>\n\n"
                 "<i>Or tap any popular category below for instant results:</i>"
             )
+            add_priority_buttons(markup)
             bot.send_message(message.chat.id, help_msg, parse_mode="HTML", reply_markup=markup)
             return
 
         try:
+            bot.send_message(message.chat.id, '🔍 Searching priority cities: Tiruvannamalai, Vellore, Puducherry/Pondicherry and Chennai…')
             results = search_jobs_multi_source(query=query, limit=6)
             chunks, markup = format_search_results_report(query=query, results=results)
             for idx, chunk in enumerate(chunks):
@@ -7920,12 +7968,16 @@ def run_telegram_polling():
                 print("[Telegram] Retrying in 15 seconds...")
                 time.sleep(15)
 
-# Start Job Radar background thread (runs every 6 hours)
+# Automatically discover jobs and send unseen matches to the configured Telegram chat.
 def radar_loop():
-    """Background thread that runs the Job Radar scan every 6 hours and sends results to Telegram."""
-    print("[Radar] Background radar thread started. First scan in 30 seconds...")
+    """Priority-city search at startup and hourly by default, followed by the wider radar."""
+    interval_minutes = automatic_search_interval_minutes()
+    print(f"[Radar] Automatic Telegram search every {interval_minutes} minutes. First scan in 30 seconds...")
     time.sleep(30)  # Initial delay so bot fully starts first
     while True:
+        if BOT_PAUSED:
+            time.sleep(5)
+            continue
         try:
             from job_radar import run_radar, dispatch_tamil_nadu_alerts
             chat_id = load_chat_id()
@@ -7933,7 +7985,7 @@ def radar_loop():
             # 1. Automatically dispatch fresh Tamil Nadu jobs (unseen only)
             if bot and chat_id:
                 try:
-                    print("[Radar Loop] Automatically dispatching Tamil Nadu jobs digest...")
+                    print('[Radar Loop] Searching Tiruvannamalai, Vellore, Puducherry and Chennai; sending unseen jobs to Telegram...')
                     dispatch_tamil_nadu_alerts(bot=bot, chat_id=chat_id, limit=6, force_refresh=True, only_unseen=True)
                 except Exception as tn_auto_e:
                     print(f"[Radar Loop] TN auto-dispatch warning: {tn_auto_e}")
@@ -7958,8 +8010,9 @@ def radar_loop():
                         bot.send_message(chat_id, 
                             "📡 *Job Radar Scan Complete*\n\n"
                             "No new jobs found this cycle.\n"
-                            "⏰ Next scan in 6 hours.\n\n"
-                            "_The radar is running 24/7. You will be notified instantly when new matches appear._",
+                            f"⏰ Next scan in {interval_minutes} minutes.\n\n"
+                            "Priority: Tiruvannamalai, Vellore, Puducherry/Pondicherry and Chennai.\n"
+                            "New matches are sent automatically after each scheduled scan.",
                             parse_mode=None)
                     except: pass
             
@@ -7982,7 +8035,11 @@ def radar_loop():
                     
         except Exception as e:
             print(f"[Radar] Loop error: {e}")
-        time.sleep(6 * 60 * 60)  # Sleep 6 hours between scans
+        # Short sleeps let /pause and /resume take effect while waiting between scans.
+        for _ in range(interval_minutes * 12):
+            time.sleep(5)
+            if BOT_PAUSED:
+                break
 
 def cleanup_system_resources():
     """Kills orphaned browser processes and cleans cache to prevent resource leaks."""
@@ -8031,6 +8088,16 @@ def cleanup_system_resources():
         except Exception as e:
             print(f"[Cleanup] Error clearing cache: {e}")
 
+def walkin_reminder_loop():
+    while True:
+        try:
+            if bot:
+                dispatch_due_reminders(bot)
+        except Exception as exc:
+            print(f'[Reminders] Dispatch error: {exc}')
+        time.sleep(30)
+
+
 def thread_supervisor():
     """Monitors and automatically restarts background threads if they crash."""
     print("[Supervisor] Thread supervisor loop started.")
@@ -8039,6 +8106,7 @@ def thread_supervisor():
         "Job Monitor": {"target": job_monitor_loop, "thread": None},
         "Daily Report": {"target": daily_report_loop, "thread": None},
         "Job Radar Loop": {"target": radar_loop, "thread": None},
+        "Walk-in Reminders": {"target": walkin_reminder_loop, "thread": None},
     }
     if bot:
         threads_config["Telegram Polling"] = {"target": run_telegram_polling, "thread": None}
