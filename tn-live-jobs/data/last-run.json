@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "started_at": "2026-10-04T10:12:15.301Z",
-  "finished_at": "2026-10-04T10:18:01.120Z",
-  "duration_seconds": 167,
-  "validate_seconds": 179,
-  "trigger": "GitHub Actions (push)",
+  "started_at": "2026-10-04T11:12:54.292Z",
+  "finished_at": "2026-10-04T11:18:37.936Z",
+  "duration_seconds": 170,
+  "validate_seconds": 173,
+  "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
     "fresher",
@@ -30,16 +30,16 @@
     "Tiruppur",
     "Tamil Nadu"
   ],
-  "scraped_records": 135,
+  "scraped_records": 134,
   "verified_jobs": 81,
-  "new_jobs": 61,
-  "removed_jobs": 76,
+  "new_jobs": 0,
+  "removed_jobs": 1,
   "login_required": 1,
   "validate_stats": {
-    "checked": 135,
+    "checked": 134,
     "live": 81,
     "loginRequired": 1,
-    "dead": 52,
+    "dead": 51,
     "noSignal": 1,
     "redirected": 0,
     "documents": 8,
@@ -226,7 +226,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "54 job(s) from 4 search request(s)"
+      "detail": "50 job(s) from 4 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -243,12 +243,12 @@
     "naukri": 0,
     "apna": 100,
     "indeed": 0,
-    "linkedin": 54
+    "linkedin": 50
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
