@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-04T11:12:54.292Z
-- **Finished:** 2026-10-04T11:18:37.936Z
-- **Duration:** 170 s
+- **Started:** 2026-10-04T17:45:31.327Z
+- **Finished:** 2026-10-04T17:51:15.109Z
+- **Duration:** 165 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, nurse, teacher, sales executive, data entry | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Tamil Nadu
-- **Live verified jobs: 81** (kept this run: 134, new: 0, gone since last run: 1)
+- **Live verified jobs: 87** (kept this run: 136, new: 3, gone since last run: 1)
 
 ## Results per source
 
@@ -22,7 +22,7 @@
 | kyndryl.com | 1 | :x: unreachable | 0 | 0 | HTTP 400 for https://kyndryl.wd5.myworkdayjobs.com/wday/cxs/kyndryl/KyndrylProfessionalCareers/jobs |
 | Madurai District Collectorate | 1 | :white_check_mark: ok | 0 | 4 | 4 notice(s) on Madurai District portal |
 | paypal.com | 1 | :x: unreachable | 0 | 0 | HTTP 400 for https://paypal.wd1.myworkdayjobs.com/wday/cxs/paypal/jobs/jobs |
-| Robert Bosch India | 1 | :white_check_mark: ok | 0 | 12 | 12 opening(s) in Tamil Nadu |
+| Robert Bosch India | 1 | :white_check_mark: ok | 0 | 14 | 14 opening(s) in Tamil Nadu |
 | Salem District Collectorate | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Salem District portal |
 | Tata Consultancy Services | 1 | :x: blocked | 0 | 0 | fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed |
 | Tirunelveli District Collectorate | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Tirunelveli District portal |
@@ -45,28 +45,32 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 
 | Check | Count |
 | --- | --- |
-| Links re-opened | 134 |
-| :white_check_mark: Verified live | 81 |
+| Links re-opened | 136 |
+| :white_check_mark: Verified live | 87 |
 | Government documents verified | 8 |
 | Login required (kept, not published) | 1 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 51 |
+| Dead link (HTTP 4xx/5xx) | 47 |
 | Could not be reached | 0 |
 
-## New this run
+## New this run (3)
 
-No new jobs this run - the board is unchanged.
+| Title | Company | City | Category | Verified | Apply |
+| --- | --- | --- | --- | --- | --- |
+| ECU PjM | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153372828 |
+| Embedded Developer Functional Safety | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153372798 |
+| SPJM/ ECUPJM for APT and AAS PDCL | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153372748 |
 
 ## Gone since last run (1)
 
-- Vacancy for Bioinfomatics and Biochemistry Graduates for Medical Codi… (Achievers Spot)
+- 2026_Java_Eclipse Development_COB (Robert Bosch India)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
-| Every published job was re-opened and checked | yes - 134 links checked |
+| Every published job was re-opened and checked | yes - 136 links checked |
 | Jobs without a real title/company/apply URL dropped | yes - 0 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |

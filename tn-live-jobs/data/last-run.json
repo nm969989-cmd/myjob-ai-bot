@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-04T11:12:54.292Z",
-  "finished_at": "2026-10-04T11:18:37.936Z",
-  "duration_seconds": 170,
-  "validate_seconds": 173,
+  "started_at": "2026-10-04T17:45:31.327Z",
+  "finished_at": "2026-10-04T17:51:15.109Z",
+  "duration_seconds": 165,
+  "validate_seconds": 179,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -30,16 +30,16 @@
     "Tiruppur",
     "Tamil Nadu"
   ],
-  "scraped_records": 134,
-  "verified_jobs": 81,
-  "new_jobs": 0,
+  "scraped_records": 136,
+  "verified_jobs": 87,
+  "new_jobs": 3,
   "removed_jobs": 1,
   "login_required": 1,
   "validate_stats": {
-    "checked": 134,
-    "live": 81,
+    "checked": 136,
+    "live": 87,
     "loginRequired": 1,
-    "dead": 51,
+    "dead": 47,
     "noSignal": 1,
     "redirected": 0,
     "documents": 8,
@@ -128,7 +128,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "12 opening(s) in Tamil Nadu"
+      "detail": "14 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -239,7 +239,7 @@
   "per_source": {
     "govt-tn": 8,
     "company-careers": 3,
-    "tech-ats": 32,
+    "tech-ats": 34,
     "naukri": 0,
     "apna": 100,
     "indeed": 0,
