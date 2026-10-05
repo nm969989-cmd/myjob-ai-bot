@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-04T17:45:31.327Z",
-  "finished_at": "2026-10-04T17:51:15.109Z",
-  "duration_seconds": 165,
-  "validate_seconds": 179,
+  "started_at": "2026-10-05T12:28:47.315Z",
+  "finished_at": "2026-10-05T12:34:45.872Z",
+  "duration_seconds": 171,
+  "validate_seconds": 188,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -30,20 +30,20 @@
     "Tiruppur",
     "Tamil Nadu"
   ],
-  "scraped_records": 136,
-  "verified_jobs": 87,
-  "new_jobs": 3,
-  "removed_jobs": 1,
+  "scraped_records": 132,
+  "verified_jobs": 80,
+  "new_jobs": 12,
+  "removed_jobs": 16,
   "login_required": 1,
   "validate_stats": {
-    "checked": 136,
-    "live": 87,
+    "checked": 132,
+    "live": 80,
     "loginRequired": 1,
-    "dead": 47,
+    "dead": 48,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 8,
-    "unreachable": 0
+    "documents": 4,
+    "unreachable": 2
   },
   "source_status": [
     {
@@ -71,8 +71,8 @@
       "id": "coimbatore.nic.in",
       "label": "Coimbatore District Collectorate",
       "tier": 1,
-      "status": "ok",
-      "detail": "1 notice(s) on Coimbatore District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Coimbatore District portal"
     },
     {
       "id": "freshersworld.com",
@@ -86,7 +86,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "16 opening(s) in Tamil Nadu"
+      "detail": "15 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -149,7 +149,7 @@
       "label": "Tirunelveli District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Tirunelveli District portal"
+      "detail": "1 notice(s) on Tirunelveli District portal"
     },
     {
       "id": "tnvelaivaaippu.gov.in",
@@ -226,7 +226,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "50 job(s) from 4 search request(s)"
+      "detail": "48 job(s) from 4 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -237,13 +237,13 @@
     }
   ],
   "per_source": {
-    "govt-tn": 8,
+    "govt-tn": 6,
     "company-careers": 3,
-    "tech-ats": 34,
+    "tech-ats": 33,
     "naukri": 0,
     "apna": 100,
     "indeed": 0,
-    "linkedin": 50
+    "linkedin": 48
   },
   "dead_domains": {
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
