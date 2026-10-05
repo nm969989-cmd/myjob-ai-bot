@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-05T12:28:47.315Z",
-  "finished_at": "2026-10-05T12:34:45.872Z",
-  "duration_seconds": 171,
-  "validate_seconds": 188,
+  "started_at": "2026-10-05T21:12:17.422Z",
+  "finished_at": "2026-10-05T21:18:04.974Z",
+  "duration_seconds": 174,
+  "validate_seconds": 174,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -30,20 +30,20 @@
     "Tiruppur",
     "Tamil Nadu"
   ],
-  "scraped_records": 132,
-  "verified_jobs": 80,
-  "new_jobs": 12,
-  "removed_jobs": 16,
+  "scraped_records": 131,
+  "verified_jobs": 77,
+  "new_jobs": 9,
+  "removed_jobs": 10,
   "login_required": 1,
   "validate_stats": {
-    "checked": 132,
-    "live": 80,
+    "checked": 131,
+    "live": 77,
     "loginRequired": 1,
-    "dead": 48,
+    "dead": 52,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 4,
-    "unreachable": 2
+    "documents": 7,
+    "unreachable": 0
   },
   "source_status": [
     {
@@ -71,8 +71,8 @@
       "id": "coimbatore.nic.in",
       "label": "Coimbatore District Collectorate",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Coimbatore District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Coimbatore District portal"
     },
     {
       "id": "freshersworld.com",
@@ -128,7 +128,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "14 opening(s) in Tamil Nadu"
+      "detail": "12 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -226,7 +226,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "48 job(s) from 4 search request(s)"
+      "detail": "50 job(s) from 4 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -237,18 +237,18 @@
     }
   ],
   "per_source": {
-    "govt-tn": 6,
+    "govt-tn": 7,
     "company-careers": 3,
-    "tech-ats": 33,
+    "tech-ats": 31,
     "naukri": 0,
     "apna": 100,
     "indeed": 0,
-    "linkedin": 48
+    "linkedin": 50
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
