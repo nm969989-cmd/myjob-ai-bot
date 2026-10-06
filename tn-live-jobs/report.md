@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-05T21:12:17.422Z
-- **Finished:** 2026-10-05T21:18:04.974Z
-- **Duration:** 174 s
+- **Started:** 2026-10-06T12:09:27.921Z
+- **Finished:** 2026-10-06T12:15:18.527Z
+- **Duration:** 172 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, nurse, teacher, sales executive, data entry | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Tamil Nadu
-- **Live verified jobs: 77** (kept this run: 131, new: 9, gone since last run: 10)
+- **Live verified jobs: 80** (kept this run: 130, new: 10, gone since last run: 11)
 
 ## Results per source
 
@@ -22,7 +22,7 @@
 | kyndryl.com | 1 | :x: unreachable | 0 | 0 | HTTP 400 for https://kyndryl.wd5.myworkdayjobs.com/wday/cxs/kyndryl/KyndrylProfessionalCareers/jobs |
 | Madurai District Collectorate | 1 | :white_check_mark: ok | 0 | 4 | 4 notice(s) on Madurai District portal |
 | paypal.com | 1 | :x: unreachable | 0 | 0 | HTTP 400 for https://paypal.wd1.myworkdayjobs.com/wday/cxs/paypal/jobs/jobs |
-| Robert Bosch India | 1 | :white_check_mark: ok | 0 | 12 | 12 opening(s) in Tamil Nadu |
+| Robert Bosch India | 1 | :white_check_mark: ok | 0 | 13 | 13 opening(s) in Tamil Nadu |
 | Salem District Collectorate | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Salem District portal |
 | Tata Consultancy Services | 1 | :x: blocked | 0 | 0 | fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed |
 | Tirunelveli District Collectorate | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Tirunelveli District portal |
@@ -34,9 +34,9 @@
 | TNPSC - Notifications | 1 | :x: unreachable | 0 | 0 | fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 0 | 66 | 100 job(s) from 4 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 0 | 65 | 100 job(s) from 4 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 24 | 50 job(s) from 4 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 23 | 48 job(s) from 4 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -45,47 +45,49 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 
 | Check | Count |
 | --- | --- |
-| Links re-opened | 131 |
-| :white_check_mark: Verified live | 77 |
+| Links re-opened | 130 |
+| :white_check_mark: Verified live | 80 |
 | Government documents verified | 7 |
 | Login required (kept, not published) | 1 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 52 |
+| Dead link (HTTP 4xx/5xx) | 48 |
 | Could not be reached | 0 |
 
-## New this run (9)
+## New this run (10)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Staff Nurse Recruitment – List of Selected Candidates | Government of Tamil Nadu | Coimbatore | Government | yes | https://cdn.s3waas.gov.in/s3d9fc5b73a8d78fad3d6dffe419384e70/uploads/2026/10/17912174187945.pdf |
-| Flash Boot Loader_Software_Engineer | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153495314 |
-| Senior Relationship Manager | Zorell Appliances | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai-region/senior-relationship-manager-841175374 |
-| Senior Relationship Officer | Sbi Life Insurance Company Limited | Chennai | Other | yes | https://apna.co/job/chennai-region/senior-relationship-officer-712012667 |
-| Senior Relationship Manager | Bajaj Life Insurance Company Limit… | Trichy | Sales & Marketing | no (http_481) | https://apna.co/job/trichy-region/senior-relationship-manager-166710895 |
-| Dermatologist | Euro Asia Support Services | Chennai | Other | no (http_481) | https://apna.co/job/chennai/dermatologist-87896586 |
-| Team Coordinator | Kotak Mahindra Life Insurance Co | Chennai | Other | no (http_481) | https://apna.co/job/chennai/team-coordinator-826374084 |
-| WEB WORDPRESS ( JUNIOR FULLTIME) | HyperZ Digital | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/web-wordpress-junior-fulltime-at-hyperz-digital-4461484242 |
-| WEB WORDPRESS (INTERN – FULLTIME) | HyperZ Digital | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/web-wordpress-intern-%E2%80%93-fulltime-at-hyperz-digital-4461806167 |
+| Application SW Developer (Model-based) for Steering Platform | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153732448 |
+| Workload Automation Consultant | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153676839 |
+| *Associate - Project Management support | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153663179 |
+| Team Leader | Logan Infosys | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/team-leader-318223686 |
+| Associate Manager | Hdfc Life Insurance Company Limited | Chennai | Other | no (http_481) | https://apna.co/job/chennai/associate-manager-161557868 |
+| Secretary / Executive Assistant | Insohub India Private Limited | Chennai | Other | no (http_481) | https://apna.co/job/chennai/secretary-executive-assistant-626851383 |
+| Customer Support Team Leader | Aarthi Associates | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai/customer-support-team-leader-590970409 |
+| AutoCAD Draughtsman | Armor Ventures LLP | Chennai | Other | yes | https://apna.co/job/chennai/autocad-draughtsman-610512742 |
+| Salesforce Architect | SuccessMetrics Corp | Puducherry | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/salesforce-architect-at-successmetrics-corp-4442579072 |
+| Intermediate Software Engineer – Java Full Stack | Citi | Chennai | Software | yes | https://in.linkedin.com/jobs/view/intermediate-software-engineer-%E2%80%93-java-full-stack-at-citi-4474624831 |
 
-## Gone since last run (10)
+## Gone since last run (11)
 
-- Salesforce Architect (SuccessMetrics Corp)
-- AutoCAD Draughtsman (Armor Ventures LLP)
-- Senior Account Executive (Energec Chem Specialities Private Limit…)
-- Senior Relationship Manager (Zorell Appliances)
-- Team Coordinator (Kotak Mahindra Life Insurance Co)
-- Accountant (Jayabharatham Furnitures & Appliances)
-- Team Leader (Logan Infosys)
-- EBB_FBL_SW_Engineer_3LH (Robert Bosch India)
-- EBB_FBL_SW_Engineer_3LH (Robert Bosch India)
-- EBB_FBL_SW_Engineer_3LH (Robert Bosch India)
+- Software Engineer II (Trimble Inc.)
+- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
+- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
+- Hotel / General Manager (Mars Azeez Avenue Hotel)
+- Project Manager Interior (Ovion Lifestyle Private Limited)
+- Account Executive (Accounting) (Shanti and Company)
+- Cafe Growth & Operations Manager (Yogavasam Ventures)
+- Digital Marketing Executive (Hudson Agile Enterprises)
+- Sales Manager (Hudson Agile Enterprises)
+- 2026_Java_Eclipse Development_COB (Robert Bosch India)
+- 2026_Java_Eclipse Development_COB (Robert Bosch India)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
-| Every published job was re-opened and checked | yes - 131 links checked |
+| Every published job was re-opened and checked | yes - 130 links checked |
 | Jobs without a real title/company/apply URL dropped | yes - 0 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
