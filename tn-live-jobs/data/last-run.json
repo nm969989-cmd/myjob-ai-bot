@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-06T12:09:27.921Z",
-  "finished_at": "2026-10-06T12:15:18.527Z",
-  "duration_seconds": 172,
-  "validate_seconds": 178,
+  "started_at": "2026-10-06T18:59:42.421Z",
+  "finished_at": "2026-10-06T19:05:19.748Z",
+  "duration_seconds": 167,
+  "validate_seconds": 170,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -30,16 +30,16 @@
     "Tiruppur",
     "Tamil Nadu"
   ],
-  "scraped_records": 130,
+  "scraped_records": 132,
   "verified_jobs": 80,
-  "new_jobs": 10,
-  "removed_jobs": 11,
+  "new_jobs": 6,
+  "removed_jobs": 4,
   "login_required": 1,
   "validate_stats": {
-    "checked": 130,
+    "checked": 132,
     "live": 80,
     "loginRequired": 1,
-    "dead": 48,
+    "dead": 50,
     "noSignal": 1,
     "redirected": 0,
     "documents": 7,
@@ -226,7 +226,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "48 job(s) from 4 search request(s)"
+      "detail": "54 job(s) from 4 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -243,12 +243,12 @@
     "naukri": 0,
     "apna": 100,
     "indeed": 0,
-    "linkedin": 48
+    "linkedin": 54
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"

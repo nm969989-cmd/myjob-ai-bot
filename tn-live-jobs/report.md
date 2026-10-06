@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-06T12:09:27.921Z
-- **Finished:** 2026-10-06T12:15:18.527Z
-- **Duration:** 172 s
+- **Started:** 2026-10-06T18:59:42.421Z
+- **Finished:** 2026-10-06T19:05:19.748Z
+- **Duration:** 167 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, nurse, teacher, sales executive, data entry | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Tamil Nadu
-- **Live verified jobs: 80** (kept this run: 130, new: 10, gone since last run: 11)
+- **Live verified jobs: 80** (kept this run: 132, new: 6, gone since last run: 4)
 
 ## Results per source
 
@@ -36,7 +36,7 @@
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
 | apna.co | 2 | :white_check_mark: ok | 0 | 65 | 100 job(s) from 4 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 23 | 48 job(s) from 4 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 25 | 54 job(s) from 4 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -45,49 +45,38 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 
 | Check | Count |
 | --- | --- |
-| Links re-opened | 130 |
+| Links re-opened | 132 |
 | :white_check_mark: Verified live | 80 |
 | Government documents verified | 7 |
 | Login required (kept, not published) | 1 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 48 |
+| Dead link (HTTP 4xx/5xx) | 50 |
 | Could not be reached | 0 |
 
-## New this run (10)
+## New this run (6)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Application SW Developer (Model-based) for Steering Platform | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153732448 |
-| Workload Automation Consultant | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153676839 |
-| *Associate - Project Management support | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000153663179 |
-| Team Leader | Logan Infosys | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/team-leader-318223686 |
-| Associate Manager | Hdfc Life Insurance Company Limited | Chennai | Other | no (http_481) | https://apna.co/job/chennai/associate-manager-161557868 |
-| Secretary / Executive Assistant | Insohub India Private Limited | Chennai | Other | no (http_481) | https://apna.co/job/chennai/secretary-executive-assistant-626851383 |
-| Customer Support Team Leader | Aarthi Associates | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai/customer-support-team-leader-590970409 |
-| AutoCAD Draughtsman | Armor Ventures LLP | Chennai | Other | yes | https://apna.co/job/chennai/autocad-draughtsman-610512742 |
-| Salesforce Architect | SuccessMetrics Corp | Puducherry | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/salesforce-architect-at-successmetrics-corp-4442579072 |
-| Intermediate Software Engineer – Java Full Stack | Citi | Chennai | Software | yes | https://in.linkedin.com/jobs/view/intermediate-software-engineer-%E2%80%93-java-full-stack-at-citi-4474624831 |
+| Relationship Manager | IndusInd Nippon Life Insurance (Re… | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai-region/relationship-manager-853373146 |
+| Insurance Sales Manager | Supro Info Solutions Private Limit… | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai/insurance-sales-manager-288563320 |
+| Database Postgre SQL | People Prime Worldwide | Vellore | Other | yes | https://in.linkedin.com/jobs/view/database-postgre-sql-at-people-prime-worldwide-4476332606 |
+| WEB WORDPRESS ( JUNIOR FULLTIME) | HyperZ Digital | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/web-wordpress-junior-fulltime-at-hyperz-digital-4461484242 |
+| WEB WORDPRESS (INTERN – FULLTIME) | HyperZ Digital | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/web-wordpress-intern-%E2%80%93-fulltime-at-hyperz-digital-4461806167 |
+| Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC,… | UPS | Chennai | Software | yes | https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248973372 |
 
-## Gone since last run (11)
+## Gone since last run (4)
 
-- Software Engineer II (Trimble Inc.)
-- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
-- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
-- Hotel / General Manager (Mars Azeez Avenue Hotel)
-- Project Manager Interior (Ovion Lifestyle Private Limited)
-- Account Executive (Accounting) (Shanti and Company)
-- Cafe Growth & Operations Manager (Yogavasam Ventures)
-- Digital Marketing Executive (Hudson Agile Enterprises)
-- Sales Manager (Hudson Agile Enterprises)
-- 2026_Java_Eclipse Development_COB (Robert Bosch India)
-- 2026_Java_Eclipse Development_COB (Robert Bosch India)
+- Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, … (UPS)
+- Salesforce Architect (SuccessMetrics Corp)
+- Agency Manager (Supro Info Solutions Private Limited)
+- Relationship Manager (IndusInd Nippon Life Insurance (Relianc…)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
-| Every published job was re-opened and checked | yes - 130 links checked |
+| Every published job was re-opened and checked | yes - 132 links checked |
 | Jobs without a real title/company/apply URL dropped | yes - 0 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
