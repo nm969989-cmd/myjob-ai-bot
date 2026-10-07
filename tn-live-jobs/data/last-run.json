@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-06T18:59:42.421Z",
-  "finished_at": "2026-10-06T19:05:19.748Z",
-  "duration_seconds": 167,
-  "validate_seconds": 170,
+  "started_at": "2026-10-07T11:55:03.275Z",
+  "finished_at": "2026-10-07T12:00:44.531Z",
+  "duration_seconds": 168,
+  "validate_seconds": 173,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -30,16 +30,16 @@
     "Tiruppur",
     "Tamil Nadu"
   ],
-  "scraped_records": 132,
-  "verified_jobs": 80,
-  "new_jobs": 6,
-  "removed_jobs": 4,
+  "scraped_records": 130,
+  "verified_jobs": 79,
+  "new_jobs": 13,
+  "removed_jobs": 15,
   "login_required": 1,
   "validate_stats": {
-    "checked": 132,
-    "live": 80,
+    "checked": 130,
+    "live": 79,
     "loginRequired": 1,
-    "dead": 50,
+    "dead": 49,
     "noSignal": 1,
     "redirected": 0,
     "documents": 7,
@@ -86,7 +86,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "15 opening(s) in Tamil Nadu"
+      "detail": "16 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -226,7 +226,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "54 job(s) from 4 search request(s)"
+      "detail": "45 job(s) from 4 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -239,16 +239,16 @@
   "per_source": {
     "govt-tn": 7,
     "company-careers": 3,
-    "tech-ats": 32,
+    "tech-ats": 33,
     "naukri": 0,
     "apna": 100,
     "indeed": 0,
-    "linkedin": 54
+    "linkedin": 45
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"

@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-06T18:59:42.421Z
-- **Finished:** 2026-10-06T19:05:19.748Z
-- **Duration:** 167 s
+- **Started:** 2026-10-07T11:55:03.275Z
+- **Finished:** 2026-10-07T12:00:44.531Z
+- **Duration:** 168 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, nurse, teacher, sales executive, data entry | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Tamil Nadu
-- **Live verified jobs: 80** (kept this run: 132, new: 6, gone since last run: 4)
+- **Live verified jobs: 79** (kept this run: 130, new: 13, gone since last run: 15)
 
 ## Results per source
 
@@ -16,7 +16,7 @@
 | Cognizant | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Coimbatore District Collectorate | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Coimbatore District portal |
 | Freshersworld | 1 | :grey_question: no listings | 0 | 0 | 0 job(s) from 4 listing page(s) |
-| Freshworks | 1 | :white_check_mark: ok | 0 | 15 | 15 opening(s) in Tamil Nadu |
+| Freshworks | 1 | :white_check_mark: ok | 0 | 16 | 16 opening(s) in Tamil Nadu |
 | HCLTech | 1 | :x: blocked | 0 | 0 | headless browser unavailable in this environment |
 | Infosys | 1 | :white_check_mark: ok | 0 | 1 | 1 job(s) |
 | kyndryl.com | 1 | :x: unreachable | 0 | 0 | HTTP 400 for https://kyndryl.wd5.myworkdayjobs.com/wday/cxs/kyndryl/KyndrylProfessionalCareers/jobs |
@@ -36,7 +36,7 @@
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
 | apna.co | 2 | :white_check_mark: ok | 0 | 65 | 100 job(s) from 4 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 25 | 54 job(s) from 4 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 22 | 45 job(s) from 4 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -45,38 +45,56 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 
 | Check | Count |
 | --- | --- |
-| Links re-opened | 132 |
-| :white_check_mark: Verified live | 80 |
+| Links re-opened | 130 |
+| :white_check_mark: Verified live | 79 |
 | Government documents verified | 7 |
 | Login required (kept, not published) | 1 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 50 |
+| Dead link (HTTP 4xx/5xx) | 49 |
 | Could not be reached | 0 |
 
-## New this run (6)
+## New this run (13)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Relationship Manager | IndusInd Nippon Life Insurance (Re… | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai-region/relationship-manager-853373146 |
-| Insurance Sales Manager | Supro Info Solutions Private Limit… | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai/insurance-sales-manager-288563320 |
-| Database Postgre SQL | People Prime Worldwide | Vellore | Other | yes | https://in.linkedin.com/jobs/view/database-postgre-sql-at-people-prime-worldwide-4476332606 |
-| WEB WORDPRESS ( JUNIOR FULLTIME) | HyperZ Digital | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/web-wordpress-junior-fulltime-at-hyperz-digital-4461484242 |
-| WEB WORDPRESS (INTERN – FULLTIME) | HyperZ Digital | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/web-wordpress-intern-%E2%80%93-fulltime-at-hyperz-digital-4461806167 |
-| Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC,… | UPS | Chennai | Software | yes | https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248973372 |
+| Lead - Workplace Management (Travel & Transport Operations) | Freshworks | Chennai | Other | yes | https://jobs.smartrecruiters.com/Freshworks/744000154016769 |
+| VM Brakes - Project manager [Indian OEM] | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154064803 |
+| Civil Engineer | Nova Spaces | Puducherry | Engineering & Manufacturing | yes | https://apna.co/job/bengaluru-bangalore-region/civil-engineer-267419830 |
+| Website Operation Manager | Autonity | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/website-operation-manager-411792231 |
+| Business Development Executive (BDE) | International Institute of Busines… | Tamil Nadu | Sales & Marketing | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/business-development-executive-bde-553642913 |
+| Business Operations Manager | Agarwal Estates Private Limited | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/business-operations-manager-646585658 |
+| Finance Manager | eOrbitor Technologies | Chennai | Accounting & Finance | no (http_481) | https://apna.co/job/chennai-region/finance-manager-44771344 |
+| Financial Advisor | Axis Max Life Insurance Company Li… | Puducherry | Other | no (http_481) | https://apna.co/job/pondicherry-puducherry-region/financial-advisor-551516961 |
+| Senior Account Executive | Energec Chem Specialities Private … | Chennai | Other | yes | https://apna.co/job/chennai/senior-account-executive-950516166 |
+| Accountant/ Accounts Executive | Armor Ventures LLP | Chennai | Accounting & Finance | yes | https://apna.co/job/chennai/accountant-accounts-executive-541996750 |
+| Accountant | Asiatic Pharmacare | Chennai | Accounting & Finance | yes | https://apna.co/job/chennai/accountant-815854249 |
+| Salesforce Architect | SuccessMetrics Corp | Puducherry | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/salesforce-architect-at-successmetrics-corp-4442579072 |
+| Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC,… | UPS | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248974223 |
 
-## Gone since last run (4)
+## Gone since last run (15)
 
+- Database Postgre SQL (People Prime Worldwide)
+- SAP CPI Principal Architect (NTT DATA North America)
 - Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, … (UPS)
-- Salesforce Architect (SuccessMetrics Corp)
-- Agency Manager (Supro Info Solutions Private Limited)
-- Relationship Manager (IndusInd Nippon Life Insurance (Relianc…)
+- Workday Consultant – Integration & Production Support (Datatech Genius)
+- Real Estate Manager (Sri Sai Housing)
+- Two Wheeler Riders (Big Basket)
+- Two Wheeler Riders (Big Basket)
+- Chartered Accountant (Southland Developers Llp)
+- Collection/Recovery Manager (Muthoot Pappachan Chits (India) Private…)
+- Senior Business Consultant (Aarthi Associates)
+- Team Leader (Logan Infosys)
+- AI / ML and Generative AI research assistant (Robert Bosch India)
+- Interesting Job Opportunity: QX Impact - Lead Data Analyst (QX Impact)
+- HR Senior Manager (Genx Pv India Private Limited)
+- Junior Accountant (Starfish Accelerator Partners Private L…)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
-| Every published job was re-opened and checked | yes - 132 links checked |
+| Every published job was re-opened and checked | yes - 130 links checked |
 | Jobs without a real title/company/apply URL dropped | yes - 0 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
