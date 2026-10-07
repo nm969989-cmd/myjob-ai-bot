@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-07T11:55:03.275Z",
-  "finished_at": "2026-10-07T12:00:44.531Z",
-  "duration_seconds": 168,
-  "validate_seconds": 173,
+  "started_at": "2026-10-07T19:27:18.660Z",
+  "finished_at": "2026-10-07T19:33:00.921Z",
+  "duration_seconds": 166,
+  "validate_seconds": 176,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -30,14 +30,14 @@
     "Tiruppur",
     "Tamil Nadu"
   ],
-  "scraped_records": 130,
-  "verified_jobs": 79,
+  "scraped_records": 138,
+  "verified_jobs": 87,
   "new_jobs": 13,
-  "removed_jobs": 15,
+  "removed_jobs": 5,
   "login_required": 1,
   "validate_stats": {
-    "checked": 130,
-    "live": 79,
+    "checked": 138,
+    "live": 87,
     "loginRequired": 1,
     "dead": 49,
     "noSignal": 1,
@@ -128,7 +128,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "13 opening(s) in Tamil Nadu"
+      "detail": "14 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -226,7 +226,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "45 job(s) from 4 search request(s)"
+      "detail": "70 job(s) from 4 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -239,11 +239,11 @@
   "per_source": {
     "govt-tn": 7,
     "company-careers": 3,
-    "tech-ats": 33,
+    "tech-ats": 34,
     "naukri": 0,
     "apna": 100,
     "indeed": 0,
-    "linkedin": 45
+    "linkedin": 70
   },
   "dead_domains": {
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",

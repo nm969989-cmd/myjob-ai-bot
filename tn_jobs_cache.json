@@ -1,8 +1,96 @@
 {
-  "last_updated": "2026-10-07 12:01:03",
-  "timestamp": 1791374444.7895904,
-  "total": 168,
+  "last_updated": "2026-10-07 19:33:17",
+  "timestamp": 1791401581.1131961,
+  "total": 180,
   "jobs": [
+    {
+      "title": "Full Stack Java Developer",
+      "company": "Citi",
+      "link": "https://in.linkedin.com/jobs/view/full-stack-java-developer-at-citi-4457464802",
+      "raw_link": "https://in.linkedin.com/jobs/view/full-stack-java-developer-at-citi-4457464802",
+      "location": "Chennai, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-10-07",
+      "description": "Full Stack Java Developer Chennai, Tamil Nadu, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "4-8 years",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 4-8 years",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/full-stack-java-developer-at-citi-4457464802",
+      "retrieved_at": "2026-10-07T19:30:04.833Z",
+      "source_checked_at": "2026-10-07T19:31:18.814Z"
+    },
+    {
+      "title": "L1 – Junior Software Developer ( THE BUILDER )",
+      "company": "Wonder Worth Solutions",
+      "link": "https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4476769047",
+      "raw_link": "https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4476769047",
+      "location": "Vellore, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-10-07",
+      "description": "L1 – Junior Software Developer ( THE BUILDER ) Vellore, Tamil Nadu, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "rs 2026-Pa",
+      "hr_email": "",
+      "batch": "Diploma",
+      "experience": "Fresher",
+      "eligibility_badge": "🎓 Diploma • 💼 Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4476769047",
+      "retrieved_at": "2026-10-07T19:29:57.633Z",
+      "source_checked_at": "2026-10-07T19:30:13.416Z"
+    },
+    {
+      "title": "L4 – Team Lead – Software Developer – (THE BUILDER)",
+      "company": "Wonder Worth Solutions",
+      "link": "https://in.linkedin.com/jobs/view/l4-%E2%80%93-team-lead-%E2%80%93-software-developer-%E2%80%93-the-builder-at-wonder-worth-solutions-4476758587",
+      "raw_link": "https://in.linkedin.com/jobs/view/l4-%E2%80%93-team-lead-%E2%80%93-software-developer-%E2%80%93-the-builder-at-wonder-worth-solutions-4476758587",
+      "location": "Vellore, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-10-07",
+      "description": "L4 – Team Lead – Software Developer – (THE BUILDER) Vellore, Tamil Nadu, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "3+ years",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 3+ years",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/l4-%E2%80%93-team-lead-%E2%80%93-software-developer-%E2%80%93-the-builder-at-wonder-worth-solutions-4476758587",
+      "retrieved_at": "2026-10-07T19:29:57.635Z",
+      "source_checked_at": "2026-10-07T19:30:15.550Z"
+    },
+    {
+      "title": "L6 – Supervisor – Software Developer",
+      "company": "Wonder Worth Solutions",
+      "link": "https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4476755759",
+      "raw_link": "https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4476755759",
+      "location": "Vellore, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-10-07",
+      "description": "L6 – Supervisor – Software Developer Vellore, Tamil Nadu, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "7+ years",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 7+ years",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4476755759",
+      "retrieved_at": "2026-10-07T19:29:57.636Z",
+      "source_checked_at": "2026-10-07T19:30:27.451Z"
+    },
     {
       "title": "Lead - Workplace Management (Travel & Transport Operations)",
       "company": "Freshworks",
@@ -19,11 +107,77 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000154016769",
-      "retrieved_at": "2026-10-07T11:56:24.164Z",
-      "source_checked_at": "2026-10-07T11:57:51.304Z"
+      "retrieved_at": "2026-10-07T19:28:41.581Z",
+      "source_checked_at": "2026-10-07T19:30:04.936Z"
+    },
+    {
+      "title": "Mobile Testing Engineer",
+      "company": "People Prime Worldwide",
+      "link": "https://in.linkedin.com/jobs/view/mobile-testing-engineer-at-people-prime-worldwide-4476780808",
+      "raw_link": "https://in.linkedin.com/jobs/view/mobile-testing-engineer-at-people-prime-worldwide-4476780808",
+      "location": "Vellore, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-10-07",
+      "description": "Mobile Testing Engineer Vellore, Tamil Nadu, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "₹6,000 - ₹10,000",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "Fresher",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/mobile-testing-engineer-at-people-prime-worldwide-4476780808",
+      "retrieved_at": "2026-10-07T19:29:57.636Z",
+      "source_checked_at": "2026-10-07T19:30:22.648Z"
+    },
+    {
+      "title": "Senior .NET Developer",
+      "company": "TVS Next",
+      "link": "https://in.linkedin.com/jobs/view/senior-net-developer-at-tvs-next-4475422913",
+      "raw_link": "https://in.linkedin.com/jobs/view/senior-net-developer-at-tvs-next-4475422913",
+      "location": "Chennai, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-10-07",
+      "description": "Senior .NET Developer Chennai, Tamil Nadu, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "7+ years",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 7+ years",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/senior-net-developer-at-tvs-next-4475422913",
+      "retrieved_at": "2026-10-07T19:30:04.833Z",
+      "source_checked_at": "2026-10-07T19:31:12.432Z"
+    },
+    {
+      "title": "L1 – Junior Machine Learner – THE ORACLE",
+      "company": "Wonder Worth Solutions",
+      "link": "https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4476748922",
+      "raw_link": "https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4476748922",
+      "location": "Vellore, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-10-07",
+      "description": "L1 – Junior Machine Learner – THE ORACLE Vellore, Tamil Nadu, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch",
+      "experience": "Freshers (0-1 yrs)",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4476748922",
+      "retrieved_at": "2026-10-07T19:29:57.636Z",
+      "source_checked_at": "2026-10-07T19:30:24.835Z"
     },
     {
       "title": "Accountant",
@@ -41,11 +195,11 @@
       "batch": "B.E / B.Tech",
       "experience": "2+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 2+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/accountant-566864608",
-      "retrieved_at": "2026-10-07T11:57:37.688Z",
-      "source_checked_at": "2026-10-07T12:00:27.225Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:42.220Z"
     },
     {
       "title": "Accountant",
@@ -63,11 +217,11 @@
       "batch": "B.E / B.Tech",
       "experience": "6 months",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 6 months",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/accountant-815854249",
-      "retrieved_at": "2026-10-07T11:57:37.688Z",
-      "source_checked_at": "2026-10-07T12:00:41.812Z"
+      "retrieved_at": "2026-10-07T19:29:50.588Z",
+      "source_checked_at": "2026-10-07T19:32:57.562Z"
     },
     {
       "title": "Accountant/ Accounts Executive",
@@ -85,11 +239,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/accountant-accounts-executive-541996750",
-      "retrieved_at": "2026-10-07T11:57:37.688Z",
-      "source_checked_at": "2026-10-07T12:00:38.592Z"
+      "retrieved_at": "2026-10-07T19:29:50.588Z",
+      "source_checked_at": "2026-10-07T19:32:54.506Z"
     },
     {
       "title": "Assistant Manager Finance",
@@ -107,11 +261,11 @@
       "batch": "B.E / B.Tech",
       "experience": "5+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/assistant-manager-finance-418902134",
-      "retrieved_at": "2026-10-07T11:57:29.621Z",
-      "source_checked_at": "2026-10-07T11:58:17.044Z"
+      "retrieved_at": "2026-10-07T19:29:42.857Z",
+      "source_checked_at": "2026-10-07T19:30:30.069Z"
     },
     {
       "title": "AutoCAD Draughtsman",
@@ -129,11 +283,11 @@
       "batch": "B.E / B.Tech",
       "experience": "5+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/autocad-draughtsman-610512742",
-      "retrieved_at": "2026-10-07T11:57:37.688Z",
-      "source_checked_at": "2026-10-07T12:00:33.038Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:48.326Z"
     },
     {
       "title": "Civil Engineer",
@@ -151,11 +305,11 @@
       "batch": "B.E / B.Tech",
       "experience": "5+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/civil-engineer-267419830",
-      "retrieved_at": "2026-10-07T11:57:29.622Z",
-      "source_checked_at": "2026-10-07T11:58:23.329Z"
+      "retrieved_at": "2026-10-07T19:29:42.858Z",
+      "source_checked_at": "2026-10-07T19:30:36.474Z"
     },
     {
       "title": "Collection/Recovery Manager",
@@ -173,11 +327,11 @@
       "batch": "B.E / B.Tech",
       "experience": "5+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/collection-recovery-manager-579010822",
-      "retrieved_at": "2026-10-07T11:57:29.622Z",
-      "source_checked_at": "2026-10-07T11:58:32.238Z"
+      "retrieved_at": "2026-10-07T19:29:42.858Z",
+      "source_checked_at": "2026-10-07T19:30:45.271Z"
     },
     {
       "title": "Finance Controller",
@@ -195,11 +349,11 @@
       "batch": "B.E / B.Tech",
       "experience": "5+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/finance-controller-596163932",
-      "retrieved_at": "2026-10-07T11:57:29.619Z",
-      "source_checked_at": "2026-10-07T11:57:51.304Z"
+      "retrieved_at": "2026-10-07T19:29:42.856Z",
+      "source_checked_at": "2026-10-07T19:30:04.936Z"
     },
     {
       "title": "Financial Advisor",
@@ -217,11 +371,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/financial-advisor-823883914",
-      "retrieved_at": "2026-10-07T11:57:29.622Z",
-      "source_checked_at": "2026-10-07T11:58:29.121Z"
+      "retrieved_at": "2026-10-07T19:29:42.858Z",
+      "source_checked_at": "2026-10-07T19:30:42.194Z"
     },
     {
       "title": "Financial Consultant",
@@ -239,11 +393,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/financial-consultant-240559282",
-      "retrieved_at": "2026-10-07T11:57:29.621Z",
-      "source_checked_at": "2026-10-07T11:58:20.282Z"
+      "retrieved_at": "2026-10-07T19:29:42.857Z",
+      "source_checked_at": "2026-10-07T19:30:33.227Z"
     },
     {
       "title": "Relationship Manager",
@@ -261,11 +415,11 @@
       "batch": "B.E / B.Tech",
       "experience": "6 months",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 6 months",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/relationship-manager-853373146",
-      "retrieved_at": "2026-10-07T11:57:29.620Z",
-      "source_checked_at": "2026-10-07T11:58:07.304Z"
+      "retrieved_at": "2026-10-07T19:29:42.857Z",
+      "source_checked_at": "2026-10-07T19:30:20.969Z"
     },
     {
       "title": "Relationship Manager",
@@ -283,11 +437,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/relationship-manager-800970075",
-      "retrieved_at": "2026-10-07T11:57:37.688Z",
-      "source_checked_at": "2026-10-07T12:00:30.236Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:45.611Z"
     },
     {
       "title": "Sales Engineer",
@@ -305,11 +459,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/sales-engineer-284890346",
-      "retrieved_at": "2026-10-07T11:57:29.622Z",
-      "source_checked_at": "2026-10-07T11:58:26.479Z"
+      "retrieved_at": "2026-10-07T19:29:42.858Z",
+      "source_checked_at": "2026-10-07T19:30:39.502Z"
     },
     {
       "title": "Sales Executives",
@@ -327,11 +481,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://careers.zohocorp.com/jobs/Careers/193779000024446028/Sales-Executives",
-      "retrieved_at": "2026-10-07T11:55:49.138Z",
-      "source_checked_at": "2026-10-07T11:57:55.320Z"
+      "retrieved_at": "2026-10-07T19:28:04.728Z",
+      "source_checked_at": "2026-10-07T19:30:09.749Z"
     },
     {
       "title": "Senior Account Executive",
@@ -349,39 +503,17 @@
       "batch": "B.E / B.Tech",
       "experience": "5+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/senior-account-executive-950516166",
-      "retrieved_at": "2026-10-07T11:57:37.688Z",
-      "source_checked_at": "2026-10-07T12:00:35.886Z"
-    },
-    {
-      "title": "Senior Relationship Manager",
-      "company": "Zorell Appliances",
-      "link": "https://apna.co/job/chennai-region/senior-relationship-manager-841175374",
-      "raw_link": "https://apna.co/job/chennai-region/senior-relationship-manager-841175374",
-      "location": "Chennai, Tamil Nadu ⭐",
-      "source": "TN Live (apna.co)",
-      "date_posted": "2026-10-07",
-      "description": "Senior Relationship Manager Nanganallur, Chennai Region Work from Office, Full Time, Any experience, No English Required",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "INR 30000 - 70000 per month",
-      "hr_email": "",
-      "batch": "B.E / B.Tech",
-      "experience": "Fresher",
-      "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "https://apna.co/job/chennai-region/senior-relationship-manager-841175374",
-      "retrieved_at": "2026-10-07T11:57:29.619Z",
-      "source_checked_at": "2026-10-07T11:57:54.669Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:51.668Z"
     },
     {
       "title": "Senior Relationship Manager",
       "company": "Kotak Mahindra General Insurance Company Limited",
-      "link": "https://apna.co/job/chennai-region/senior-relationship-manager-376981973",
-      "raw_link": "https://apna.co/job/chennai-region/senior-relationship-manager-376981973",
+      "link": "https://apna.co/job/chennai-region/senior-relationship-manager-705050342",
+      "raw_link": "https://apna.co/job/chennai-region/senior-relationship-manager-705050342",
       "location": "Chennai, Tamil Nadu ⭐",
       "source": "TN Live (apna.co)",
       "date_posted": "2026-10-07",
@@ -393,11 +525,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "https://apna.co/job/chennai-region/senior-relationship-manager-376981973",
-      "retrieved_at": "2026-10-07T11:57:29.620Z",
-      "source_checked_at": "2026-10-07T11:57:57.790Z"
+      "source_url": "https://apna.co/job/chennai-region/senior-relationship-manager-705050342",
+      "retrieved_at": "2026-10-07T19:29:42.856Z",
+      "source_checked_at": "2026-10-07T19:30:11.482Z"
     },
     {
       "title": "Senior Relationship Manager",
@@ -415,11 +547,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/senior-relationship-manager-814037803",
-      "retrieved_at": "2026-10-07T11:57:29.620Z",
-      "source_checked_at": "2026-10-07T11:58:03.924Z"
+      "retrieved_at": "2026-10-07T19:29:42.856Z",
+      "source_checked_at": "2026-10-07T19:30:17.804Z"
     },
     {
       "title": "Senior Relationship Officer",
@@ -437,11 +569,55 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/senior-relationship-officer-712012667",
-      "retrieved_at": "2026-10-07T11:57:29.620Z",
-      "source_checked_at": "2026-10-07T11:58:00.839Z"
+      "retrieved_at": "2026-10-07T19:29:42.856Z",
+      "source_checked_at": "2026-10-07T19:30:14.503Z"
+    },
+    {
+      "title": "Team Leader",
+      "company": "Zorell Appliances",
+      "link": "https://apna.co/job/chennai-region/team-leader-911740019",
+      "raw_link": "https://apna.co/job/chennai-region/team-leader-911740019",
+      "location": "Chennai, Tamil Nadu ⭐",
+      "source": "TN Live (apna.co)",
+      "date_posted": "2026-10-07",
+      "description": "Team Leader Nanganallur, Chennai Region Work from Office, Full Time, Any experience, No English Required",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "INR 30000 - 70000 per month",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "Fresher",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://apna.co/job/chennai-region/team-leader-911740019",
+      "retrieved_at": "2026-10-07T19:29:42.856Z",
+      "source_checked_at": "2026-10-07T19:30:08.495Z"
+    },
+    {
+      "title": "Team Leader (Personal Loans) -Telesales(Female Candidates Only)",
+      "company": "R S Credit Mantra Private Limited",
+      "link": "https://apna.co/job/chennai/team-leader-personal-loans-telesales-female-candid-665520165",
+      "raw_link": "https://apna.co/job/chennai/team-leader-personal-loans-telesales-female-candid-665520165",
+      "location": "Chennai, Tamil Nadu ⭐",
+      "source": "TN Live (apna.co)",
+      "date_posted": "2026-10-07",
+      "description": "Team Leader (Personal Loans) -Telesales(Female Candidates Only) Thyagaraya Nagar, Chennai Work from Office, Full Time, Min. 3 years, Basic English",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "INR 25000 - 40000 per month",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "3+ years",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 3+ years",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://apna.co/job/chennai/team-leader-personal-loans-telesales-female-candid-665520165",
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:39.709Z"
     },
     {
       "title": "Two Wheeler Riders",
@@ -459,11 +635,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/two-wheeler-riders-521049925",
-      "retrieved_at": "2026-10-07T11:57:29.621Z",
-      "source_checked_at": "2026-10-07T11:58:10.013Z"
+      "retrieved_at": "2026-10-07T19:29:42.857Z",
+      "source_checked_at": "2026-10-07T19:30:23.831Z"
     },
     {
       "title": "Two Wheeler Riders",
@@ -481,11 +657,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/two-wheeler-riders-985829815",
-      "retrieved_at": "2026-10-07T11:57:29.621Z",
-      "source_checked_at": "2026-10-07T11:58:13.575Z"
+      "retrieved_at": "2026-10-07T19:29:42.857Z",
+      "source_checked_at": "2026-10-07T19:30:26.992Z"
     },
     {
       "title": "Accountant Cum Office Assistant",
@@ -503,11 +679,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "5+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/accountant-cum-office-assistant-716676829",
-      "retrieved_at": "2026-10-07T11:57:34.406Z",
-      "source_checked_at": "2026-10-07T11:59:28.025Z"
+      "retrieved_at": "2026-10-07T19:29:49.167Z",
+      "source_checked_at": "2026-10-07T19:31:37.591Z"
     },
     {
       "title": "Accountant Cum Office Assistant",
@@ -525,11 +701,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "2+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 2+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/accountant-cum-office-assistant-898562894",
-      "retrieved_at": "2026-10-07T11:57:34.407Z",
-      "source_checked_at": "2026-10-07T11:59:37.118Z"
+      "retrieved_at": "2026-10-07T19:29:49.167Z",
+      "source_checked_at": "2026-10-07T19:31:50.096Z"
     },
     {
       "title": "Associate Manager",
@@ -547,11 +723,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "2+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 2+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/associate-manager-161557868",
-      "retrieved_at": "2026-10-07T11:57:37.686Z",
-      "source_checked_at": "2026-10-07T11:59:41.675Z"
+      "retrieved_at": "2026-10-07T19:29:50.586Z",
+      "source_checked_at": "2026-10-07T19:31:55.559Z"
     },
     {
       "title": "Bancassurance Manager",
@@ -569,11 +745,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "1+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 1+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/bancassurance-manager-738293289",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:03.773Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:15.957Z"
     },
     {
       "title": "Business Development Executive",
@@ -591,11 +767,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/business-development-executive-118195804",
-      "retrieved_at": "2026-10-07T11:57:37.686Z",
-      "source_checked_at": "2026-10-07T11:59:55.350Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:08.196Z"
     },
     {
       "title": "Business Development Executive (BDE)",
@@ -613,11 +789,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/business-development-executive-bde-546155901",
-      "retrieved_at": "2026-10-07T11:57:37.686Z",
-      "source_checked_at": "2026-10-07T11:59:53.001Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:05.668Z"
     },
     {
       "title": "Client Relationship Manager",
@@ -635,11 +811,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/client-relationship-manager-469487957",
-      "retrieved_at": "2026-10-07T11:57:34.406Z",
-      "source_checked_at": "2026-10-07T11:59:21.221Z"
+      "retrieved_at": "2026-10-07T19:29:49.166Z",
+      "source_checked_at": "2026-10-07T19:31:31.099Z"
     },
     {
       "title": "Credit Manager",
@@ -657,11 +833,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "5+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/credit-manager-110719996",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:15.724Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:29.335Z"
     },
     {
       "title": "Customer Relationship Officer-Outbound Voice Process (Female Applicants Only)",
@@ -679,11 +855,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "6 months",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 6 months",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/customer-relationship-officer-outbound-voice-proce-11778496",
-      "retrieved_at": "2026-10-07T11:57:37.688Z",
-      "source_checked_at": "2026-10-07T12:00:25.098Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:36.243Z"
     },
     {
       "title": "Customer Support Team Leader",
@@ -701,11 +877,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "5+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/customer-support-team-leader-590970409",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:07.729Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:22.185Z"
     },
     {
       "title": "Data Engineer Trainer",
@@ -723,11 +899,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "1+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 1+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/data-engineer-trainer-442914863",
-      "retrieved_at": "2026-10-07T11:57:37.686Z",
-      "source_checked_at": "2026-10-07T11:59:47.882Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:00.446Z"
     },
     {
       "title": "Debt Recovery Agent",
@@ -745,11 +921,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/debt-recovery-agent-879373902",
-      "retrieved_at": "2026-10-07T11:57:34.406Z",
-      "source_checked_at": "2026-10-07T11:59:29.854Z"
+      "retrieved_at": "2026-10-07T19:29:49.167Z",
+      "source_checked_at": "2026-10-07T19:31:43.238Z"
     },
     {
       "title": "Dermatologist",
@@ -767,11 +943,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "6 months",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 6 months",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/dermatologist-87896586",
-      "retrieved_at": "2026-10-07T11:57:37.686Z",
-      "source_checked_at": "2026-10-07T11:59:38.946Z"
+      "retrieved_at": "2026-10-07T19:29:50.586Z",
+      "source_checked_at": "2026-10-07T19:31:53.501Z"
     },
     {
       "title": "Development Manager",
@@ -789,11 +965,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "1+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 1+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/puducherry/development-manager-118216533",
-      "retrieved_at": "2026-10-07T11:57:34.404Z",
-      "source_checked_at": "2026-10-07T11:59:07.008Z"
+      "retrieved_at": "2026-10-07T19:29:49.165Z",
+      "source_checked_at": "2026-10-07T19:31:17.723Z"
     },
     {
       "title": "Electrical Engineer",
@@ -811,11 +987,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/electrical-engineer-823512137",
-      "retrieved_at": "2026-10-07T11:57:29.624Z",
-      "source_checked_at": "2026-10-07T11:58:47.851Z"
+      "retrieved_at": "2026-10-07T19:29:42.859Z",
+      "source_checked_at": "2026-10-07T19:31:00.658Z"
     },
     {
       "title": "Electrical Technician",
@@ -833,11 +1009,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "1+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 1+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/electrical-technician-733218299",
-      "retrieved_at": "2026-10-07T11:57:34.406Z",
-      "source_checked_at": "2026-10-07T11:59:23.075Z"
+      "retrieved_at": "2026-10-07T19:29:49.167Z",
+      "source_checked_at": "2026-10-07T19:31:34.101Z"
     },
     {
       "title": "Finance Associate",
@@ -855,11 +1031,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "5+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/finance-associate-570996541",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:05.860Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:19.414Z"
     },
     {
       "title": "Finance Manager",
@@ -877,11 +1053,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "5+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/finance-manager-44771344",
-      "retrieved_at": "2026-10-07T11:57:29.625Z",
-      "source_checked_at": "2026-10-07T11:59:02.095Z"
+      "retrieved_at": "2026-10-07T19:29:42.860Z",
+      "source_checked_at": "2026-10-07T19:31:11.405Z"
     },
     {
       "title": "Finance Manager",
@@ -899,11 +1075,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/pondicherry-puducherry-region/finance-manager-59001505",
-      "retrieved_at": "2026-10-07T11:57:34.404Z",
-      "source_checked_at": "2026-10-07T11:59:11.564Z"
+      "retrieved_at": "2026-10-07T19:29:49.165Z",
+      "source_checked_at": "2026-10-07T19:31:22.467Z"
     },
     {
       "title": "Financial Advisor",
@@ -921,11 +1097,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/pondicherry-puducherry-region/financial-advisor-551516961",
-      "retrieved_at": "2026-10-07T11:57:34.404Z",
-      "source_checked_at": "2026-10-07T11:59:09.734Z"
+      "retrieved_at": "2026-10-07T19:29:49.165Z",
+      "source_checked_at": "2026-10-07T19:31:20.647Z"
     },
     {
       "title": "Financial Consultant",
@@ -943,11 +1119,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/financial-consultant-10431030",
-      "retrieved_at": "2026-10-07T11:57:34.406Z",
-      "source_checked_at": "2026-10-07T11:59:18.568Z"
+      "retrieved_at": "2026-10-07T19:29:49.166Z",
+      "source_checked_at": "2026-10-07T19:31:29.017Z"
     },
     {
       "title": "Insurance Sales Manager",
@@ -965,11 +1141,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "5+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/insurance-sales-manager-288563320",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:20.559Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:32.914Z"
     },
     {
       "title": "Maintenance Manager",
@@ -987,11 +1163,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "5+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/maintenance-manager-565826296",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:12.915Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:25.936Z"
     },
     {
       "title": "MEP QUANTITY SURVEYOR",
@@ -1009,11 +1185,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "3+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 3+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/mep-quantity-surveyor-407064833",
-      "retrieved_at": "2026-10-07T11:57:37.686Z",
-      "source_checked_at": "2026-10-07T11:59:45.112Z"
+      "retrieved_at": "2026-10-07T19:29:50.586Z",
+      "source_checked_at": "2026-10-07T19:31:57.350Z"
     },
     {
       "title": "Portfolio Manager",
@@ -1031,11 +1207,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "1+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 1+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/portfolio-manager-569474980",
-      "retrieved_at": "2026-10-07T11:57:34.406Z",
-      "source_checked_at": "2026-10-07T11:59:31.721Z"
+      "retrieved_at": "2026-10-07T19:29:49.167Z",
+      "source_checked_at": "2026-10-07T19:31:45.041Z"
     },
     {
       "title": "Sales Manager (Agency Channel) – Life Insurance",
@@ -1053,11 +1229,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/sales-manager-agency-channel-life-insurance-202295748",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:18.703Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:31.124Z"
     },
     {
       "title": "Secretary / Executive Assistant",
@@ -1075,11 +1251,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "2+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 2+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/secretary-executive-assistant-626851383",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:01.936Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:13.531Z"
     },
     {
       "title": "Senior Accountant",
@@ -1097,11 +1273,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "5+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/senior-accountant-462025761",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:10.136Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:24.047Z"
     },
     {
       "title": "Senior Executive",
@@ -1119,11 +1295,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "1+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 1+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/senior-executive-747749561",
-      "retrieved_at": "2026-10-07T11:57:29.623Z",
-      "source_checked_at": "2026-10-07T11:58:40.560Z"
+      "retrieved_at": "2026-10-07T19:29:42.859Z",
+      "source_checked_at": "2026-10-07T19:30:53.105Z"
     },
     {
       "title": "Team Coordinator",
@@ -1141,11 +1317,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/team-coordinator-826374084",
-      "retrieved_at": "2026-10-07T11:57:37.686Z",
-      "source_checked_at": "2026-10-07T11:59:50.744Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:03.492Z"
     },
     {
       "title": "Team Leader",
@@ -1163,33 +1339,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai/team-leader-875806033",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T11:59:58.646Z"
-    },
-    {
-      "title": "Team Leader (Personal Loans) -Telesales(Female Candidates Only)",
-      "company": "R S Credit Mantra Private Limited",
-      "link": "https://apna.co/job/chennai/team-leader-personal-loans-telesales-female-candid-665520165",
-      "raw_link": "https://apna.co/job/chennai/team-leader-personal-loans-telesales-female-candid-665520165",
-      "location": "Chennai, Tamil Nadu ⭐",
-      "source": "TN Live (apna.co)",
-      "date_posted": "2026-10-07",
-      "description": "Team Leader (Personal Loans) -Telesales(Female Candidates Only) Thyagaraya Nagar, Chennai Work from Office, Full Time, Min. 3 years, Basic English",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "INR 25000 - 40000 per month",
-      "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch",
-      "experience": "3+ years",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 3+ years",
-      "found_at": "2026-10-07T12:00+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "https://apna.co/job/chennai/team-leader-personal-loans-telesales-female-candid-665520165",
-      "retrieved_at": "2026-10-07T11:57:37.687Z",
-      "source_checked_at": "2026-10-07T12:00:22.387Z"
+      "retrieved_at": "2026-10-07T19:29:50.587Z",
+      "source_checked_at": "2026-10-07T19:32:10.419Z"
     },
     {
       "title": "Telecalling Executive",
@@ -1207,11 +1361,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/telecalling-executive-446706747",
-      "retrieved_at": "2026-10-07T11:57:34.407Z",
-      "source_checked_at": "2026-10-07T11:59:33.724Z"
+      "retrieved_at": "2026-10-07T19:29:49.167Z",
+      "source_checked_at": "2026-10-07T19:31:48.036Z"
     },
     {
       "title": "VMC HMC Programmer",
@@ -1229,11 +1383,33 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/chennai-region/vmc-hmc-programmer-790711758",
-      "retrieved_at": "2026-10-07T11:57:34.406Z",
-      "source_checked_at": "2026-10-07T11:59:26.028Z"
+      "retrieved_at": "2026-10-07T19:29:49.167Z",
+      "source_checked_at": "2026-10-07T19:31:40.638Z"
+    },
+    {
+      "title": "Developer III - Software Engineering - Angular",
+      "company": "UST",
+      "link": "https://in.linkedin.com/jobs/view/developer-iii-software-engineering-angular-at-ust-4464773845",
+      "raw_link": "https://in.linkedin.com/jobs/view/developer-iii-software-engineering-angular-at-ust-4464773845",
+      "location": "Chennai, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-10-05",
+      "description": "Developer III - Software Engineering - Angular Chennai, Tamil Nadu, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "5+ years",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 5+ years",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/developer-iii-software-engineering-angular-at-ust-4464773845",
+      "retrieved_at": "2026-10-07T19:30:04.832Z",
+      "source_checked_at": "2026-10-07T19:31:01.605Z"
     },
     {
       "title": "Intermediate Software Engineer – Java Full Stack",
@@ -1251,11 +1427,11 @@
       "batch": "Any Graduate",
       "experience": "4+ years",
       "eligibility_badge": "🎓 Any Graduate • 💼 4+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/intermediate-software-engineer-%E2%80%93-java-full-stack-at-citi-4474624831",
-      "retrieved_at": "2026-10-07T11:57:51.181Z",
-      "source_checked_at": "2026-10-07T11:58:50.592Z"
+      "retrieved_at": "2026-10-07T19:30:04.833Z",
+      "source_checked_at": "2026-10-07T19:31:16.506Z"
     },
     {
       "title": "𝗦𝗔𝗣 𝗕𝗣𝗖 𝗖𝗢𝗡𝗦𝗨𝗟𝗧𝗔𝗡𝗧",
@@ -1273,33 +1449,11 @@
       "batch": "B.E / B.Tech",
       "experience": "2+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 2+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/%F0%9D%97%A6%F0%9D%97%94%F0%9D%97%A3-%F0%9D%97%95%F0%9D%97%A3%F0%9D%97%96-%F0%9D%97%96%F0%9D%97%A2%F0%9D%97%A1%F0%9D%97%A6%F0%9D%97%A8%F0%9D%97%9F%F0%9D%97%A7%F0%9D%97%94%F0%9D%97%A1%F0%9D%97%A7-4474237844",
-      "retrieved_at": "2026-10-07T11:57:43.794Z",
-      "source_checked_at": "2026-10-07T11:58:01.193Z"
-    },
-    {
-      "title": "Developer III - Software Engineering - Angular",
-      "company": "UST",
-      "link": "https://in.linkedin.com/jobs/view/developer-iii-software-engineering-angular-at-ust-4464773845",
-      "raw_link": "https://in.linkedin.com/jobs/view/developer-iii-software-engineering-angular-at-ust-4464773845",
-      "location": "Chennai, Tamil Nadu ⭐",
-      "source": "TN Live (linkedin.com)",
-      "date_posted": "2026-10-05",
-      "description": "Developer III - Software Engineering - Angular Chennai, Tamil Nadu, India",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "",
-      "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch",
-      "experience": "Freshers (0-1 yrs)",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "https://in.linkedin.com/jobs/view/developer-iii-software-engineering-angular-at-ust-4464773845",
-      "retrieved_at": "2026-10-07T11:57:51.178Z",
-      "source_checked_at": "2026-10-07T11:58:32.387Z"
+      "retrieved_at": "2026-10-07T19:29:57.635Z",
+      "source_checked_at": "2026-10-07T19:30:20.385Z"
     },
     {
       "title": "Principal Engineer - Machine Learning",
@@ -1317,55 +1471,33 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Director",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Director",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000152895704",
-      "retrieved_at": "2026-10-07T11:56:24.164Z",
-      "source_checked_at": "2026-10-07T11:57:53.919Z"
-    },
-    {
-      "title": "Software Dev Engineer II, Alexa Connections",
-      "company": "Amazon",
-      "link": "https://in.linkedin.com/jobs/view/software-dev-engineer-ii-alexa-connections-at-amazon-4455793886",
-      "raw_link": "https://in.linkedin.com/jobs/view/software-dev-engineer-ii-alexa-connections-at-amazon-4455793886",
-      "location": "Chennai, Tamil Nadu ⭐",
-      "source": "TN Live (linkedin.com)",
-      "date_posted": "2026-10-01",
-      "description": "Software Dev Engineer II, Alexa Connections Chennai, Tamil Nadu, India",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "",
-      "hr_email": "",
-      "batch": "B.E / B.Tech",
-      "experience": "3+ years",
-      "eligibility_badge": "🎓 B.E / B.Tech • 💼 3+ years",
-      "found_at": "2026-10-07T12:00+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "https://in.linkedin.com/jobs/view/software-dev-engineer-ii-alexa-connections-at-amazon-4455793886",
-      "retrieved_at": "2026-10-07T11:57:51.178Z",
-      "source_checked_at": "2026-10-07T11:58:34.143Z"
+      "retrieved_at": "2026-10-07T19:28:41.581Z",
+      "source_checked_at": "2026-10-07T19:30:07.557Z"
     },
     {
       "title": "Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, Azure Cloud",
       "company": "UPS",
-      "link": "https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248974223",
-      "raw_link": "https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248974223",
+      "link": "https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248973372",
+      "raw_link": "https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248973372",
       "location": "Chennai, Tamil Nadu ⭐",
       "source": "TN Live (linkedin.com)",
-      "date_posted": "2026-09-29",
+      "date_posted": "2026-09-28",
       "description": "Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, Azure Cloud Chennai, Tamil Nadu, India",
       "priority_tier": 1,
       "is_tamil_nadu": true,
-      "salary": "",
+      "salary": "₹300,000 - ₹500,000",
       "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch",
-      "experience": "Freshers (0-1 yrs)",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "batch": "Any Graduate",
+      "experience": "1+ years",
+      "eligibility_badge": "🎓 Any Graduate • 💼 1+ years",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248974223",
-      "retrieved_at": "2026-10-07T11:57:51.181Z",
-      "source_checked_at": "2026-10-07T11:58:55.727Z"
+      "source_url": "https://in.linkedin.com/jobs/view/intermediate-software-engineer-full-stack-c%23-dotnet-mvc-angular-azure-cloud-at-ups-4248973372",
+      "retrieved_at": "2026-10-07T19:30:04.833Z",
+      "source_checked_at": "2026-10-07T19:31:21.901Z"
     },
     {
       "title": "Lead - Business Analyst (Marketing Analytics)",
@@ -1383,11 +1515,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000152076124",
-      "retrieved_at": "2026-10-07T11:56:24.164Z",
-      "source_checked_at": "2026-10-07T11:57:56.516Z"
+      "retrieved_at": "2026-10-07T19:28:41.581Z",
+      "source_checked_at": "2026-10-07T19:30:09.856Z"
     },
     {
       "title": "Fullstack Java With Angular-Software Engineer II",
@@ -1405,11 +1537,11 @@
       "batch": "B.E / B.Tech",
       "experience": "4-7 years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 4-7 years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/fullstack-java-with-angular-software-engineer-ii-at-deloitte-4424676269",
-      "retrieved_at": "2026-10-07T11:57:51.178Z",
-      "source_checked_at": "2026-10-07T11:58:42.371Z"
+      "retrieved_at": "2026-10-07T19:30:04.833Z",
+      "source_checked_at": "2026-10-07T19:31:07.999Z"
     },
     {
       "title": "Senior Staff Engineer - Systems",
@@ -1427,11 +1559,11 @@
       "batch": "Any Graduate",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 Any Graduate • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000150937764",
-      "retrieved_at": "2026-10-07T11:56:24.165Z",
-      "source_checked_at": "2026-10-07T11:57:58.963Z"
+      "retrieved_at": "2026-10-07T19:28:41.581Z",
+      "source_checked_at": "2026-10-07T19:30:12.778Z"
     },
     {
       "title": "Lead Software Engineer - Full Stack",
@@ -1449,11 +1581,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000150608630",
-      "retrieved_at": "2026-10-07T11:56:24.165Z",
-      "source_checked_at": "2026-10-07T11:58:01.373Z"
+      "retrieved_at": "2026-10-07T19:28:41.581Z",
+      "source_checked_at": "2026-10-07T19:30:15.255Z"
     },
     {
       "title": "Senior Node.js Develpoer",
@@ -1471,11 +1603,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/senior-node-js-develpoer-at-bigthinkcode-4466908401",
-      "retrieved_at": "2026-10-07T11:57:49.123Z",
-      "source_checked_at": "2026-10-07T11:58:07.002Z"
+      "retrieved_at": "2026-10-07T19:30:01.856Z",
+      "source_checked_at": "2026-10-07T19:30:38.797Z"
     },
     {
       "title": "Principal - Solution Engineering",
@@ -1493,11 +1625,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000150068499",
-      "retrieved_at": "2026-10-07T11:56:24.165Z",
-      "source_checked_at": "2026-10-07T11:58:03.729Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:18.433Z"
     },
     {
       "title": "Full Stack Developer-Angular",
@@ -1515,11 +1647,11 @@
       "batch": "B.E / B.Tech",
       "experience": "5+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/full-stack-developer-angular-at-ust-4457234516",
-      "retrieved_at": "2026-10-07T11:57:51.178Z",
-      "source_checked_at": "2026-10-07T11:58:39.007Z"
+      "retrieved_at": "2026-10-07T19:30:04.833Z",
+      "source_checked_at": "2026-10-07T19:31:05.639Z"
     },
     {
       "title": "Senior Developer",
@@ -1534,36 +1666,14 @@
       "is_tamil_nadu": true,
       "salary": "",
       "hr_email": "",
-      "batch": "B.E / B.Tech",
-      "experience": "1 months",
-      "eligibility_badge": "🎓 B.E / B.Tech • 💼 1 months",
-      "found_at": "2026-10-07T12:00+00:00",
+      "batch": "2024 / 2025 / 2026 Batch",
+      "experience": "Freshers (0-1 yrs)",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/senior-developer-at-idfc-first-bank-4448561376",
-      "retrieved_at": "2026-10-07T11:57:51.180Z",
-      "source_checked_at": "2026-10-07T11:58:47.744Z"
-    },
-    {
-      "title": "Full Stack Java Developer",
-      "company": "Citi",
-      "link": "https://in.linkedin.com/jobs/view/full-stack-java-developer-at-citi-4457464802",
-      "raw_link": "https://in.linkedin.com/jobs/view/full-stack-java-developer-at-citi-4457464802",
-      "location": "Chennai, Tamil Nadu ⭐",
-      "source": "TN Live (linkedin.com)",
-      "date_posted": "2026-09-15",
-      "description": "Full Stack Java Developer Chennai, Tamil Nadu, India",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "",
-      "hr_email": "",
-      "batch": "B.E / B.Tech",
-      "experience": "4-8 years",
-      "eligibility_badge": "🎓 B.E / B.Tech • 💼 4-8 years",
-      "found_at": "2026-10-07T12:00+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "https://in.linkedin.com/jobs/view/full-stack-java-developer-at-citi-4457464802",
-      "retrieved_at": "2026-10-07T11:57:51.181Z",
-      "source_checked_at": "2026-10-07T11:58:52.841Z"
+      "retrieved_at": "2026-10-07T19:30:04.833Z",
+      "source_checked_at": "2026-10-07T19:31:14.762Z"
     },
     {
       "title": "Lead - Product Marketing",
@@ -1581,11 +1691,11 @@
       "batch": "MBA",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 MBA • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000147910359",
-      "retrieved_at": "2026-10-07T11:56:24.165Z",
-      "source_checked_at": "2026-10-07T11:58:06.662Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:20.850Z"
     },
     {
       "title": "Oracle HCM Consultant",
@@ -1603,11 +1713,11 @@
       "batch": "B.E / B.Tech",
       "experience": "1-2 years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 1-2 years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/oracle-hcm-consultant-at-altraize-4462920900",
-      "retrieved_at": "2026-10-07T11:57:49.126Z",
-      "source_checked_at": "2026-10-07T11:58:26.698Z"
+      "retrieved_at": "2026-10-07T19:30:01.857Z",
+      "source_checked_at": "2026-10-07T19:30:56.062Z"
     },
     {
       "title": "WEB WORDPRESS ( JUNIOR FULLTIME)",
@@ -1625,11 +1735,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Fresher",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/web-wordpress-junior-fulltime-at-hyperz-digital-4461484242",
-      "retrieved_at": "2026-10-07T11:57:49.124Z",
-      "source_checked_at": "2026-10-07T11:58:19.318Z"
+      "retrieved_at": "2026-10-07T19:30:01.856Z",
+      "source_checked_at": "2026-10-07T19:30:48.983Z"
     },
     {
       "title": "WEB WORDPRESS (INTERN – FULLTIME)",
@@ -1642,16 +1752,16 @@
       "description": "WEB WORDPRESS (INTERN – FULLTIME) Puducherry, Puducherry, India",
       "priority_tier": 1,
       "is_tamil_nadu": true,
-      "salary": "₹100,000 - ₹300,000",
+      "salary": "",
       "hr_email": "",
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
-      "experience": "Fresher",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "experience": "Intern / Fresher",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Intern / Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/web-wordpress-intern-%E2%80%93-fulltime-at-hyperz-digital-4461806167",
-      "retrieved_at": "2026-10-07T11:57:49.125Z",
-      "source_checked_at": "2026-10-07T11:58:21.669Z"
+      "retrieved_at": "2026-10-07T19:30:01.857Z",
+      "source_checked_at": "2026-10-07T19:30:52.053Z"
     },
     {
       "title": "Senior Director, Engineering - AI Studio (CX & EX)",
@@ -1669,11 +1779,33 @@
       "batch": "Any Graduate",
       "experience": "Director",
       "eligibility_badge": "🎓 Any Graduate • 💼 Director",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000147296104",
-      "retrieved_at": "2026-10-07T11:56:24.165Z",
-      "source_checked_at": "2026-10-07T11:58:09.677Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:24.065Z"
+    },
+    {
+      "title": "Full Stack Developer",
+      "company": "BHS-Sonthofen GmbH",
+      "link": "https://in.linkedin.com/jobs/view/full-stack-developer-at-bhs-sonthofen-gmbh-4461048899",
+      "raw_link": "https://in.linkedin.com/jobs/view/full-stack-developer-at-bhs-sonthofen-gmbh-4461048899",
+      "location": "Vellore, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-08-31",
+      "description": "Full Stack Developer Gangadharanellore, Andhra Pradesh, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch",
+      "experience": "Fresher",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/full-stack-developer-at-bhs-sonthofen-gmbh-4461048899",
+      "retrieved_at": "2026-10-07T19:30:00.336Z",
+      "source_checked_at": "2026-10-07T19:30:31.098Z"
     },
     {
       "title": "Lead - Solution Engineer",
@@ -1691,11 +1823,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000145700849",
-      "retrieved_at": "2026-10-07T11:56:24.165Z",
-      "source_checked_at": "2026-10-07T11:58:12.309Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:27.036Z"
     },
     {
       "title": "Lead - Solution Engineer",
@@ -1713,11 +1845,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000145469389",
-      "retrieved_at": "2026-10-07T11:56:24.165Z",
-      "source_checked_at": "2026-10-07T11:58:15.739Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:29.690Z"
     },
     {
       "title": "Senior Analyst - Cybersecurity",
@@ -1735,11 +1867,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Associate",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000144728625",
-      "retrieved_at": "2026-10-07T11:56:24.165Z",
-      "source_checked_at": "2026-10-07T11:58:18.962Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:32.074Z"
     },
     {
       "title": "Deal Desk Strategist",
@@ -1757,11 +1889,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000144466115",
-      "retrieved_at": "2026-10-07T11:56:24.165Z",
-      "source_checked_at": "2026-10-07T11:58:21.439Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:35.576Z"
     },
     {
       "title": "Associate Database Engineer",
@@ -1779,11 +1911,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Fresher",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/associate-database-engineer-at-mydbops-4454260797",
-      "retrieved_at": "2026-10-07T11:57:49.126Z",
-      "source_checked_at": "2026-10-07T11:58:24.283Z"
+      "retrieved_at": "2026-10-07T19:30:01.857Z",
+      "source_checked_at": "2026-10-07T19:30:53.704Z"
     },
     {
       "title": "Lead - Data Platform Engineering",
@@ -1801,11 +1933,11 @@
       "batch": "Any Graduate",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 Any Graduate • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000143743519",
-      "retrieved_at": "2026-10-07T11:56:24.166Z",
-      "source_checked_at": "2026-10-07T11:58:24.992Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:38.026Z"
     },
     {
       "title": "Territory Sales Manager, Reflectives - Tamil Nadu & Kerala",
@@ -1823,11 +1955,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/AveryDennison/744000143741489",
-      "retrieved_at": "2026-10-07T11:56:30.255Z",
-      "source_checked_at": "2026-10-07T11:59:19.143Z"
+      "retrieved_at": "2026-10-07T19:28:47.368Z",
+      "source_checked_at": "2026-10-07T19:31:34.877Z"
     },
     {
       "title": "Solution Architect",
@@ -1845,11 +1977,33 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000142843669",
-      "retrieved_at": "2026-10-07T11:56:24.166Z",
-      "source_checked_at": "2026-10-07T11:58:27.644Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:40.508Z"
+    },
+    {
+      "title": "Interesting Job Opportunity: QX Impact - Lead Data Analyst",
+      "company": "QX Impact",
+      "link": "https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022",
+      "raw_link": "https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022",
+      "location": "Vellore, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-08-06",
+      "description": "Interesting Job Opportunity: QX Impact - Lead Data Analyst Tirupati, Andhra Pradesh, India",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "10+ years",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 10+ years",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022",
+      "retrieved_at": "2026-10-07T19:30:00.337Z",
+      "source_checked_at": "2026-10-07T19:30:34.247Z"
     },
     {
       "title": "Lead - Business Systems Services",
@@ -1867,11 +2021,11 @@
       "batch": "Any Graduate",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 Any Graduate • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000141842029",
-      "retrieved_at": "2026-10-07T11:56:24.166Z",
-      "source_checked_at": "2026-10-07T11:58:30.875Z"
+      "retrieved_at": "2026-10-07T19:28:41.582Z",
+      "source_checked_at": "2026-10-07T19:30:43.520Z"
     },
     {
       "title": "Senior Analyst - Cybersecurity Risk & Compliance",
@@ -1889,11 +2043,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Associate",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/Freshworks/744000140882260",
-      "retrieved_at": "2026-10-07T11:56:24.166Z",
-      "source_checked_at": "2026-10-07T11:58:33.400Z"
+      "retrieved_at": "2026-10-07T19:28:41.583Z",
+      "source_checked_at": "2026-10-07T19:30:45.975Z"
     },
     {
       "title": "Integrations Engineer",
@@ -1911,11 +2065,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/integrations-engineer-at-drdoctor-4444153802",
-      "retrieved_at": "2026-10-07T11:57:49.124Z",
-      "source_checked_at": "2026-10-07T11:58:15.973Z"
+      "retrieved_at": "2026-10-07T19:30:01.856Z",
+      "source_checked_at": "2026-10-07T19:30:46.183Z"
     },
     {
       "title": "Salesforce Architect",
@@ -1933,11 +2087,11 @@
       "batch": "B.E / B.Tech",
       "experience": "10+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 10+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/salesforce-architect-at-successmetrics-corp-4442579072",
-      "retrieved_at": "2026-10-07T11:57:49.126Z",
-      "source_checked_at": "2026-10-07T11:58:29.573Z"
+      "retrieved_at": "2026-10-07T19:30:01.857Z",
+      "source_checked_at": "2026-10-07T19:30:58.189Z"
     },
     {
       "title": "Salesforce Developer",
@@ -1955,11 +2109,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "4+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 4+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/salesforce-developer-at-successmetrics-corp-4442574293",
-      "retrieved_at": "2026-10-07T11:57:49.124Z",
-      "source_checked_at": "2026-10-07T11:58:09.757Z"
+      "retrieved_at": "2026-10-07T19:30:01.856Z",
+      "source_checked_at": "2026-10-07T19:30:41.387Z"
     },
     {
       "title": "Senior Salesforce Developer",
@@ -1975,13 +2129,13 @@
       "salary": "₹500,000 - ₹1,300,000",
       "hr_email": "",
       "batch": "2024 / 2025 / 2026 Batch",
-      "experience": "5-7 years",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5-7 years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "experience": "Fresher",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/senior-salesforce-developer-at-successmetrics-corp-4442558941",
-      "retrieved_at": "2026-10-07T11:57:49.124Z",
-      "source_checked_at": "2026-10-07T11:58:13.019Z"
+      "retrieved_at": "2026-10-07T19:30:01.856Z",
+      "source_checked_at": "2026-10-07T19:30:43.999Z"
     },
     {
       "title": ".Net Senior Software Engineer",
@@ -1999,11 +2153,11 @@
       "batch": "B.E / B.Tech",
       "experience": "35+ years",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 35+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/net-senior-software-engineer-at-viasat-4435837027",
-      "retrieved_at": "2026-10-07T11:57:51.180Z",
-      "source_checked_at": "2026-10-07T11:58:45.380Z"
+      "retrieved_at": "2026-10-07T19:30:04.833Z",
+      "source_checked_at": "2026-10-07T19:31:10.235Z"
     },
     {
       "title": "Territory Sales Manager -Performance Tapes, South India",
@@ -2021,11 +2175,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/AveryDennison/744000134598259",
-      "retrieved_at": "2026-10-07T11:56:30.255Z",
-      "source_checked_at": "2026-10-07T11:59:22.695Z"
+      "retrieved_at": "2026-10-07T19:28:47.368Z",
+      "source_checked_at": "2026-10-07T19:31:38.152Z"
     },
     {
       "title": "Associate Data Engineer Position filled",
@@ -2043,11 +2197,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Fresher",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/associate-data-engineer-position-filled-at-irastrive-technologies-private-limited-4416217228",
-      "retrieved_at": "2026-10-07T11:57:43.793Z",
-      "source_checked_at": "2026-10-07T11:57:58.830Z"
+      "retrieved_at": "2026-10-07T19:29:57.635Z",
+      "source_checked_at": "2026-10-07T19:30:17.690Z"
     },
     {
       "title": "Sr. Software Engineer (Python)",
@@ -2063,13 +2217,13 @@
       "salary": "",
       "hr_email": "",
       "batch": "2024 / 2025 / 2026 Batch",
-      "experience": "2-5 years",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 2-5 years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "experience": "Freshers (0-1 yrs)",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://in.linkedin.com/jobs/view/sr-software-engineer-python-at-bigthinkcode-4339895870",
-      "retrieved_at": "2026-10-07T11:57:51.178Z",
-      "source_checked_at": "2026-10-07T11:58:36.620Z"
+      "retrieved_at": "2026-10-07T19:30:04.833Z",
+      "source_checked_at": "2026-10-07T19:31:03.790Z"
     },
     {
       "title": "Graphic Designer",
@@ -2087,9 +2241,29 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.linkedin.com/jobs/view/4473618009"
+    },
+    {
+      "title": "Role: Java Developer",
+      "company": "Company: Cognizant",
+      "link": "https://freshershunt.in/cognizant-java-developer-aws-2026",
+      "raw_link": "https://freshershunt.in/cognizant-java-developer-aws-2026",
+      "location": "Chennai, Tamil Nadu ⭐",
+      "source": "Telegram @Freshershunt",
+      "date_posted": "",
+      "description": "🚨\n 𝗖𝗢𝗚𝗡𝗜𝗭𝗔𝗡𝗧 — 𝗝𝗮𝘃𝗮 𝗗𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿! \n☕\n🏢\n Company: Cognizant\n💼\n Role: Java Developer\n📍\n Location: Chennai | Hybrid\n🎓\n Batch: 2023/2024/2025/2026\n💰\n Salary : ₹ 4.5 to ₹ 5 LPA\n🔗\n \nhttps://freshershunt.in/cognizant-java-developer-aws-2026/\n➖\n➖\n➖\n➖\n➖\n➖\n➖\n➖\n➖",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "₹ 4.5 to ₹ 5 LPA",
+      "hr_email": "",
+      "batch": "2023 - 2026 Batches",
+      "experience": "Freshers (0-1 yrs)",
+      "eligibility_badge": "🎓 2023 - 2026 Batches • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://freshershunt.in/cognizant-java-developer-aws-2026"
     },
     {
       "title": "Role: Associate System Engineer",
@@ -2107,49 +2281,73 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://freshershunt.in/ibm-associate-system-engineer-2026"
     },
     {
-      "title": "Experience: 0 Years",
-      "company": "Company: Cisco",
-      "link": "https://freshershunt.in/cisco-off-campus-drive-2026",
-      "raw_link": "https://freshershunt.in/cisco-off-campus-drive-2026",
+      "title": "Software Development Engineer",
+      "company": "Verified Tech Company",
+      "link": "https://www.codingninjas.com/programs/job-bootcamp-data-analytics",
+      "raw_link": "https://www.codingninjas.com/programs/job-bootcamp-data-analytics",
       "location": "Chennai, Tamil Nadu ⭐",
-      "source": "Telegram @Freshershunt",
+      "source": "Telegram @KickCharm",
       "date_posted": "",
-      "description": "🚨\n 𝗖𝗜𝗦𝗖𝗢 𝗜𝗦 𝗛𝗜𝗥𝗜𝗡𝗚 𝗙𝗥𝗘𝗦𝗛𝗘𝗥𝗦 — 𝟮 𝗢𝗽𝗲𝗻𝗶𝗻𝗴𝘀! \n🎯\n🏢\n Company: Cisco\n1️⃣\n Software Engineer (Evergreen) | 2015359\n📍\n Location: Bangalore + 11 cities (Hyderabad, Pune, Chennai, Gurgaon, Noida & more)\n💰\n Salary: Not disclosed (reported ₹15–20 LPA)\n🎓\n Eligibi",
+      "description": "🚀\n 𝙈𝙖𝙨𝙩𝙚𝙧 𝘿𝙖𝙩𝙖 𝘼𝙣𝙖𝙡𝙮𝙨𝙩 𝙞𝙣 2026 — 𝘼𝙗𝙨𝙤𝙡𝙪𝙩𝙚𝙡𝙮 𝙁𝙍𝙀𝙀\n❗️\n💸\n Cost: ₹0 (FREE!)\nWhat you’ll learn:\n✅\n Excel, SQL & Power BI\n✅\n Data Analysis & Visualization\n✅\n ATS-Friendly Resume (95+ Score)\n✅\n Free Certificate \n🎓\n✅\n 200+ Hiring Partners \n🤝\n✅\n Placement Sup",
       "priority_tier": 1,
       "is_tamil_nadu": true,
-      "salary": "Not disclosed (reported ₹15–20 LPA)",
+      "salary": "",
       "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch",
-      "experience": "0 Years 🚨",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 0 Years 🚨",
-      "found_at": "2026-10-07T12:01+00:00",
+      "batch": "2026 Batch",
+      "experience": "Freshers (0-1 yrs)",
+      "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "https://freshershunt.in/cisco-off-campus-drive-2026"
+      "source_url": "https://www.codingninjas.com/programs/job-bootcamp-data-analytics"
     },
     {
-      "title": "Role: Intern – Software (Model-Based Design)",
-      "company": "Company: Valeo",
-      "link": "https://freshershunt.in/valeo-internship-2026",
-      "raw_link": "https://freshershunt.in/valeo-internship-2026",
-      "location": "Chennai, Tamil Nadu ⭐",
-      "source": "Telegram @Freshershunt",
-      "date_posted": "",
-      "description": "🚨\n 𝗩𝗔𝗟𝗘𝗢 — 𝗦𝗼𝗳𝘁𝘄𝗮𝗿𝗲 (𝗠𝗕𝗗) 𝗜𝗻𝘁𝗲𝗿𝗻! \n🎯\n🏢\n Company: Valeo\n💼\n Role: Intern – Software (Model-Based Design) | REQ2026070899\n📍\n Location: Chennai\n💰\n Stipend: Not disclosed (reported ₹7.5K–16K/month)\n🎓\n Eligibility: EEE / ECE / EIE / Mechatronics students (",
+      "title": "C# & Database Engineer",
+      "company": "Robert Bosch India",
+      "link": "https://jobs.smartrecruiters.com/BoschGroup/744000154171608",
+      "raw_link": "https://jobs.smartrecruiters.com/BoschGroup/744000154171608",
+      "location": "Coimbatore, Tamil Nadu ⭐",
+      "source": "TN Live (bosch.in)",
+      "date_posted": "2026-10-07",
+      "description": "C# & Database Engineer vacancy at Robert Bosch India in Coimbatore. Official direct application.",
       "priority_tier": 1,
       "is_tamil_nadu": true,
-      "salary": "Not disclosed (reported ₹7.5K–16K/month)",
+      "salary": "",
       "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
-      "experience": "Intern / Fresher",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Intern / Fresher",
-      "found_at": "2026-10-07T12:01+00:00",
+      "batch": "B.E / B.Tech",
+      "experience": "Associate",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "https://freshershunt.in/valeo-internship-2026"
+      "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000154171608",
+      "retrieved_at": "2026-10-07T19:28:44.276Z",
+      "source_checked_at": "2026-10-07T19:30:51.496Z"
+    },
+    {
+      "title": "Vehicle Diagnostics Engineer",
+      "company": "Robert Bosch India",
+      "link": "https://jobs.smartrecruiters.com/BoschGroup/744000154171949",
+      "raw_link": "https://jobs.smartrecruiters.com/BoschGroup/744000154171949",
+      "location": "Coimbatore, Tamil Nadu ⭐",
+      "source": "TN Live (bosch.in)",
+      "date_posted": "2026-10-07",
+      "description": "Vehicle Diagnostics Engineer vacancy at Robert Bosch India in Coimbatore. Official direct application.",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
+      "hr_email": "",
+      "batch": "B.E / B.Tech",
+      "experience": "Associate",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000154171949",
+      "retrieved_at": "2026-10-07T19:28:44.276Z",
+      "source_checked_at": "2026-10-07T19:30:48.404Z"
     },
     {
       "title": "VM Brakes - Project manager [Indian OEM]",
@@ -2167,11 +2365,11 @@
       "batch": "Any Graduate",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 Any Graduate • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000154064803",
-      "retrieved_at": "2026-10-07T11:56:26.996Z",
-      "source_checked_at": "2026-10-07T11:58:36.657Z"
+      "retrieved_at": "2026-10-07T19:28:44.276Z",
+      "source_checked_at": "2026-10-07T19:30:53.801Z"
     },
     {
       "title": "Applications are invited for the posts of 1)Assistant cum Bench Clerk, 2)Junior Assistant cum Bench Clerk, 3)Office Assistant in Juvenile Justice Board, Tirunelveli on…",
@@ -2189,11 +2387,11 @@
       "batch": "Graduate / As per notification",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 Graduate / As per notification • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://cdn.s3waas.gov.in/s36a9aeddfc689c1d0e3b9ccc3ab651bc5/uploads/2026/09/17910107662469.pdf",
-      "retrieved_at": "2026-10-07T11:55:14.274Z",
-      "source_checked_at": "2026-10-07T11:58:07.998Z"
+      "retrieved_at": "2026-10-07T19:27:28.649Z",
+      "source_checked_at": "2026-10-07T19:30:22.449Z"
     },
     {
       "title": "Applications are invited for the vacant Jeep Driver post in the Usilampatti Panchayat Union, Madurai District",
@@ -2211,11 +2409,11 @@
       "batch": "Graduate / As per notification",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 Graduate / As per notification • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://cdn.s3waas.gov.in/s3f5f8590cd58a54e94377e6ae2eded4d9/uploads/2026/09/17890384108691.pdf",
-      "retrieved_at": "2026-10-07T11:55:07.973Z",
-      "source_checked_at": "2026-10-07T11:57:51.304Z"
+      "retrieved_at": "2026-10-07T19:27:23.081Z",
+      "source_checked_at": "2026-10-07T19:30:04.936Z"
     },
     {
       "title": "Applications are invited for the vacant Office Assistant post in the T. Kallupatti Panchayat Union, Madurai District.",
@@ -2233,11 +2431,11 @@
       "batch": "Graduate / As per notification",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 Graduate / As per notification • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://cdn.s3waas.gov.in/s3f5f8590cd58a54e94377e6ae2eded4d9/uploads/2026/09/17899636658087.pdf",
-      "retrieved_at": "2026-10-07T11:55:07.977Z",
-      "source_checked_at": "2026-10-07T11:58:00.676Z"
+      "retrieved_at": "2026-10-07T19:27:23.084Z",
+      "source_checked_at": "2026-10-07T19:30:15.891Z"
     },
     {
       "title": "Applications are invited for the vacant Office Assistant post in the Thirumangalam Panchayat Union, Madurai District",
@@ -2255,11 +2453,11 @@
       "batch": "Graduate / As per notification",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 Graduate / As per notification • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://cdn.s3waas.gov.in/s3f5f8590cd58a54e94377e6ae2eded4d9/uploads/2026/09/17897132888349.pdf",
-      "retrieved_at": "2026-10-07T11:55:07.976Z",
-      "source_checked_at": "2026-10-07T11:58:00.521Z"
+      "retrieved_at": "2026-10-07T19:27:23.084Z",
+      "source_checked_at": "2026-10-07T19:30:13.676Z"
     },
     {
       "title": "Applications are invited for the vacant post of Record Clerk in the Alanganallur Panchayat Union, Madurai District",
@@ -2277,11 +2475,11 @@
       "batch": "Graduate / As per notification",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 Graduate / As per notification • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://cdn.s3waas.gov.in/s3f5f8590cd58a54e94377e6ae2eded4d9/uploads/2026/09/17890381633073.pdf",
-      "retrieved_at": "2026-10-07T11:55:07.975Z",
-      "source_checked_at": "2026-10-07T11:57:51.831Z"
+      "retrieved_at": "2026-10-07T19:27:23.083Z",
+      "source_checked_at": "2026-10-07T19:30:09.978Z"
     },
     {
       "title": "District Child Protection Unit, Salem District – Applications are invited for Assistant-cum-Bench Clerk, Junior Assistant-cum-Bench Clerk and Office Assistant Posts on contract…",
@@ -2299,11 +2497,11 @@
       "batch": "Graduate / As per notification",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 Graduate / As per notification • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://cdn.s3waas.gov.in/s3c81e728d9d4c2f636f067f89cc14862c/uploads/2026/09/17905696356819.pdf",
-      "retrieved_at": "2026-10-07T11:55:12.372Z",
-      "source_checked_at": "2026-10-07T11:58:05.181Z"
+      "retrieved_at": "2026-10-07T19:27:26.910Z",
+      "source_checked_at": "2026-10-07T19:30:20.003Z"
     },
     {
       "title": "Staff Nurse Recruitment – List of Selected Candidates",
@@ -2321,11 +2519,11 @@
       "batch": "Graduate / As per notification",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 Graduate / As per notification • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://cdn.s3waas.gov.in/s3d9fc5b73a8d78fad3d6dffe419384e70/uploads/2026/10/17912174187945.pdf",
-      "retrieved_at": "2026-10-07T11:55:16.028Z",
-      "source_checked_at": "2026-10-07T11:58:12.649Z"
+      "retrieved_at": "2026-10-07T19:27:30.366Z",
+      "source_checked_at": "2026-10-07T19:30:25.660Z"
     },
     {
       "title": "Branch Manager",
@@ -2343,11 +2541,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "3+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 3+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/branch-manager-345691925",
-      "retrieved_at": "2026-10-07T11:57:29.625Z",
-      "source_checked_at": "2026-10-07T11:58:57.560Z"
+      "retrieved_at": "2026-10-07T19:29:42.860Z",
+      "source_checked_at": "2026-10-07T19:31:07.360Z"
     },
     {
       "title": "Business Development Executive (BDE)",
@@ -2365,11 +2563,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "1+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 1+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/business-development-executive-bde-553642913",
-      "retrieved_at": "2026-10-07T11:57:29.623Z",
-      "source_checked_at": "2026-10-07T11:58:43.027Z"
+      "retrieved_at": "2026-10-07T19:29:42.859Z",
+      "source_checked_at": "2026-10-07T19:30:56.270Z"
     },
     {
       "title": "Business Operations Manager",
@@ -2387,11 +2585,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "3+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 3+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/business-operations-manager-646585658",
-      "retrieved_at": "2026-10-07T11:57:29.624Z",
-      "source_checked_at": "2026-10-07T11:58:45.192Z"
+      "retrieved_at": "2026-10-07T19:29:42.859Z",
+      "source_checked_at": "2026-10-07T19:30:58.420Z"
     },
     {
       "title": "Customer Acquisition Executive",
@@ -2409,11 +2607,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/trichy-region/customer-acquisition-executive-363986578",
-      "retrieved_at": "2026-10-07T11:57:34.405Z",
-      "source_checked_at": "2026-10-07T11:59:16.701Z"
+      "retrieved_at": "2026-10-07T19:29:49.166Z",
+      "source_checked_at": "2026-10-07T19:31:27.222Z"
     },
     {
       "title": "CWF EC Header",
@@ -2431,11 +2629,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://career.infosys.com/function%20link(scope,%20element,%20attrs,%20controller)%20%7B%20var%20TAB_KEY_CODE%20=%209;%20document.addEventListener('keyup',%20function(event)%20%7B%20var%20keyName%20=%20event.key;%20if%20(event.keyCode%20===%20TAB_KEY_CODE)%20%7B%20scope.showElemFocusCssOnKeybrd();%20%7D%20%7D);%20document.addEventListener('mousedown',%20function(event)%20%7B%20if%20($('html').hasClass('focus-everything'))%20%7B%20$('html').removeClass('focus-everything');%20%7D%20%7D);%20scope.showElemFocusCssOnKeybrd%20=%20function()%20%7B%20if%20(!$('html').hasClass('focus-everything'))%20%7B%20$('html').addClass('focus-everything');%20%7D%20%7D;%20var%20uiNotifContainer%20=%20document.getElementById('uiNotificationContainer');%20var%20mainPage%20=%20$('section.page');%20mainPage[0].insertBefore(uiNotifContainer,%20mainPage[0].childNodes[0]);%20var%20chatIframeLoaded%20=%20function()%7B%20scope.redirectToSessionExpiredPage();%20scope.toggleLoader(false,%20true);%20%7D;%20scope.intitiateChatIframeLoad%20=%20function()%7B%20$(%22",
-      "retrieved_at": "2026-10-07T11:56:06.218Z",
-      "source_checked_at": "2026-10-07T11:58:16.691Z"
+      "retrieved_at": "2026-10-07T19:28:23.245Z",
+      "source_checked_at": "2026-10-07T19:30:42.785Z"
     },
     {
       "title": "Hiring Freshers | ITI/Diploma/Graduate- Bangalore",
@@ -2453,11 +2651,11 @@
       "batch": "Diploma",
       "experience": "Fresher",
       "eligibility_badge": "🎓 Diploma • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/doddaballapura/hiring-freshers-iti-diploma-graduate-bangalore-139550512",
-      "retrieved_at": "2026-10-07T11:57:33.374Z",
-      "source_checked_at": "2026-10-07T11:59:04.842Z"
+      "retrieved_at": "2026-10-07T19:29:45.895Z",
+      "source_checked_at": "2026-10-07T19:31:14.597Z"
     },
     {
       "title": "Relationship Manager",
@@ -2475,11 +2673,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "6 months",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 6 months",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/relationship-manager-246836158",
-      "retrieved_at": "2026-10-07T11:57:29.624Z",
-      "source_checked_at": "2026-10-07T11:58:51.064Z"
+      "retrieved_at": "2026-10-07T19:29:42.859Z",
+      "source_checked_at": "2026-10-07T19:31:02.641Z"
     },
     {
       "title": "Sales & Marketing Executive",
@@ -2497,11 +2695,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "2+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 2+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/sales-marketing-executive-645278996",
-      "retrieved_at": "2026-10-07T11:57:29.625Z",
-      "source_checked_at": "2026-10-07T11:58:59.662Z"
+      "retrieved_at": "2026-10-07T19:29:42.860Z",
+      "source_checked_at": "2026-10-07T19:31:09.316Z"
     },
     {
       "title": "Senior Relationship Manager",
@@ -2519,11 +2717,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "1+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 1+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/trichy-region/senior-relationship-manager-166710895",
-      "retrieved_at": "2026-10-07T11:57:34.404Z",
-      "source_checked_at": "2026-10-07T11:59:13.423Z"
+      "retrieved_at": "2026-10-07T19:29:49.166Z",
+      "source_checked_at": "2026-10-07T19:31:25.424Z"
     },
     {
       "title": "Sr. Accountant",
@@ -2541,11 +2739,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "5+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 5+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/sr-accountant-24009523",
-      "retrieved_at": "2026-10-07T11:57:29.623Z",
-      "source_checked_at": "2026-10-07T11:58:35.472Z"
+      "retrieved_at": "2026-10-07T19:29:42.858Z",
+      "source_checked_at": "2026-10-07T19:30:48.680Z"
     },
     {
       "title": "Technical Support Engineers",
@@ -2563,11 +2761,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://careers.zohocorp.com/jobs/Careers/193779000024445975/Technical-Support-Engineers",
-      "retrieved_at": "2026-10-07T11:55:49.138Z",
-      "source_checked_at": "2026-10-07T11:57:51.304Z"
+      "retrieved_at": "2026-10-07T19:28:04.728Z",
+      "source_checked_at": "2026-10-07T19:30:04.936Z"
     },
     {
       "title": "VMC Machine Operator And Setter",
@@ -2585,11 +2783,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "1+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 1+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/vmc-machine-operator-and-setter-381187128",
-      "retrieved_at": "2026-10-07T11:57:29.624Z",
-      "source_checked_at": "2026-10-07T11:58:54.411Z"
+      "retrieved_at": "2026-10-07T19:29:42.859Z",
+      "source_checked_at": "2026-10-07T19:31:04.449Z"
     },
     {
       "title": "Website Operation Manager",
@@ -2607,11 +2805,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "10+ years",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 10+ years",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://apna.co/job/bengaluru-bangalore-region/website-operation-manager-411792231",
-      "retrieved_at": "2026-10-07T11:57:29.623Z",
-      "source_checked_at": "2026-10-07T11:58:37.466Z"
+      "retrieved_at": "2026-10-07T19:29:42.858Z",
+      "source_checked_at": "2026-10-07T19:30:50.520Z"
     },
     {
       "title": "*Associate - Project Management support",
@@ -2629,11 +2827,11 @@
       "batch": "Any Graduate",
       "experience": "Associate",
       "eligibility_badge": "🎓 Any Graduate • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153663179",
-      "retrieved_at": "2026-10-07T11:56:26.996Z",
-      "source_checked_at": "2026-10-07T11:58:44.179Z"
+      "retrieved_at": "2026-10-07T19:28:44.277Z",
+      "source_checked_at": "2026-10-07T19:31:01.988Z"
     },
     {
       "title": "Application SW Developer (Model-based) for Steering Platform",
@@ -2651,11 +2849,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Associate",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153732448",
-      "retrieved_at": "2026-10-07T11:56:26.996Z",
-      "source_checked_at": "2026-10-07T11:58:39.090Z"
+      "retrieved_at": "2026-10-07T19:28:44.276Z",
+      "source_checked_at": "2026-10-07T19:30:56.110Z"
     },
     {
       "title": "Workload Automation Consultant",
@@ -2673,11 +2871,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153676839",
-      "retrieved_at": "2026-10-07T11:56:26.996Z",
-      "source_checked_at": "2026-10-07T11:58:41.439Z"
+      "retrieved_at": "2026-10-07T19:28:44.276Z",
+      "source_checked_at": "2026-10-07T19:30:58.963Z"
     },
     {
       "title": "Data Consultant - Logistics",
@@ -2695,11 +2893,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Associate",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153401069",
-      "retrieved_at": "2026-10-07T11:56:26.996Z",
-      "source_checked_at": "2026-10-07T11:58:56.539Z"
+      "retrieved_at": "2026-10-07T19:28:44.277Z",
+      "source_checked_at": "2026-10-07T19:31:13.036Z"
     },
     {
       "title": "Flash Boot Loader_Software_Engineer",
@@ -2717,18 +2915,18 @@
       "batch": "B.E / B.Tech",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153495314",
-      "retrieved_at": "2026-10-07T11:56:26.996Z",
-      "source_checked_at": "2026-10-07T11:58:47.810Z"
+      "retrieved_at": "2026-10-07T19:28:44.277Z",
+      "source_checked_at": "2026-10-07T19:31:04.491Z"
     },
     {
       "title": "IN_ RBIN_ Process Planner_ Senior Engineer / Assistant Manager_ GanP/MOE3",
       "company": "Robert Bosch India",
       "link": "https://jobs.smartrecruiters.com/BoschGroup/744000153404949",
       "raw_link": "https://jobs.smartrecruiters.com/BoschGroup/744000153404949",
-      "location": "Tamil Nadu, Tamil Nadu ⭐",
+      "location": "Coimbatore, Tamil Nadu ⭐",
       "source": "TN Live (bosch.in)",
       "date_posted": "2026-10-05",
       "description": "IN_ RBIN_ Process Planner_ Senior Engineer / Assistant Manager_ GanP/MOE3 vacancy at Robert Bosch India in Tamil Nadu. Official direct application.",
@@ -2739,11 +2937,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153404949",
-      "retrieved_at": "2026-10-07T11:56:26.996Z",
-      "source_checked_at": "2026-10-07T11:58:53.280Z"
+      "retrieved_at": "2026-10-07T19:28:44.277Z",
+      "source_checked_at": "2026-10-07T19:31:09.948Z"
     },
     {
       "title": "SO_Solution Architect_System & Integration Architecture Expert",
@@ -2761,11 +2959,11 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Mid-Senior Level",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Mid-Senior Level",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153415531",
-      "retrieved_at": "2026-10-07T11:56:26.996Z",
-      "source_checked_at": "2026-10-07T11:58:50.219Z"
+      "retrieved_at": "2026-10-07T19:28:44.277Z",
+      "source_checked_at": "2026-10-07T19:31:06.846Z"
     },
     {
       "title": "ECU PjM",
@@ -2783,11 +2981,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Associate",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153372828",
-      "retrieved_at": "2026-10-07T11:56:26.997Z",
-      "source_checked_at": "2026-10-07T11:59:00.103Z"
+      "retrieved_at": "2026-10-07T19:28:44.277Z",
+      "source_checked_at": "2026-10-07T19:31:15.975Z"
     },
     {
       "title": "Embedded Developer Functional Safety",
@@ -2805,11 +3003,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Associate",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153372798",
-      "retrieved_at": "2026-10-07T11:56:26.997Z",
-      "source_checked_at": "2026-10-07T11:59:03.243Z"
+      "retrieved_at": "2026-10-07T19:28:44.277Z",
+      "source_checked_at": "2026-10-07T19:31:18.396Z"
     },
     {
       "title": "SPJM/ ECUPJM for APT and AAS PDCL",
@@ -2827,11 +3025,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Associate",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153372748",
-      "retrieved_at": "2026-10-07T11:56:26.997Z",
-      "source_checked_at": "2026-10-07T11:59:05.828Z"
+      "retrieved_at": "2026-10-07T19:28:44.277Z",
+      "source_checked_at": "2026-10-07T19:31:21.430Z"
     },
     {
       "title": "Senior AI developer and Data Visualization exper",
@@ -2849,33 +3047,33 @@
       "batch": "B.E / B.Tech",
       "experience": "Associate",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000153226804",
-      "retrieved_at": "2026-10-07T11:56:26.997Z",
-      "source_checked_at": "2026-10-07T11:59:08.666Z"
+      "retrieved_at": "2026-10-07T19:28:44.277Z",
+      "source_checked_at": "2026-10-07T19:31:24.571Z"
     },
     {
-      "title": "2026_Java_Eclipse Development_COB",
-      "company": "Robert Bosch India",
-      "link": "https://jobs.smartrecruiters.com/BoschGroup/744000152432084",
-      "raw_link": "https://jobs.smartrecruiters.com/BoschGroup/744000152432084",
-      "location": "Coimbatore, Tamil Nadu ⭐",
-      "source": "TN Live (bosch.in)",
-      "date_posted": "2026-09-29",
-      "description": "2026_Java_Eclipse Development_COB vacancy at Robert Bosch India in Coimbatore. Official direct application.",
+      "title": "Data Scientist",
+      "company": "IFF",
+      "link": "https://in.linkedin.com/jobs/view/data-scientist-at-iff-4472739616",
+      "raw_link": "https://in.linkedin.com/jobs/view/data-scientist-at-iff-4472739616",
+      "location": "Tamil Nadu, Tamil Nadu ⭐",
+      "source": "TN Live (linkedin.com)",
+      "date_posted": "2026-09-28",
+      "description": "Data Scientist Chittoor, Andhra Pradesh, India",
       "priority_tier": 1,
       "is_tamil_nadu": true,
-      "salary": "",
+      "salary": "₹1,200,000 - ₹1,400,000",
       "hr_email": "",
       "batch": "B.E / B.Tech",
-      "experience": "Associate",
-      "eligibility_badge": "🎓 B.E / B.Tech • 💼 Associate",
-      "found_at": "2026-10-07T12:00+00:00",
+      "experience": "Fresher",
+      "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "https://jobs.smartrecruiters.com/BoschGroup/744000152432084",
-      "retrieved_at": "2026-10-07T11:56:26.997Z",
-      "source_checked_at": "2026-10-07T11:59:11.187Z"
+      "source_url": "https://in.linkedin.com/jobs/view/data-scientist-at-iff-4472739616",
+      "retrieved_at": "2026-10-07T19:30:00.337Z",
+      "source_checked_at": "2026-10-07T19:30:36.552Z"
     },
     {
       "title": "Data Entry Officer",
@@ -2893,11 +3091,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Fresher",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/AveryDennison/744000151589439",
-      "retrieved_at": "2026-10-07T11:56:30.255Z",
-      "source_checked_at": "2026-10-07T11:59:13.982Z"
+      "retrieved_at": "2026-10-07T19:28:47.367Z",
+      "source_checked_at": "2026-10-07T19:31:27.957Z"
     },
     {
       "title": "Shift Supervisor",
@@ -2915,33 +3113,11 @@
       "batch": "B.E / B.Tech",
       "experience": "Executive",
       "eligibility_badge": "🎓 B.E / B.Tech • 💼 Executive",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://jobs.smartrecruiters.com/AveryDennison/744000148425189",
-      "retrieved_at": "2026-10-07T11:56:30.255Z",
-      "source_checked_at": "2026-10-07T11:59:16.307Z"
-    },
-    {
-      "title": "Full Stack Developer",
-      "company": "BHS-Sonthofen GmbH",
-      "link": "https://in.linkedin.com/jobs/view/full-stack-developer-at-bhs-sonthofen-gmbh-4461048899",
-      "raw_link": "https://in.linkedin.com/jobs/view/full-stack-developer-at-bhs-sonthofen-gmbh-4461048899",
-      "location": "Tamil Nadu, Tamil Nadu ⭐",
-      "source": "TN Live (linkedin.com)",
-      "date_posted": "2026-08-31",
-      "description": "Full Stack Developer Gangadharanellore, Andhra Pradesh, India",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "",
-      "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch",
-      "experience": "Freshers (0-1 yrs)",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "https://in.linkedin.com/jobs/view/full-stack-developer-at-bhs-sonthofen-gmbh-4461048899",
-      "retrieved_at": "2026-10-07T11:57:46.615Z",
-      "source_checked_at": "2026-10-07T11:58:04.517Z"
+      "retrieved_at": "2026-10-07T19:28:47.368Z",
+      "source_checked_at": "2026-10-07T19:31:31.318Z"
     },
     {
       "title": "Primary Teacher (PRT)",
@@ -2959,7 +3135,7 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "http://in.indeed.com/job/primary-teacher-prt-e8b0d0d50d4c6a3e"
     },
@@ -2979,7 +3155,7 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "http://in.indeed.com/job/front-office-executive-e101cd85a0a6ecad"
     },
@@ -2999,7 +3175,7 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "http://in.indeed.com/job/hr-trainee-ed55a902a7e0ff2c"
     },
@@ -3019,7 +3195,7 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "http://in.indeed.com/job/hr-trainee-d86b89c1493eb53c"
     },
@@ -3039,7 +3215,7 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "http://in.indeed.com/job/sales-executive-39c0d68a88ec3ada"
     },
@@ -3059,7 +3235,7 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.linkedin.com/jobs/view/4474226936"
     },
@@ -3079,9 +3255,29 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.linkedin.com/jobs/view/4439327239"
+    },
+    {
+      "title": "Sales Executive",
+      "company": "Savyasasy Software Solutions Pvt ltd",
+      "link": "http://in.indeed.com/job/sales-executive-a0953e22f65d3e0a",
+      "raw_link": "http://in.indeed.com/job/sales-executive-a0953e22f65d3e0a",
+      "location": "TN, IN ⭐ ⭐",
+      "source": "⚡ Live • Indeed India 🟢",
+      "date_posted": "",
+      "description": "**Savyasasy Software Software Solutions private limited is hiring Sales Executive.**\n\n**Locations**:\n\n\\- Tamil Nadu: Kanchipuram\n\n**Why Join Us?** \n\n\\- Make a Difference: Help schools and colleges achieve their goals through innovative technology .\n\n\\- Exciting Challenges: Work on cutting\\-edge projects and drive business growth .\n\n\\- Competitive Compensation: Enjoy competitive salaries, attractive incentives, and excellent benefits .\n\n**Key Responsibilities**:\n\n\\- Build strong relationships with clients .\n\n\\- Identify and pursue new sales opportunities .\n\n\\- Conduct product demonstrations and presentations .\n\n\\- Negotiate deals and close sales .\n\nJob Types: Full\\-time, Fresher\n\nPay: ₹15,000\\.00 \\- ₹25,000\\.00 per month\n\nBenefits:\n\n* Provident Fund\n\nWork Location: In person",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "Competitive Market Package",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
+      "experience": "Freshers (0-1 yrs)",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "http://in.indeed.com/job/sales-executive-a0953e22f65d3e0a"
     },
     {
       "title": "Admin",
@@ -3099,39 +3295,99 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "http://in.indeed.com/job/admin-038b71b3369f106b"
     },
     {
-      "title": "ROBOTICS/STEM TRAINER",
-      "company": "BCTLABS STEM Academy",
-      "link": "http://in.indeed.com/job/roboticsstem-trainer-557013ab99ca5f96",
-      "raw_link": "http://in.indeed.com/job/roboticsstem-trainer-557013ab99ca5f96",
+      "title": "Business Development Manager",
+      "company": "Sameera Groups",
+      "link": "https://www.linkedin.com/jobs/view/4474689188",
+      "raw_link": "https://www.linkedin.com/jobs/view/4474689188",
+      "location": "Madurantakam, Tamil Nadu, India ⭐ ⭐",
+      "source": "⚡ Live • LinkedIn 🔵",
+      "date_posted": "",
+      "description": "",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "Competitive Market Package",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch",
+      "experience": "Freshers (0-1 yrs)",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://www.linkedin.com/jobs/view/4474689188"
+    },
+    {
+      "title": "Trainee Engineer",
+      "company": "Black Box",
+      "link": "https://eoje.fa.us2.oraclecloud.com:443/hcmUI/CandidateExperience/sv/job/6746",
+      "raw_link": "https://eoje.fa.us2.oraclecloud.com:443/hcmUI/CandidateExperience/sv/job/6746",
       "location": "TN, IN ⭐ ⭐",
       "source": "⚡ Live • Indeed India 🟢",
       "date_posted": "",
-      "description": "We are looking for an enthusiastic and skilled **STEM Trainer** to join our team. The ideal candidate will have a passion for **teaching Science, Technology, Engineering, and Mathematics (STEM)** concepts through hands\\-on learning, robotics, coding, and innovative projects. You will be responsible for training students and educators, developing engaging lesson plans, and fostering creativity and problem\\-solving skills.\n\nFresher B.E, B.Tech, B.sc, M.sc, with Proficiency in Robotics with IoT, Raspberry Pi, Python, Java, and Arduino will be an added advantage, Excellent interpersonal, verbal, and written communication skills, Proven skills in writing software and programming systems.\n\nJob Types: Full\\-time, Permanent, Fresher\n\nPay: ₹15,000\\.00 \\- ₹20,000\\.00 per month\n\nEducation:\n\n* Bachelor's (Preferred)\n\nExperience:\n\n* Teaching: 1 year (Preferred)\n* total work: 1 year (Preferred)\n\nLanguage:\n\n* English (Preferred)\n\nWork Location: In person",
+      "description": "**Graduate Trainee (GT) / Diploma Engineer Trainee (DET)**\n\n**Digital Infrastructure \\& Technology Services**\n\n **About the Role**\n\n\nBuild the future of digital infrastructure by gaining hands\\-on experience across Audio Visual (AV), Networking, ELV Systems, Cybersecurity, and Data Center technologies while working on enterprise\\-scale projects and solutions.\n\n\nWe are looking for enthusiastic and highly motivated **Graduate Trainees (GTs) and Diploma Engineer Trainees (DETs)** to join our **Digital Infrastructure \\& Technology Services** team. This role offers structured training and practical exposure to enterprise technologies, enabling candidates to develop expertise in designing, implementing, monitoring, and supporting critical IT and digital infrastructure solutions.\n\n**Position Details**\n\n**Designation:** Graduate Engineer Trainee (GET) / Diploma Engineer Trainee (DET)\n\n**Employment Type:** Full\\-Time\n\n**CTC:** 3 LPA\n\n**Locations:** Mumbai, Gurgaon, Chennai, Hyderabad, Kolkata\n\n**Open Positions (Local Candidates Preferred)**\n\n* **Mumbai:** 6 Positions\n* **Gurgaon:** 5 Positions\n* **Chennai:** 3 Positions\n* **Hyderabad:** 2 Positions\n* **Kolkata:** 4 Positions\n\n**Key Responsibilities**\n\n* Participate in structured technical training programs and on\\-the\\-job learning assignments.\n* Assist project and operations teams in deploying and supporting:\n\t+ Audio Visual (AV) Solutions\n\t+ Network Infrastructure\n\t+ ELV Systems\n\t+ Cybersecurity Solutions\n\t+ Data Center Infrastructure\n* Support the installation, configuration, testing, and maintenance of technology systems.\n* Monitor infrastructure performance and assist in troubleshooting technical issues.\n* Prepare technical documentation, reports, network diagrams, and project records.\n* Coordinate with internal teams, customers, vendors, and service partners for project execution and support activities.\n* Adhere to information security, safety, quality, and compliance standards.\n* Participate in preventive maintenance activities, audits, and infrastructure health checks.\n* Assist in Proof of Concept (PoC), testing, validation, and technology evaluation initiatives.\n* Ensure timely completion of assigned tasks, project milestones, and deliverables.\n\n**Experience**\n\n* Freshers or candidates with **up to 1 year of relevant experience**.\n* Internship, academic project, or hands\\-on exposure in any of the following areas will be an added advantage:\n\t+ IT Infrastructure\n\t+ Networking\n\t+ ELV Systems\n\t+ Security Systems\n\t+ Audio Visual (AV) Technologies\n\t+ Cloud Computing\n\t+ Data Center Technologies\n\n**Educational Qualifications**\n\n\nCandidates should possess any of the following qualifications:\n\n* Diploma Engineering\n* B.Sc.\n* BCA\n* BCS\n* MCA\n* M.Sc.\n\n**Preferred Engineering Disciplines**\n\n* Computer Engineering\n* Information Technology\n* Electronics \\& Telecommunications Engineering\n* Electronics Engineering\n* Electrical Engineering\n* Instrumentation Engineering\n\n**Technical Skills**\n\n\nBasic understanding of:\n\n* Computer Networks and Communication Systems\n* Operating Systems (Windows and Linux)\n* IP\\-based Technologies\n* Cybersecurity Fundamentals\n* Cloud Computing Concepts\n* Data Center Technologies\n* IT Infrastructure and Enterprise Systems\n* Structured Cabling and ELV Systems\n* Microsoft Office Applications\n\n**Required Soft Skills**\n\n* Strong analytical and problem\\-solving abilities.\n* Effective verbal and written communication skills.\n* Customer\\-focused approach and service mindset.\n* Ability to work collaboratively in a team environment.\n* Good stakeholder coordination and interpersonal skills.\n* Quick learner with an interest in emerging technologies.\n* Adaptability and willingness to travel to client/project locations when required.\n\n**Key Competencies**\n\n* Learning Agility\n* Technical Aptitude\n* Innovation \\& Continuous Improvement\n* Customer Orientation\n* Teamwork \\& Collaboration\n* Accountability\n* Attention to Detail\n* Professional Integrity",
       "priority_tier": 1,
       "is_tamil_nadu": true,
       "salary": "Competitive Market Package",
       "hr_email": "",
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
-      "experience": "* Teaching: 1 year (Preferred)",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 * Teaching: 1 year (Preferred)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "experience": "Intern / Fresher",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Intern / Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "http://in.indeed.com/job/roboticsstem-trainer-557013ab99ca5f96"
+      "source_url": "https://eoje.fa.us2.oraclecloud.com:443/hcmUI/CandidateExperience/sv/job/6746"
     },
     {
-      "title": "Quality Engineer",
-      "company": "Employer not listed",
-      "link": "http://in.indeed.com/job/quality-engineer-3715d1297ec4a6c9",
-      "raw_link": "http://in.indeed.com/job/quality-engineer-3715d1297ec4a6c9",
+      "title": "Trainee Engineer",
+      "company": "Black Box",
+      "link": "https://eoje.fa.us2.oraclecloud.com:443/hcmUI/CandidateExperience/en/job/6746",
+      "raw_link": "https://eoje.fa.us2.oraclecloud.com:443/hcmUI/CandidateExperience/en/job/6746",
       "location": "TN, IN ⭐ ⭐",
       "source": "⚡ Live • Indeed India 🟢",
       "date_posted": "",
-      "description": "EXPERIENCE 0 TO 5 YEARS\n\nIMMEDIATE JOINER\n\nMANUFACTURING COMPANY CNC VMC MANUFACTURING\n\nPay: ₹18,000\\.00 \\- ₹40,000\\.00 per month\n\nBenefits:\n\n* Flexible schedule\n* Food provided\n* Paid sick time\n* Paid time off\n* Provident Fund\n\nWork Location: In person",
+      "description": "**Graduate Trainee (GT) / Diploma Engineer Trainee (DET)**\n\n**Digital Infrastructure \\& Technology Services**\n\n **About the Role**\n\n\nBuild the future of digital infrastructure by gaining hands\\-on experience across Audio Visual (AV), Networking, ELV Systems, Cybersecurity, and Data Center technologies while working on enterprise\\-scale projects and solutions.\n\n\nWe are looking for enthusiastic and highly motivated **Graduate Trainees (GTs) and Diploma Engineer Trainees (DETs)** to join our **Digital Infrastructure \\& Technology Services** team. This role offers structured training and practical exposure to enterprise technologies, enabling candidates to develop expertise in designing, implementing, monitoring, and supporting critical IT and digital infrastructure solutions.\n\n**Position Details**\n\n**Designation:** Graduate Engineer Trainee (GET) / Diploma Engineer Trainee (DET)\n\n**Employment Type:** Full\\-Time\n\n**CTC:** 3 LPA\n\n**Locations:** Mumbai, Gurgaon, Chennai, Hyderabad, Kolkata\n\n**Open Positions (Local Candidates Preferred)**\n\n* **Mumbai:** 6 Positions\n* **Gurgaon:** 5 Positions\n* **Chennai:** 3 Positions\n* **Hyderabad:** 2 Positions\n* **Kolkata:** 4 Positions\n\n**Key Responsibilities**\n\n* Participate in structured technical training programs and on\\-the\\-job learning assignments.\n* Assist project and operations teams in deploying and supporting:\n\t+ Audio Visual (AV) Solutions\n\t+ Network Infrastructure\n\t+ ELV Systems\n\t+ Cybersecurity Solutions\n\t+ Data Center Infrastructure\n* Support the installation, configuration, testing, and maintenance of technology systems.\n* Monitor infrastructure performance and assist in troubleshooting technical issues.\n* Prepare technical documentation, reports, network diagrams, and project records.\n* Coordinate with internal teams, customers, vendors, and service partners for project execution and support activities.\n* Adhere to information security, safety, quality, and compliance standards.\n* Participate in preventive maintenance activities, audits, and infrastructure health checks.\n* Assist in Proof of Concept (PoC), testing, validation, and technology evaluation initiatives.\n* Ensure timely completion of assigned tasks, project milestones, and deliverables.\n\n**Experience**\n\n* Freshers or candidates with **up to 1 year of relevant experience**.\n* Internship, academic project, or hands\\-on exposure in any of the following areas will be an added advantage:\n\t+ IT Infrastructure\n\t+ Networking\n\t+ ELV Systems\n\t+ Security Systems\n\t+ Audio Visual (AV) Technologies\n\t+ Cloud Computing\n\t+ Data Center Technologies\n\n**Educational Qualifications**\n\n\nCandidates should possess any of the following qualifications:\n\n* Diploma Engineering\n* B.Sc.\n* BCA\n* BCS\n* MCA\n* M.Sc.\n\n**Preferred Engineering Disciplines**\n\n* Computer Engineering\n* Information Technology\n* Electronics \\& Telecommunications Engineering\n* Electronics Engineering\n* Electrical Engineering\n* Instrumentation Engineering\n\n**Technical Skills**\n\n\nBasic understanding of:\n\n* Computer Networks and Communication Systems\n* Operating Systems (Windows and Linux)\n* IP\\-based Technologies\n* Cybersecurity Fundamentals\n* Cloud Computing Concepts\n* Data Center Technologies\n* IT Infrastructure and Enterprise Systems\n* Structured Cabling and ELV Systems\n* Microsoft Office Applications\n\n**Required Soft Skills**\n\n* Strong analytical and problem\\-solving abilities.\n* Effective verbal and written communication skills.\n* Customer\\-focused approach and service mindset.\n* Ability to work collaboratively in a team environment.\n* Good stakeholder coordination and interpersonal skills.\n* Quick learner with an interest in emerging technologies.\n* Adaptability and willingness to travel to client/project locations when required.\n\n**Key Competencies**\n\n* Learning Agility\n* Technical Aptitude\n* Innovation \\& Continuous Improvement\n* Customer Orientation\n* Teamwork \\& Collaboration\n* Accountability\n* Attention to Detail\n* Professional Integrity",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "Competitive Market Package",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
+      "experience": "Intern / Fresher",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Intern / Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://eoje.fa.us2.oraclecloud.com:443/hcmUI/CandidateExperience/en/job/6746"
+    },
+    {
+      "title": "Digital Marketing Intern",
+      "company": "Belleza 360° Aesthetic and Anti-ageing Centre",
+      "link": "http://in.indeed.com/job/digital-marketing-intern-7b94b682dd71dba9",
+      "raw_link": "http://in.indeed.com/job/digital-marketing-intern-7b94b682dd71dba9",
+      "location": "TN, IN ⭐ ⭐",
+      "source": "⚡ Live • Indeed India 🟢",
+      "date_posted": "",
+      "description": "**Job Requirements**\n\n* Assist in managing Instagram, Facebook, YouTube, and Google Business Profile\n* Create engaging content such as reels, posts, stories and promotional creatives\n* Support digital marketing campaigns for treatments, offers, workshops, events\n* Coordinate with doctors, technicians and graphic designers for content planning\n* Help schedule and publish social media content using digital tools and calendar\n* Monitor the social media engagement, comments, messages and online reviews\n* Assist in photography and videography for clinic branding and documentation\n* Conduct market research on competitors, beauty trends, and aesthetic industry\n* Support SEO, Google listings, WhatsApp marketing, and Website blog updates\n* Prepare performance reports for engagement, leads, and campaign analytics\n* Internship certificate and potential full\\-time opportunity based on performance\n\n**Required Skills \\& Qualifications**\n\n* Basic knowledge of social media marketing and campaigns\n* Interest in beauty, skincare, haircare, and aesthetics industry\n* Good communication, designing and creative writing skills\n* Familiarity with Canva, Instagram, and video editing apps\n* Basic understanding of digital trends \\& branding techniques\n\n**Contact** 98402 10048 for further position\\-specific enquiries\n\nPay: ₹8,000\\.00 \\- ₹20,000\\.00 per month\n\nWork Location: In person",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "Competitive Market Package",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
+      "experience": "Intern / Fresher",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Intern / Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "http://in.indeed.com/job/digital-marketing-intern-7b94b682dd71dba9"
+    },
+    {
+      "title": "Documentation Executive",
+      "company": "Effivity Technologies Pvt Ltd",
+      "link": "http://in.indeed.com/job/documentation-executive-eae83f1ef2b3e110",
+      "raw_link": "http://in.indeed.com/job/documentation-executive-eae83f1ef2b3e110",
+      "location": "TN, IN ⭐ ⭐",
+      "source": "⚡ Live • Indeed India 🟢",
+      "date_posted": "",
+      "description": "* Prepare operational documents such as delivery documents, job cards, certificates or customer letters from system data and templates.\n* Check incoming documents from customers, vendors or branches for completeness, signatures, stamps and validity dates.\n* Maintain document registers with reference numbers, versions and the movement of physical files.\n* Control SOPs and formats by issuing approved versions, withdrawing obsolete ones and keeping the master list current.\n* Scan, index and upload documents to the document management system with correct file names.\n* Keep a register of documents with validity dates, such as certificates, licences or insurance copies, and inform owners before they lapse.\n* Retrieve files quickly for audits, client visits and internal queries, and record who took them.\n* Archive closed files as per the retention policy, and arrange approved destruction of expired records.\n* Prepare document lists and sample files ahead of scheduled audits.\n\nPay: ₹10,000\\.00 \\- ₹33,000\\.00 per month\n\nBenefits:\n\n* Cell phone reimbursement\n* Commuter assistance\n* Flexible schedule\n* Food provided\n* Health insurance\n* Internet reimbursement\n* Leave encashment\n* Life insurance\n* Paid sick time\n* Paid time off\n* Provident Fund\n* Work from home\n\nWork Location: In person",
       "priority_tier": 1,
       "is_tamil_nadu": true,
       "salary": "Competitive Market Package",
@@ -3139,19 +3395,19 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "http://in.indeed.com/job/quality-engineer-3715d1297ec4a6c9"
+      "source_url": "http://in.indeed.com/job/documentation-executive-eae83f1ef2b3e110"
     },
     {
-      "title": "Mechanical designer",
-      "company": "Husky Technologies",
-      "link": "http://in.indeed.com/job/mechanical-designer-df0bf26de2b2b099",
-      "raw_link": "http://in.indeed.com/job/mechanical-designer-df0bf26de2b2b099",
+      "title": "Remote Desktop Support Engineer",
+      "company": "Timor Buying Care",
+      "link": "http://in.indeed.com/job/remote-desktop-support-engineer-40e0849cf3c95265",
+      "raw_link": "http://in.indeed.com/job/remote-desktop-support-engineer-40e0849cf3c95265",
       "location": "TN, IN ⭐ ⭐",
       "source": "⚡ Live • Indeed India 🟢",
       "date_posted": "",
-      "description": "* Meeting with clients to establish their requirements for a new or existing product or mechanical system.\n* Travelling to factories or other locations to take measurements and to observe the way productivity is carried out.\n* Doing calculations on the prospective machinery prior to completing the technical drawings.\n* Working on CAD software, such as AutoCAD, to create drawing specifications in line with the needs of the client.\n* Creating designs in accordance with company regulations and client standards and values.\n* Creating prototypes, testing them, and analyzing the results.\n\nPay: ₹13,000\\.00 \\- ₹48,000\\.00 per month\n\nBenefits:\n\n* Food provided\n* Life insurance\n* Paid time off\n* Provident Fund\n\nWork Location: In person",
+      "description": "A **Desktop Support Engineer** maintains, diagnoses, and repairs end\\-user computing hardware, software, and network connections to keep employees productive.\n\nCore Responsibilities\n\n* **Hardware \\& Peripherals Setup:** Install, configure, and fix desktops, laptops, printers, monitors, and mobile devices.\n* **Software \\& OS Maintenance:** Deploy operating system images (Windows/macOS), apply patch updates, and manage standard business applications via tools like SCCM or Microsoft Intune.\n* **User \\& Access Management:** Create and manage user accounts, reset passwords, unlock accounts, and configure permissions in Active Directory.\n\nContact no: 8668087622 (whatsapp)\n\nAvailable time : 9 to 12pm ist\n\nPay: ₹21,000\\.00 \\- ₹25,000\\.00 per month\n\nBenefits:\n\n* Cell phone reimbursement\n* Health insurance\n* Provident Fund\n\nEducation:\n\n* Bachelor's (Preferred)\n\nWork Location: In person",
       "priority_tier": 1,
       "is_tamil_nadu": true,
       "salary": "Competitive Market Package",
@@ -3159,19 +3415,19 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "http://in.indeed.com/job/mechanical-designer-df0bf26de2b2b099"
+      "source_url": "http://in.indeed.com/job/remote-desktop-support-engineer-40e0849cf3c95265"
     },
     {
-      "title": "CNC Machinist",
-      "company": "Husky Technologies",
-      "link": "http://in.indeed.com/job/cnc-machinist-f6f0eb02c87c7f52",
-      "raw_link": "http://in.indeed.com/job/cnc-machinist-f6f0eb02c87c7f52",
+      "title": "Trainee - QMS",
+      "company": "SICAME GROUP",
+      "link": "https://recrutement.sicamegroup.com/en-GB/jobs/8511069-trainee-qms",
+      "raw_link": "https://recrutement.sicamegroup.com/en-GB/jobs/8511069-trainee-qms",
       "location": "TN, IN ⭐ ⭐",
       "source": "⚡ Live • Indeed India 🟢",
       "date_posted": "",
-      "description": "* Set up and operate CNC lathes, mills, or grinders according to work orders and blueprints\n* Read and interpret technical drawings, schematics, and G\\-code programs\n* Select appropriate tools, fixtures, and materials for each job\n* Monitor machine operations and make real\\-time adjustments as needed\n* Measure and inspect finished parts using calipers, micrometers, and gauges\n* Perform routine maintenance and troubleshoot equipment issues\n* Maintain clean and organized workspaces in compliance with safety standards\n* Document production data and report nonconformities\n\nPay: ₹17,000\\.00 \\- ₹36,000\\.00 per month\n\nBenefits:\n\n* Life insurance\n* Paid sick time\n* Paid time off\n* Provident Fund\n\nWork Location: In person",
+      "description": "**Who are we?**\n\n\nSicame India is part of Sicame Group, a global industrial Group founded in France in 1955 and present worldwide. Specialized in products and services related to transmission and distribution of electrical energy, renewables, electro\\-mobility, safety equipment and industrial applications, it became the largest independent entity in its sector today.\n\n\nSicame India was established in 2006 to support the “MAKE IN INDIA” vision and meet India’s evolving power needs. Today, with a modern manufacturing facility and accredited engineering and testing center in Chennai, Sicame India serves major utilities and industries with innovative, reliable, and sustainable solutions while helping build the future of energy in India.\n\n**Your responsibilities:**\n\n**QEHS Document Control**\n\n* Maintain and control QEHS documentation, including SOPs, procedures, work instructions, forms, and system documents.\n* Ensure proper revision control, document updates, version management, and document availability.\n* Support periodic review and updating of controlled documents.\n* Maintain appropriate records and documentation for audit readiness.\n\n\n2\\. **Internal Audits – QEHS \\& 5S**\n\n* Coordinate and support the internal audit schedule.\n* Assist internal auditors and auditees in planning and executing audits.\n* Follow up on audit findings and ensure proper documentation of observations and non\\-conformities.\n* Track audit findings and follow up with respective stakeholders for timely closure of non\\-conformities (NCs).\n* Support 5S audit activities and maintain relevant records.\n\n\n3\\. **External Audits \\& Certifications**\n\n* Provide support during external audits, customer audits, and certification audits.\n* Coordinate with various departments to ensure documentation and records are available for audit readiness.\n* Support preparation of audit\\-related documents and evidence.\n* Track Corrective Action Requests (CARs) raised during audits and follow up for timely closure.\n* Maintain records related to audit observations, corrective actions, and closures.\n\n\n4\\. **KPI Monitoring \\& Follow\\-up**\n\n* Collect relevant QEHS and departmental KPIs from respective stakeholders.\n* Consolidate and maintain KPI data and reports.\n* Assist in monitoring KPI trends and identifying deviations.\n* Support periodic KPI review meetings and follow\\-up actions.\n\n\n5\\. **Customer Complaint Follow\\-up**\n\n* Prepare Minutes of Meeting (MOM) for customer complaint review meetings.\n* Coordinate with the Cross\\-Functional Team (CFT) to track action items.\n* Follow up with stakeholders on corrective and preventive actions.\n* Consolidate open points and provide status updates for customer complaint review meetings.\n* Maintain appropriate records of complaint\\-related actions and closures.\n\n\n6\\. **Suggestions \\& Continuous Improvement**\n\n* Record improvement suggestions received from Cross\\-Functional Teams (CFTs).\n* Track the progress and status of suggestions and continual improvement initiatives.\n* Coordinate with respective stakeholders for implementation updates.\n* Track and document the effectiveness of implemented improvements.\n* Support initiatives related to quality improvement, waste reduction, process improvement, and workplace organization.\n\n**Required profile:**\n\n* Basic knowledge of Integrated Management System (IMS) standards:\n\n\n\t+ ISO 9001 – Quality Management System\n\t+ ISO 14001 – Environmental Management System\n\t+ ISO 45001 – Occupational Health \\& Safety Management System\n* Knowledge of Internal Audit practices and preferably certified/trained as an IMS Internal Auditor.\n* Good documentation and record management skills.\n* Strong organizational and coordination skills.\n* Good written and verbal communication skills.\n* Ability to work effectively with cross\\-functional teams.\n* Good follow\\-up and task\\-tracking capabilities.\n* Basic analytical and reporting skills.\n* Proficiency in MS Office / Microsoft Excel / PowerPoint will be an added advantage.\n* Strong attention to detail and willingness to learn.",
       "priority_tier": 1,
       "is_tamil_nadu": true,
       "salary": "Competitive Market Package",
@@ -3179,59 +3435,19 @@
       "batch": "2024 / 2025 / 2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "http://in.indeed.com/job/cnc-machinist-f6f0eb02c87c7f52"
+      "source_url": "https://recrutement.sicamegroup.com/en-GB/jobs/8511069-trainee-qms"
     },
     {
-      "title": "Admission Manager",
-      "company": "Vinnmugil academy",
-      "link": "http://in.indeed.com/job/admission-manager-71416e0834842349",
-      "raw_link": "http://in.indeed.com/job/admission-manager-71416e0834842349",
+      "title": "Developer fresher",
+      "company": "CONTUS TECH",
+      "link": "http://in.indeed.com/job/developer-fresher-58dd6f793302d4fa",
+      "raw_link": "http://in.indeed.com/job/developer-fresher-58dd6f793302d4fa",
       "location": "TN, IN ⭐ ⭐",
       "source": "⚡ Live • Indeed India 🟢",
       "date_posted": "",
-      "description": "Full Job Description\n\nThe selected candidate will be responsible for:\n\n\\* Handling admission enquiries from parents and students.\n\n\\* Following up with leads through calls, messages, and other communication channels.\n\n\\* Counselling parents and explaining the institute's courses, programmes, and facilities.\n\n\\* Following up on applications, fee payments, and admission procedures.\n\n\\* Maintaining positive relationships with parents and ensuring their satisfaction.\n\n\\* Handling and closing enquiries professionally.\n\n\\* Supporting student and parent engagement activities.\n\n\\* Coordinating with the academic and management teams for admission\\-related activities.\n\n\\* Interest in learning AI tools and AI video development. Training will be provided by the institute.\n\nPay: ₹15,000\\.00 \\- ₹30,000\\.00 per month\n\nBenefits:\n\n* Flexible schedule\n* Food provided\n\nWork Location: In person",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "Competitive Market Package",
-      "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch",
-      "experience": "Freshers (0-1 yrs)",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "http://in.indeed.com/job/admission-manager-71416e0834842349"
-    },
-    {
-      "title": "Manufacturing Team Member",
-      "company": "Employer not listed",
-      "link": "http://in.indeed.com/job/manufacturing-team-member-a5863701b4616f32",
-      "raw_link": "http://in.indeed.com/job/manufacturing-team-member-a5863701b4616f32",
-      "location": "TN, IN ⭐ ⭐",
-      "source": "⚡ Live • Indeed India 🟢",
-      "date_posted": "",
-      "description": "Evaluate existing manufacturing processes and workflows to identify areas that could benefit from changes and improvements Apply working knowledge of product design and assembly to the manufacturing process Create processes and procedures to help the company meet budgetary goals as well as performance quotas Design and develop new products and product mock\\-ups alongside the creative team Participate in brainstorming sessions and cross\\-departmental meetings to ensure collaborating and cohesion Establish an effective and efficient work sequence Devise new solutions to existing manufacturing problems\n\nPay: ₹19,100\\.00 \\- ₹62,000\\.00 per month\n\nBenefits:\n\n* Life insurance\n* Paid sick time\n* Paid time off\n* Provident Fund\n\nWork Location: In person",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "Competitive Market Package",
-      "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch",
-      "experience": "Freshers (0-1 yrs)",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "http://in.indeed.com/job/manufacturing-team-member-a5863701b4616f32"
-    },
-    {
-      "title": "HR Trainee",
-      "company": "P S Technologies",
-      "link": "http://in.indeed.com/job/hr-trainee-5ae65988e08b51ee",
-      "raw_link": "http://in.indeed.com/job/hr-trainee-5ae65988e08b51ee",
-      "location": "TN, IN ⭐ ⭐",
-      "source": "⚡ Live • Indeed India 🟢",
-      "date_posted": "",
-      "description": "**Job Description**\n\n**Job Role:** HR Trainee  \n**Location:** Koyambedu, Chennai  \n**Salary:** 10,000 – 17,000 per month  \n**Experience:** Fresher / 0–1 Year\n\n**Responsibilities:**\n\n* Support recruitment and candidate sourcing\n* Screen resumes and coordinate interviews\n* Maintain employee records and HR documentation\n* Assist with attendance, payroll and statutory compliance activities\n* Handle joining formalities and employee follow\\-ups\n* Prepare daily HR reports and trackers\n\n**Qualification:** Any Degree / MBA HR preferred\n\n**Skills:** Good communication, basic MS Excel knowledge, willingness to learn HR operations.\n\n**Freshers interested in building a career in HR are encouraged to apply.**\n\nPay: ₹10,000\\.00 \\- ₹17,000\\.00 per month\n\nBenefits:\n\n* Health insurance\n* Provident Fund\n\nWork Location: In person",
+      "description": "Use markup languages like HTML to create user\\-friendly web pages Maintain and improve website Optimize applications for maximum speed Design mobile\\-based features Collaborate with back\\-end developers and web designers to improve usability Get feedback from, and build solutions for, users and customers Write functional requirement documents and guides Create quality mockups and prototypes Help back\\-end developers with coding and troubleshooting\n\nPay: ₹20,000\\.00 \\- ₹35,000\\.00 per month\n\nBenefits:\n\n* Flexible schedule\n* Paid sick time\n* Paid time off\n\nWork Location: In person",
       "priority_tier": 1,
       "is_tamil_nadu": true,
       "salary": "Competitive Market Package",
@@ -3239,49 +3455,69 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "http://in.indeed.com/job/hr-trainee-5ae65988e08b51ee"
+      "source_url": "http://in.indeed.com/job/developer-fresher-58dd6f793302d4fa"
     },
     {
-      "title": "Finishing Site Engineer",
-      "company": "Casagrand",
-      "link": "http://in.indeed.com/job/finishing-site-engineer-46edeec9023c3419",
-      "raw_link": "http://in.indeed.com/job/finishing-site-engineer-46edeec9023c3419",
+      "title": "Graduate Trainee",
+      "company": "Best Choice Consultant",
+      "link": "http://in.indeed.com/job/graduate-trainee-7db08665bb883d98",
+      "raw_link": "http://in.indeed.com/job/graduate-trainee-7db08665bb883d98",
       "location": "TN, IN ⭐ ⭐",
       "source": "⚡ Live • Indeed India 🟢",
       "date_posted": "",
-      "description": "**Company:** Casagrand Premier Builder Limited\n\n**Location:** Chennai, TN (On\\-site)\n\n**Employment Type:** Full\\-Time\n\n**Urgency:** Immediate Joiners\n\n**About Casagrand**\n\nCasagrand Premier Builder Limited is a titan in the real estate sector, dedicated to \"Building Aspirations\" and delivering unparalleled value. With a 22\\-year legacy, we have transformed over 53 million sq. ft. of land into thriving communities across South India. With 160\\+ landmark properties, 55,000\\+ satisfied families, and a ₹8,000\\+ crore project pipeline, we are shaping the future of urban living.\n\n**The Role**\n\nWe are seeking a high\\-energy Site Engineer to drive excellence at our Chennai project sites. You will be the boots\\-on\\-the\\-ground lead, ensuring that structural integrity, finishing quality, and safety standards are never compromised. This role is perfect for a civil professional who thrives on seeing blueprints turn into landmarks.\n\n**Key Responsibilities**\n\n\\* On\\-Site Execution: Supervise daily construction activities, ensuring all civil and structural work aligns with approved drawings and quality benchmarks.\n\n\\* Finishing Excellence: Oversee high\\-end residential finishes, maintaining the premium aesthetic Casagrand is known for.\n\n\\* Project Tracking: Monitor timelines rigorously, coordinating with contractors and vendors to prevent bottlenecks.\n\n\\* Resource Management: Optimize the use of materials, machinery, and manpower to reduce waste and ensure cost\\-efficiency.\n\n\\* Safety \\& Compliance: Enforce strict adherence to safety protocols and regulatory standards on\\-site.\n\n\\* Reporting: Provide data\\-driven progress updates to project managers and stakeholders.\n\nCandidate Profile \\& Requirements\n\n**We are looking for candidates who can hit the ground running. The following criteria are mandatory:**\n\n\\* **Experience:** 4 to 8 years of hands\\-on experience in High\\-Rise or Residential projects.\n\n\\* **Technical Edge:** Expertise in structural engineering principles and a \"keen eye\" for high\\-quality interior/exterior finishes.\n\n**\\* Education:** B.E. / B.Tech in Civil Engineering.\n\n\\* **Location:** Currently based in Chennai or within Tamil Nadu.\n\n\\* **Availability:** Must be available for an in\\-person interview on or before 14th October 2026\\.\n\n\\* **Joining Timeline:** Immediate joiners (or those with a notice period of \\<15 days) are preferred.\n\n**Technical \\& Soft Skills:**\n\n\\* Proven ability to problem\\-solve and make critical decisions under pressure.\n\n\\* Strong communication skills to manage diverse labor teams and project stakeholders.\n\n\\* Proficiency in quality control (QC) and safety audit processes.\n\n**Why Join South India’s Leading Developer?**\n\nCasagrand is not just a real estate company; we are a legacy in the making.\n\n\\* **Chennai’s \\#1 Developer:** Consistently ranked as the top builder in Chennai.\n\n\\* **South India’s Powerhouse:** Leading the market across Bengaluru, Coimbatore, and Hyderabad with a massive ₹8,000\\+ Cr project pipeline.\n\n\\* **Unmatched Employee Perks:** We believe in rewarding excellence. Our team members enjoy:\n\n\\* **International Reward Trips:** Annual company\\-sponsored trips to destinations like London, Barcelona, and Switzerland.\n\n\\* **Premier Security:** Medical insurance and a unique \"Family Support Policy\" providing 50% salary to the spouse for 10 years in unforeseen circumstances.\n\n**\\* Fast\\-Track Career:** Join a team of 2,300\\+ in\\-house engineers with the industry's most aggressive promotion cycles.\n\nJob Types: Full\\-time, Permanent, Fresher\n\nPay: ₹26,000\\.00 \\- ₹35,000\\.00 per month\n\nBenefits:\n\n* Cell phone reimbursement\n* Health insurance\n* Internet reimbursement\n* Leave encashment\n* Life insurance\n* Paid sick time\n* Paid time off\n* Provident Fund\n\nAbility to commute/relocate:\n\n* Chennai, Tamil Nadu: Reliably commute or willing to relocate with an employer\\-provided relocation package (Preferred)\n\nApplication Question(s):\n\n* Year of Graduation (YYYY)\n* Current Monthly Salary (Take Home in ₹):\n* Notice period (in days):\n\nEducation:\n\n* Diploma (Preferred)\n\nExperience:\n\n* Residential projects: 1 year (Preferred)\n* overall (including Internship): 1 year (Required)\n* Finishing: 1 year (Required)\n\nLanguage:\n\n* Tamil (Preferred)\n\nWork Location: In person",
+      "description": "Hiring for Top Automobile Manufacturing Company \\- OMR Chennai\n\nQualification: Any Diploma / ITI / Any Degree (2023/24/25/26 \\- Arrears OK)\n\nSalary: 18k for 8\\.5 hrs \\+ OT \\+ 3 Times Free Food \\+ Accommodation @Rs.1500\n\nShift: 3 Rotational Shifts (6\\.30AM\\-3PM, 3PM\\-11\\.30PM, 11\\.30PM\\-6\\.30AM)\n\nWeekly Off: 1 Day\n\nLocation: OMR, Chennai\n\nContact HR: Yogalakshmi \\- BCC\n\n8939764414\n\nNo Registration Fee\n\nPay: ₹15,000\\.00 \\- ₹18,000\\.00 per month\n\nBenefits:\n\n* Food provided\n\nWork Location: In person",
       "priority_tier": 1,
       "is_tamil_nadu": true,
       "salary": "Competitive Market Package",
+      "hr_email": "",
+      "batch": "2023 Batch",
+      "experience": "Intern / Fresher",
+      "eligibility_badge": "🎓 2023 Batch • 💼 Intern / Fresher",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "http://in.indeed.com/job/graduate-trainee-7db08665bb883d98"
+    },
+    {
+      "title": "Chat Support Associates",
+      "company": "Sutherland",
+      "link": "https://www.jobsgovind.com/2026/08/sutherland-hiring-chat-support.html",
+      "raw_link": "https://www.jobsgovind.com/2026/08/sutherland-hiring-chat-support.html",
+      "location": "Remote (All TN Candidates) 🌐",
+      "source": "Telegram @JobSkull",
+      "date_posted": "",
+      "description": "🔴\nSutherland is Hiring (Work From Home - Remote)\n▪️\nPost - Chat Support Associates\n👉\nApply Link => \nhttps://www.jobsgovind.com/2026/08/sutherland-hiring-chat-support.html",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "",
       "hr_email": "",
       "batch": "2026 Batch",
-      "experience": "Intern / Fresher",
-      "eligibility_badge": "🎓 2026 Batch • 💼 Intern / Fresher",
-      "found_at": "2026-10-07T12:00+00:00",
+      "experience": "Freshers (0-1 yrs)",
+      "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "http://in.indeed.com/job/finishing-site-engineer-46edeec9023c3419"
+      "source_url": "https://www.jobsgovind.com/2026/08/sutherland-hiring-chat-support.html"
     },
     {
-      "title": "Compliance Executive",
-      "company": "Employer not listed",
-      "link": "http://in.indeed.com/job/compliance-executive-6a8d2c86a9e02b12",
-      "raw_link": "http://in.indeed.com/job/compliance-executive-6a8d2c86a9e02b12",
-      "location": "TN, IN ⭐ ⭐",
-      "source": "⚡ Live • Indeed India 🟢",
+      "title": "Verification & Onboarding Operations Executives",
+      "company": "Apna",
+      "link": "https://www.jobsgovind.com/2026/10/apna-hiring-operations-executives.html",
+      "raw_link": "https://www.jobsgovind.com/2026/10/apna-hiring-operations-executives.html",
+      "location": "Remote (All TN Candidates) 🌐",
+      "source": "Telegram @JobSkull",
       "date_posted": "",
-      "description": "About the Role\n\nWe are seeking a diligent, detail\\-oriented, and proactive **Compliance Executive** to join our corporate secretarial and compliance team in Chennai. In this role, you will work closely with senior team members and the Company Secretary to handle statutory filings, maintain compliance documentation, and ensure regulatory adherence under the Companies Act, 2013 and related frameworks.\n\nKey Responsibilities\n\n* **MCA/ROC Filings:** Assist in drafting, preparing, and filing statutory e\\-forms and annual returns with the Ministry of Corporate Affairs (MCA) and Registrar of Companies (ROC) under the Companies Act, 2013 and applicable regulations.\n* **Statutory Records:** Maintain, update, and organize statutory registers, minute books, corporate secretarial files, and legal documents.\n* **Internal Coordination:** Liaise across internal teams to gather necessary data, documentation, and approvals for compliance assignments.\n* **Team Support:** Provide day\\-to\\-day administrative and secretarial support to senior compliance professionals.\n* **Ad\\-hoc Secretarial Tasks:** Execute additional corporate governance, research, or filing duties as assigned by the Company Secretary.\n\nRequirements \\& Qualifications\n\n* **Education:** Bachelor’s or Master’s degree in Commerce, Corporate Secretaryship, Law, Business Administration (B.Com / M.Com / B.Com CS / BBA / LLB) or semi\\-qualified CS (CS Executive passed).\n* **Experience:** Freshers or professionals with up to 1–2 years of relevant corporate compliance or ROC filing experience.\n* **Language \\& Communication:** Strong written and verbal communication skills in English.\n* **Location Preference:** Candidates residing within a convenient commute or close proximity to the Chennai office location.\n* **Core Competencies:** High attention to detail, strong work ethic, basic understanding of the Companies Act, and proficiency in MS Office (Word, Excel).\n\nPay: ₹15,000\\.00 \\- ₹20,000\\.00 per month\n\nBenefits:\n\n* Provident Fund\n\nApplication Question(s):\n\n* MCA / ROC Knowledge\n\nEducation:\n\n* Bachelor's (Required)\n\nWork Location: In person",
+      "description": "🔴\nApna is Hiring (Work From Home - Remote) \n▪️\nPost - Verification & Onboarding Operations Executives\n👉\nApply Link => \nhttps://www.jobsgovind.com/2026/10/apna-hiring-operations-executives.html",
       "priority_tier": 1,
       "is_tamil_nadu": true,
-      "salary": "Competitive Market Package",
+      "salary": "",
       "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
+      "batch": "2026 Batch",
       "experience": "Freshers (0-1 yrs)",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "http://in.indeed.com/job/compliance-executive-6a8d2c86a9e02b12"
+      "source_url": "https://www.jobsgovind.com/2026/10/apna-hiring-operations-executives.html"
     },
     {
       "title": "Operations Associates",
@@ -3299,7 +3535,7 @@
       "batch": "2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.jobsgovind.com/2026/06/alight-hiring-operations-associate.html"
     },
@@ -3319,7 +3555,7 @@
       "batch": "2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.jobsgovind.com/2026/09/tech-mahindra-hiring-associates.html"
     },
@@ -3339,7 +3575,7 @@
       "batch": "2025 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2025 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.jobsgovind.com/2025/12/fiscalnote-hiring-client-support-associates.html"
     },
@@ -3359,7 +3595,7 @@
       "batch": "2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.jobsgovind.com/2026/10/mercor-hiring-executives.html"
     },
@@ -3379,7 +3615,7 @@
       "batch": "2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.jobsgovind.com/2026/02/cognizant-hiring-process-executives.html"
     },
@@ -3399,7 +3635,7 @@
       "batch": "2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.jobsgovind.com/2026/03/sbi-card-hiring-kyc-associates.html"
     },
@@ -3419,7 +3655,7 @@
       "batch": "2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.jobsgovind.com/2026/10/votiko-hiring-payroll-operations-executive.html"
     },
@@ -3439,29 +3675,9 @@
       "batch": "2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://www.jobsgovind.com/2026/10/cadence-hiring-client-service-associates.html"
-    },
-    {
-      "title": "Operations Associate (Australia Shift)",
-      "company": "Amber",
-      "link": "https://www.jobsgovind.com/2025/04/amber-hiring-operations-associate.html",
-      "raw_link": "https://www.jobsgovind.com/2025/04/amber-hiring-operations-associate.html",
-      "location": "Remote (All TN Candidates) 🌐",
-      "source": "Telegram @JobSkull",
-      "date_posted": "",
-      "description": "🔴\nAmber is Hiring (Work From Home - Remote)  \n▪️\nPost - Operations Associate (Australia Shift)  \n👉\nApply Link => https://www.jobsgovind.com/2025/04/amber-hiring-operations-associate.html",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "",
-      "hr_email": "",
-      "batch": "2025 Batch",
-      "experience": "Freshers (0-1 yrs)",
-      "eligibility_badge": "🎓 2025 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "https://www.jobsgovind.com/2025/04/amber-hiring-operations-associate.html"
     },
     {
       "title": "Role: Cloude Role",
@@ -3479,15 +3695,15 @@
       "batch": "2026 Batch",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2026 Batch • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://freshershunt.in/capgemini-virtual-drive-2026"
     },
     {
       "title": "and apply to the job",
       "company": "name, and role and apply to the job",
-      "link": "https://fhlinks.in/sow7Eu",
-      "raw_link": "https://fhlinks.in/sow7Eu",
+      "link": "https://www.foundit.in/seeker/registration?spl=IN_paid_display_direct_acq_affiliate_Asterix_FHT1951_Sep26",
+      "raw_link": "https://www.foundit.in/seeker/registration?spl=IN_paid_display_direct_acq_affiliate_Asterix_FHT1951_Sep26",
       "location": "Remote (All TN Candidates) 🌐",
       "source": "Telegram @Freshershunt",
       "date_posted": "",
@@ -3499,9 +3715,9 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0-1 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
-      "source_url": "https://fhlinks.in/sow7Eu"
+      "source_url": "https://www.foundit.in/seeker/registration?spl=IN_paid_display_direct_acq_affiliate_Asterix_FHT1951_Sep26"
     },
     {
       "title": "Role: Systems Engineer (SE)",
@@ -3519,9 +3735,89 @@
       "batch": "2027 Batch",
       "experience": "Freshers (0 yrs)",
       "eligibility_badge": "🎓 2027 Batch • 💼 Freshers (0 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://freshershunt.in/infosys-off-campus-drive-2027"
+    },
+    {
+      "title": "Online Data Analyst",
+      "company": "Telus Digital",
+      "link": "https://kickcharm.com/telus-digital-work-from-home-hiring",
+      "raw_link": "https://kickcharm.com/telus-digital-work-from-home-hiring",
+      "location": "Remote (All TN Candidates) 🌐",
+      "source": "Telegram @KickCharm",
+      "date_posted": "",
+      "description": "🚀\n Remote Job Opportunity!!\nTelus Digital Hiring Freshers for Online Data Analyst\nLocation: Remote\nQualification: Any Graduate\nSalary: Rs 4-6 LPA (Expected)\nExperience: Freshers/Experienced\nApply: \nhttps://kickcharm.com/telus-digital-work-from-home-h",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "Rs 4-6 LPA (Expected)",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
+      "experience": "Freshers (0 yrs)",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://kickcharm.com/telus-digital-work-from-home-hiring"
+    },
+    {
+      "title": "for CTK svc Associate",
+      "company": "Amazon Virtual Mass",
+      "link": "https://kickcharm.com/amazon-work-from-home-hiring-freshers",
+      "raw_link": "https://kickcharm.com/amazon-work-from-home-hiring-freshers",
+      "location": "Remote (All TN Candidates) 🌐",
+      "source": "Telegram @KickCharm",
+      "date_posted": "",
+      "description": "🚀\n Amazon Virtual Mass Hiring for CTK svc Associate\nExperience: Freshers/Experienced\nEducation: Any Graduate\nLocation: Remote\nSalary: Rs 4-5 LPA (Expected)\nApply: \nhttps://kickcharm.com/amazon-work-from-home-hiring-freshers/\nJoin Whatsapp: \nhttps://t",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "Rs 4-5 LPA (Expected)",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
+      "experience": "Freshers (0 yrs)",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://kickcharm.com/amazon-work-from-home-hiring-freshers"
+    },
+    {
+      "title": "Operations Analyst",
+      "company": "CertifyOS",
+      "link": "https://kickcharm.com/certifyos-work-from-home-hiring-graduates-fresher",
+      "raw_link": "https://kickcharm.com/certifyos-work-from-home-hiring-graduates-fresher",
+      "location": "Remote (All TN Candidates) 🌐",
+      "source": "Telegram @KickCharm",
+      "date_posted": "",
+      "description": "🚀\nRemote Job Opportunity\n!!\nCertifyOS Hiring Freshers for Operations Analyst\nLocation: Remote\nExperience: Freshers/Experienced\nEducation: Bachelor's Degree\nSalary: Rs 4-6 LPA (Expected)\nApply: \nhttps://kickcharm.com/certifyos-work-from-home-hiring-gr",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "Rs 4-6 LPA (Expected)",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
+      "experience": "Freshers (0 yrs)",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://kickcharm.com/certifyos-work-from-home-hiring-graduates-fresher"
+    },
+    {
+      "title": "for Gen AI Associate",
+      "company": "Hexaware",
+      "link": "https://kickcharm.com/hexaware-recruitment-hiring-graduates-freshers",
+      "raw_link": "https://kickcharm.com/hexaware-recruitment-hiring-graduates-freshers",
+      "location": "Remote (All TN Candidates) 🌐",
+      "source": "Telegram @KickCharm",
+      "date_posted": "",
+      "description": "🚨\nHexaware Recruitment Hiring for Gen AI Associate\nExperience: Freshers (0-1 Years)\nEducation: Bachelor's Degree\nSalary: Rs 5-8 LPA (Expected)\nLocation: PAN India\nApply: \nhttps://kickcharm.com/hexaware-recruitment-hiring-graduates-freshers/\nJoin What",
+      "priority_tier": 1,
+      "is_tamil_nadu": true,
+      "salary": "Rs 5-8 LPA (Expected)",
+      "hr_email": "",
+      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
+      "experience": "Freshers (0-1 yrs)",
+      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0-1 yrs)",
+      "found_at": "2026-10-07T19:33+00:00",
+      "verification_status": "unconfirmed",
+      "source_url": "https://kickcharm.com/hexaware-recruitment-hiring-graduates-freshers"
     },
     {
       "title": "Data Analyst",
@@ -3539,7 +3835,7 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0 yrs)",
-      "found_at": "2026-10-07T12:00+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://kickcharm.com/peroptyx-work-from-home-hiring-freshers"
     },
@@ -3559,7 +3855,7 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://kickcharm.com/deloitte-recruitment-hiring-any-graduates-fresher"
     },
@@ -3579,49 +3875,9 @@
       "batch": "2024 / 2025 / 2026 Batch (Freshers)",
       "experience": "Freshers (0 yrs)",
       "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
+      "found_at": "2026-10-07T19:33+00:00",
       "verification_status": "unconfirmed",
       "source_url": "https://kickcharm.com/turing-work-from-home-hiring-for-freshers"
-    },
-    {
-      "title": "Associate",
-      "company": "Startek Mass",
-      "link": "https://kickcharm.com/startek-work-from-home-hiring-freshers",
-      "raw_link": "https://kickcharm.com/startek-work-from-home-hiring-freshers",
-      "location": "Remote (All TN Candidates) 🌐",
-      "source": "Telegram @KickCharm",
-      "date_posted": "",
-      "description": "🚀\n \nRemote Job Opportunity\n!!!\nStartek Mass Hiring Freshers for Associate\nExperience: Freshers/Experienced\nEducation: Any Graduate\nSalary: Rs 4-5 LPA (Expected)\nApply: \nhttps://kickcharm.com/startek-work-from-home-hiring-freshers/\nJoin Whatsapp: \nhtt",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "Rs 4-5 LPA (Expected)",
-      "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
-      "experience": "Freshers (0 yrs)",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "https://kickcharm.com/startek-work-from-home-hiring-freshers"
-    },
-    {
-      "title": "for Operations Associate",
-      "company": "t Miss\nAmazon Virtual Mass",
-      "link": "https://kickcharm.com/amazon-work-from-home-hiring-freshers",
-      "raw_link": "https://kickcharm.com/amazon-work-from-home-hiring-freshers",
-      "location": "Remote (All TN Candidates) 🌐",
-      "source": "Telegram @KickCharm",
-      "date_posted": "",
-      "description": "🚀\n Amazon Sending Test Mails | Don't Miss\nAmazon Virtual Mass Hiring for Operations Associate\nExperience: Freshers/Experienced\nEducation: Any Graduate\nLocation: Remote\nSalary: Rs 4-5 LPA (Expected)\nApply: \nhttps://kickcharm.com/amazon-work-from-home-",
-      "priority_tier": 1,
-      "is_tamil_nadu": true,
-      "salary": "Rs 4-5 LPA (Expected)",
-      "hr_email": "",
-      "batch": "2024 / 2025 / 2026 Batch (Freshers)",
-      "experience": "Freshers (0 yrs)",
-      "eligibility_badge": "🎓 2024 / 2025 / 2026 Batch (Freshers) • 💼 Freshers (0 yrs)",
-      "found_at": "2026-10-07T12:01+00:00",
-      "verification_status": "unconfirmed",
-      "source_url": "https://kickcharm.com/amazon-work-from-home-hiring-freshers"
     }
   ]
 }
