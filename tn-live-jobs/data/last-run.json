@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-08T12:10:23.919Z",
-  "finished_at": "2026-10-08T12:16:16.667Z",
-  "duration_seconds": 176,
-  "validate_seconds": 177,
+  "started_at": "2026-10-08T19:21:46.804Z",
+  "finished_at": "2026-10-08T19:27:35.213Z",
+  "duration_seconds": 173,
+  "validate_seconds": 176,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -30,20 +30,20 @@
     "Tiruppur",
     "Tamil Nadu"
   ],
-  "scraped_records": 145,
-  "verified_jobs": 92,
-  "new_jobs": 17,
-  "removed_jobs": 10,
+  "scraped_records": 147,
+  "verified_jobs": 95,
+  "new_jobs": 10,
+  "removed_jobs": 8,
   "login_required": 1,
   "validate_stats": {
-    "checked": 145,
-    "live": 92,
+    "checked": 147,
+    "live": 95,
     "loginRequired": 1,
-    "dead": 49,
+    "dead": 50,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 6,
-    "unreachable": 2
+    "documents": 8,
+    "unreachable": 0
   },
   "source_status": [
     {
@@ -226,7 +226,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "63 job(s) from 4 search request(s)"
+      "detail": "58 job(s) from 4 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -243,12 +243,12 @@
     "naukri": 0,
     "apna": 100,
     "indeed": 0,
-    "linkedin": 63
+    "linkedin": 58
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"

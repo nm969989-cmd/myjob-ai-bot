@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-08T12:10:23.919Z
-- **Finished:** 2026-10-08T12:16:16.667Z
-- **Duration:** 176 s
+- **Started:** 2026-10-08T19:21:46.804Z
+- **Finished:** 2026-10-08T19:27:35.213Z
+- **Duration:** 173 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, nurse, teacher, sales executive, data entry | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Tamil Nadu
-- **Live verified jobs: 92** (kept this run: 145, new: 17, gone since last run: 10)
+- **Live verified jobs: 95** (kept this run: 147, new: 10, gone since last run: 8)
 
 ## Results per source
 
@@ -34,9 +34,9 @@
 | TNPSC - Notifications | 1 | :x: unreachable | 0 | 0 | fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 0 | 66 | 100 job(s) from 4 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 0 | 65 | 100 job(s) from 4 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 27 | 63 job(s) from 4 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 30 | 58 job(s) from 4 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -45,55 +45,46 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 
 | Check | Count |
 | --- | --- |
-| Links re-opened | 145 |
-| :white_check_mark: Verified live | 92 |
-| Government documents verified | 6 |
+| Links re-opened | 147 |
+| :white_check_mark: Verified live | 95 |
+| Government documents verified | 8 |
 | Login required (kept, not published) | 1 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 49 |
-| Could not be reached | 2 |
+| Dead link (HTTP 4xx/5xx) | 50 |
+| Could not be reached | 0 |
 
-## New this run (17)
+## New this run (10)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Applications are invited for the post of Counsellor and Cas… | Government of Tamil Nadu | Tirunelveli | Government | yes | https://cdn.s3waas.gov.in/s36a9aeddfc689c1d0e3b9ccc3ab651bc5/uploads/2026/10/17914403181629.pdf |
-| Lead Software Engineer - Systems | Freshworks | Chennai | Software | yes | https://jobs.smartrecruiters.com/Freshworks/744000154405299 |
-| Staff Engineer - Full Stack | Freshworks | Chennai | Software | yes | https://jobs.smartrecruiters.com/Freshworks/744000154351019 |
-| Vehicle Diagnostics Engineer | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154404398 |
-| Java Full Stack Developer | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154402778 |
-| Java Full Stack Developer | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154402258 |
-| C# & Database Engineer | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154402028 |
-| Vehicle Diagnostic Engineer | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154398529 |
-| AI / ML and Generative AI research assistant | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154347015 |
-| Accountant/ Accounts Executive | Synmac Consultants Private Limited | Chennai | Accounting & Finance | yes | https://apna.co/job/chennai-region/accountant-accounts-executive-653552056 |
-| Senior Associate Manager | Dhanalakshmi Havan Worldwide Priva… | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/senior-associate-manager-224385560 |
-| Associate Manager – Channel Development | Dhanalakshmi Havan Worldwide Priva… | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/associate-manager-channel-development-220203823 |
-| Financial Sales Consultant – Mutual Funds / Insurance / SIP… | Trinity Skill Works | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai/financial-sales-consultant-mutual-funds-insurance--50955557 |
-| Voluntee | Abu Dhabi & Dubai properties | Vellore | Other | yes | https://in.linkedin.com/jobs/view/voluntee-at-abu-dhabi-dubai-properties-4474436923 |
-| SAP CPI Principal Architect | NTT DATA North America | Tamil Nadu | Other | no (http_429) | https://in.linkedin.com/jobs/view/sap-cpi-principal-architect-at-ntt-data-north-america-4411617572 |
-| Senior Developer - Microsoft .NET | Nokia | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-developer-microsoft-net-at-nokia-4477140089 |
-| Sr Python Developer | TransUnion | Chennai | Software | yes | https://in.linkedin.com/jobs/view/sr-python-developer-at-transunion-4477148052 |
+| Branch Manager - Gold Loan | Tata Capital Ltd. | Chennai | Other | no (http_481) | https://apna.co/job/chennai/branch-manager-gold-loan-311372597 |
+| Area Sales Manager-Chennai-Building Matrials Industry | The Banyan Hr Consults Chennai | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai/area-sales-manager-chennai-building-matrials-indus-678816717 |
+| SAP EWM Technical Consultant | People Prime Worldwide | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/sap-ewm-technical-consultant-at-people-prime-worldwide-4477414704 |
+| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Tamil Nadu | Software | no (http_429) | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
+| Sr Java Developer – Contract Role | Heurova Technologies | Tiruvannamalai | Software | yes | https://in.linkedin.com/jobs/view/sr-java-developer-%E2%80%93-contract-role-4474237844 |
+| Interesting Job Opportunity: QX Impact - Lead Data Analyst | QX Impact | Vellore | Data & Analytics | yes | https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022 |
+| Web Developer | Digitalfactoryindia | Puducherry | Software | no (http_429) | https://in.linkedin.com/jobs/view/web-developer-4475732330 |
+| WEB WORDPRESS ( JUNIOR FULLTIME) | HyperZ Digital | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/web-wordpress-junior-fulltime-at-hyperz-digital-4461484242 |
+| WEB WORDPRESS (INTERN – FULLTIME) | HyperZ Digital | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/web-wordpress-intern-%E2%80%93-fulltime-at-hyperz-digital-4461806167 |
+| TOS Navis N4 Groovy, US Accounts and Freshers | Easy Outdesk | Puducherry | Accounting & Finance | yes | https://in.linkedin.com/jobs/view/tos-navis-n4-groovy-us-accounts-and-freshers-at-easy-outdesk-4475771948 |
 
-## Gone since last run (10)
+## Gone since last run (8)
 
-- Full Stack Java Developer (Citi)
-- Mobile Testing Engineer (People Prime Worldwide)
-- Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, … (UPS)
-- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
-- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
-- Interesting Job Opportunity: QX Impact - Lead Data Analyst (QX Impact)
-- Accountant/ Accounts Executive (Armor Ventures LLP)
-- Telecalling Executive (Sankar Capital)
-- Senior AI developer and Data Visualization exper (Robert Bosch India)
-- Relationship Manager (Wealthy)
+- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- 𝗦𝗔𝗣 𝗕𝗣𝗖 𝗖𝗢𝗡𝗦𝗨𝗟𝗧𝗔𝗡𝗧 (Heurova Technologies)
+- Oracle HCM Consultant (Altraize)
+- Salesforce Architect (SuccessMetrics Corp)
+- Accountant (Asiatic Pharmacare)
+- Senior Account Executive (Energec Chem Specialities Private Limit…)
+- Senior Associate Manager (Dhanalakshmi Havan Worldwide Private Li…)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
-| Every published job was re-opened and checked | yes - 145 links checked |
+| Every published job was re-opened and checked | yes - 147 links checked |
 | Jobs without a real title/company/apply URL dropped | yes - 0 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
