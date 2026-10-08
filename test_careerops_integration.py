@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 from bot_optimizer import (
     analyze_jd_skill_gap,
     calculate_skill_match_score,
@@ -86,7 +87,9 @@ class TestCareerOpsIntegration(unittest.TestCase):
 
     def test_zero_token_ats_liveness(self):
         # Invalid / non-existent smartrecruiters posting returns False
-        bad_sr = check_ats_liveness_api("https://jobs.smartrecruiters.com/Freshworks/invalid_fake_id_99999")
+        with patch("requests.get") as get:
+            get.return_value.status_code = 404
+            bad_sr = check_ats_liveness_api("https://jobs.smartrecruiters.com/Freshworks/invalid_fake_id_99999")
         self.assertFalse(bad_sr)
 
         # Non-ATS URL returns None (fall back to standard stream probe)
@@ -94,7 +97,9 @@ class TestCareerOpsIntegration(unittest.TestCase):
         self.assertIsNone(non_ats)
 
         # Standard link check still succeeds
-        is_live = is_job_link_alive("https://t.me/s/tech_jobs_india", timeout=3.0)
+        with patch("requests.get") as get:
+            get.return_value.status_code = 200
+            is_live = is_job_link_alive("https://t.me/s/tech_jobs_india", timeout=3.0)
         self.assertTrue(is_live)
 
 if __name__ == "__main__":
