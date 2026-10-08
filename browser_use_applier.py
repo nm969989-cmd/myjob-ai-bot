@@ -49,8 +49,7 @@ BROWSER_USE_INSTALL_HINT = (
     "not in requirements.txt.\n"
     "To enable it, use a separate environment:\n"
     "    python -m venv .venv-applier\n"
-    "    .venv-applier/bin/pip install -r requirements.txt\n"
-    "    .venv-applier/bin/pip install browser-use\n"
+    "    .venv-applier/bin/pip install browser-use python-dotenv\n"
     "then run:  .venv-applier/bin/python browser_use_applier.py <url> --dry-run"
 )
 

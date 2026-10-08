@@ -80,6 +80,10 @@ def run_cloud():
     global channels_scanned, channel_jobs_found, channel_attempts
     global follow_up_count, new_radar_jobs, step_errors, stage_times, stage_notes
 
+    if not bot or not chat_id:
+        print("ERROR: Cloud delivery requires TELEGRAM_TOKEN and TELEGRAM_CHAT_ID.")
+        return 2
+
     # Send preferred-city discoveries before long channel scans can consume the budget.
     print(f'\n🌟 [0/3] Automatic priority-city search: {PRIORITY_LABEL}')
     try:
@@ -130,6 +134,7 @@ def run_cloud():
                     channel_jobs_found += (found or 0)
                     channel_attempts += (attempts or 0)
                 except Exception as ch_err:
+                    stage_notes.append(f"Channel @{clean_ch} unavailable")
                     print(f"  ⚠️ Error scanning @{clean_ch}: {ch_err}")
         stage_times["channels"] = int(time.time() - _stage_start)
     except Exception as e:
@@ -233,6 +238,7 @@ def run_cloud():
                         print(f"  [Radar Alert Sent] {j_company} - {j_title}")
                         time.sleep(1.5)
                     except Exception as send_err:
+                        step_errors.append(f"Radar delivery: {send_err}")
                         print(f"  ⚠️ Failed to send radar job: {send_err}")
                 stage_times["radar_send"] = int(time.time() - _stage_start)
     except Exception as e:
@@ -249,6 +255,7 @@ def run_cloud():
             print("🚶‍♂️ [Cloud Runner] Automatically checking Weekend Walk-In Drives...")
             dispatch_walkin_alerts(bot=bot, chat_id=chat_id, once_per_day=True, limit=5)
     except Exception as walkin_auto_err:
+        step_errors.append(f"Walk-in dispatch: {walkin_auto_err}")
         print(f"⚠️ Automated Walk-In dispatch error: {walkin_auto_err}")
 
     # -------------------------------------------------------------
@@ -294,6 +301,7 @@ def run_cloud():
                         writer = csv.writer(f)
                         writer.writerows(rows)
                 except Exception as tg_e:
+                    step_errors.append(f"Follow-up delivery: {tg_e}")
                     print(f"⚠️ Failed to send ghosting alert: {tg_e}")
     except Exception as e:
         step_errors.append(f"Follow-up stage: {e}")
@@ -348,12 +356,14 @@ def run_cloud():
             bot.send_message(chat_id, status_msg, parse_mode="Markdown", disable_web_page_preview=True)
             print("✅ Status summary sent to Telegram.")
     except Exception as e:
+        step_errors.append(f"Status delivery: {e}")
         print(f"⚠️ Failed to send status summary: {e}")
 
     print("\n" + "=" * 60)
-    print(f"✅ GITHUB ACTIONS CYCLE COMPLETE in {total_elapsed}s! Exiting cleanly.")
+    outcome = "FAILED" if step_errors else "COMPLETE"
+    print(f"GITHUB ACTIONS CYCLE {outcome} in {total_elapsed}s ({len(step_errors)} stage errors).")
     print("=" * 60)
-    sys.exit(0)
+    return 1 if step_errors else 0
 
 if __name__ == "__main__":
-    run_cloud()
+    sys.exit(run_cloud())
