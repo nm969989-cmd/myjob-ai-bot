@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tamil Nadu Live Jobs | Real, Verified Vacancies</title>
-  <meta name="description" content="Discover verified, currently live job vacancies in Tamil Nadu, India. Re-verified by headless browser every 6 hours. Direct official links with no fake posts." />
+  <meta name="description" content="Discover verified, currently live job vacancies in Tamil Nadu, India. Listings include recorded verification timestamps and direct source links. Direct official links with no fake posts." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,6 +12,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to jobs</a>
   <!-- Header -->
   <header class="site-header">
     <div class="wrap header-wrap">
@@ -40,7 +41,7 @@
   </header>
 
   <!-- Main Content -->
-  <main class="wrap main-wrap">
+  <main id="main-content" tabindex="-1" class="wrap main-wrap">
     <!-- Controls Section -->
     <section class="controls" aria-label="Search and filter jobs">
       <!-- Search Input -->
@@ -144,7 +145,7 @@
     </section>
 
     <!-- Job Cards List -->
-    <section id="list" class="cards" aria-live="polite"></section>
+    <section id="list" class="cards" aria-label="Job results"></section>
 
     <!-- Load More Button -->
     <div id="loadMoreWrap" class="load-more-wrap" hidden>
@@ -171,7 +172,7 @@
   </main>
 
   <!-- Job Details Modal / Drawer -->
-  <div id="jobModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true">
+  <div id="jobModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-dialog">
       <div class="modal-header">
         <div class="modal-badge-row">

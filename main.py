@@ -4404,6 +4404,9 @@ def _dashboard_security_headers(resp):
     resp.headers.setdefault("X-Content-Type-Options", "nosniff")
     resp.headers.setdefault("X-Frame-Options", "DENY")
     resp.headers.setdefault("Referrer-Policy", "no-referrer")
+    if request.path not in _DASHBOARD_OPEN_PATHS:
+        resp.headers["Cache-Control"] = "no-store"
+        resp.headers["X-Robots-Tag"] = "noindex, nofollow"
     return resp
 
 @app.route("/live")
@@ -4669,14 +4672,19 @@ def home():
                 else:
                     badge = '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-gray-800/60 text-gray-300 border border-gray-600">⏭ SKIPPED</span>'
                 
+                # Scraped titles and saved URLs are untrusted even behind admin auth.
+                from html import escape
+                from urllib.parse import urlsplit
+                url = url if urlsplit(url).scheme in ("http", "https") else "#"
+                url, title, date = escape(url, quote=True), escape(title), escape(date)
                 recent_jobs_html += f'''
                 <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
                     <td class="py-3 pl-2">{badge}</td>
                     <td class="py-3 max-w-[200px] truncate"><a href="{url}" target="_blank" class="text-blue-400 hover:text-blue-300 hover:underline">{title}</a></td>
                     <td class="py-3 text-xs text-gray-400">{date}</td>
                     <td class="py-3 text-right pr-2">
-                        <button onclick="markCRM('{url}', 'Interview')" class="px-2 py-1 bg-purple-600/30 hover:bg-purple-500 border border-purple-500/50 rounded text-xs text-purple-200 hover:text-white transition-all mr-1">📞 Interview</button>
-                        <button onclick="markCRM('{url}', 'Rejected')" class="px-2 py-1 bg-red-900/50 hover:bg-red-700 border border-red-700/50 rounded text-xs text-red-200 hover:text-white transition-all">❌ Reject</button>
+                        <button data-job-url="{url}" onclick="markCRM(this.dataset.jobUrl, 'Interview')" class="px-2 py-1 bg-purple-600/30 hover:bg-purple-500 border border-purple-500/50 rounded text-xs text-purple-200 hover:text-white transition-all mr-1">📞 Interview</button>
+                        <button data-job-url="{url}" onclick="markCRM(this.dataset.jobUrl, 'Rejected')" class="px-2 py-1 bg-red-900/50 hover:bg-red-700 border border-red-700/50 rounded text-xs text-red-200 hover:text-white transition-all">❌ Reject</button>
                     </td>
                 </tr>'''
         recent_jobs_html += '</tbody></table></div>'
@@ -4733,7 +4741,7 @@ def home():
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return f"Error loading dashboard template: {e}"
+        return "Dashboard temporarily unavailable. Check server logs.", 500
 
 # (Radar routes defined earlier in file)
 

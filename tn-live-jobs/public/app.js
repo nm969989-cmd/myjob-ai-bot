@@ -69,7 +69,8 @@ function toggleSaveJob(id) {
     showToast('Saved to your bookmarks! ⭐');
   }
   persistSavedIds();
-  renderListOnly();
+  if (state.quickChip === 'saved') applyFilters();
+  else renderListOnly();
   if (state.selectedJob && state.selectedJob.id === id) {
     updateModalBookmarkBtn();
   }
@@ -84,7 +85,8 @@ function updateSavedBadge() {
 // ---------- Theme Management ------------------------------------------------
 
 function initTheme() {
-  const saved = localStorage.getItem('tn_theme');
+  let saved = null;
+  try { saved = localStorage.getItem('tn_theme'); } catch (e) { /* storage may be blocked */ }
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   const theme = saved || (prefersDark ? 'dark' : 'light');
   document.documentElement.setAttribute('data-theme', theme);
@@ -97,6 +99,16 @@ function toggleTheme() {
   try {
     localStorage.setItem('tn_theme', next);
   } catch (e) {}
+}
+
+let modalReturnFocus = null;
+let modalBackground = [];
+
+function safeApplyUrl(value) {
+  try {
+    const url = new URL(value);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : '#';
+  } catch (e) { return '#'; }
 }
 
 // ---------- Helpers & Formatting --------------------------------------------
@@ -134,6 +146,7 @@ function highlightText(text, query) {
   const regex = new RegExp(`(${escapedWords.join('|')})`, 'gi');
   const parts = String(text).split(regex);
   return parts.map(part => {
+    regex.lastIndex = 0;
     if (regex.test(part)) {
       return `<mark>${escapeHtml(part)}</mark>`;
     }
@@ -259,6 +272,7 @@ function readUrlParams() {
     if (params.has('chip')) state.quickChip = params.get('chip');
     if (params.has('exp')) state.experience = params.get('exp');
     if (params.has('type')) state.type = params.get('type');
+    if (params.has('fresh')) state.freshness = params.get('fresh');
     if (params.has('sort')) state.sort = params.get('sort');
   } catch (e) {}
 }
@@ -272,6 +286,7 @@ function updateUrlParams() {
     if (state.quickChip && state.quickChip !== 'all') params.set('chip', state.quickChip);
     if (state.experience) params.set('exp', state.experience);
     if (state.type) params.set('type', state.type);
+    if (state.freshness) params.set('fresh', state.freshness);
     if (state.sort && state.sort !== 'newest') params.set('sort', state.sort);
 
     const queryStr = params.toString();
@@ -323,7 +338,7 @@ function createCardHtml(job) {
     <article class="card" data-id="${escapeHtml(job.id)}">
       <div class="card-header">
         <span class="card-company">${highlightedCompany}</span>
-        <button class="btn-bookmark ${isSaved ? 'saved' : ''}" type="button" data-save="${escapeHtml(job.id)}" title="${isSaved ? 'Unsave job' : 'Save job'}" aria-label="Bookmark job">
+        <button class="btn-bookmark ${isSaved ? 'saved' : ''}" type="button" data-save="${escapeHtml(job.id)}" title="${isSaved ? 'Unsave job' : 'Save job'}" aria-label="${isSaved ? 'Unsave' : 'Save'} ${escapeHtml(job.title)}" aria-pressed="${isSaved}">
           ${isSaved ? '&#9733;' : '&#9734;'}
         </button>
       </div>
@@ -333,7 +348,7 @@ function createCardHtml(job) {
       ${skillsHtml}
       <div class="card-actions">
         <button class="btn-details" type="button" data-view="${escapeHtml(job.id)}">View Details</button>
-        <a class="btn-apply" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noopener noreferrer">Apply Now &rarr;</a>
+        <a class="btn-apply" href="${escapeHtml(safeApplyUrl(job.apply_url))}" target="_blank" rel="noopener noreferrer">Apply Now &rarr;</a>
       </div>
     </article>
   `;
@@ -464,6 +479,7 @@ function resetAllFilters() {
 // ---------- Modal Details Drawer --------------------------------------------
 
 function openJobModal(job) {
+  modalReturnFocus = document.activeElement;
   state.selectedJob = job;
   els.modalTitle.textContent = job.title || '';
   els.modalCompany.textContent = job.company || '';
@@ -503,7 +519,7 @@ function openJobModal(job) {
   }
 
   // Apply button
-  els.modalApplyBtn.href = job.apply_url;
+  els.modalApplyBtn.href = safeApplyUrl(job.apply_url);
 
   // Bookmark button
   updateModalBookmarkBtn();
@@ -515,12 +531,16 @@ function openJobModal(job) {
   els.jobModal.classList.add('open');
   els.jobModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+  modalBackground = Array.from(document.querySelectorAll('header, main, footer')).map(el => [el, el.inert]);
+  modalBackground.forEach(([el]) => { el.inert = true; });
+  els.modalClose.focus();
 }
 
 function updateModalBookmarkBtn() {
   if (!state.selectedJob) return;
   const isSaved = state.savedIds.has(state.selectedJob.id);
   els.modalBookmarkBtn.classList.toggle('saved', isSaved);
+  els.modalBookmarkBtn.setAttribute('aria-pressed', String(isSaved));
   const icon = els.modalBookmarkBtn.querySelector('.bm-icon');
   const text = els.modalBookmarkBtn.querySelector('.bm-text');
   if (icon) icon.innerHTML = isSaved ? '&#9733;' : '&#9734;';
@@ -550,16 +570,20 @@ function closeJobModal() {
   els.jobModal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
   state.selectedJob = null;
+  modalBackground.forEach(([el, wasInert]) => { el.inert = wasInert; });
+  modalBackground = [];
+  if (modalReturnFocus && modalReturnFocus.isConnected) modalReturnFocus.focus();
+  else els.search.focus();
 }
 
 // ---------- Boot & Event Listeners ------------------------------------------
 
 function stampHeader(payload) {
-  const when = payload.generated_at ? new Date(payload.generated_at) : new Date();
+  const when = payload.generated_at ? new Date(payload.generated_at) : new Date(NaN);
   els.updated.textContent = Number.isNaN(when.getTime())
-    ? 'Last updated: just now'
+    ? 'Last updated: unavailable'
     : 'Last updated: ' + when.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
-  els.counts.textContent = `${payload.count} live verified jobs • ${payload.new_count || 0} new this run`;
+  els.counts.textContent = `${payload.count || 0} live verified jobs • ${payload.new_count || 0} new this run`;
 }
 
 function attachEvents() {
@@ -665,8 +689,19 @@ function attachEvents() {
 
   // Global Keyboard Shortcuts
   document.addEventListener('keydown', (e) => {
+    if (els.jobModal.classList.contains('open')) {
+      if (e.key === 'Tab') {
+        const focusable = Array.from(els.jobModal.querySelectorAll('button:not([disabled]), a[href], input, select, textarea, [tabindex="0"]'))
+          .filter(el => el.getClientRects().length > 0);
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+      if (e.key === 'Escape') closeJobModal();
+      return;
+    }
     // Focus search with '/'
-    if (e.key === '/' && document.activeElement !== els.search) {
+    if (e.key === '/' && !document.activeElement.matches('input, textarea, select, [contenteditable]')) {
       e.preventDefault();
       els.search.focus();
       els.search.select();
