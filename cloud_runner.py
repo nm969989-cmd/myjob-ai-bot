@@ -272,7 +272,7 @@ def run_cloud():
             follow_ups = []
             for i in range(1, len(rows)):
                 row = rows[i]
-                if len(row) >= 4 and "Applied" in row[3] and "Followed Up" not in row[3]:
+                if len(row) >= 4 and "Applied" in row[3] and not any("Followed Up" in value for value in row[3:]):
                     date_str = row[0][:10]
                     try:
                         dt = datetime.strptime(date_str, "%Y-%m-%d")

@@ -56,3 +56,14 @@ def test_unavailable_channel_is_nonfatal_note(runner):
     sys.modules['main'].scrape_single_channel.side_effect = TimeoutError('source offline')
     assert runner.run_cloud() == 0
     assert any('unavailable' in note for note in runner.stage_notes)
+
+
+def test_followup_note_prevents_repeat_delivery(runner):
+    import csv
+    with open('applied_jobs_log.csv', 'w', newline='') as output:
+        writer = csv.writer(output)
+        writer.writerow(['date', 'title', 'url', 'status', 'notes'])
+        writer.writerow(['2020-01-01', 'Fixture role', 'https://example.com/job', 'Applied', 'Followed Up'])
+    assert runner.run_cloud() == 0
+    # Only the final status is sent, not a second follow-up reminder.
+    runner.bot.send_message.assert_called_once()
