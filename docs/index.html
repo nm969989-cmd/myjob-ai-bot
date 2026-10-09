@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="MyJob AI Radar — Real-time verified job vacancies in Tamil Nadu and India. Live job board with walk-in drives, national mass drives, and multi-platform search across LinkedIn, Indeed, SimplifyJobs, and government portals.">
   <meta name="theme-color" content="#060918">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MyJob AI Radar">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
   <title>MyJob AI Radar — Tamil Nadu & Multi-Platform Tech Careers Hub</title>
   <link rel="canonical" href="https://nm969989-cmd.github.io/myjob-ai-bot/">
   <meta property="og:type" content="website">
@@ -26,6 +32,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- Lucide Icons (pinned version) -->
   <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => {
+            console.log('SW registered:', reg.scope);
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // Show update available toast
+                  const toast = document.getElementById('toast');
+                  const msg = document.getElementById('toastMsg');
+                  if (toast && msg) {
+                    msg.innerHTML = '🔄 New version available! <button onclick="navigator.serviceWorker.controller.postMessage(\'SKIP_WAITING\');location.reload();" class="ml-3 px-2 py-1 text-xs bg-amber-500 text-slate-900 rounded">Update</button>';
+                    toast.classList.remove('opacity-0', '-translate-y-4');
+                    toast.classList.add('opacity-100', 'translate-y-0');
+                  }
+                }
+              });
+            });
+          })
+          .catch(err => console.log('SW registration failed:', err));
+      });
+    }
+  </script>
 
   <style>
     :root {

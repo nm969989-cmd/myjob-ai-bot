@@ -1,0 +1,44 @@
+{
+  "name": "Tamil Nadu Live Jobs — Verified Vacancies",
+  "short_name": "TN Live Jobs",
+  "description": "Discover verified, currently live job vacancies in Tamil Nadu. Re-verified by headless browser every 6 hours. Direct official links with no fake posts.",
+  "start_url": "/tn-live-jobs/",
+  "scope": "/tn-live-jobs/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#059669",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Freshers Jobs",
+      "short_name": "Freshers",
+      "description": "Freshers welcome jobs in Tamil Nadu",
+      "url": "/tn-live-jobs/?chip=fresher",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>", "sizes": "96x96" }]
+    },
+    {
+      "name": "Government Jobs",
+      "short_name": "Govt",
+      "description": "Government & TNPSC jobs",
+      "url": "/tn-live-jobs/?chip=govt",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>", "sizes": "96x96" }]
+    },
+    {
+      "name": "IT & Software",
+      "short_name": "IT",
+      "description": "IT & Software engineering jobs",
+      "url": "/tn-live-jobs/?chip=it",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>", "sizes": "96x96" }]
+    }
+  ],
+  "prefer_related_applications": false
+}

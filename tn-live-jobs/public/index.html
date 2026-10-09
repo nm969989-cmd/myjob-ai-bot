@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Discover verified, currently live job vacancies in Tamil Nadu, India. Re-verified by headless browser every 6 hours. Direct official links with no fake posts." />
   <meta name="theme-color" content="#0f172a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TN Live Jobs">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
   <title>Tamil Nadu Live Jobs | Real, Verified Vacancies</title>
   <link rel="canonical" href="https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/">
   <meta property="og:type" content="website">
@@ -18,6 +24,31 @@
   <meta name="twitter:description" content="Discover verified, currently live job vacancies in Tamil Nadu. Re-verified by headless browser every 6 hours.">
   <meta name="twitter:image" content="https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => {
+            console.log('SW registered:', reg.scope);
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  showToast('🔄 New version available! Tap to update.');
+                  document.body.addEventListener('click', () => {
+                    newWorker.postMessage('SKIP_WAITING');
+                    location.reload();
+                  }, { once: true });
+                }
+              });
+            });
+          })
+          .catch(err => console.log('SW registration failed:', err));
+      });
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />

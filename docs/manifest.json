@@ -1,0 +1,45 @@
+{
+  "name": "MyJob AI Radar — Tamil Nadu Job Board",
+  "short_name": "MyJob AI Radar",
+  "description": "Real-time verified job vacancies in Tamil Nadu and India. Live job board with walk-in drives, national mass drives, and multi-platform search.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060918",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Jobs Search",
+      "short_name": "Jobs",
+      "description": "Search jobs across all platforms",
+      "url": "/?tab=jobs",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>", "sizes": "96x96" }]
+    },
+    {
+      "name": "Walk-In Drives",
+      "short_name": "Walk-Ins",
+      "description": "Tamil Nadu walk-in drives with GPS",
+      "url": "/?tab=walkins",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚶</text></svg>", "sizes": "96x96" }]
+    },
+    {
+      "name": "National Drives",
+      "short_name": "Drives",
+      "description": "National mass off-campus drives",
+      "url": "/?tab=drives",
+      "icons": [{ "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📢</text></svg>", "sizes": "96x96" }]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "screenshots": []
+}
