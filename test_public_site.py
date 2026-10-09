@@ -71,14 +71,14 @@ def test_head_has_discovery_and_structured_metadata(browser, public_site):
     page, errors = open_page(browser, public_site)
     try:
         head = page.content()
-        assert 'property="og:title"' in head
-        assert 'name="twitter:card"' in head
-        assert 'application/ld+json' in head
-        assert '"@type": "WebApplication"' in head
-        assert '"@type": "Organization"' in head
-        assert page.locator('link[rel="canonical"]').get_attribute('href').endswith('/myjob-ai-bot/')
-        assert page.locator('link[rel="icon"]').get_attribute('href') == 'favicon.svg'
-        assert not errors
+        assert 'property="og:title"' in head  # nosec B101
+        assert 'name="twitter:card"' in head  # nosec B101
+        assert 'application/ld+json' in head  # nosec B101
+        assert '"@type": "WebApplication"' in head  # nosec B101
+        assert '"@type": "Organization"' in head  # nosec B101
+        assert page.locator('link[rel="canonical"]').get_attribute('href').endswith('/myjob-ai-bot/')  # nosec B101
+        assert page.locator('link[rel="icon"]').get_attribute('href') == 'favicon.svg'  # nosec B101
+        assert not errors  # nosec B101
     finally:
         page.close()
 
@@ -92,29 +92,29 @@ def test_search_filter_and_modal_focus_lifecycle(browser, public_site):
             dict(id='a2', company='Beta', role='Java Engineer', location='Vellore',
                  salary='₹5 LPA', batch='2025', is_tamil_nadu=True, skills=['Java']),
         ])
-        assert page.locator('#tab-jobs .glass-card').count() == 2
+        assert page.locator('#tab-jobs .glass-card').count() == 2  # nosec B101
 
         page.locator('#searchInput').fill('Python')
         page.wait_for_timeout(250)  # handleSearch is debounced
-        assert page.locator('#tab-jobs .glass-card').count() == 1
+        assert page.locator('#tab-jobs .glass-card').count() == 1  # nosec B101
 
         page.locator('#searchInput').fill('')
         page.wait_for_timeout(250)
         page.locator('#tab-jobs .glass-card').first.locator('button:has-text("Details")').click()
 
         modal = page.locator('#jobDetailsModal')
-        assert modal.get_attribute('aria-modal') == 'true'
-        assert page.locator('#modalCloseBtn').evaluate('el => el === document.activeElement')
+        assert modal.get_attribute('aria-modal') == 'true'  # nosec B101
+        assert page.locator('#modalCloseBtn').evaluate('el => el === document.activeElement')  # nosec B101
 
         # Tab is trapped inside the dialog.
         page.keyboard.press('Shift+Tab')
-        assert modal.evaluate('el => el.contains(document.activeElement)')
+        assert modal.evaluate('el => el.contains(document.activeElement)')  # nosec B101
 
         page.keyboard.press('Escape')
-        assert modal.evaluate('el => el.classList.contains("hidden")')
+        assert modal.evaluate('el => el.classList.contains("hidden")')  # nosec B101
         assert page.locator('#tab-jobs .glass-card').first.locator('button:has-text("Details")').evaluate(
-            'el => el === document.activeElement')
-        assert not errors
+            'el => el === document.activeElement')  # nosec B101
+        assert not errors  # nosec B101
     finally:
         page.close()
 
@@ -131,10 +131,10 @@ def test_quote_bearing_scraped_values_cannot_break_inline_handlers(browser, publ
                  is_tamil_nadu=True, skills=['Python'], description='desc'),
         ])
         page.locator('#tab-jobs .glass-card').first.locator('button[title="ATS Match"]').click()
-        assert page.evaluate('window.__xss === undefined')
-        assert page.locator('#jdInput').input_value().startswith(payload)
-        assert page.locator('#tab-jobs .glass-card').first.locator('h3').inner_text().strip() == payload
-        assert not errors
+        assert page.evaluate('window.__xss === undefined')  # nosec B101
+        assert page.locator('#jdInput').input_value().startswith(payload)  # nosec B101
+        assert page.locator('#tab-jobs .glass-card').first.locator('h3').inner_text().strip() == payload  # nosec B101
+        assert not errors  # nosec B101
     finally:
         page.close()
 
@@ -148,9 +148,9 @@ def test_unsafe_apply_urls_are_not_navigable(browser, public_site):
                  link='javascript:alert(1)', apply_url='javascript:alert(1)'),
         ])
         card = page.locator('#tab-jobs .glass-card').first
-        assert card.locator('a[href^="javascript"]').count() == 0
-        assert card.locator('[aria-disabled="true"]').count() == 1
-        assert not errors
+        assert card.locator('a[href^="javascript"]').count() == 0  # nosec B101
+        assert card.locator('[aria-disabled="true"]').count() == 1  # nosec B101
+        assert not errors  # nosec B101
     finally:
         page.close()
 
@@ -169,9 +169,9 @@ def test_in_hand_calculator_follows_new_regime_rebate(browser, public_site):
                  return out;
                }"""
         )
-        assert result['rebateTax'] == '₹0 (Rebate)'
-        assert result['taxedTax'].startswith('-₹')
-        assert not errors
+        assert result['rebateTax'] == '₹0 (Rebate)'  # nosec B101
+        assert result['taxedTax'].startswith('-₹')  # nosec B101
+        assert not errors  # nosec B101
     finally:
         page.close()
 
@@ -189,7 +189,7 @@ def test_reduced_motion_disables_entrance_animations(browser, public_site):
         ])
         page.evaluate('renderCurrentView({ animate: true })')
         assert page.locator('#tab-jobs .glass-card').first.evaluate(
-            'el => getComputedStyle(el).animationName') == 'none'
+            'el => getComputedStyle(el).animationName') == 'none'  # nosec B101
     finally:
         page.close()
 
@@ -201,12 +201,12 @@ def test_back_to_top_appears_only_after_scrolling(browser, public_site):
             dict(id=f'j{i}', company='Alpha', role=f'Engineer {i}', location='Chennai',
                  salary='₹6 LPA', batch='2025', is_tamil_nadu=True) for i in range(40)
         ])
-        assert page.locator('#backToTop').evaluate('el => el.classList.contains("hidden")')
+        assert page.locator('#backToTop').evaluate('el => el.classList.contains("hidden")')  # nosec B101
         page.evaluate('window.scrollTo(0, 1200)')
         page.wait_for_timeout(100)
-        assert not page.locator('#backToTop').evaluate('el => el.classList.contains("hidden")')
+        assert not page.locator('#backToTop').evaluate('el => el.classList.contains("hidden")')  # nosec B101
         page.locator('#backToTop').click()
-        assert not errors
+        assert not errors  # nosec B101
     finally:
         page.close()
 
@@ -219,7 +219,7 @@ def test_no_horizontal_overflow_at_mobile_width(browser, public_site):
                  salary='₹6 LPA', batch='2025', is_tamil_nadu=True, skills=['Python', 'SQL']),
         ])
         page.locator('#jobDetailsModal').evaluate('el => el.classList.remove("hidden")')
-        assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
-        assert not errors
+        assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')  # nosec B101
+        assert not errors  # nosec B101
     finally:
         page.close()
