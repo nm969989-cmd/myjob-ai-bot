@@ -21,6 +21,7 @@ def dashboard(tmp_path, monkeypatch):
 def test_auth_boundaries(dashboard, monkeypatch):
     module, client = dashboard
     assert client.get('/healthz').status_code == 200
+    assert client.get('/').status_code == 401
     assert client.get('/api/status').status_code == 401
     assert client.post('/api/pause').status_code == 401
     response = client.get('/api/status', headers={'X-Admin-Token': 'offline-admin'})
@@ -30,6 +31,7 @@ def test_auth_boundaries(dashboard, monkeypatch):
     assert client.get('/api/status', headers={'Authorization': 'Bearer offline-admin'}).status_code == 200
     monkeypatch.setattr(module, 'DASHBOARD_TOKEN', '')
     assert client.get('/api/status').status_code == 503
+    assert client.get('/').status_code == 503
     assert client.get('/healthz').status_code == 200
 
 

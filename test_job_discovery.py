@@ -18,12 +18,27 @@ class RegionalDiscoveryTests(unittest.TestCase):
         self.assertEqual(discovery.priority_city('Pondicherry, India'), 'Puducherry')
         self.assertTrue(discovery.city_matches('Puducherry', 'pondicherry'))
         self.assertEqual(discovery.priority_city('New Chennaiish'), '')
+        self.assertEqual(discovery.priority_city('Sriperumbudur'), 'Chennai')
+        self.assertEqual(discovery.priority_city('Ambattur, Chennai'), 'Chennai')
+        self.assertEqual(discovery.priority_city('Katpadi'), 'Vellore')
+        self.assertEqual(discovery.tamil_nadu_city('Kovai'), 'Coimbatore')
+        self.assertEqual(discovery.tamil_nadu_city('Tiruchirappalli'), 'Trichy')
+        self.assertEqual(discovery.priority_city('Coimbatore'), '')
 
     def test_preferred_cities_above_other_locations(self):
         jobs = [{'location': 'Bangalore', 'relevance': 1000},
                 {'location': 'Vellore', 'relevance': 5},
                 {'location': 'Chennai', 'relevance': 10}]
         self.assertEqual([j['location'] for j in discovery.rank_jobs(jobs)], ['Chennai', 'Vellore', 'Bangalore'])
+
+    def test_other_tn_cities_rank_between_priority_and_outside_state(self):
+        jobs = [{'location': 'Bangalore', 'relevance': 100},
+                {'location': 'Coimbatore', 'relevance': 1},
+                {'location': 'Vellore', 'relevance': 1}]
+        self.assertEqual(
+            [j['location'] for j in discovery.rank_jobs(jobs)],
+            ['Vellore', 'Coimbatore', 'Bangalore'],
+        )
 
     def test_description_does_not_create_city_priority(self):
         jobs = [{'location': 'Bangalore', 'description': 'Chennai office', 'relevance': 100},
@@ -66,6 +81,15 @@ class RegionalDiscoveryTests(unittest.TestCase):
         self.assertEqual(jobs[0]['link'], 'https://example.com/right')
         self.assertEqual(len(jobs), 1)
 
+    def test_explicit_other_tn_city_search_is_not_limited_to_priority_cities(self):
+        calls = []
+        def fetch(query, location, limit):
+            calls.append((query, location))
+            return [{'location': location, 'link': 'https://example.com/' + location}]
+        jobs = discovery.fetch_priority_search('python coimbatore', [fetch], timeout=2)
+        self.assertEqual(calls, [('python', 'Coimbatore, India')])
+        self.assertEqual(jobs[0]['location'], 'Coimbatore, India')
+
     def test_live_queries_run_even_when_local_results_are_full(self):
         live = [{'company': 'Local Employer', 'role': 'Python Developer', 'location': 'Vellore',
                  'link': 'https://example.com/live', 'relevance': 20}]
@@ -86,6 +110,10 @@ class RegionalDiscoveryTests(unittest.TestCase):
             job_radar.scrape_jobspy()
         locations = [c.kwargs['location'] for c in scrape.call_args_list]
         self.assertEqual(locations[:4], [f'{city}, India' for city in discovery.PRIORITY_CITIES])
+        self.assertEqual(
+            locations[4:4 + len(discovery.TN_SEARCH_CITIES)],
+            [f'{city}, India' for city in discovery.TN_SEARCH_CITIES],
+        )
         self.assertIn('India', locations)
 
 
@@ -129,6 +157,8 @@ class AutomaticSearchTests(unittest.TestCase):
 
     def test_cloud_priority_search_precedes_channel_scraping(self):
         filename = os.path.join(os.path.dirname(__file__), 'cloud_runner.py')
+        if not os.path.exists(filename):
+            self.skipTest('cloud_runner.py is not in this checkout')
         with open(filename, encoding='utf-8') as handle:
             tree = ast.parse(handle.read())
         fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'run_cloud')

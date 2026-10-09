@@ -15,11 +15,57 @@ from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 IST = timezone(timedelta(hours=5, minutes=30))
 PRIORITY_CITIES = {
     "Tiruvannamalai": ("tiruvannamalai", "thiruvannamalai", "thiruannamalai", "tiruvanamalai"),
-    "Vellore": ("vellore",),
+    "Vellore": ("vellore", "katpadi"),
     "Puducherry": ("puducherry", "pondicherry", "pondi"),
-    "Chennai": ("chennai", "madras"),
+    "Chennai": (
+        "chennai", "madras", "chengalpattu", "sriperumbudur", "guindy",
+        "ambattur", "omr", "tambaram", "sholinganallur", "adyar",
+        "siruseri", "taramani", "velachery", "porur", "navalur", "perungudi",
+    ),
 }
 PRIORITY_LABEL = "Tiruvannamalai • Vellore • Puducherry/Pondicherry • Chennai"
+TN_CITY_ALIASES = {
+    "Coimbatore": ("coimbatore", "kovai", "pollachi"),
+    "Madurai": ("madurai",),
+    "Trichy": ("trichy", "tiruchirappalli", "tiruchirapalli", "thiruchirappalli"),
+    "Salem": ("salem",),
+    "Tirunelveli": ("tirunelveli", "thirunelveli", "nellai"),
+    "Erode": ("erode",),
+    "Thanjavur": ("thanjavur", "tanjore"),
+    "Tiruppur": ("tiruppur", "tirupur"),
+    "Hosur": ("hosur",),
+    "Kanchipuram": ("kanchipuram", "kancheepuram", "kanchi"),
+    "Dindigul": ("dindigul", "dindigal"),
+    "Karur": ("karur",),
+    "Cuddalore": ("cuddalore", "kadalur"),
+    "Nagercoil": ("nagercoil", "nagarcoil", "kanyakumari", "kanniyakumari"),
+    "Thoothukudi": ("thoothukudi", "tuticorin"),
+    "Sivakasi": ("sivakasi", "virudhunagar"),
+    "Kumbakonam": ("kumbakonam",),
+    "Neyveli": ("neyveli",),
+    "Ranipet": ("ranipet", "ranipettai"),
+    "Namakkal": ("namakkal", "rasipuram", "tiruchengode"),
+    "Dharmapuri": ("dharmapuri",),
+    "Krishnagiri": ("krishnagiri",),
+    "Tiruvallur": ("tiruvallur", "thiruvallur"),
+    "Tirupattur": ("tirupattur", "thirupattur", "ambur", "vaniyambadi"),
+    "Villupuram": ("villupuram", "viluppuram", "tindivanam"),
+    "Kallakurichi": ("kallakurichi",),
+    "Tenkasi": ("tenkasi",),
+    "Theni": ("theni",),
+    "Ramanathapuram": ("ramanathapuram", "ramnad"),
+    "Sivagangai": ("sivagangai", "karaikudi"),
+    "Pudukkottai": ("pudukkottai", "pudukottai"),
+    "Perambalur": ("perambalur",),
+    "Ariyalur": ("ariyalur",),
+    "Nagapattinam": ("nagapattinam", "mayiladuthurai", "nagai"),
+    "Tiruvarur": ("tiruvarur", "thiruvarur"),
+    "Nilgiris": ("nilgiris", "ooty", "udhagamandalam", "coonoor"),
+}
+TN_SEARCH_CITIES = (
+    "Coimbatore", "Madurai", "Trichy", "Salem", "Hosur",
+    "Tiruppur", "Erode", "Tirunelveli", "Kanchipuram", "Thoothukudi",
+)
 _STATE_LOCK = threading.RLock()
 _SEARCH_LOCK = threading.Lock()
 _SEARCH_POOL = ThreadPoolExecutor(max_workers=8)
@@ -27,21 +73,26 @@ _SEARCH_TASKS = {}
 STATE_FILE = os.path.join(os.path.dirname(__file__), "job_discovery_state.json")
 
 
-def priority_city(location):
+def _city_from_aliases(location, mapping):
     text = str(location or "").lower()
-    for city, aliases in PRIORITY_CITIES.items():
+    for city, aliases in mapping.items():
         if any(re.search(r"\b" + re.escape(alias) + r"\b", text) for alias in aliases):
             return city
     return ""
 
 
+def priority_city(location):
+    return _city_from_aliases(location, PRIORITY_CITIES)
+
+
+def tamil_nadu_city(location):
+    return priority_city(location) or _city_from_aliases(location, TN_CITY_ALIASES)
+
+
 def city_matches(location, query):
-    target = priority_city(query)
+    target = tamil_nadu_city(query)
     if target:
-        return priority_city(location) == target or any(
-            re.search(r"\b" + re.escape(alias) + r"\b", str(location).lower())
-            for alias in PRIORITY_CITIES[target]
-        )
+        return tamil_nadu_city(location) == target
     return str(query).lower() in str(location).lower()
 
 
@@ -51,11 +102,35 @@ def canonical_link(link):
     return urlunsplit((parts.scheme.lower(), parts.netloc.lower(), parts.path.rstrip("/"), urlencode(sorted(query)), ""))
 
 
+def _location_tier(job):
+    loc = job.get("location") or job.get("city")
+    if priority_city(loc):
+        return 0
+    if tamil_nadu_city(loc):
+        return 1
+    text = str(loc or "").lower()
+    if "tamil nadu" in text or "tamilnadu" in text:
+        return 2
+    return 3
+
+
+def _recency_score(job):
+    for key in ("date_posted", "posted_at", "created"):
+        value = str(job.get(key) or "")[:10]
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+            try:
+                return int(value.replace("-", ""))
+            except ValueError:
+                return 0
+    return 0
+
+
 def rank_jobs(jobs):
-    """All four preferred cities share the first tier; keep relevance within that tier."""
+    """Preferred cities, then other Tamil Nadu cities, then relevance and recency."""
     return sorted(jobs, key=lambda j: (
-        0 if priority_city(j.get("location") or j.get("city")) else 1,
+        _location_tier(j),
         -float(j.get("relevance") or 0),
+        -_recency_score(j),
     ))
 
 
@@ -301,10 +376,10 @@ def add_priority_buttons(markup, prefix='search'):
 
 def fetch_priority_search(query, fetchers, limit=8, timeout=25):
     """Search each preferred city even when cached listings already fill the result limit."""
-    requested = priority_city(query)
+    requested = tamil_nadu_city(query)
     locations = [requested] if requested else list(PRIORITY_CITIES)
     role = str(query)
-    for aliases in PRIORITY_CITIES.values():
+    for aliases in (*PRIORITY_CITIES.values(), *TN_CITY_ALIASES.values()):
         for alias in aliases:
             role = re.sub(r"\b" + re.escape(alias) + r"\b", "", role, flags=re.I)
     role = role.strip() or "fresher"

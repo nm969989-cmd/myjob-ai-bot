@@ -18,7 +18,7 @@ import requests
 from dotenv import load_dotenv
 import functools
 import html
-from job_discovery import PRIORITY_CITIES, PRIORITY_LABEL, priority_city, city_matches, source_lines, fetch_priority_search
+from job_discovery import PRIORITY_CITIES, PRIORITY_LABEL, TN_SEARCH_CITIES, priority_city, tamil_nadu_city, city_matches, source_lines, fetch_priority_search
 
 try:
     from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -93,7 +93,8 @@ TAMIL_NADU_LOCATIONS = [
     "pollachi", "chengalpattu", "sriperumbudur", "sholinganallur", "siruseri",
     "taramani", "velachery", "porur", "navalur", "perungudi", "guindy", "ambattur", "omr",
     "tamil nadu", "tamilnadu", "tn", "thiruvannamalai", "thiruannamalai",
-    "puducherry", "pondicherry",
+    "puducherry", "pondicherry", "pondi", "katpadi", "kovai", "madras",
+    "tambaram", "adyar", "tanjore", "nellai",
 ]
 
 INDIA_OTHER_LOCATIONS = [
@@ -852,6 +853,7 @@ def scrape_adzuna_india():
 
     queries = [
         *[("fresher", city) for city in PRIORITY_CITIES],
+        *[("fresher", city) for city in TN_SEARCH_CITIES],
         ("software engineer", "Tamil Nadu"),
         ("frontend developer", "Chennai"),
         ("python developer", "Coimbatore"),
@@ -1532,17 +1534,19 @@ def scrape_jobspy():
     # Query configs: (site_names, search_term, location, results_wanted)
     queries = [
         *[(["linkedin", "indeed"], "fresher", f"{city}, India", 8) for city in PRIORITY_CITIES],
+        *[(["linkedin", "indeed"], "fresher", f"{city}, India", 6) for city in TN_SEARCH_CITIES],
         (["linkedin", "indeed"], "software engineer fresher", "India", 20),
         (["linkedin", "indeed"], "python developer", "Chennai", 15),
         (["linkedin"],          "frontend developer react", "Tamil Nadu", 15),
         (["indeed"],            "full stack developer junior", "Bangalore India", 15),
         (["linkedin", "indeed"], "software developer 0-2 years", "Coimbatore India", 15),
     ]
+    tn_query_count = len(PRIORITY_CITIES) + len(TN_SEARCH_CITIES)
 
     seen_links_local = set()
 
     for query_index, (site_names, search_term, location, results_wanted) in enumerate(queries):
-        if query_index >= len(PRIORITY_CITIES) and len(jobs_found) >= MAX_PER_SOURCE:
+        if query_index >= tn_query_count and len(jobs_found) >= MAX_PER_SOURCE:
             break
         try:
             df = scrape_jobs(
@@ -1631,7 +1635,7 @@ def scrape_jobspy():
                     hr_email=hr_email,
                 ))
 
-                if query_index >= len(PRIORITY_CITIES) and len(jobs_found) >= MAX_PER_SOURCE:
+                if query_index >= tn_query_count and len(jobs_found) >= MAX_PER_SOURCE:
                     break
 
         except Exception as e:
@@ -1811,7 +1815,17 @@ def run_radar():
 TN_CACHE_FILE = "tn_jobs_cache.json"
 
 def _filter_and_paginate_tn_jobs(jobs, limit=10, category=None, city=None, page=1):
-    filtered = sorted(jobs, key=lambda j: (0 if priority_city(j.get('location') or j.get('city')) else 1, -safe_date_timestamp(j.get('date_posted'))))
+    def _tn_rank(job):
+        loc = job.get("location") or job.get("city")
+        if priority_city(loc):
+            tier = 0
+        elif tamil_nadu_city(loc):
+            tier = 1
+        else:
+            tier = 2
+        return (tier, -safe_date_timestamp(job.get("date_posted")))
+
+    filtered = sorted(jobs, key=_tn_rank)
     if category:
         c_str = str(category).lower().strip()
         if c_str in ["tech", "it", "software"]:
@@ -1946,13 +1960,13 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
     if app_id and app_key:
         tn_queries = [
             *[("fresher", city) for city in PRIORITY_CITIES],
+            *[("fresher", city) for city in TN_SEARCH_CITIES],
             ("software engineer", "Chennai"),
             ("developer", "Tamil Nadu"),
-            ("fresher", "Chennai"),
-            ("python developer", "Chennai"),
+            ("python developer", "Madurai"),
             ("fresher engineer", "Coimbatore"),
             ("software trainee", "Tamil Nadu"),
-            ("junior developer", "Chennai"),
+            ("junior developer", "Salem"),
         ]
         for kw, where in tn_queries:
             try:
@@ -2011,11 +2025,13 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
     tn_channels = [
         "chennaijobsofficial",
         "coimbatore_jobs",
+        "maduraijobs",
         "JobSkull",
         "KickCharm",
         "Freshershunt",
         "chennai_walkins",
         "tn_fresher_jobs",
+        "vellorejobs",
     ]
     def _fetch_channel_tn(channel_name):
         res = []
@@ -2102,11 +2118,13 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
                 if any(k in role.lower() for k in non_eng_keywords):
                     continue
 
-                loc_str = "Chennai, Tamil Nadu ⭐"
-                for city in ["coimbatore", "madurai", "trichy", "salem", "hosur", "tirunelveli"]:
-                    if city in t_lower:
-                        loc_str = f"{city.capitalize()}, Tamil Nadu ⭐"
-                        break
+                matched_city = tamil_nadu_city(text)
+                if matched_city == "Puducherry":
+                    loc_str = "Puducherry, India ⭐"
+                elif matched_city:
+                    loc_str = f"{matched_city}, Tamil Nadu ⭐"
+                else:
+                    loc_str = "Tamil Nadu ⭐"
                 if is_remote and not is_tn:
                     loc_str = "Remote (All TN Candidates) 🌐"
 
@@ -2143,9 +2161,15 @@ def get_tamil_nadu_jobs(limit=10, force_refresh=False, category=None, city=None,
         except concurrent.futures.TimeoutError:
             print("  [TN Radar] Channel sweep timeout reached. Proceeding with collected jobs.")
 
-    # Sort newest first
     def _tn_sort_key(job):
-        return (0 if priority_city(job.get('location')) else 1, -safe_date_timestamp(job.get("date_posted")))
+        loc = job.get("location") or job.get("city")
+        if priority_city(loc):
+            tier = 0
+        elif tamil_nadu_city(loc):
+            tier = 1
+        else:
+            tier = 2
+        return (tier, -safe_date_timestamp(job.get("date_posted")))
 
     collected.sort(key=_tn_sort_key)
 

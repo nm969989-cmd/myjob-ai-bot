@@ -12,6 +12,9 @@ test('preferred cities are searched first without duplicates', () => {
   assert.deepEqual(config.CITIES.slice(0, 4), ['Tiruvannamalai', 'Vellore', 'Puducherry', 'Chennai']);
   assert.equal(new Set(config.CITIES).size, config.CITIES.length);
   assert.ok(config.CITIES.includes('Tamil Nadu'));
+  for (const city of ['Hosur', 'Kanchipuram', 'Thoothukudi', 'Nagercoil']) {
+    assert.ok(config.CITIES.includes(city));
+  }
 });
 
 test('aliases resolve to canonical locations', () => {
@@ -19,6 +22,10 @@ test('aliases resolve to canonical locations', () => {
   assert.equal(config.canonicalCity('Pondicherry'), 'Puducherry');
   assert.equal(detectCity('Thiruvannamalai, India'), 'Tiruvannamalai');
   assert.equal(detectCity('Pondicherry'), 'Puducherry');
+  assert.equal(config.canonicalCity('sriperumbudur'), 'Chennai');
+  assert.equal(config.canonicalCity('katpadi'), 'Vellore');
+  assert.equal(detectCity('Kovai, Tamil Nadu'), 'Coimbatore');
+  assert.equal(detectCity('Tuticorin'), 'Thoothukudi');
 });
 
 test('Puducherry search is not restricted to Tamil Nadu', () => {
@@ -193,4 +200,22 @@ test('the CLI rejects an unknown step instead of running everything', () => {
   assert.equal(resolveStep(['node', 'cli.js']).step, 'all');
   assert.equal(resolveStep(['node', 'cli.js', 'typo']).error, 'typo');
   assert.equal(resolveStep(['node', 'cli.js', 'scrape', 'extra']).error, 'extra');
+});
+
+test('other Tamil Nadu cities rank above listings outside the state', () => {
+  const jobs = [
+    { city: 'Bangalore', title: 'Outside', posted_at: '2026-10-06' },
+    { city: 'Hosur', title: 'TN', posted_at: '2026-10-04' },
+    { city: 'Chennai', title: 'Preferred', posted_at: '2026-10-03' },
+  ];
+  assert.deepEqual(sortJobs(jobs).map((job) => job.city), ['Chennai', 'Hosur', 'Bangalore']);
+});
+
+test('district government sources cover preferred and other TN cities', () => {
+  const source = fs.readFileSync(path.join(__dirname, 'src/sources/govt-tn.js'), 'utf8');
+  for (const name of ['Tiruvannamalai', 'Vellore', 'Chennai', 'Coimbatore', 'Thoothukudi']) {
+    assert.match(source, new RegExp(`name: '${name}'`));
+  }
+  const firstThree = [...source.matchAll(/name: '([^']+)'/g)].slice(0, 3).map((match) => match[1]);
+  assert.deepEqual(firstThree, ['Tiruvannamalai', 'Vellore', 'Chennai']);
 });

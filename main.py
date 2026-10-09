@@ -4314,7 +4314,7 @@ DASHBOARD_TOKEN = str(os.getenv("DASHBOARD_TOKEN", "")).strip()
 
 # Kept reachable without a token so the hosting platform's health probe still
 # succeeds. None of these expose job, profile, credential or browser data.
-_DASHBOARD_OPEN_PATHS = {"/", "/healthz", "/favicon.ico"}
+_DASHBOARD_OPEN_PATHS = {"/healthz", "/favicon.ico"}
 
 
 def _dashboard_health_response():
@@ -6842,7 +6842,8 @@ if bot:
     @bot.message_handler(commands=['apply'])
     @admin_only
     def manual_apply(message):
-        save_chat_id(message.chat.id)
+        chat_id = message.chat.id
+        save_chat_id(chat_id)
         
         # Robust URL extraction
         urls = re.findall(r'(https?://[^\s]+)', message.text)

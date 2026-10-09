@@ -56,11 +56,11 @@ const CITIES = [
 // test_priority_cities.js, which fails if a locality is missing here).
 const CITY_ALIASES = {
   Tiruvannamalai: ['tiruvannamalai', 'thiruvannamalai', 'thiruannamalai', 'tiruvanamalai'],
-  Vellore: ['vellore'],
+  Vellore: ['vellore', 'katpadi'],
   Puducherry: ['puducherry', 'pondicherry', 'pondi'],
   Chennai: [
     'chennai', 'madras', 'chengalpattu', 'sriperumbudur', 'guindy', 'ambattur', 'omr',
-    'sholinganallur', 'siruseri', 'taramani', 'velachery', 'porur', 'navalur', 'perungudi'
+    'tambaram', 'sholinganallur', 'adyar', 'siruseri', 'taramani', 'velachery', 'porur', 'navalur', 'perungudi'
   ],
   Coimbatore: ['coimbatore', 'kovai', 'pollachi'],
   Madurai: ['madurai'],

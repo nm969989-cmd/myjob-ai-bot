@@ -197,10 +197,22 @@ async function scrapeMrb(notes) {
 }
 
 const DISTRICT_SITES = [
+  { id: 'tiruvannamalai', name: 'Tiruvannamalai' },
+  { id: 'vellore', name: 'Vellore' },
+  { id: 'chennai', name: 'Chennai' },
+  { id: 'coimbatore', name: 'Coimbatore' },
   { id: 'madurai', name: 'Madurai' },
   { id: 'salem', name: 'Salem' },
   { id: 'tirunelveli', name: 'Tirunelveli' },
-  { id: 'coimbatore', name: 'Coimbatore' },
+  { id: 'erode', name: 'Erode' },
+  { id: 'thanjavur', name: 'Thanjavur' },
+  { id: 'tiruppur', name: 'Tiruppur' },
+  { id: 'kanchipuram', name: 'Kanchipuram' },
+  { id: 'dindigul', name: 'Dindigul' },
+  { id: 'karur', name: 'Karur' },
+  { id: 'cuddalore', name: 'Cuddalore' },
+  { id: 'kanyakumari', name: 'Nagercoil' },
+  { id: 'thoothukudi', name: 'Thoothukudi' },
 ];
 
 /** Official District Collectorate recruitment pages on NIC / S3WaaS. */
@@ -244,6 +256,7 @@ module.exports = {
   label: 'Tamil Nadu government portals',
   tier: 1,
   COMPANY,
+  DISTRICT_SITES,
   collectGovLinks,
 
   async scrape(ctx) {

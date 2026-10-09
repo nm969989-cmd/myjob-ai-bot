@@ -3239,21 +3239,28 @@ _SYNONYM_GROUPS = {
     "fresher": ["fresher", "freshers", "trainee", "graduate", "junior", "intern", "entry level", "0-1"],
     "nurse": ["nurse", "nursing", "staff nurse", "gnm", "anm", "healthcare", "medical"],
     "teacher": ["teacher", "teaching", "faculty", "lecturer", "tutor", "professor"],
-    "chennai": ["chennai", "madras", "omr", "guindy", "navallur", "siruseri", "sholinganallur", "tambaram"],
+    "chennai": ["chennai", "madras", "omr", "guindy", "navallur", "siruseri", "sholinganallur", "tambaram", "adyar", "ambattur", "chengalpattu", "sriperumbudur"],
     "coimbatore": ["coimbatore", "kovai", "saravanampatti", "chil sez"],
     "madurai": ["madurai", "ilandhaikulam", "elcot"],
-    "trichy": ["trichy", "tiruchirappalli", "navalpattu"],
+    "trichy": ["trichy", "tiruchirappalli", "tiruchirapalli", "navalpattu"],
+    "salem": ["salem"],
+    "hosur": ["hosur"],
+    "tiruppur": ["tiruppur", "tirupur"],
+    "erode": ["erode"],
+    "vellore": ["vellore", "katpadi"],
+    "tirunelveli": ["tirunelveli", "thirunelveli", "nellai"],
 }
 
 
 def _build_synonyms() -> dict:
     """Role families plus every preferred-city alias, so city queries match."""
-    from job_discovery import PRIORITY_CITIES
+    from job_discovery import PRIORITY_CITIES, TN_CITY_ALIASES
 
     synonyms = {group: list(terms) for group, terms in _SYNONYM_GROUPS.items()}
-    for aliases in PRIORITY_CITIES.values():
-        for alias in aliases:
-            synonyms[alias] = list(aliases)
+    for mapping in (PRIORITY_CITIES, TN_CITY_ALIASES):
+        for aliases in mapping.values():
+            for alias in aliases:
+                synonyms[alias] = list(aliases)
     return synonyms
 
 
@@ -3305,10 +3312,10 @@ def _relax_tokens(tokens, synonyms: dict) -> list:
     tokens = list(tokens)
     if len(tokens) <= 1:
         return tokens
-    from job_discovery import priority_city
+    from job_discovery import tamil_nadu_city
 
     def keep_rank(token):
-        return 0 if (priority_city(token) or token in synonyms) else 1
+        return 0 if (tamil_nadu_city(token) or token in synonyms) else 1
 
     return sorted(tokens, key=keep_rank)[:-1]
 
@@ -3472,7 +3479,7 @@ def search_jobs_multi_source(query: str, limit: int = 6, page: int = 0, _depth: 
         return []
 
     from job_discovery import (
-        priority_city, city_matches, canonical_link, fetch_priority_search,
+        tamil_nadu_city, city_matches, canonical_link, fetch_priority_search,
     )
 
     synonyms = _build_synonyms()
@@ -3599,7 +3606,7 @@ def search_jobs_multi_source(query: str, limit: int = 6, page: int = 0, _depth: 
         except Exception as e:
             print(f"[Search Engine] SimplifyJobs query notice: {e}")
 
-    requested_city = priority_city(query)
+    requested_city = tamil_nadu_city(query)
     unique = {}
     for item in matches:
         if requested_city and not city_matches(item.get('location', ''), requested_city):

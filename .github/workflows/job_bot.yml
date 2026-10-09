@@ -59,7 +59,7 @@ jobs:
           # tests hit the live network, which is slow and flaky here.
           # Do NOT append `|| true`: that masked real failures and let a broken
           # suite report success.
-          python -m pytest test_careerops_integration.py -q \
+          python -m pytest test_careerops_integration.py test_job_discovery.py test_dashboard.py test_public_sites.py -q \
             -k "not network and not live and not adzuna and not scrape"
 
       - name: 🧪 Verify Regional Search and Automatic Delivery
