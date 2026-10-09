@@ -196,8 +196,107 @@ function matchesSearch(job, query) {
   if (!query) return true;
   const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
   if (!tokens.length) return true;
+  return tokens.every(token => tokenMatches(job, token));
+}
+
+/** Cached list of the searchable words on a job, for near-match checks. */
+function searchWords(job) {
+  if (job.__words) return job.__words;
+  const words = Array.from(new Set(searchHaystack(job).split(/[^a-z0-9+#.]+/).filter(w => w.length >= 4)));
+  try {
+    Object.defineProperty(job, '__words', { value: words, enumerable: false, writable: true });
+  } catch (e) {
+    job.__words = words;
+  }
+  return words;
+}
+
+/**
+ * Optimal string alignment distance, capped at `max`. Counts a transposition
+ * as one edit, so "pyhton" -> "python" costs 1. Bails out early once a row
+ * exceeds the cap, so it stays cheap on the long description words.
+ */
+function osaDistance(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  const d = [];
+  for (let i = 0; i <= a.length; i++) d.push([i]);
+  for (let j = 0; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    let rowMin = Infinity;
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+      rowMin = Math.min(rowMin, d[i][j]);
+    }
+    if (rowMin > max) return max + 1;
+  }
+  return d[a.length][b.length];
+}
+
+/**
+ * True when a token is present in a job. Exact substring wins; otherwise a
+ * long-enough token is allowed a single-edit near match, so a typo such as
+ * "pyhton" still finds Python roles.
+ */
+function tokenMatches(job, token) {
   const haystack = searchHaystack(job);
-  return tokens.every(token => haystack.includes(token));
+  if (haystack.includes(token)) return true;
+  if (token.length < 4) return false;
+  return searchWords(job).some(word => Math.abs(word.length - token.length) <= 1 && osaDistance(token, word, 1) <= 1);
+}
+
+/** Relevance of a job to the tokens: tokens matched, plus a title bonus. */
+function jobSearchScore(job, tokens) {
+  const title = String(job.title || '').toLowerCase();
+  let score = 0;
+  for (const token of tokens) {
+    if (tokenMatches(job, token)) {
+      score += 5;
+      if (title.includes(token)) score += 3;
+    }
+  }
+  return score;
+}
+
+/**
+ * Search filter with a forgiving fallback. Jobs matching every token come
+ * first; when none do, jobs matching at least one token are shown so a narrow
+ * query is not a dead end. Results are ordered by relevance, then left stable
+ * for the caller's own sort to break ties.
+ */
+function applySearch(list, query) {
+  const q = (query || '').trim();
+  if (!q) return list;
+  const tokens = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!tokens.length) return list;
+  const strict = list.filter(job => matchesSearch(job, q));
+  const pool = strict.length ? strict : list.filter(job => tokens.some(token => tokenMatches(job, token)));
+  return pool
+    .map(job => ({ job, score: jobSearchScore(job, tokens) }))
+    .sort((a, b) => b.score - a.score)
+    .map(entry => entry.job);
+}
+
+/** Comparator for the selected sort mode, matching the previous behaviour. */
+function sortComparator(sort) {
+  if (sort === 'city') {
+    return (a, b) => String(a.city || '').localeCompare(String(b.city || ''));
+  }
+  if (sort === 'company') {
+    return (a, b) => String(a.company || '').localeCompare(String(b.company || ''));
+  }
+  if (sort === 'salary') {
+    return (a, b) => {
+      const aSal = Boolean(a.salary);
+      const bSal = Boolean(b.salary);
+      if (aSal !== bSal) return aSal ? -1 : 1;
+      return String(b.posted_at || '').localeCompare(String(a.posted_at || ''));
+    };
+  }
+  return (a, b) => String(b.posted_at || '').localeCompare(String(a.posted_at || ''));
 }
 
 function matchesQuickChip(job, chip) {
@@ -248,26 +347,12 @@ function applyFilters() {
     if (state.type && job.employment_type !== state.type) return false;
     if (!matchesExperience(job, state.experience)) return false;
     if (!matchesFreshness(job, state.freshness)) return false;
-    if (!matchesSearch(job, q)) return false;
     return true;
   });
 
-  // Sorting
-  if (state.sort === 'city') {
-    list.sort((a, b) => String(a.city || '').localeCompare(String(b.city || '')));
-  } else if (state.sort === 'company') {
-    list.sort((a, b) => String(a.company || '').localeCompare(String(b.company || '')));
-  } else if (state.sort === 'salary') {
-    list.sort((a, b) => {
-      const aSal = Boolean(a.salary);
-      const bSal = Boolean(b.salary);
-      if (aSal !== bSal) return aSal ? -1 : 1;
-      return String(b.posted_at || '').localeCompare(String(a.posted_at || ''));
-    });
-  } else {
-    // Newest first
-    list.sort((a, b) => String(b.posted_at || '').localeCompare(String(a.posted_at || '')));
-  }
+  // Search ranks by relevance; other sort modes then reorder by their key.
+  list = applySearch(list, q);
+  list = list.slice().sort(sortComparator(state.sort));
 
   state.filteredJobs = list;
   state.visibleCount = PAGE_SIZE;
@@ -444,7 +529,21 @@ function renderListOnly() {
     els.loadMoreWrap.hidden = true;
   }
 
-  els.empty.hidden = state.filteredJobs.length !== 0;
+  if (state.filteredJobs.length === 0) {
+    els.empty.hidden = false;
+    if (els.emptyMessage) els.emptyMessage.textContent = emptyStateMessage();
+  } else {
+    els.empty.hidden = true;
+  }
+}
+
+/** Explain why the board is empty and what to do next. */
+function emptyStateMessage() {
+  const q = state.query.trim();
+  if (q && state.allJobs.length) {
+    return `No openings matched "${q}". Try a shorter or different keyword, or clear your filters.`;
+  }
+  return 'Try searching for broader keywords, clearing specific filters, or choosing "All Cities".';
 }
 
 function render() {
@@ -835,6 +934,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   els.loadMoreBtn = document.getElementById('loadMoreBtn');
   els.loadMoreCount = document.getElementById('loadMoreCount');
   els.empty = document.getElementById('empty');
+  els.emptyMessage = document.getElementById('emptyMessage');
   els.emptyResetBtn = document.getElementById('emptyResetBtn');
 
   // Modal elements

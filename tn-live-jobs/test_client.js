@@ -70,3 +70,54 @@ test('the search term from a link is length-capped', () => {
   const run = withFilters('?q=' + 'a'.repeat(500));
   assert.equal(run('readUrlParams(); state.query.length'), 120);
 });
+
+test('a misspelled search token still finds the role', () => {
+  const run = client();
+  run("state.allJobs=[{id:'a',title:'Python Developer',company:'Acme',city:'Chennai',description:'backend apis'}];");
+  assert.equal(run("applySearch(state.allJobs,'pyhton').length"), 1);
+  assert.equal(run("tokenMatches(state.allJobs[0],'pyhton')"), true);
+});
+
+test('transposition counts as a single edit', () => {
+  const run = client();
+  assert.equal(run("osaDistance('pyhton','python',1)"), 1);
+  assert.equal(run("osaDistance('react','vue',1)"), 2);
+});
+
+test('search keeps exact matches ahead of a partial fallback', () => {
+  const run = client();
+  run("state.allJobs=[" +
+    "{id:'both',title:'Python Developer',company:'Acme',city:'Chennai',description:'python chennai role'}," +
+    "{id:'one',title:'Python Developer',company:'Beta',city:'Madurai',description:'python only'}," +
+    "{id:'other',title:'Sales Executive',company:'Gamma',city:'Chennai',description:'sales'}];");
+  // Every-token matches win; the one-token job is dropped when strict matches exist.
+  assert.equal(run("applySearch(state.allJobs,'python chennai').length"), 1);
+  assert.equal(run("applySearch(state.allJobs,'python chennai')[0].id"), 'both');
+});
+
+test('a query with no exact-all match falls back to any-token matches', () => {
+  const run = client();
+  run("state.allJobs=[" +
+    "{id:'py',title:'Python Developer',company:'Acme',city:'Chennai',description:'backend'}," +
+    "{id:'sales',title:'Sales Executive',company:'Gamma',city:'Chennai',description:'sales'}];");
+  // "python zzzzzz" matches nothing strictly, so Python jobs still surface.
+  const ids = run("applySearch(state.allJobs,'python zzzzzz').map(j=>j.id)");
+  assert.equal(JSON.stringify(ids), JSON.stringify(['py']));
+});
+
+test('a title match outranks an incidental description match', () => {
+  const run = client();
+  run("state.allJobs=[" +
+    "{id:'desc',title:'Sales Executive',company:'Acme',city:'Chennai',description:'python skills a plus'}," +
+    "{id:'title',title:'Python Developer',company:'Beta',city:'Chennai',description:'build apis'}];");
+  assert.equal(run("applySearch(state.allJobs,'python')[0].id"), 'title');
+});
+
+test('empty-state message names the query that failed', () => {
+  const run = client();
+  run("state.allJobs=[{id:'a',title:'Developer'}]; state.query='zzzzz';");
+  assert.match(run('emptyStateMessage()'), /zzzzz/);
+  run("state.query='';");
+  assert.match(run('emptyStateMessage()'), /broader keywords/);
+});
+
