@@ -6,7 +6,11 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import engineering_telegram as e
-from test_engineering_telegram import job, result
+import test_engineering_telegram as fixtures
+
+job = fixtures.job
+result = fixtures.result
+
 
 class OptimizationTests(unittest.TestCase):
     def test_batch_one_process_profiles_only_on_stdin(self):
