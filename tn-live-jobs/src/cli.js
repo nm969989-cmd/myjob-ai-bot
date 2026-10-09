@@ -60,6 +60,8 @@ const DIFF_FILE = path.join(WORK_DIR, 'diff.json');
 // Small helpers
 // ---------------------------------------------------------------------------
 
+const STEPS = new Set(['all', 'scrape', 'validate', 'diff', 'export', 'report', 'serve']);
+
 function parseArgs(argv) {
   const args = { step: 'all' };
   for (const raw of argv.slice(2)) {
@@ -71,6 +73,24 @@ function parseArgs(argv) {
     else if (key === 'step') args.step = rest || 'all';
   }
   return args;
+}
+
+/**
+ * Turn bare command-line words into a step name.
+ *
+ * The first bare word is treated as the step (`scrape`, `validate`, ...). An
+ * unknown word is an error: silently treating a typo as "run everything" would
+ * kick off a full multi-minute scrape by accident.
+ */
+function resolveStep(argv) {
+  const bare = argv
+    .slice(2)
+    .filter((raw) => !raw.startsWith('--') && !raw.includes('='));
+  if (!bare.length) return { step: 'all' };
+  const [first, ...extra] = bare;
+  if (!STEPS.has(first)) return { error: first };
+  if (extra.length) return { error: extra[0] };
+  return { step: first };
 }
 
 function readNumber(value, fallback) {
@@ -610,7 +630,15 @@ async function main() {
     process.stdout.write(HELP + '\n');
     return;
   }
-  if (args.step === 'serve') {
+  const bare = resolveStep(process.argv);
+  if (bare.error) {
+    process.stdout.write('Unknown step "' + bare.error + '".\n\n' + HELP + '\n');
+    process.exitCode = 2;
+    return;
+  }
+  // An explicit --step wins; otherwise a bare word names the step.
+  const step = args.step === 'all' ? bare.step : args.step;
+  if (step === 'serve') {
     runServe();
     return;
   }
@@ -621,13 +649,13 @@ async function main() {
     diff: [runDiff],
     export: [runExport],
     report: [runReport],
-  }[args.step];
+  }[step];
   if (!plan) {
-    process.stdout.write('Unknown step "' + args.step + '".\n\n' + HELP + '\n');
+    process.stdout.write('Unknown step "' + step + '".\n\n' + HELP + '\n');
     process.exitCode = 2;
     return;
   }
-  await runAll(plan, args.step);
+  await runAll(plan, step);
 }
 
 async function runAll(plan, stepName) {
@@ -666,6 +694,14 @@ async function runAll(plan, stepName) {
   }
 }
 
-main();
+if (require.main === module) main();
 
-module.exports = { parseArgs, resolveCities, resolveKeywords, ROOT, WORK_DIR, PUBLIC_DIR };
+module.exports = {
+  parseArgs,
+  resolveStep,
+  resolveCities,
+  resolveKeywords,
+  ROOT,
+  WORK_DIR,
+  PUBLIC_DIR,
+};

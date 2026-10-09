@@ -4,7 +4,7 @@ Every 6 hours, this project searches the web for **real, open job vacancies in
 Tamil Nadu, India**, re-opens every advert to prove it is still live, and
 publishes the survivors to a mobile-friendly job board.
 
-- **Live board:** `https://<your-github-username>.github.io/tn-live-jobs/`
+- **Live board:** `https://<your-github-username>.github.io/tn-live-jobs/` (ships a `sitemap.xml` and `robots.txt`)
 - **Excel:** `data/jobs.csv`
 - **Machine friendly:** `data/jobs.json` (everything) and `public/data/jobs.json` (verified only)
 

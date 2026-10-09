@@ -6,7 +6,7 @@ const path = require('node:path');
 const { test } = require('node:test');
 const config = require('./src/config');
 const { detectCity } = require('./src/util');
-const { sortJobs } = require('./src/export');
+const { sortJobs, buildSitemap, SITE_URL } = require('./src/export');
 
 test('preferred cities are searched first without duplicates', () => {
   assert.deepEqual(config.CITIES.slice(0, 4), ['Tiruvannamalai', 'Vellore', 'Puducherry', 'Chennai']);
@@ -156,4 +156,19 @@ test('search plan searches every keyword in the preferred cities before others',
   assert.deepEqual([...new Set(firstRound.map((p) => p.city))].sort(), [...config.PRIORITY_CITIES].sort());
   assert.deepEqual([...new Set(firstRound.map((p) => p.keyword))].sort(), ['a', 'b']);
   assert.ok(firstRound.every((p) => config.PRIORITY_CITIES.includes(p.city)));
+});
+
+test('the generated sitemap is valid and points at the deployed site', () => {
+  const xml = buildSitemap();
+  assert.ok(xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'));
+  assert.ok(xml.includes(`<loc>${SITE_URL}</loc>`));
+  assert.ok(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/.test(xml));
+});
+
+test('the CLI rejects an unknown step instead of running everything', () => {
+  const { resolveStep } = require('./src/cli');
+  assert.equal(resolveStep(['node', 'cli.js', 'scrape']).step, 'scrape');
+  assert.equal(resolveStep(['node', 'cli.js']).step, 'all');
+  assert.equal(resolveStep(['node', 'cli.js', 'typo']).error, 'typo');
+  assert.equal(resolveStep(['node', 'cli.js', 'scrape', 'extra']).error, 'extra');
 });

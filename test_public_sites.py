@@ -69,7 +69,18 @@ def test_robots_and_sitemap_are_present_and_valid():
     root = ET.parse(DOCS / "sitemap.xml").getroot()
     assert root.tag.endswith("urlset")
     assert root.find("{http://www.sitemaps.org/schemas/sitemap/0.9}url") is not None
-    assert (TN / "robots.txt").exists()
+
+    # The dashboard site ships its own robots/sitemap too.
+    assert "Sitemap:" in _read(TN / "robots.txt")
+    tn_root = ET.parse(TN / "sitemap.xml").getroot()
+    assert tn_root.tag.endswith("urlset")
+    assert tn_root.find("{http://www.sitemaps.org/schemas/sitemap/0.9}url") is not None
+
+
+def test_dashboard_head_has_canonical_and_social_metadata():
+    html = _read(TN / "index.html")
+    for needle in ('rel="canonical"', "og:title", "og:url", "og:description", 'name="robots"', "twitter:card"):
+        assert needle in html, f"missing {needle} in dashboard head"
 
 
 def test_saved_job_restore_is_guarded_against_blocked_storage():

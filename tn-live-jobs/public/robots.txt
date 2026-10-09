@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://nm969989-cmd.github.io/tn-live-jobs/sitemap.xml
