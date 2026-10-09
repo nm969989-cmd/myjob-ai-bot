@@ -19,6 +19,7 @@
  *   6. The final URL and page title are recorded on the job.
  */
 
+const { runWithConcurrency } = require('./concurrency');
 const { render, fetchText, isDomainDead, log } = require('./scraper');
 const {
   tidy,
@@ -59,19 +60,11 @@ const SEARCH_URL = /\/job-?search\b|\/jobs?\?|\?q=|&q=|keywords=|jobs-in-[a-z-]+
 
 /** Run an async function over a list, at most `limit` items at a time. */
 async function mapWithConcurrency(items, limit, worker) {
-  const results = new Array(items.length);
-  let cursor = 0;
-  async function run() {
-    while (cursor < items.length) {
-      const index = cursor;
-      cursor += 1;
-      results[index] = await worker(items[index], index);
-    }
-  }
-  const runners = [];
-  for (let i = 0; i < Math.min(limit, items.length); i += 1) runners.push(run());
-  await Promise.all(runners);
-  return results;
+  const settled = await runWithConcurrency(items, limit, worker);
+  return settled.map((entry) => {
+    if (entry.status === 'rejected') throw entry.reason;
+    return entry.value;
+  });
 }
 
 function httpReason(status) {

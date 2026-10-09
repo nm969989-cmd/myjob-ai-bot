@@ -52,10 +52,11 @@ Extra knobs (same names work in `env:` blocks in CI):
 | `QUERY=staff nurse`   | add one extra search keyword                  |
 | `CITY=Madurai`        | search a single city instead of every city    |
 | `MAX_TOTAL_JOBS=25`   | cap the number of jobs for short test runs    |
+| `SEARCH_PAGES_PER_SOURCE=12` | how many (keyword, city) searches per source |
+| `SOURCE_CONCURRENCY=3` | how many different sources to scrape at once |
 | `ENABLE_TIER3=true`   | also try the optional Tier 3 source           |
 | `SKIP_SPA_SITES=true` | skip slow JavaScript-only corporate sites     |
 | `VALIDATE_CONCURRENCY=4` | how many different sites verify at once   |
-| `SEARCH_PAGES_PER_SOURCE=12` | (keyword, city) searches per source per run |
 
 ## Put it on GitHub (Actions + Pages)
 

@@ -25,6 +25,7 @@ const http = require('http');
 const path = require('path');
 
 const config = require('./config');
+const { runWithConcurrency } = require('./concurrency');
 const {
   log,
   logError,
@@ -146,6 +147,7 @@ async function runScrape() {
   const maxTotal = readNumber(process.env.MAX_TOTAL_JOBS, 150);
 
   let sharedContext = null;
+  let contextPromise = null;
 
   const ctx = {
     cities,
@@ -158,14 +160,22 @@ async function runScrape() {
     log,
     skipSpaSites: process.env.SKIP_SPA_SITES === 'true',
     async getContext() {
-      if (!sharedContext) {
-        const browser = await scraper.launchBrowser();
-        sharedContext = await scraper.newContext(browser);
-        if (!sharedContext || typeof sharedContext.newPage !== 'function') {
-          sharedContext = null;
-          throw new Error('headless browser unavailable in this environment');
-        }
+      // Sources run in parallel, so guard the lazy launch with a shared
+      // promise; otherwise two of them can each start a browser.
+      if (!contextPromise) {
+        contextPromise = (async () => {
+          const browser = await scraper.launchBrowser();
+          const context = await scraper.newContext(browser);
+          if (!context || typeof context.newPage !== 'function') {
+            throw new Error('headless browser unavailable in this environment');
+          }
+          return context;
+        })();
+        contextPromise.catch(() => {
+          contextPromise = null;
+        });
       }
+      sharedContext = await contextPromise;
       return sharedContext;
     },
   };
@@ -174,23 +184,33 @@ async function runScrape() {
   const buckets = new Map(); // source module id -> records it found
   const perSource = {};
 
-  for (const source of sources) {
+  // Different sources hit different sites, so run a few at a time to cut wall
+  // time. The scraper still serialises requests to any single domain.
+  const sourceConcurrency = Math.max(1, readNumber(process.env.SOURCE_CONCURRENCY, 3));
+  const settled = await runWithConcurrency(sources, sourceConcurrency, async (source) => {
     if (Date.now() > deadline) {
       log(`  out of time budget, skipping ${source.label}`);
       notes.note(source.id, 'skipped', 'out of time budget for this run');
-      continue;
+      return [];
     }
     log(`-> ${source.label} (tier ${source.tier})`);
     try {
       const jobs = await source.scrape(ctx);
-      perSource[source.id] = jobs.length;
-      buckets.set(source.id, (buckets.get(source.id) || []).concat(jobs));
-      log(`   ${jobs.length} record(s)`);
+      log(`   ${source.label}: ${jobs.length} record(s)`);
+      return jobs;
     } catch (error) {
       logError(`source "${source.label}" failed and was skipped: ${error.message}`);
       notes.note(source.id, 'error', clip(error.message, 140));
+      return [];
     }
-  }
+  });
+
+  sources.forEach((source, index) => {
+    const entry = settled[index];
+    const jobs = entry && entry.status === 'fulfilled' ? entry.value : [];
+    perSource[source.id] = jobs.length;
+    buckets.set(source.id, (buckets.get(source.id) || []).concat(jobs));
+  });
 
   // 1. Drop records missing a required field and stale TNPSC archive notices.
   // 2. Deduplicate across sources (same apply URL = same job).
@@ -576,6 +596,8 @@ const HELP = [
   'Optional settings (set these before the command, e.g. MAX_TOTAL_JOBS=25 npm run scrape):',
   '  QUERY=java developer      add one extra search word',
   '  CITY=Madurai              search only one city',
+  '  SEARCH_PAGES_PER_SOURCE=12  how many (keyword, city) searches per source',
+  '  SOURCE_CONCURRENCY=3      how many different sources to scrape at once',
   '  MAX_TOTAL_JOBS=25         keep runs short while testing',
   '  ENABLE_TIER3=true         also try the optional Tier 3 sources',
   '  SKIP_SPA_SITES=true       skip the slow JavaScript-only career sites',

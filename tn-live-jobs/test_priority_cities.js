@@ -117,3 +117,43 @@ test('ATS location filter accepts new TN cities but still rejects other states',
   assert.equal(isTamilNaduLocation({ fullLocation: 'Pune' }), false);
   assert.equal(isTamilNaduLocation({}), false);
 });
+
+test('bounded runner respects the limit and keeps input order', async () => {
+  const { runWithConcurrency } = require('./src/concurrency');
+  let inFlight = 0;
+  let peak = 0;
+  const items = Array.from({ length: 20 }, (_, i) => i);
+
+  const results = await runWithConcurrency(items, 4, async (n) => {
+    inFlight += 1;
+    peak = Math.max(peak, inFlight);
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    inFlight -= 1;
+    return n * 2;
+  });
+
+  assert.equal(peak, 4, `expected at most 4 in flight, saw ${peak}`);
+  assert.deepEqual(results.map((r) => r.value), items.map((n) => n * 2));
+  assert.ok(results.every((r) => r.status === 'fulfilled'));
+});
+
+test('bounded runner isolates failures instead of cancelling the batch', async () => {
+  const { runWithConcurrency } = require('./src/concurrency');
+  const results = await runWithConcurrency([1, 2, 3, 4], 2, async (n) => {
+    if (n === 2) throw new Error('boom');
+    return n;
+  });
+  assert.equal(results[0].value, 1);
+  assert.equal(results[1].status, 'rejected');
+  assert.equal(results[2].value, 3);
+  assert.equal(results[3].value, 4);
+});
+
+test('search plan searches every keyword in the preferred cities before others', () => {
+  const plan = config.planSearches(['a', 'b'], config.CITIES, config.MAX_PAGES_PER_SOURCE);
+  // The first 8 searches must be both keywords across all four preferred cities.
+  const firstRound = plan.slice(0, 8);
+  assert.deepEqual([...new Set(firstRound.map((p) => p.city))].sort(), [...config.PRIORITY_CITIES].sort());
+  assert.deepEqual([...new Set(firstRound.map((p) => p.keyword))].sort(), ['a', 'b']);
+  assert.ok(firstRound.every((p) => config.PRIORITY_CITIES.includes(p.city)));
+});

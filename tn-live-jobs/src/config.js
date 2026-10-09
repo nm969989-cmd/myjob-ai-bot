@@ -5,6 +5,8 @@
  * If you want to search different cities or add job categories, edit here.
  */
 
+const { orderCities } = require('./cityBudget');
+
 // Search the four preferred cities before broader Tamil Nadu coverage.
 const PRIORITY_CITIES = ['Tiruvannamalai', 'Vellore', 'Puducherry', 'Chennai'];
 const CITIES = [
@@ -183,31 +185,17 @@ const SEARCH_KEYWORDS = [
  * budget, which meant only the FIRST keyword was ever searched (in the first
  * few cities) - most of Tamil Nadu and most keywords were never reached.
  *
- * This plan fixes that: every preferred city is searched with each keyword
- * before the broader cities are touched, so a small budget still covers the
- * places and roles that matter most. `limit` caps how many searches run.
+ * This plan fixes that ordering: every keyword is searched across the four
+ * preferred cities first, and only then are the broader cities touched. So a
+ * small budget covers several roles in the places that matter most, instead of
+ * one role across many cities. `limit` caps how many searches run.
  */
 function planSearches(keywords, cities, limit) {
+  const ordered = orderCities(PRIORITY_CITIES, cities);
+  const preferredList = PRIORITY_CITIES.map((city) => city.toLowerCase());
+  const preferred = ordered.filter((city) => preferredList.includes(city.toLowerCase()));
+  const rest = ordered.filter((city) => !preferredList.includes(city.toLowerCase()));
   const keywordList = (keywords || []).filter(Boolean);
-
-  const seen = new Set();
-  const cityList = [];
-  for (const city of cities || []) {
-    const key = String(city || '').trim().toLowerCase();
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
-    cityList.push(city);
-  }
-
-  const priorityIndex = new Map(PRIORITY_CITIES.map((city, index) => [city.toLowerCase(), index]));
-  const ordered = cityList.slice().sort((a, b) => {
-    const rankA = priorityIndex.has(String(a).toLowerCase()) ? priorityIndex.get(String(a).toLowerCase()) : PRIORITY_CITIES.length;
-    const rankB = priorityIndex.has(String(b).toLowerCase()) ? priorityIndex.get(String(b).toLowerCase()) : PRIORITY_CITIES.length;
-    return rankA - rankB;
-  });
-
-  const preferred = ordered.filter((city) => priorityIndex.has(String(city).toLowerCase()));
-  const rest = ordered.filter((city) => !priorityIndex.has(String(city).toLowerCase()));
 
   const pairs = [];
   for (const keyword of keywordList) for (const city of preferred) pairs.push({ keyword, city });
@@ -231,6 +219,7 @@ const MAX_PAGES_PER_SOURCE = Math.max(
   1,
   Number(process.env.SEARCH_PAGES_PER_SOURCE || process.env.MAX_PAGES_PER_SOURCE) || 12
 );
+
 
 /** Wait a random 1.5-3.5 seconds between requests (as required). */
 const MIN_DELAY_MS = 1500;
