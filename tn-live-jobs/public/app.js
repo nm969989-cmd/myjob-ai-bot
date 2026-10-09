@@ -360,6 +360,13 @@ function renderListOnly() {
 function render() {
   renderListOnly();
 
+  // Remove skeleton loaders and mark list as ready
+  const list = els.list;
+  if (list) {
+    list.removeAttribute('aria-busy');
+    list.querySelector('.skeleton-grid')?.remove();
+  }
+
   // Populate Dropdown Filters (City, Category) once
   const distinct = key => Array.from(new Set(state.allJobs.map(j => j[key]).filter(Boolean))).sort();
   if (els.city.options.length <= 1) {
@@ -400,6 +407,22 @@ function render() {
     els.statShowing.textContent = `Showing ${state.filteredJobs.length} of ${state.allJobs.length} matching jobs`;
   } else {
     els.statShowing.textContent = `Showing all ${state.allJobs.length} jobs`;
+  }
+
+  // Announce filter results to screen readers
+  announceResults(state.filteredJobs.length);
+}
+
+// Announce filter results via aria-live
+function announceResults(count) {
+  const msg = count === 0 ? 'No matching jobs found' : `${count} matching job${count === 1 ? '' : 's'} found`;
+  if (els.toast) {
+    showToast(msg);
+  }
+  // Also update aria-live region
+  const liveRegion = document.getElementById('stats');
+  if (liveRegion) {
+    liveRegion.textContent = msg;
   }
 }
 
@@ -685,7 +708,13 @@ function attachEvents() {
 }
 
 async function loadJobsPayload() {
-  // 1) Fetch verified jobs from public/data/jobs.json
+  // 1) Prefer window.__TN_JOBS__ from jobs.js (already loaded via script tag,
+  // avoids duplicate download of jobs.json)
+  if (window.__TN_JOBS__ && Array.isArray(window.__TN_JOBS__.jobs)) {
+    return window.__TN_JOBS__;
+  }
+
+  // 2) Fallback: fetch public/data/jobs.json
   try {
     const res = await fetch('./data/jobs.json', { cache: 'no-store' });
     if (res.ok) {
@@ -693,12 +722,7 @@ async function loadJobsPayload() {
       if (payload && Array.isArray(payload.jobs)) return payload;
     }
   } catch (err) {
-    /* fallback to jobs.js */
-  }
-
-  // 2) Fallback: window.__TN_JOBS__ from jobs.js (works on file:// protocol)
-  if (window.__TN_JOBS__ && Array.isArray(window.__TN_JOBS__.jobs)) {
-    return window.__TN_JOBS__;
+    /* ignore */
   }
 
   return { generated_at: null, count: 0, new_count: 0, jobs: [] };
@@ -767,6 +791,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   state.allJobs = (payload.jobs || []).filter(j => j && j.verified === true);
   stampHeader(payload);
 
+  // Populate JSON-LD structured data
+  populateJsonLd();
+
   readUrlParams();
   applyFilters();
 });
+
+// Populate JSON-LD structured data for JobPosting list
+function populateJsonLd() {
+  const jobs = state.allJobs.slice(0, 50);
+  const items = jobs.map((j, idx) => ({
+    "@type": "ListItem",
+    "position": idx + 1,
+    "item": {
+      "@type": "JobPosting",
+      "title": j.title,
+      "hiringOrganization": { "@type": "Organization", "name": j.company },
+      "jobLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": (j.city || 'Tamil Nadu').split(',')[0].trim(), "addressCountry": "IN" }},
+      "datePosted": new Date().toISOString().split('T')[0],
+      "description": j.description || `Job opportunity at ${j.company}.`,
+      "baseSalary": j.salary && j.salary !== 'Not stated' ? { "@type": "MonetaryAmount", "currency": "INR", "value": j.salary } : undefined,
+      "url": j.apply_url,
+      "identifier": { "@type": "PropertyValue", "name": j.id, "value": j.id }
+    }
+  }));
+  const jsonLd = { "@context": "https://schema.org", "@type": "ItemList", "itemListElement": items };
+  const el = document.getElementById('jsonLdJobs');
+  if (el) el.textContent = JSON.stringify(jsonLd);
+}

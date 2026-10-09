@@ -3,13 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tamil Nadu Live Jobs | Real, Verified Vacancies</title>
   <meta name="description" content="Discover verified, currently live job vacancies in Tamil Nadu, India. Re-verified by headless browser every 6 hours. Direct official links with no fake posts." />
+  <meta name="theme-color" content="#0f172a">
+  <title>Tamil Nadu Live Jobs | Real, Verified Vacancies</title>
+  <link rel="canonical" href="https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Tamil Nadu Live Jobs | Real, Verified Vacancies">
+  <meta property="og:description" content="Discover verified, currently live job vacancies in Tamil Nadu. Re-verified by headless browser every 6 hours.">
+  <meta property="og:url" content="https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/">
+  <meta property="og:image" content="https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/og-image.png">
+  <meta property="og:site_name" content="Tamil Nadu Live Jobs">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tamil Nadu Live Jobs | Real, Verified Vacancies">
+  <meta name="twitter:description" content="Discover verified, currently live job vacancies in Tamil Nadu. Re-verified by headless browser every 6 hours.">
+  <meta name="twitter:image" content="https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>" />
+  <script type="application/ld+json" id="jsonLdJobs"></script>
 </head>
 <body>
   <!-- Header -->
@@ -144,7 +157,19 @@
     </section>
 
     <!-- Job Cards List -->
-    <section id="list" class="cards" aria-live="polite"></section>
+    <section id="list" class="cards" aria-live="polite" aria-busy="true">
+      <!-- Skeleton loaders -->
+      <div class="skeleton-grid" aria-hidden="true">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+    </section>
 
     <!-- Load More Button -->
     <div id="loadMoreWrap" class="load-more-wrap" hidden>
