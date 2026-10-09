@@ -1,4 +1,5 @@
 'use strict';
+const { searchPlan } = require('../search-plan');
 
 /**
  * Tier 3 - Internshala (optional).
@@ -64,8 +65,7 @@ module.exports = {
     const jobs = [];
     let attempts = 0;
 
-    for (const keyword of ctx.keywords) {
-      for (const city of ctx.cities) {
+    for (const {keyword, city} of searchPlan(ctx.cities, ctx.keywords, ctx.pageLimit, ctx.searchOffset || 0)) {
         // Internshala has city pages but no "whole state" page.
         if (city === 'Tamil Nadu') continue;
         if (attempts >= Math.min(ctx.pageLimit, 20)) break;
@@ -96,8 +96,6 @@ module.exports = {
           ctx.log(`  internshala page failed (${slugifyValue(keyword)}/${slugifyValue(city)})`);
         }
         if (jobs.length >= ctx.limit) break;
-      }
-      if (jobs.length >= ctx.limit) break;
     }
 
     notes('internshala.com', jobs.length ? 'ok' : 'no_listings', `${jobs.length} job(s) from ${attempts} page(s)`);

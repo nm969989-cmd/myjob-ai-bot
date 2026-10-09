@@ -1,4 +1,5 @@
 'use strict';
+const { searchPlan } = require('../search-plan');
 
 /**
  * Tier 2 - apna.co
@@ -106,8 +107,7 @@ module.exports = {
     let attempts = 0;
     let blocked = 0;
 
-    for (const category of APNA_CATEGORIES) {
-      for (const city of ctx.cities) {
+    for (const {keyword: category, city} of searchPlan(ctx.cities, APNA_CATEGORIES, ctx.pageLimit, ctx.searchOffset || 0)) {
         if (attempts >= ctx.pageLimit) break;
         if (Date.now() > ctx.deadline) break;
         attempts += 1;
@@ -142,8 +142,6 @@ module.exports = {
         }
 
         if (jobs.length >= ctx.limit) break;
-      }
-      if (jobs.length >= ctx.limit) break;
     }
 
     if (jobs.length) notes('apna.co', 'ok', `${jobs.length} job(s) from ${attempts} category page(s)`);

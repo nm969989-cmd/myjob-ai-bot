@@ -182,7 +182,12 @@ async function runScrape() {
     }
     log(`-> ${source.label} (tier ${source.tier})`);
     try {
-      const jobs = await source.scrape(ctx);
+      // Give each source a share of the remaining time so slow sites do not
+      // consume the entire run. Rotate role/city coverage daily and by source.
+      const remaining = sources.length - sources.indexOf(source);
+      const sourceDeadline = Math.min(deadline, Date.now() + Math.max(1000, (deadline - Date.now()) / remaining));
+      const searchOffset = (Math.floor(Date.now() / 86400000) + sources.indexOf(source)) * ctx.pageLimit;
+      const jobs = await source.scrape({ ...ctx, deadline: sourceDeadline, searchOffset });
       perSource[source.id] = jobs.length;
       buckets.set(source.id, (buckets.get(source.id) || []).concat(jobs));
       log(`   ${jobs.length} record(s)`);

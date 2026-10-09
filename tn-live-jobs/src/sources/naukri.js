@@ -1,4 +1,5 @@
 'use strict';
+const { searchPlan } = require('../search-plan');
 
 /**
  * Tier 2 - Naukri.com
@@ -69,8 +70,7 @@ module.exports = {
     const jobs = [];
     let attempts = 0;
 
-    for (const keyword of ctx.keywords) {
-      for (const city of ctx.cities) {
+    for (const {keyword, city} of searchPlan(ctx.cities, ctx.keywords, ctx.pageLimit, ctx.searchOffset || 0)) {
         if (attempts >= ctx.pageLimit) break;
         if (Date.now() > ctx.deadline) break;
         attempts += 1;
@@ -113,8 +113,6 @@ module.exports = {
         }
 
         if (jobs.length >= ctx.limit) break;
-      }
-      if (jobs.length >= ctx.limit) break;
     }
 
     if (jobs.length) notes('naukri.com', 'ok', `${jobs.length} job(s) from ${attempts} search page(s)`);

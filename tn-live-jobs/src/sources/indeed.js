@@ -1,4 +1,5 @@
 'use strict';
+const { searchPlan } = require('../search-plan');
 
 /**
  * Tier 2 - indeed.co.in
@@ -48,8 +49,7 @@ module.exports = {
     let blocked = 0;
     let attempts = 0;
 
-    for (const keyword of ctx.keywords) {
-      for (const city of ctx.cities) {
+    for (const {keyword, city} of searchPlan(ctx.cities, ctx.keywords, ctx.pageLimit, ctx.searchOffset || 0)) {
         if (attempts >= MAX_TRIES) break;
         if (Date.now() > ctx.deadline) break;
         attempts += 1;
@@ -87,8 +87,6 @@ module.exports = {
           ctx.log(`  indeed request failed: ${clip(error.message, 100)}`);
         }
         if (jobs.length >= ctx.limit) break;
-      }
-      if (jobs.length >= ctx.limit) break;
     }
 
     if (jobs.length) notes('indeed.co.in', 'ok', `${jobs.length} job(s) from ${attempts} search page(s)`);

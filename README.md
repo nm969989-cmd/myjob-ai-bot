@@ -157,3 +157,9 @@ python -m unittest test_auto_apply -v
 # Requires installed Playwright Chromium; every URL is intercepted, no real submissions:
 python -m unittest test_lever_apply -v
 ```
+
+### Broader Tamil Nadu search and complete result delivery
+
+The portal search plan now covers 44 configured location entries, retaining Puducherry as a separately labeled nearby UT. Each portal gets up to 12 query pages, mixing roles and cities instead of consuming its page budget on the first role. Coverage rotates daily and across sources. Query budgets remain bounded, respect existing delays/rate-limit stops, and share the remaining run time across sources. Individual in-flight requests can exceed a source's soft time budget. Official/company sources retain their existing search mechanisms. No source can guarantee every vacancy.
+
+Use **`/tnall 7`** in the authorized Telegram chat to receive a CSV containing every unique matching dated result from the currently published feed and radar cache (choose 1–90 days). It includes all available job categories, original links and recorded check status; it is not restricted to the ten-card preview. Explicitly expired/failed checks are omitted; undated records are counted separately instead of being assigned today's date. Puducherry is labeled separately. This command reads available feeds and does not itself trigger scraping; refresh with the existing `npm --prefix tn-live-jobs run scrape` workflow first when needed. Python delivery reads the shared city-alias JSON directly and does not need Node installed in the bot container. No new automatic notification schedule is enabled by this change.

@@ -17,26 +17,17 @@ const CITIES = [
   'Erode',
   'Thanjavur',
   'Tiruppur',
-  'Tamil Nadu',
+  'Hosur', 'Dindigul', 'Kanchipuram', 'Nagercoil', 'Thoothukudi', 'Karur',
+  'Cuddalore', 'Neyveli', 'Kumbakonam', 'Sivakasi', 'Ranipet', 'Namakkal',
+  'Krishnagiri', 'Dharmapuri', 'Villupuram', 'Pudukkottai', 'Nagapattinam',
+  'Ramanathapuram', 'Sivaganga', 'Virudhunagar', 'Theni', 'Tenkasi',
+  'Ariyalur', 'Perambalur', 'Kallakurichi', 'Tirupattur', 'Mayiladuthurai',
+  'Tiruvarur', 'Tiruvallur', 'Chengalpattu', 'Ooty', 'Tamil Nadu',
 ];
 
 // When we read a page, how do we know which city it is talking about?
 // Each city maps to the different spellings that appear on real web pages.
-const CITY_ALIASES = {
-  Tiruvannamalai: ['tiruvannamalai', 'thiruvannamalai', 'thiruannamalai', 'tiruvanamalai'],
-  Vellore: ['vellore'],
-  Puducherry: ['puducherry', 'pondicherry', 'pondi'],
-  Chennai: ['chennai', 'madras', 'chengalpattu', 'sriperumbudur', 'guindy', 'ambattur', 'omr'],
-  Coimbatore: ['coimbatore', 'kovai'],
-  Madurai: ['madurai'],
-  Trichy: ['trichy', 'tiruchirappalli', 'tiruchirapalli', 'thiruchirappalli'],
-  Salem: ['salem'],
-  Tirunelveli: ['tirunelveli', 'thirunelveli', 'nellai'],
-  Erode: ['erode'],
-  Thanjavur: ['thanjavur', 'tanjore'],
-  Tiruppur: ['tiruppur', 'tirupur'],
-  'Tamil Nadu': ['tamil nadu', 'tamilnadu', 'across tamil nadu'],
-};
+const CITY_ALIASES = require('./city-aliases.json');
 
 function canonicalCity(value) {
   const text = String(value || '').trim().toLowerCase();
@@ -157,7 +148,7 @@ const SEARCH_KEYWORDS = [
 const MAX_JOBS_PER_SOURCE = 150;
 
 /** Never look at more than this many listing pages per source per run. */
-const MAX_PAGES_PER_SOURCE = 4;
+const MAX_PAGES_PER_SOURCE = 12;
 
 /** Wait a random 1.5-3.5 seconds between requests (as required). */
 const MIN_DELAY_MS = 1500;

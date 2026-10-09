@@ -7652,6 +7652,19 @@ if bot:
         except Exception:
             bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', msg), parse_mode=None, reply_markup=markup, disable_web_page_preview=True)
 
+    @bot.message_handler(commands=['tnall'])
+    @admin_only
+    def send_all_tn_jobs(message):
+        from tn_search_delivery import send
+        try:
+            parts = message.text.split()
+            days = int(parts[1]) if len(parts) > 1 else 7
+            send(bot, message.chat.id, os.path.dirname(os.path.abspath(__file__)), days)
+        except (ValueError, TypeError):
+            bot.reply_to(message, 'Use /tnall 7 (choose 1–90 days).')
+        except Exception:
+            bot.reply_to(message, 'Could not prepare or send the job file. Check the feed refresh and Telegram connection; try again.')
+
     @bot.message_handler(commands=['tnjobs', 'tamilnadu', 'chennai'])
     @admin_only
     def show_tamil_nadu_jobs(message):
@@ -7971,6 +7984,7 @@ def run_telegram_polling():
             BotCommand("history",    "📅 View last 10 applications"),
             BotCommand("radar",      "📡 View latest multi-platform jobs"),
             BotCommand("tnjobs",     "🌟 Tamil Nadu & Chennai Fresh Jobs"),
+            BotCommand("tnall",      "Tamil Nadu jobs CSV: /tnall 7"),
             BotCommand("walkins",    "🚶‍♂️ Tamil Nadu Weekend Walk-In Drives"),
             BotCommand("drives",     "📢 National Mass Off-Campus Drives"),
             BotCommand("instahyre",  "🚀 Trigger Instahyre mass-apply"),
