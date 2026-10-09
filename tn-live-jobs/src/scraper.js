@@ -149,6 +149,8 @@ async function fetchText(url, options) {
           redirect: 'follow',
           signal: controller.signal,
           headers: buildHeaders(opts.headers),
+          method: opts.method || 'GET',
+          body: opts.body,
         });
         const body = await response.text();
         return {
