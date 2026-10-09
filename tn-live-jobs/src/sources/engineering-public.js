@@ -95,17 +95,17 @@ function parseDetail(html,url,company){ const $=cheerio.load(html); let posting=
 async function scrapeCareer(company,ctx){const jobs=[],links=new Set();let pages=0;
   for(const c of ctx.cities){if(pages++>=4||Date.now()>ctx.deadline)break;
     const url=`https://${company.host}/search/?q=&locationsearch=${encodeURIComponent(c)}`;
-    const r=await publicRead(url,ctx.deadline);if(r.status>=300){ctx.note(company.source,'unreachable',`public search HTTP ${r.status}; no alternate/bypass route`);break;}
+    const r=await(ctx.read||publicRead)(url,ctx.deadline);if(r.status>=300){ctx.note(company.source,'unreachable',`public search HTTP ${r.status}; no alternate/bypass route`);break;}
     const $=cheerio.load(r.body);$('a[href]').each((_,el)=>{try{const u=new URL($(el).attr('href'),url);if(u.host===company.host&&/^\/job\//.test(u.pathname)&&permittedUrl(u.href))links.add(u.href);}catch{}});
   }
-  for(const url of [...links].slice(0,Math.min(ctx.limit,12))){if(Date.now()>ctx.deadline)break;const r=await publicRead(url,ctx.deadline);if(r.status!==200)continue;const j=parseDetail(r.body,url,company);if(j)jobs.push(j);}
+  for(const url of [...links].slice(0,Math.min(ctx.limit,12))){if(Date.now()>ctx.deadline)break;const r=await(ctx.read||publicRead)(url,ctx.deadline);if(r.status!==200)continue;const j=parseDetail(r.body,url,company);if(j)jobs.push(j);}
   ctx.note(company.source,jobs.length?'ok':'no_listings',jobs.length?`${jobs.length} public career records; pending verification`:'No readable public job links; JS/format may be unsupported, not proof of no openings');return jobs;
 }
 async function scrapeAts(company,ctx){const jobs=[];
   // Documented Posting API: https://developers.smartrecruiters.com/docs/posting-api
   for(let page=0;page<4&&Date.now()<ctx.deadline;page++){
     const url=`https://api.smartrecruiters.com/v1/companies/${company.id}/postings?limit=100&offset=${page*100}`;
-    const r=await publicRead(url,ctx.deadline);if(r.status!==200)throw Error(`documented feed HTTP ${r.status}`);
+    const r=await(ctx.read||publicRead)(url,ctx.deadline);if(r.status!==200)throw Error(`documented feed HTTP ${r.status}`);
     const data=JSON.parse(r.body),list=Array.isArray(data.content)?data.content:[];
     for(const p of list){const loc=[p.location?.city,p.location?.region,p.location?.fullLocation].filter(Boolean).join(' ');const c=city(loc);if(!c||!p.id||!p.name)continue;
       const j=makeJob({title:p.name,company:company.name,apply_url:`https://jobs.smartrecruiters.com/${company.id}/${p.id}`,city:c,

@@ -52,7 +52,7 @@ def save_state(data):
 
 def run_node(flag=None, payload=None, timeout=20):
     """Fixed executable/script/options; all user data is inert JSON on stdin."""
-    if flag not in (None, '--query'):
+    if flag not in (None, '--query', '--query-batch'):
         raise ValueError('Unsupported engineering operation')
     argv = [node_executable(), str(ROOT / 'tn-live-jobs/src/engineering.js')]
     if flag is not None:
@@ -63,6 +63,15 @@ def run_node(flag=None, payload=None, timeout=20):
 
 def query(profile):
     return json.loads(run_node('--query', {'profile': profile}).stdout)
+
+def query_batch(profiles):
+    """One process/snapshot per dispatch; each result retains its own validation error."""
+    if not profiles or len(profiles) > 4:
+        raise ValueError('Use 1-4 digest profiles')
+    values = json.loads(run_node('--query-batch', {'profiles': profiles}, timeout=80).stdout)
+    if not isinstance(values, list) or len(values) != len(profiles):
+        raise ValueError('Invalid query batch response')
+    return values
 
 def refresh():
     run_node(timeout=600)
@@ -148,10 +157,15 @@ def dispatch(bot, owner, new_only=True):
         rotation = (items[cursor:] + items[:cursor])[:4]
         state['cursor'] = (cursor + len(rotation)) % len(items)
         save_state(state)
-        for name, criteria in rotation:
+        profiles = []
+        for _, criteria in rotation:
             profile = state.get('profile', dict(DEFAULT))
             if criteria.get('role'): profile = search_profile(profile, criteria['role'], criteria['city'])
-            result = query(profile)
+            profiles.append(profile)
+        results = query_batch(profiles)
+        for (name, _), result in zip(rotation, results):
+            if 'error' in result:
+                raise ValueError('Saved search could not be evaluated')
             seen = set(state.setdefault('seen', {}).get(name, []))
             fresh = [j for j in result['jobs'] if f"{j['id']}:{j['match']['integrity']}" not in seen]
             if new_only and not fresh: continue
