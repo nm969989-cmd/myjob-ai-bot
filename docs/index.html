@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Explore regional job listings, walk-in details and career resources with MyJob AI Radar. Check each employer source for current availability.">
   <meta name="theme-color" content="#060918">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="color-scheme" content="dark light">
   <link rel="canonical" href="https://nm969989-cmd.github.io/myjob-ai-bot/">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="og-image.png">
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MyJob AI Radar">
@@ -15,10 +17,17 @@
   <meta property="og:description" content="Explore regional job listings, walk-in details and career resources with MyJob AI Radar. Check each employer source for current availability.">
   <meta property="og:url" content="https://nm969989-cmd.github.io/myjob-ai-bot/">
   <meta property="og:locale" content="en_IN">
+  <meta property="og:image" content="https://nm969989-cmd.github.io/myjob-ai-bot/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MyJob AI Radar — Tamil Nadu and multi-platform tech careers hub">
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="MyJob AI Radar — Tamil Nadu & Multi-Platform Tech Careers Hub">
   <meta name="twitter:description" content="Explore regional job listings, walk-in details and career resources with MyJob AI Radar. Check each employer source for current availability.">
+  <meta name="twitter:image" content="https://nm969989-cmd.github.io/myjob-ai-bot/og-image.png">
+  <meta name="twitter:image:alt" content="MyJob AI Radar — Tamil Nadu and multi-platform tech careers hub">
   <title>MyJob AI Radar — Tamil Nadu & Multi-Platform Tech Careers Hub</title>
   <script type="application/ld+json">
   {
@@ -35,6 +44,30 @@
     }
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "MyJob AI Radar",
+    "url": "https://nm969989-cmd.github.io/myjob-ai-bot/",
+    "logo": "https://nm969989-cmd.github.io/myjob-ai-bot/og-image.png",
+    "sameAs": ["https://t.me/myjob_autoapply_bot"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "MyJob AI Radar",
+    "url": "https://nm969989-cmd.github.io/myjob-ai-bot/",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "inLanguage": "en-IN",
+    "isAccessibleForFree": true,
+    "description": "Search Tamil Nadu and multi-platform tech job openings, walk-in drives and national off-campus drives, with an ATS resume matcher and in-hand salary calculator.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+  }
+  </script>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Tailwind CSS via CDN -->
@@ -42,9 +75,11 @@
   <!-- Google Fonts: Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="dns-prefetch" href="https://unpkg.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons (pinned + deferred: only used after DOMContentLoaded) -->
+  <script defer src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 
   <style>
     :root {
@@ -89,6 +124,23 @@
       transform: translateY(-2px);
       box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
     }
+    /* Card entrance. `backwards` fill only applies the from-state during the
+       delay, so it never overrides the hover transform after it finishes. */
+    .card-enter {
+      animation: cardIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+      animation-delay: calc(var(--stagger, 0) * 35ms);
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    /* Tab panels fade in when they become visible (display changes restart it). */
+    .tab-content { animation: tabIn 0.28s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes tabIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    #tab-jobs, #tab-walkins, #tab-drives, #tab-ats, #tab-status { scroll-margin-top: 130px; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .pulse-glow { animation: pulseGlow 2s infinite ease-in-out; }
@@ -124,6 +176,13 @@
     }
     :focus-visible { outline: 3px solid #67e8f9; outline-offset: 4px; }
     [hidden] { display: none !important; }
+    /* The Tailwind CDN is a single point of failure: if it is blocked or slow,
+       every `.hidden` panel (including both modals) would otherwise render at
+       once. Keep the visibility contract working without it.
+       Deliberately NOT !important: Tailwind's injected stylesheet is appended
+       after this block, so its responsive variants (e.g. `hidden sm:inline`)
+       must still win when the CDN does load. */
+    .hidden { display: none; }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
@@ -146,7 +205,7 @@
 
   <!-- TOAST NOTIFICATION -->
   <div id="toast" role="status" aria-live="polite" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-emerald-500/90 text-slate-900 font-bold text-xs shadow-xl shadow-emerald-500/20 backdrop-blur-md flex items-center gap-2 pointer-events-none opacity-0 -translate-y-4">
-    <i data-lucide="check-circle" class="w-4 h-4"></i>
+    <i data-lucide="circle-check" aria-hidden="true" class="w-4 h-4"></i>
     <span id="toastMsg">Notification</span>
   </div>
 
@@ -178,7 +237,7 @@
           <i data-lucide="send" class="w-3.5 h-3.5"></i>
           <span class="hidden sm:inline">Bot</span>
         </a>
-        <button id="refreshBtn" onclick="fetchAllData(true)" title="Refresh Feed" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
+        <button id="refreshBtn" onclick="fetchAllData(true)" title="Refresh Feed" aria-label="Refresh job feed" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
           <i data-lucide="rotate-cw" id="refreshIcon" class="w-4 h-4"></i>
         </button>
       </div>
@@ -309,9 +368,9 @@
         <p class="text-xs text-slate-400">Direct in-person interview venues with official registration & GPS</p>
       </div>
       <div class="flex items-center gap-1">
-        <button onclick="filterWalkinsCity('all')" class="city-btn px-2.5 py-1 rounded-lg text-xs bg-amber-500 text-slate-900 font-bold">All</button>
-        <button onclick="filterWalkinsCity('chennai')" class="city-btn px-2.5 py-1 rounded-lg text-xs bg-white/5 border border-white/10 text-slate-300 hover:text-white">Chennai</button>
-        <button onclick="filterWalkinsCity('coimbatore')" class="city-btn px-2.5 py-1 rounded-lg text-xs bg-white/5 border border-white/10 text-slate-300 hover:text-white">Coimbatore</button>
+        <button onclick="filterWalkinsCity('all', event)" aria-pressed="true" class="city-btn px-2.5 py-1 rounded-lg text-xs bg-amber-500 text-slate-900 font-bold">All</button>
+        <button onclick="filterWalkinsCity('chennai', event)" aria-pressed="false" class="city-btn px-2.5 py-1 rounded-lg text-xs bg-white/5 border border-white/10 text-slate-300 hover:text-white">Chennai</button>
+        <button onclick="filterWalkinsCity('coimbatore', event)" aria-pressed="false" class="city-btn px-2.5 py-1 rounded-lg text-xs bg-white/5 border border-white/10 text-slate-300 hover:text-white">Coimbatore</button>
       </div>
     </div>
     <div id="walkinsFeed" class="flex flex-col gap-3"></div>
@@ -436,7 +495,7 @@
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <!-- INTERACTIVE FULL JOB DETAILS & APPLICATION MODAL -->
   <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div id="jobDetailsModal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md">
+  <div id="jobDetailsModal" role="dialog" aria-modal="true" aria-labelledby="modalRole" tabindex="-1" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md">
     <div class="glass-card modal-enter w-full sm:max-w-xl max-h-[90vh] flex flex-col rounded-t-3xl sm:rounded-2xl border-white/20 bg-[#0c1228] shadow-2xl overflow-hidden">
       
       <!-- MODAL HEADER -->
@@ -453,7 +512,7 @@
             <p id="modalCompany" class="text-xs sm:text-sm font-semibold text-amber-300">Company Name</p>
           </div>
         </div>
-        <button onclick="closeDetailsModal()" aria-label="Close job details" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
+        <button id="modalCloseBtn" onclick="closeDetailsModal()" aria-label="Close job details" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
           <i data-lucide="x" aria-hidden="true" class="w-5 h-5"></i>
         </button>
       </div>
@@ -494,7 +553,7 @@
             <i data-lucide="external-link" class="w-4 h-4"></i>
             <span>Apply Now (Official Link)</span>
           </a>
-          <button id="modalCopyBtn" onclick="copyModalLink()" title="Copy Apply Link" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition-all">
+          <button id="modalCopyBtn" onclick="copyModalLink()" title="Copy Apply Link" aria-label="Copy apply link" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition-all">
             <i data-lucide="link" class="w-4 h-4"></i>
           </button>
         </div>
@@ -503,7 +562,7 @@
           <button id="modalMatchBtn" onclick="modalTriggerATS()" class="py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
             <i data-lucide="target" class="w-3.5 h-3.5 text-pink-400"></i> Check ATS
           </button>
-          <button id="modalPitchBtn" onclick="toggleModalColdPitch()" class="py-2 px-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+          <button id="modalPitchBtn" onclick="toggleModalColdPitch()" aria-expanded="false" aria-controls="modalPitchDrawer" class="py-2 px-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
             <i data-lucide="mail" class="w-3.5 h-3.5 text-purple-400"></i> Cold Pitch
           </button>
           <button id="modalCtcBtn" onclick="openCtcModalForJob()" class="py-2 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all col-span-2 sm:col-span-1">
@@ -531,7 +590,7 @@
           <button onclick="shareJob(null, 'linkedin')" class="flex-1 py-1.5 px-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-300 font-medium flex items-center justify-center gap-1 active:scale-95 transition-all">
             <span>LinkedIn</span>
           </button>
-          <button onclick="shareJob(null, 'native')" title="More Share Options" class="py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 active:scale-95 transition-all">
+          <button onclick="shareJob(null, 'native')" title="More Share Options" aria-label="More share options" class="py-1.5 px-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 active:scale-95 transition-all">
             <i data-lucide="share" class="w-3.5 h-3.5 text-cyan-400"></i>
           </button>
         </div>
@@ -543,7 +602,7 @@
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <!-- FRESHER CTC vs IN-HAND MONTHLY SALARY CALCULATOR MODAL -->
   <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div id="ctcModal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md">
+  <div id="ctcModal" role="dialog" aria-modal="true" aria-labelledby="ctcModalTitle" tabindex="-1" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md">
     <div class="glass-card modal-enter w-full sm:max-w-lg max-h-[90vh] flex flex-col rounded-t-3xl sm:rounded-2xl border-white/20 bg-[#0c1228] shadow-2xl overflow-hidden">
       <!-- HEADER -->
       <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-[#0a0f24]">
@@ -552,11 +611,11 @@
             💰
           </div>
           <div>
-            <h3 class="text-base font-bold text-white font-heading">Fresher CTC vs In-Hand Salary</h3>
-            <p class="text-[11px] text-slate-400">New Tax Regime FY 2024-25 / 2025-26 with PF & Tax</p>
+            <h3 id="ctcModalTitle" class="text-base font-bold text-white font-heading">Fresher CTC vs In-Hand Salary</h3>
+            <p class="text-[11px] text-slate-400">New Tax Regime FY 2025-26 estimate — PF, professional tax &amp; income tax</p>
           </div>
         </div>
-        <button onclick="closeCtcModal()" aria-label="Close salary calculator" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
+        <button id="ctcCloseBtn" onclick="closeCtcModal()" aria-label="Close salary calculator" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
           <i data-lucide="x" aria-hidden="true" class="w-5 h-5"></i>
         </button>
       </div>
@@ -569,7 +628,7 @@
             <span class="text-xs font-semibold text-slate-300">Annual Offer CTC:</span>
             <span id="ctcDisplayBadge" class="text-sm font-extrabold text-emerald-400 font-mono">₹4.50 LPA</span>
           </div>
-          <input type="range" id="ctcSlider" min="2.5" max="15.0" step="0.25" value="4.5" oninput="updateCtcCalculator(this.value)" class="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
+          <input type="range" id="ctcSlider" min="2.5" max="15.0" step="0.25" value="4.5" aria-label="Annual offer CTC in lakhs per annum" aria-valuetext="4.5 LPA" oninput="updateCtcCalculator(this.value)" class="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
           <div class="flex items-center justify-between text-[10px] text-slate-500 mt-1 font-mono">
             <span>₹2.5L</span>
             <span>₹4.5L</span>
@@ -617,7 +676,7 @@
         </div>
 
         <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-300 leading-relaxed">
-          💡 Under the <b>New Tax Regime</b> with the ₹75,000 standard deduction and Section 87A rebate, annual income up to <b>₹7.75 Lakhs is 100% Tax-Free</b>!
+          💡 Under the <b>New Tax Regime (FY 2025-26)</b> with the ₹75,000 standard deduction and the Section 87A rebate, taxable income up to <b>₹12 Lakhs</b> — about <b>₹12.75 Lakhs CTC</b> for a salaried fresher — attracts no income tax. This calculator is an estimate, not tax advice.
         </div>
       </div>
 
@@ -631,7 +690,7 @@
   </div>
 
   <!-- FIXED BOTTOM NAVIGATION BAR -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#060918]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around text-[10px]">
+  <nav aria-label="Primary sections" class="fixed bottom-0 left-0 right-0 z-40 bg-[#060918]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around text-[10px]">
     <button onclick="switchTab('jobs')" id="nav-jobs" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all active-nav py-1 px-2">
       <i data-lucide="briefcase" class="w-4 h-4"></i>
       <span>Jobs</span>
@@ -653,6 +712,11 @@
       <span>Status</span>
     </button>
   </nav>
+
+  <!-- BACK TO TOP (appears after scrolling a long feed) -->
+  <button id="backToTop" type="button" aria-label="Back to top" onclick="scrollToTop()" class="hidden fixed right-4 bottom-24 z-40 p-3 rounded-full bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/30 active:scale-95 transition-all">
+    <i data-lucide="arrow-up" aria-hidden="true" class="w-4 h-4"></i>
+  </button>
 
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
@@ -680,6 +744,57 @@
       savedJobIds = [];
     }
     let activeModalJob = null;
+    // Stack of elements that opened each dialog, so nested dialogs restore correctly.
+    const modalFocusStack = [];
+
+    const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    /** The dialog element that is currently visible, or null. */
+    function visibleDialog() {
+      // ctcModal is declared after jobDetailsModal and paints on top of it.
+      for (const id of ['ctcModal', 'jobDetailsModal']) {
+        const el = document.getElementById(id);
+        if (el && !el.classList.contains('hidden')) return el;
+      }
+      return null;
+    }
+
+    /** Return focus to whatever opened the most recently closed dialog. */
+    function restoreModalFocus() {
+      if (visibleDialog()) return;
+      const target = modalFocusStack.pop();
+      if (target && typeof target.focus === 'function' && document.contains(target)) {
+        target.focus();
+      }
+    }
+
+    // Escape closes the open dialog and Tab is trapped inside it.
+    document.addEventListener('keydown', (event) => {
+      const dialog = visibleDialog();
+      if (!dialog) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        if (dialog.id === 'jobDetailsModal') closeDetailsModal();
+        else closeCtcModal();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(dialog.querySelectorAll(FOCUSABLE_SELECTOR))
+        .filter(el => el.offsetParent !== null || el === document.activeElement);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (!dialog.contains(document.activeElement)) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
 
     function triggerHaptic(type = 'light') {
       if (tg && tg.HapticFeedback) {
@@ -798,21 +913,29 @@
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(`tab-${tabName}`)?.classList.remove('hidden');
 
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-nav'));
-      document.getElementById(`nav-${tabName}`)?.classList.add('active-nav');
+      document.querySelectorAll('nav button').forEach(b => {
+        b.classList.remove('active-nav');
+        b.removeAttribute('aria-current');
+      });
+      const activeNav = document.getElementById(`nav-${tabName}`);
+      if (activeNav) {
+        activeNav.classList.add('active-nav');
+        activeNav.setAttribute('aria-current', 'page');
+      }
 
       const filterBar = document.getElementById('filterChipsContainer');
       if (tabName === 'jobs' || tabName === 'walkins') filterBar?.classList.remove('hidden');
       else filterBar?.classList.add('hidden');
 
-      renderCurrentView();
+      renderCurrentView({ animate: true });
       lucide.createIcons();
     }
 
-    function renderCurrentView() {
-      if (currentTab === 'jobs') renderJobs();
-      else if (currentTab === 'walkins') renderWalkinsTab();
-      else if (currentTab === 'drives') renderDrivesTab();
+    function renderCurrentView(options) {
+      const animate = !!(options && options.animate);
+      if (currentTab === 'jobs') renderJobs(animate);
+      else if (currentTab === 'walkins') renderWalkinsTab(animate);
+      else if (currentTab === 'drives') renderDrivesTab(animate);
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -849,7 +972,7 @@
     // RENDERING JOBS FEED (MULTI-PLATFORM SEARCH ENABLED)
     // ─────────────────────────────────────────────────────────────
 
-    function renderJobs() {
+    function renderJobs(animate = false) {
       const container = document.getElementById('tab-jobs');
       const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
       const banner = document.getElementById('searchBanner');
@@ -901,7 +1024,8 @@
         `;
       }
 
-      container.innerHTML = exportBanner + filtered.map(j => {
+      container.innerHTML = exportBanner + filtered.map((j, cardIndex) => {
+        const stagger = Math.min(cardIndex, 10);
         const isSaved = savedJobIds.includes(j.id);
         const isTN = j.is_tamil_nadu;
         const isWalkin = j.is_walkin;
@@ -923,7 +1047,7 @@
         const applyUrl = j.apply_url || j.link || '#';
 
         return `
-          <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 ${isWalkin ? 'border-cyan-500/30' : (isTN ? 'border-amber-500/25' : '')}">
+          <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 ${animate ? 'card-enter' : ''} ${isWalkin ? 'border-cyan-500/30' : (isTN ? 'border-amber-500/25' : '')}"${animate ? ` style="--stagger:${stagger}"` : ''}>
             <div class="flex items-start justify-between gap-2">
               <div class="flex-1">
                 <div class="flex items-center gap-1.5 flex-wrap mb-1.5">
@@ -931,16 +1055,16 @@
                   ${platformBadge}
                   ${freshnessBadge}
                 </div>
-                <h3 class="text-sm font-bold text-white font-heading cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal('${j.id}')">
+                <h3 class="text-sm font-bold text-white font-heading cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal(${jsArg(j.id)})">
                   ${escapeHtml(j.role)}
                 </h3>
                 <p class="text-xs font-semibold text-amber-300 flex items-center gap-1 mt-0.5">
                   <span>${escapeHtml(j.company)}</span>
-                  <i data-lucide="check-circle" class="w-3 h-3 text-amber-400"></i>
+                  <i data-lucide="circle-check" aria-hidden="true" class="w-3 h-3 text-amber-400"></i>
                 </p>
               </div>
-              <button onclick="toggleSave('${j.id}')" title="Save Job" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all shrink-0">
-                <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'text-pink-400 fill-pink-400' : ''}"></i>
+              <button onclick="toggleSave(${jsArg(j.id)})" title="Save Job" aria-label="Save this job" aria-pressed="${isSaved ? 'true' : 'false'}" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all shrink-0">
+                <i data-lucide="bookmark" aria-hidden="true" class="w-4 h-4 ${isSaved ? 'text-pink-400 fill-pink-400' : ''}"></i>
               </button>
             </div>
 
@@ -964,26 +1088,24 @@
 
             <!-- ACTION BUTTONS: APPLY LINK + VIEW DETAILS + MAPS -->
             <div class="flex items-center gap-2 pt-2 border-t border-white/5 flex-wrap sm:flex-nowrap">
-              <a href="${safeUrl(applyUrl)}" target="_blank" rel="noopener noreferrer" class="flex-1 min-w-[120px] py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-95 transition-all">
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Apply Link
-              </a>
+              ${applyAction(applyUrl, '<i data-lucide="external-link" aria-hidden="true" class="w-3.5 h-3.5"></i> Apply Link', 'flex-1 min-w-[120px] py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-95 transition-all')}
 
-              <button onclick="openDetailsModal('${j.id}')" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i> Details
+              <button onclick="openDetailsModal(${jsArg(j.id)})" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                <i data-lucide="info" aria-hidden="true" class="w-3.5 h-3.5 text-amber-400"></i> Details
               </button>
 
               ${j.maps_url ? `
                 <a href="${safeUrl(j.maps_url)}" target="_blank" rel="noopener noreferrer" class="py-2.5 px-3 rounded-xl bg-teal-600/20 border border-teal-500/40 text-teal-300 hover:bg-teal-600/30 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                  <i data-lucide="navigation" class="w-3.5 h-3.5 text-teal-400"></i> Maps
+                  <i data-lucide="navigation" aria-hidden="true" class="w-3.5 h-3.5 text-teal-400"></i> Maps
                 </a>
               ` : ''}
 
-              <button onclick="shareJob('${j.id}')" title="Share Opening" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
-                <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <button onclick="shareJob(${jsArg(j.id)})" title="Share Opening" aria-label="Share this opening" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+                <i data-lucide="share-2" aria-hidden="true" class="w-3.5 h-3.5 text-cyan-400"></i>
               </button>
 
-              <button onclick="populateATSMatcher('${escapeHtml(j.role)}', '${escapeHtml(j.company)}', '${escapeHtml(j.description || j.summary || j.role)}')" title="ATS Match" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
-                <i data-lucide="target" class="w-3.5 h-3.5 text-pink-400"></i>
+              <button onclick="populateATSMatcher(${jsArg(j.role)}, ${jsArg(j.company)}, ${jsArg(j.description || j.summary || j.role)})" title="ATS Match" aria-label="Check ATS match for this job" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+                <i data-lucide="target" aria-hidden="true" class="w-3.5 h-3.5 text-pink-400"></i>
               </button>
             </div>
           </div>
@@ -997,7 +1119,7 @@
     // RENDERING WALK-INS TAB
     // ─────────────────────────────────────────────────────────────
 
-    function renderWalkinsTab() {
+    function renderWalkinsTab(animate = false) {
       const container = document.getElementById('walkinsFeed');
       const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
 
@@ -1009,17 +1131,18 @@
         list = list.filter(w => `${w.company} ${w.role} ${w.location} ${w.venue} ${Array.isArray(w.skills) ? w.skills.join(' ') : (w.skills || '')}`.toLowerCase().includes(searchVal));
       }
 
-      container.innerHTML = list.map(w => {
+      container.innerHTML = list.map((w, cardIndex) => {
+        const stagger = Math.min(cardIndex, 10);
         const applyUrl = w.apply_url || w.link || '#';
         return `
-          <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 border-cyan-500/30">
+          <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 border-cyan-500/30 ${animate ? 'card-enter' : ''}"${animate ? ` style="--stagger:${stagger}"` : ''}>
             <div class="flex items-start justify-between">
               <div>
                 <div class="flex items-center gap-1.5 mb-1">
                   <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">🚶‍♂️ Tamil Nadu Walk-In</span>
                   <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">🟢 Active</span>
                 </div>
-                <h3 class="text-sm font-bold text-white font-heading cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal('${w.id}')">${escapeHtml(w.role)}</h3>
+                <h3 class="text-sm font-bold text-white font-heading cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal(${jsArg(w.id)})">${escapeHtml(w.role)}</h3>
                 <p class="text-xs font-semibold text-amber-300 mt-0.5">${escapeHtml(w.company)}</p>
               </div>
               <span class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">${escapeHtml(w.salary)}</span>
@@ -1033,17 +1156,15 @@
             </div>
 
             <div class="flex items-center gap-2 pt-1 flex-wrap sm:flex-nowrap">
-              <a href="${safeUrl(applyUrl)}" target="_blank" rel="noopener noreferrer" class="flex-1 min-w-[120px] py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-95 transition-all">
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Apply Link
-              </a>
-              <button onclick="openDetailsModal('${w.id}')" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i> Details
+              ${applyAction(applyUrl, '<i data-lucide="external-link" aria-hidden="true" class="w-3.5 h-3.5"></i> Apply Link', 'flex-1 min-w-[120px] py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-95 transition-all')}
+              <button onclick="openDetailsModal(${jsArg(w.id)})" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                <i data-lucide="info" aria-hidden="true" class="w-3.5 h-3.5 text-amber-400"></i> Details
               </button>
               <a href="${safeUrl(w.maps_url)}" target="_blank" rel="noopener noreferrer" class="py-2.5 px-3 rounded-xl bg-teal-600/20 border border-teal-500/40 text-teal-300 hover:bg-teal-600/30 font-semibold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                <i data-lucide="navigation" class="w-3.5 h-3.5 text-teal-400"></i> Google Maps
+                <i data-lucide="navigation" aria-hidden="true" class="w-3.5 h-3.5 text-teal-400"></i> Google Maps
               </a>
-              <button onclick="shareJob('${w.id}')" title="Share Walk-in" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
-                <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <button onclick="shareJob(${jsArg(w.id)})" title="Share Walk-in" aria-label="Share this walk-in drive" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+                <i data-lucide="share-2" aria-hidden="true" class="w-3.5 h-3.5 text-cyan-400"></i>
               </button>
             </div>
           </div>
@@ -1053,34 +1174,40 @@
       lucide.createIcons();
     }
 
-    function filterWalkinsCity(city) {
+    function filterWalkinsCity(city, evt) {
       triggerHaptic('light');
       walkinCity = city;
       document.querySelectorAll('.city-btn').forEach(b => {
         b.classList.remove('bg-amber-500', 'text-slate-900', 'font-bold');
         b.classList.add('bg-white/5', 'text-slate-300');
+        b.setAttribute('aria-pressed', 'false');
       });
-      event.target.classList.remove('bg-white/5', 'text-slate-300');
-      event.target.classList.add('bg-amber-500', 'text-slate-900', 'font-bold');
-      renderWalkinsTab();
+      const btn = (evt && evt.currentTarget) || document.getElementById('filter-walkin');
+      if (btn && btn.classList.contains('city-btn')) {
+        btn.classList.remove('bg-white/5', 'text-slate-300');
+        btn.classList.add('bg-amber-500', 'text-slate-900', 'font-bold');
+        btn.setAttribute('aria-pressed', 'true');
+      }
+      renderWalkinsTab(true);
     }
 
     // ─────────────────────────────────────────────────────────────
     // RENDERING DRIVES TAB
     // ─────────────────────────────────────────────────────────────
 
-    function renderDrivesTab() {
+    function renderDrivesTab(animate = false) {
       const container = document.getElementById('drivesFeed');
       let list = allJobs.filter(j => j.is_drive);
 
-      container.innerHTML = list.map(d => {
+      container.innerHTML = list.map((d, cardIndex) => {
+        const stagger = Math.min(cardIndex, 10);
         const applyUrl = d.apply_url || d.link || '#';
         return `
-          <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 border-purple-500/30">
+          <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 border-purple-500/30 ${animate ? 'card-enter' : ''}"${animate ? ` style="--stagger:${stagger}"` : ''}>
             <div class="flex items-start justify-between">
               <div>
                 <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">${escapeHtml(d.source)}</span>
-                <h3 class="text-sm font-bold text-white font-heading mt-1 cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal('${d.id}')">${escapeHtml(d.role)}</h3>
+                <h3 class="text-sm font-bold text-white font-heading mt-1 cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal(${jsArg(d.id)})">${escapeHtml(d.role)}</h3>
                 <p class="text-xs text-amber-300 font-semibold">${escapeHtml(d.company)}</p>
               </div>
               <div class="text-right">
@@ -1098,14 +1225,12 @@
             </div>
 
             <div class="flex items-center gap-2 pt-1 flex-wrap sm:flex-nowrap">
-              <a href="${safeUrl(applyUrl)}" target="_blank" rel="noopener noreferrer" class="flex-1 min-w-[120px] py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-purple-500/20 active:scale-95 transition-all">
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Apply Link
-              </a>
-              <button onclick="openDetailsModal('${d.id}')" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i> Details
+              ${applyAction(applyUrl, '<i data-lucide="external-link" aria-hidden="true" class="w-3.5 h-3.5"></i> Apply Link', 'flex-1 min-w-[120px] py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-purple-500/20 active:scale-95 transition-all')}
+              <button onclick="openDetailsModal(${jsArg(d.id)})" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                <i data-lucide="info" aria-hidden="true" class="w-3.5 h-3.5 text-amber-400"></i> Details
               </button>
-              <button onclick="shareJob('${d.id}')" title="Share Mass Drive" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
-                <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <button onclick="shareJob(${jsArg(d.id)})" title="Share Mass Drive" aria-label="Share this mass drive" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+                <i data-lucide="share-2" aria-hidden="true" class="w-3.5 h-3.5 text-cyan-400"></i>
               </button>
             </div>
           </div>
@@ -1138,15 +1263,25 @@
         <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">🟢 ${escapeHtml(j.date_posted || 'Recently Posted')}</span>
       `;
 
-      // Apply button
-      const applyUrl = j.apply_url || j.link || '#';
+      // Apply button — scraped/third-party URLs are scheme-checked before they
+      // reach an href, and an unusable link is disabled instead of left as "#".
+      const applyUrl = safeUrlValue(j.apply_url || j.link);
       const applyBtn = document.getElementById('modalApplyBtn');
-      applyBtn.href = applyUrl;
+      if (applyUrl) {
+        applyBtn.href = applyUrl;
+        applyBtn.removeAttribute('aria-disabled');
+        applyBtn.classList.remove('opacity-50', 'pointer-events-none');
+      } else {
+        applyBtn.removeAttribute('href');
+        applyBtn.setAttribute('aria-disabled', 'true');
+        applyBtn.classList.add('opacity-50', 'pointer-events-none');
+      }
 
       // Maps button
       const mapsBtn = document.getElementById('modalMapsBtn');
-      if (j.maps_url) {
-        mapsBtn.href = j.maps_url;
+      const mapsUrl = safeUrlValue(j.maps_url);
+      if (mapsUrl) {
+        mapsBtn.href = mapsUrl;
         mapsBtn.classList.remove('hidden');
       } else {
         mapsBtn.classList.add('hidden');
@@ -1241,8 +1376,12 @@
       document.getElementById('modalBody').innerHTML = bodyHtml;
       const pitchDrawer = document.getElementById('modalPitchDrawer');
       if (pitchDrawer) pitchDrawer.classList.add('hidden');
+      document.getElementById('modalPitchBtn')?.setAttribute('aria-expanded', 'false');
+      modalFocusStack.push(document.activeElement);
       document.getElementById('jobDetailsModal').classList.remove('hidden');
+      document.getElementById('modalBody').scrollTop = 0;
       lucide.createIcons();
+      document.getElementById('modalCloseBtn')?.focus();
 
       // Native Telegram WebApp Buttons Integration
       if (tg) {
@@ -1260,7 +1399,7 @@
 
     function handleTgMainApply() {
       if (!activeModalJob) return;
-      const url = activeModalJob.apply_url || activeModalJob.link;
+      const url = safeUrlValue(activeModalJob.apply_url || activeModalJob.link);
       if (!url) return;
       if (tg && tg.openLink) {
         tg.openLink(url);
@@ -1275,6 +1414,7 @@
       const pitchDrawer = document.getElementById('modalPitchDrawer');
       if (pitchDrawer) pitchDrawer.classList.add('hidden');
       activeModalJob = null;
+      restoreModalFocus();
 
       // Reset Native Telegram WebApp Buttons
       if (tg) {
@@ -1293,7 +1433,7 @@
       triggerHaptic('light');
       const j = allJobs.find(x => x.id === jobId) || activeModalJob;
       if (!j) return;
-      const url = j.apply_url || j.link || window.location.href;
+      const url = safeUrlValue(j.apply_url || j.link) || window.location.href;
       const shareText = `🚀 Hiring Alert: ${j.company} is hiring for ${j.role}!\n📍 Location: ${j.location}\n💰 Salary: ${j.salary}\n🎓 Batch: ${j.batch}\n👉 Apply Link: ${url}\n\nShared via MyJob AI Radar`;
 
       if (platform === 'whatsapp') {
@@ -1321,7 +1461,11 @@
 
     function copyModalLink() {
       if (!activeModalJob) return;
-      const url = activeModalJob.apply_url || activeModalJob.link;
+      const url = safeUrlValue(activeModalJob.apply_url || activeModalJob.link);
+      if (!url) {
+        showToast('No official apply link recorded for this job');
+        return;
+      }
       navigator.clipboard.writeText(url).then(() => {
         triggerHaptic('success');
         showToast('Official apply link copied to clipboard!');
@@ -1332,8 +1476,10 @@
 
     function modalTriggerATS() {
       if (!activeModalJob) return;
+      // Capture the job first: closeDetailsModal() clears activeModalJob.
+      const job = activeModalJob;
       closeDetailsModal();
-      populateATSMatcher(activeModalJob.role, activeModalJob.company, activeModalJob.description || activeModalJob.summary || activeModalJob.role);
+      populateATSMatcher(job.role, job.company, job.description || job.summary || job.role);
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -1345,8 +1491,10 @@
       triggerHaptic('light');
       const drawer = document.getElementById('modalPitchDrawer');
       if (!drawer) return;
+      const pitchBtn = document.getElementById('modalPitchBtn');
       if (!drawer.classList.contains('hidden')) {
         drawer.classList.add('hidden');
+        pitchBtn?.setAttribute('aria-expanded', 'false');
         return;
       }
 
@@ -1384,6 +1532,7 @@ Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
       document.getElementById('pitchMailtoBtn').href = mailtoUrl;
 
       drawer.classList.remove('hidden');
+      pitchBtn?.setAttribute('aria-expanded', 'true');
       lucide.createIcons();
     }
 
@@ -1415,8 +1564,10 @@ Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
       if (!modal) return;
       document.getElementById('ctcSlider').value = initialLpa;
       updateCtcCalculator(initialLpa);
+      modalFocusStack.push(document.activeElement);
       modal.classList.remove('hidden');
       lucide.createIcons();
+      document.getElementById('ctcSlider')?.focus();
       if (tg && tg.BackButton) {
         tg.BackButton.show();
         tg.BackButton.onClick(closeCtcModal);
@@ -1439,6 +1590,7 @@ Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
       triggerHaptic('light');
       const modal = document.getElementById('ctcModal');
       if (modal) modal.classList.add('hidden');
+      restoreModalFocus();
       if (tg && tg.BackButton && (!activeModalJob || document.getElementById('jobDetailsModal').classList.contains('hidden'))) {
         tg.BackButton.hide();
       }
@@ -1462,18 +1614,27 @@ Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
       const epfMonthly = basicMonthly >= 15000 ? 1800 : Math.round(basicMonthly * 0.12);
       const ptMonthly = 200;
 
-      // Income Tax (New Tax Regime FY 24-25 / 25-26)
+      // Income tax — New Tax Regime (FY 2025-26): ₹75,000 standard deduction,
+      // section 87A rebate (nil tax up to ₹12L taxable), 4% health & education
+      // cess, and marginal relief just above the rebate threshold.
       const taxable = Math.max(0, annualCtc - 75000);
-      let annualTax = 0;
-      if (taxable > 700000) {
-        let t1 = Math.min(Math.max(0, taxable - 300000), 400000) * 0.05;
-        let t2 = Math.min(Math.max(0, taxable - 700000), 300000) * 0.10;
-        let t3 = Math.min(Math.max(0, taxable - 1000000), 200000) * 0.15;
-        let t4 = Math.min(Math.max(0, taxable - 1200000), 300000) * 0.20;
-        let t5 = Math.max(0, taxable - 1500000) * 0.30;
-        let baseTax = t1 + t2 + t3 + t4 + t5;
-        annualTax = baseTax * 1.04;
+      const slabs = [
+        [400000, 0], [800000, 0.05], [1200000, 0.10],
+        [1600000, 0.15], [2000000, 0.20], [2400000, 0.25], [Infinity, 0.30]
+      ];
+      let baseTax = 0;
+      let lower = 0;
+      for (const [upper, rate] of slabs) {
+        if (taxable <= lower) break;
+        baseTax += (Math.min(taxable, upper) - lower) * rate;
+        lower = upper;
       }
+      if (taxable <= 1200000) {
+        baseTax = 0; // Section 87A rebate
+      } else {
+        baseTax = Math.min(baseTax, taxable - 1200000); // marginal relief
+      }
+      const annualTax = Math.round(baseTax * 1.04);
       const taxMonthly = Math.round(annualTax / 12);
       const totalDeductions = epfMonthly + ptMonthly + taxMonthly;
       const inHandMonthly = Math.max(0, grossMonthly - totalDeductions);
@@ -1491,7 +1652,7 @@ Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
 
       document.getElementById('ctcEpf').innerText = '-₹' + epfMonthly.toLocaleString('en-IN');
       document.getElementById('ctcPt').innerText = '-₹' + ptMonthly.toLocaleString('en-IN');
-      document.getElementById('ctcTax').innerText = annualTax === 0 ? '₹0 (Tax Free)' : '-₹' + taxMonthly.toLocaleString('en-IN');
+      document.getElementById('ctcTax').innerText = annualTax === 0 ? '₹0 (Rebate)' : '-₹' + taxMonthly.toLocaleString('en-IN');
       document.getElementById('ctcDeductions').innerText = '-₹' + totalDeductions.toLocaleString('en-IN');
     }
 
@@ -1566,13 +1727,17 @@ ${summary}`;
         active.classList.remove('bg-white/5', 'text-slate-300');
         active.classList.add('bg-amber-500', 'text-slate-900', 'font-bold');
       }
-      renderCurrentView();
+      renderCurrentView({ animate: true });
     }
 
+    // Debounced so a large feed is not fully re-rendered (and every icon re-scanned)
+    // on each keystroke.
+    let searchRenderTimer = null;
     function handleSearch() {
       const val = document.getElementById('searchInput').value.trim();
       document.getElementById('clearSearchBtn').classList.toggle('hidden', !val);
-      renderCurrentView();
+      clearTimeout(searchRenderTimer);
+      searchRenderTimer = setTimeout(() => renderCurrentView(), 120);
     }
 
     function executeSearch() {
@@ -1588,7 +1753,7 @@ ${summary}`;
       } else {
         renderCurrentView();
       }
-      window.scrollTo({ top: 120, behavior: 'smooth' });
+      scrollWindowTo(120);
     }
 
     function quickSearch(term) {
@@ -1600,6 +1765,7 @@ ${summary}`;
     }
 
     function clearSearch() {
+      clearTimeout(searchRenderTimer);
       document.getElementById('searchInput').value = '';
       document.getElementById('clearSearchBtn').classList.add('hidden');
       document.getElementById('searchBanner').classList.add('hidden');
@@ -1610,6 +1776,22 @@ ${summary}`;
       clearSearch();
       setFilter('tn');
     }
+
+    // Honour reduced-motion when scrolling programmatically.
+    function scrollWindowTo(top) {
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+    }
+
+    function scrollToTop() {
+      triggerHaptic('light');
+      scrollWindowTo(0);
+    }
+
+    // Show the back-to-top control only once the feed has been scrolled.
+    window.addEventListener('scroll', () => {
+      document.getElementById('backToTop')?.classList.toggle('hidden', window.scrollY < 600);
+    }, { passive: true });
 
     function toggleSave(id) {
       triggerHaptic('medium');
@@ -1692,6 +1874,30 @@ ${summary}`;
       return escapeHtml(raw);
     }
 
+    /** Raw http(s) URL, or '' when the value is missing or not navigable. */
+    function safeUrlValue(url) {
+      const raw = String(url == null ? '' : url).trim();
+      return /^https?:\/\//i.test(raw) ? raw : '';
+    }
+
+    // Dynamic values are inlined into `onclick="fn(...)"` handlers. escapeHtml()
+    // alone is not enough there: `&#39;` is decoded back to `'` by the HTML
+    // parser before the JS runs, so a scraped value containing a quote could
+    // break out of the string and execute. JSON.stringify() produces a real JS
+    // literal and escapeHtml() then makes it safe inside the attribute.
+    function jsArg(value) {
+      return escapeHtml(JSON.stringify(value == null ? '' : String(value)));
+    }
+
+    /** Render an Apply action; an unusable URL degrades to a disabled chip. */
+    function applyAction(url, inner, classes) {
+      const href = safeUrl(url);
+      if (!href) {
+        return `<span aria-disabled="true" title="No official apply link recorded" class="${classes} opacity-50 cursor-not-allowed">${inner}</span>`;
+      }
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="${classes}">${inner}</a>`;
+    }
+
     // Close modal on click outside
     window.addEventListener('click', (e) => {
       const modal = document.getElementById('jobDetailsModal');
@@ -1712,7 +1918,7 @@ ${summary}`;
         }
       }
       updateMetrics();
-      renderCurrentView();
+      renderCurrentView({ animate: true });
       lucide.createIcons();
       // Background refresh
       setTimeout(() => { fetchAllData(); }, 1200);
