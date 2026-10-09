@@ -39,25 +39,32 @@
     for (const key of ['enabled', 'followupsEnabled']) $(key).checked = a[key];
     for (const key of ['time', 'timezone', 'quietStart', 'quietEnd', 'minScore', 'maxAgeDays']) $(key).value = a[key];
   }
-  function card(job, result) {
+  function warnings(job) {
+    const signals = C.warningSignals(job);
+    return signals.length ? `<aside class="cw-risk" aria-label="Listing checks"><strong>Check before applying</strong><ul>${signals.map(s => `<li><strong>${C.escape(s.title)}:</strong> ${C.escape(s.detail)}</li>`).join('')}</ul><p class="cw-muted">Automated clues, not proof of fraud. Verify the employer independently.</p></aside>` : '<p class="cw-muted">No warning patterns detected. This is not an employer verification.</p>';
+  }
+  function card(job, result, sources = [job]) {
     const fresh = C.freshness(job);
     return `<article class="cw-card"><h3>${C.escape(job.title)}</h3><p>${C.escape(job.company)} · ${C.escape(job.city || 'Location not stated')}</p>
       <span class="cw-pill">${result.score === null ? 'Set preferences to rank' : result.score + '% preference match'}</span>
       <p class="cw-muted">${C.escape(fresh.label)} · Last checked: ${C.escape(fresh.checked || 'not recorded')}</p>
       ${result.reasons.length ? '<ul>' + result.reasons.map(r => '<li>' + C.escape(r) + '</li>').join('') + '</ul>' : ''}
+      ${warnings(job)}
+      ${sources.length > 1 ? `<details class="cw-sources"><summary>${sources.length} source links · Possible duplicate listings (${sources.filter(source => C.warningSignals(source).length).length} with warning clues)</summary><p class="cw-muted">Same stated role, employer and location. These may be separate openings; compare each source. Tracking remains separate for each link.</p>${sources.map(source => `<section><h4>${C.escape(new URL(source.url).hostname)}</h4><p>${C.escape(source.url)}</p><p class="cw-muted">${C.escape(C.freshness(source).label)} · ${C.escape(source.salary || 'Salary not stated')}</p>${warnings(source)}<div class="cw-toolbar"><a class="cw-link" href="${C.escape(source.url)}" target="_blank" rel="noopener noreferrer">View source</a><button type="button" data-track="${C.escape(source.url)}">${state.applications[source.url] ? 'Tracked' : 'Track application'}</button><button type="button" data-compare="${C.escape(source.url)}">Compare resume</button></div></section>`).join('')}</details>` : ''}
       <div class="cw-toolbar"><a class="cw-link" href="${C.escape(job.url)}" target="_blank" rel="noopener noreferrer">View source</a>
       <button type="button" data-track="${C.escape(job.url)}">${state.applications[job.url] ? 'Tracked' : 'Track application'}</button>
       <button type="button" data-compare="${C.escape(job.url)}">Compare resume</button></div></article>`;
   }
   function renderMatches() {
     const q = $('search').value.toLowerCase(), list = jobs();
-    const ranked = list.filter(j => !$('hide-expired').checked || !C.freshness(j).expired)
-      .filter(j => !q || [j.title, j.company, j.city, j.description].join(' ').toLowerCase().includes(q))
-      .map(job => ({ job, result: C.match(job, state.preferences) }))
+    const filtered = list.filter(j => !$('hide-expired').checked || !C.freshness(j).expired)
+      .filter(j => !q || [j.title, j.company, j.city, j.description].join(' ').toLowerCase().includes(q));
+    const groups = $('group-duplicates').checked ? C.groupJobs(filtered) : filtered.map(job => ({ job, sources: [job] }));
+    const ranked = groups.map(group => ({ ...group, result: C.match(group.job, state.preferences) }))
       .sort((a, b) => (b.result.score ?? 0) - (a.result.score ?? 0) || Number(C.freshness(a.job).stale) - Number(C.freshness(b.job).stale) || a.job.title.localeCompare(b.job.title));
     const shown = Number($('matches').dataset.limit || 12);
-    $('matches').innerHTML = ranked.slice(0, shown).map(({ job, result }) => card(job, result)).join('') || '<p>No matching opportunities in the loaded feed. Your tracker is still available below.</p>';
-    $('match-count').textContent = `${ranked.length} matching opportunities · Showing ${Math.min(shown, ranked.length)}. Scores reflect stated information, not hiring likelihood.`;
+    $('matches').innerHTML = ranked.slice(0, shown).map(({ job, result, sources }) => card(job, result, sources)).join('') || '<p>No matching opportunities in the loaded feed. Your tracker is still available below.</p>';
+    $('match-count').textContent = `${ranked.length} cards from ${filtered.length} matching source links · Showing ${Math.min(shown, ranked.length)}. Scores reflect stated information, not hiring likelihood.`;
     $('more').hidden = ranked.length <= shown;
   }
   function renderTracker() {
@@ -68,6 +75,7 @@
     const entries = Object.entries(state.applications).filter(([, a]) => !selected || a.status === selected).sort(([, a], [, b]) => (a.followUp || '9999').localeCompare(b.followUp || '9999'));
     $('tracker').innerHTML = entries.map(([key, a]) => `<form class="cw-card" data-application="${C.escape(key)}"><h3>${C.escape(a.job.title)}</h3><p>${C.escape(a.job.company)}</p>
       ${a.followUp && a.followUp <= today && a.status !== 'Rejected' ? '<p class="cw-warning">Follow-up due: ' + C.escape(a.followUp) + '</p>' : ''}
+      ${warnings(a.job)}
       <p class="cw-muted">${C.escape(C.freshness(a.job).label)} · Saved independently of the feed.</p>
       <label>Status<select name="status" aria-label="Status for ${C.escape(a.job.title)}">${C.STATUSES.map(s => `<option ${a.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select></label>
       <label>Notes<textarea name="notes" maxlength="5000" rows="3">${C.escape(a.notes)}</textarea></label>
@@ -136,7 +144,7 @@
         <label>Skills (comma separated)<input id="cw-skills" maxlength="2000" placeholder="Python, SQL, React"></label><label>Preferred cities (comma separated)<input id="cw-cities" maxlength="1000" placeholder="Chennai, Vellore, Puducherry"></label>
         <label>Years of experience<input id="cw-experience" type="number" min="0" max="60" step="0.5" placeholder="Not specified"></label><label>Minimum annual salary (LPA)<input id="cw-salary" type="number" min="0" max="1000" step="0.1" placeholder="Not specified"></label></div>
         <label><input id="cw-remote" type="checkbox">Prefer remote work</label><button type="submit">Save preferences</button></form>
-      <section class="cw-section"><h2>Recommended opportunities</h2><label>Search loaded jobs<input id="cw-search" type="search" placeholder="Role, employer or city"></label><label><input id="cw-hide-expired" type="checkbox" checked>Hide confirmed expired listings</label>
+      <section class="cw-section"><h2>Recommended opportunities</h2><label>Search loaded jobs<input id="cw-search" type="search" placeholder="Role, employer or city"></label><label><input id="cw-hide-expired" type="checkbox" checked>Hide confirmed expired listings</label><label><input id="cw-group-duplicates" type="checkbox" checked>Group possible duplicates</label>
       <p id="cw-match-count" class="cw-muted"></p><div id="cw-matches" class="cw-grid"></div><button id="cw-more" type="button">Show more recommendations</button></section>
       <section class="cw-section"><h2>Application tracker</h2><p id="cw-tracker-count" class="cw-muted"></p><label>Filter stage<select id="cw-tracker-filter"><option value="">All stages</option>${C.STATUSES.map(s => '<option>' + s + '</option>').join('')}</select></label><div id="cw-tracker" class="cw-grid"></div></section>
       <form id="cw-resume-form" class="cw-section"><h2>Resume-to-job comparison</h2><div class="cw-grid"><label>Resume text<textarea id="cw-resume" rows="6" maxlength="40000" required></textarea></label><label>Job description<textarea id="cw-description" rows="6" maxlength="40000" required></textarea></label></div><button type="submit">Compare skills</button><div id="cw-comparison" aria-live="polite"></div></form>
@@ -155,7 +163,7 @@
     $('alerts').addEventListener('submit', async event => { event.preventDefault(); const next = clone(state); for (const k of ['time', 'timezone', 'quietStart', 'quietEnd']) next.alerts[k] = $(k).value; for (const k of ['enabled', 'followupsEnabled']) next.alerts[k] = $(k).checked; for (const k of ['minScore', 'maxAgeDays']) next.alerts[k] = Number($(k).value); await save(next); });
     $('tracker').addEventListener('submit', async event => { event.preventDefault(); const form = event.target, key = form.dataset.application; if (!key) return; const next = clone(state); Object.assign(next.applications[key], { status: form.elements.status.value, notes: form.elements.notes.value, followUp: form.elements.followUp.value, updatedAt: new Date().toISOString() }); if (await save(next)) renderTracker(); });
     host.addEventListener('click', event => { const target = event.target.closest('button'); if (!target) return; if (target.dataset.track) track(target.dataset.track); if (target.dataset.calendar) calendar(target.dataset.calendar); if (target.dataset.compare) { const j = jobs().find(j => j.url === target.dataset.compare); if (j) { $('description').value = [j.title, j.description, j.skills.join(', ')].join('\n'); $('resume').focus(); } } });
-    $('search').addEventListener('input', renderMatches); $('hide-expired').addEventListener('change', renderMatches); $('tracker-filter').addEventListener('change', renderTracker);
+    $('search').addEventListener('input', renderMatches); $('hide-expired').addEventListener('change', renderMatches); $('tracker-filter').addEventListener('change', renderTracker); $('group-duplicates').addEventListener('change', renderMatches);
     $('more').addEventListener('click', () => { $('matches').dataset.limit = Number($('matches').dataset.limit || 12) + 12; renderMatches(); });
     $('resume-form').addEventListener('submit', event => { event.preventDefault(); compare(); });
     $('export').addEventListener('click', () => backup('myjob-career-backup.json', JSON.stringify(state, null, 2)));

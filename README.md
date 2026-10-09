@@ -116,3 +116,9 @@ npm --prefix tn-live-jobs test
 ```
 
 No extra provider, API key or JavaScript framework is required. Browser reminders are calendar downloads and in-app due-date indicators, not background push notifications. The Linux production service uses a file lock to serialize local notifier processes. Health observations report their timestamps rather than claiming continuous integration availability.
+
+### Duplicate groups and listing warning clues
+
+Career workspace recommendations on both public boards and the private dashboard group possible duplicates by the same stated title, company and location (case/spacing normalized and existing city aliases applied). Missing employer/location details are not guessed. Expand **source links** to inspect every URL, source-specific availability, salary and warning clues, or turn off **Group possible duplicates**. Each link keeps its own tracking history; existing applications and source data are never merged or deleted. Distinct openings can share those fields, so groups are explicitly marked as possible duplicates. Search and expiry filters apply to individual sources before grouping.
+
+Recommendations and saved tracker snapshots show explainable warning clues for recruitment-payment language, guaranteed-hiring claims, HTTP links, known short-link hosts, internationalized/numeric hosts and missing employer names. These local rules do not resolve links or verify employers, and may miss suspicious listings or flag legitimate ones. No detected pattern is not a safety endorsement. Negated no-fee/no-guarantee statements are excluded by basic clause checks. Warning text is escaped, and warnings do not block applying or remove jobs. Existing bot alerts and original feed lists retain their delivery/browsing behavior.

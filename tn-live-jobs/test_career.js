@@ -66,3 +66,25 @@ test('both public deployments ship identical career and offline assets', () => {
   assert.equal(manifest.start_url, './');
   assert.equal(manifest.scope, './');
 });
+
+
+test('duplicate groups preserve different source links and keep ambiguous roles separate', () => {
+  const copy = { ...example, apply_url: 'https://another.example/jobs/9', city: 'Pondicherry', title: '  PYTHON Developer ' };
+  const groups = C.groupJobs([example, copy, { ...example, apply_url: example.apply_url + '?utm_source=x' }, { ...example, city: 'Chennai' }, { ...example, company: 'Another employer' }, { ...example, company: '', apply_url: 'https://unknown.example/a' }, { ...example, company: '', apply_url: 'https://unknown.example/b' }]);
+  assert.equal(groups.length, 5);
+  assert.deepEqual(groups[0].sources.map(j => j.url), [example.apply_url, copy.apply_url]);
+  assert.equal(C.groupJobs([{ ...example, city: '', apply_url: 'https://example.org/a' }, { ...example, city: '', apply_url: 'https://example.org/b' }]).length, 2);
+  assert.equal(C.groupJobs([{ ...example, apply_url: 'javascript:alert(1)' }]).length, 0);
+});
+
+test('warning clues explain payment and suspicious links without declaring jobs safe', () => {
+  const clues = C.warningSignals({ ...example, description: 'Pay a registration fee before the interview. Guaranteed job.', apply_url: 'http://bit.ly/example' });
+  assert.deepEqual(clues.map(c => c.code), ['payment', 'guarantee', 'http', 'short-link']);
+  assert.match(clues[0].detail, /registration fee/);
+  assert.equal(C.warningSignals({ ...example, description: 'No registration fees. We never request payment for an interview. No guaranteed job.' }).length, 0);
+  assert.ok(C.warningSignals({ ...example, description: 'No application fee, but pay a security deposit before joining.' }).some(c => c.code === 'payment'));
+  assert.equal(C.warningSignals({ ...example, description: 'Process customer payments using Python.' }).length, 0);
+  assert.ok(C.warningSignals({ ...example, company: '', apply_url: 'https://127.0.0.1/job' }).some(c => c.code === 'missing-company'));
+  assert.ok(C.warningSignals({ ...example, apply_url: 'https://xn--pple-43d.com/job' }).some(c => c.code === 'unusual-host'));
+  assert.equal(C.warningSignals({ ...example, apply_url: 'https://bit.ly.evil.example/job' }).some(c => c.code === 'short-link'), false);
+});

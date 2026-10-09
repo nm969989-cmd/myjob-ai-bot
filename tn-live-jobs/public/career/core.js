@@ -54,6 +54,42 @@
     if (checked && checked <= now) return { expired: false, stale: now - checked > 7 * 86400000, label: now - checked > 7 * 86400000 ? 'Check is over 7 days old' : 'Link checked recently', checked: j.verifiedAt };
     return { expired: false, stale: !posted || now - posted > 30 * 86400000, label: posted && now - posted > 30 * 86400000 ? 'Older listing • verify availability' : 'Availability not checked', checked: '' };
   }
+  // Conservative grouping: never infer an employer or merge missing locations.
+  function groupJobs(rows) {
+    const groups = [], byIdentity = new Map();
+    const keyText = value => value.normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim();
+    for (const raw of rows) {
+      const job = normalize(raw);
+      if (!job.url) continue;
+      const complete = job.title !== 'Untitled opportunity' && job.company !== 'Company not stated' && job.city;
+      const identity = complete ? JSON.stringify([keyText(job.title), keyText(job.company), keyText(cityName(job.city))]) : job.url;
+      let group = byIdentity.get(identity);
+      if (!group) { group = { job, sources: [] }; byIdentity.set(identity, group); groups.push(group); }
+      if (!group.sources.some(source => source.url === job.url)) group.sources.push(job);
+    }
+    return groups;
+  }
+  function warningSignals(raw) {
+    const job = normalize(raw), signals = [];
+    const content = [job.title, job.description].join('. ');
+    // Check clauses separately so a genuine no-fee statement isn't flagged.
+    const clauses = content.split(/[.!?;\n]+|\bbut\b/i);
+    const payment = clauses.find(clause =>
+      /\b(?:pay|payment|deposit|fee|fees)\b/i.test(clause) &&
+      /\b(?:registration|application|interview|recruitment|processing|security deposit|upfront|advance|joining)\b/i.test(clause) &&
+      !/\b(?:no|never|without|not|don't|do not|beware|avoid)\b/i.test(clause));
+    if (payment) signals.push({ code: 'payment', title: 'Possible recruitment payment request', detail: 'Listing text: “' + payment.trim().slice(0, 220) + '”. Verify the employer independently before paying.' });
+    if (clauses.some(clause => /\bguaranteed\s+(?:job|placement|selection|employment)\b/i.test(clause) && !/\b(?:no|never|not|beware|avoid)\b/i.test(clause))) signals.push({ code: 'guarantee', title: 'Guaranteed hiring claim', detail: 'The listing promises a guaranteed job or selection. Confirm the hiring process through the employer’s official website.' });
+    if (!job.url) signals.push({code:'invalid-link', title:'Application link unavailable', detail:'No valid HTTP(S) application link is provided.'});
+    else {
+      const link = new URL(job.url), hostname = link.hostname.toLowerCase();
+      if (link.protocol === 'http:') signals.push({code:'http', title:'Unencrypted application link', detail:'This link uses HTTP. Avoid sending personal documents until you have confirmed a secure employer application page.'});
+      if (['bit.ly', 'tinyurl.com', 't.co', 'shorturl.at', 'rb.gy'].includes(hostname)) signals.push({code:'short-link', title:'Destination hidden by a short link', detail:'The final destination is not visible here. Verify it before entering personal information.'});
+      if (hostname.split('.').some(part => part.startsWith('xn--')) || /^(?:\d{1,3}\.){3}\d{1,3}$/.test(hostname) || hostname.startsWith('[')) signals.push({code:'unusual-host', title:'Application address needs checking', detail:'The link uses an internationalized hostname or a numeric address. Check that it belongs to the intended employer.'});
+    }
+    if (job.company === 'Company not stated') signals.push({code:'missing-company', title:'Employer not named', detail:'The listing does not name an employer. Ask who is hiring before sharing documents.'});
+    return signals;
+  }
   function salaryLpa(value) {
     if (!/\b(lpa|lakhs?|lacs?)\b/i.test(value)) return null;
     const match = String(value).match(/(\d+(?:\.\d+)?)\s*(?:-\s*(\d+(?:\.\d+)?))?\s*(?:lpa|lakhs?|lacs?)/i);
@@ -121,7 +157,7 @@
     state.alerts.enabled = a.enabled === true; state.alerts.followupsEnabled = a.followupsEnabled === true;
     return state;
   }
-  const api = { STATUSES, SKILLS, escape, url, terms, date, normalize, freshness, match, compareResume, initial, cleanState };
+  const api = { STATUSES, SKILLS, escape, url, terms, date, normalize, freshness, groupJobs, warningSignals, match, compareResume, initial, cleanState };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.CareerCore = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

@@ -1,7 +1,7 @@
 /* Public-site offline shell only. Never cache authentication or API responses. */
 'use strict';
 const PREFIX = 'myjob-career-' + encodeURIComponent(self.registration.scope) + '-';
-const CACHE = PREFIX + 'c07e2b03474c';
+const CACHE = PREFIX + '81dab4cd74ce';
 const FILES = ['offline.html', 'career/core.js', 'career/workspace.js', 'career/workspace.css', 'manifest.webmanifest', 'career/icon-192.png', 'career/icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES.map(file => new URL(file, self.registration.scope).href))).then(() => self.skipWaiting()));

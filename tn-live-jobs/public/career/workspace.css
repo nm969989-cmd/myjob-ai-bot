@@ -24,3 +24,8 @@
 .career-workspace progress { width:100%; accent-color:#38bdf8; }
 @media(max-width:620px) { .cw-grid { grid-template-columns:1fr; } .career-workspace { padding:14px; } }
 @media(prefers-reduced-motion:no-preference) { .cw-card { animation:cw-enter .2s ease-out; } @keyframes cw-enter { from {opacity:.4;transform:translateY(5px)} to {opacity:1;transform:none} } }
+
+.cw-risk { border-left:3px solid #fbbf24; background:#30271b; padding:10px 12px; margin:12px 0; color:#fef3c7; border-radius:6px; }
+.cw-sources { border:1px solid #526680; border-radius:9px; padding:8px; margin:12px 0; }
+.career-workspace .cw-sources summary { font-size:.9rem; }
+.cw-sources section + section { border-top:1px solid #526680; margin-top:12px; padding-top:12px; }
