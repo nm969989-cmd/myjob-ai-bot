@@ -152,7 +152,7 @@ def build_resume():
     size = os.path.getsize(out_path)
     print(f"[OK] Resume generated: {out_path}")
     print(f"     File size: {size:,} bytes ({size//1024} KB)")
-    print(f"\n[NEXT] Keep resume.pdf on private deployment storage; never commit it to a public repo.")
+    print("\n[NEXT] Keep resume.pdf on private deployment storage; never commit it to a public repo.")
 
 
 if __name__ == "__main__":
