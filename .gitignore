@@ -60,6 +60,8 @@ debug.log
 *.mp4
 *.pdf
 !resume.pdf
+# Social preview card is published with the GitHub Pages site in docs/.
+!docs/og-image.png
 step_*.png
 resume_*.png
 after_submit.png
