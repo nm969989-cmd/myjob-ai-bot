@@ -68,14 +68,22 @@ python -m pytest test_careerops_integration.py test_job_discovery.py test_dashbo
 cd tn-live-jobs && npm ci && cd ..
 node --test tn-live-jobs/test_priority_cities.js tn-live-jobs/test_client.js
 python -m playwright install --with-deps chromium
-python -m pytest test_ui_browser.py -q
+python -m pytest test_ui_browser.py test_public_site.py -q
 ```
 
 The browser suite uses local fixtures at 320px, 390px and 1440px and blocks
 external requests. It checks search, saved jobs, keyboard modal focus, reduced
 motion, horizontal overflow and dashboard API authentication. These checks do
 not prove live portal access, Telegram delivery, AI credentials or deployment
-health. `test_features_verify.py` remains a separate network/data-dependent
+health.
+
+`test_public_site.py` covers the GitHub Pages site in `docs/`. It blocks the
+Tailwind/Lucide CDNs and stubs Lucide, so it also proves the page still hides
+panels and dialogs when the CDNs are unreachable (the inline `.hidden`
+fallback). It checks social/structured metadata, debounced search, dialog focus
+trapping and focus restore, that a quote-bearing scraped value cannot break out
+of an inline handler, that `javascript:` apply URLs are not navigable, the new
+regime in-hand estimate, and reduced-motion behaviour. `test_features_verify.py` remains a separate network/data-dependent
 manual smoke script, not part of the offline suite.
 
 Cloud runner exit codes: **0** = no recorded stage/delivery errors; **1** = a
