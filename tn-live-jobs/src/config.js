@@ -5,6 +5,8 @@
  * If you want to search different cities or add job categories, edit here.
  */
 
+const { orderCities } = require('./cityBudget');
+
 // Search the four preferred cities before broader Tamil Nadu coverage.
 const PRIORITY_CITIES = ['Tiruvannamalai', 'Vellore', 'Puducherry', 'Chennai'];
 const CITIES = [
@@ -17,11 +19,24 @@ const CITIES = [
   'Erode',
   'Thanjavur',
   'Tiruppur',
+  'Hosur',
+  'Kanchipuram',
+  'Dindigul',
+  'Karur',
+  'Nagercoil',
+  'Thoothukudi',
+  'Cuddalore',
+  'Ranipet',
+  'Sivakasi',
+  'Kumbakonam',
+  'Neyveli',
   'Tamil Nadu',
 ];
 
 // When we read a page, how do we know which city it is talking about?
 // Each city maps to the different spellings that appear on real web pages.
+// Keep this in sync with job_radar.py's TAMIL_NADU_LOCATIONS (see
+// test_priority_cities.js, which fails if a locality is missing here).
 const CITY_ALIASES = {
   Tiruvannamalai: ['tiruvannamalai', 'thiruvannamalai', 'thiruannamalai', 'tiruvanamalai'],
   Vellore: ['vellore'],
@@ -35,6 +50,17 @@ const CITY_ALIASES = {
   Erode: ['erode'],
   Thanjavur: ['thanjavur', 'tanjore'],
   Tiruppur: ['tiruppur', 'tirupur'],
+  Hosur: ['hosur'],
+  Kanchipuram: ['kanchipuram', 'kancheepuram', 'kanchi'],
+  Dindigul: ['dindigul', 'dindigal'],
+  Karur: ['karur'],
+  Nagercoil: ['nagercoil', 'nagarcoil'],
+  Thoothukudi: ['thoothukudi', 'tuticorin'],
+  Cuddalore: ['cuddalore', 'kadalur'],
+  Ranipet: ['ranipet', 'ranipettai'],
+  Sivakasi: ['sivakasi'],
+  Kumbakonam: ['kumbakonam'],
+  Neyveli: ['neyveli'],
   'Tamil Nadu': ['tamil nadu', 'tamilnadu', 'across tamil nadu'],
 };
 
@@ -138,26 +164,70 @@ const DEFAULT_CATEGORY = 'Other';
 
 /**
  * The keywords we search for on each source, taken from the categories above.
- * Kept short on purpose, because every keyword means one page fetch.
+ * Order matters: with a small page budget only the first few are reached, so
+ * the broadest, highest-volume fresher searches come first.
  */
 const SEARCH_KEYWORDS = [
   'software developer',
   'fresher',
   'data analyst',
   'accountant',
+  'data entry',
   'nurse',
   'teacher',
   'sales executive',
-  'data entry',
 ];
+
+/**
+ * Build the ordered list of (keyword, city) searches a source should run.
+ *
+ * Sources used to loop `for keyword { for city }` and stop after the page
+ * budget, which meant only the FIRST keyword was ever searched (in the first
+ * few cities) - most of Tamil Nadu and most keywords were never reached.
+ *
+ * This plan fixes that ordering: every keyword is searched across the four
+ * preferred cities first, and only then are the broader cities touched. So a
+ * small budget covers several roles in the places that matter most, instead of
+ * one role across many cities. `limit` caps how many searches run.
+ */
+function planSearches(keywords, cities, limit) {
+  const ordered = orderCities(PRIORITY_CITIES, cities);
+  const preferredList = PRIORITY_CITIES.map((city) => city.toLowerCase());
+  const preferred = ordered.filter((city) => preferredList.includes(city.toLowerCase()));
+  const rest = ordered.filter((city) => !preferredList.includes(city.toLowerCase()));
+  const keywordList = (keywords || []).filter(Boolean);
+
+  const pairs = [];
+  for (const keyword of keywordList) for (const city of preferred) pairs.push({ keyword, city });
+  for (const keyword of keywordList) for (const city of rest) pairs.push({ keyword, city });
+
+  return Number.isFinite(limit) && limit > 0 ? pairs.slice(0, limit) : pairs;
+}
 
 // ---- Limits and politeness -------------------------------------------------
 
 /** Never take more than this many jobs from one single source module per run. */
 const MAX_JOBS_PER_SOURCE = 150;
 
-/** Never look at more than this many listing pages per source per run. */
-const MAX_PAGES_PER_SOURCE = 4;
+/**
+ * How many (keyword, city) searches one source may run per run.
+ * Each search costs one polite page fetch, so this is the main coverage/speed
+ * dial: raise it for wider Tamil Nadu coverage, lower it for a quick run.
+ * Override with SEARCH_PAGES_PER_SOURCE=<n>. Overrides are clamped to
+ * MAX_PAGES_PER_SOURCE_LIMIT so a stray value cannot blow the scrape budget.
+ */
+const MAX_PAGES_PER_SOURCE_LIMIT = 40;
+
+function resolvePageLimit(raw) {
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 1) return 12;
+  return Math.min(Math.floor(parsed), MAX_PAGES_PER_SOURCE_LIMIT);
+}
+
+const MAX_PAGES_PER_SOURCE = resolvePageLimit(
+  process.env.SEARCH_PAGES_PER_SOURCE || process.env.MAX_PAGES_PER_SOURCE
+);
+
 
 /** Wait a random 1.5-3.5 seconds between requests (as required). */
 const MIN_DELAY_MS = 1500;
@@ -179,6 +249,7 @@ module.exports = {
   PRIORITY_CITIES,
   canonicalCity,
   cityLocation,
+  planSearches,
   CITIES,
   CITY_ALIASES,
   CATEGORIES,

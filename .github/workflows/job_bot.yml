@@ -57,8 +57,10 @@ jobs:
           # Only the offline suite runs in CI. test_features_verify.py is a manual
           # smoke script (its entrypoint is run_all_tests, not test_*) and other
           # tests hit the live network, which is slow and flaky here.
+          # Do NOT append `|| true`: that masked real failures and let a broken
+          # suite report success.
           python -m pytest test_careerops_integration.py -q \
-            -k "not network and not live and not adzuna and not scrape" || true
+            -k "not network and not live and not adzuna and not scrape"
 
       - name: 🧪 Verify Regional Search and Automatic Delivery
         run: python -m unittest test_job_discovery -v
@@ -118,6 +120,12 @@ jobs:
           python cloud_runner.py
 
       - name: 💾 Commit & Push Application Logs & Verified Job Data
+        # `always()` is deliberate: the cloud cycle can send real Telegram
+        # deliveries and then exit nonzero on a later stage. If this checkpoint
+        # were skipped on failure, the next run would start without those
+        # "already delivered" markers and re-alert the same jobs. The step itself
+        # reports a real error if the commit/push fails.
+        if: always()
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -146,8 +154,10 @@ jobs:
           fi
           echo "Staged:"; git diff --cached --name-only
           git commit -m "🤖 Cloud Run: Auto-updated jobs, state & verified TN radar [skip ci]"
-          git pull --rebase --autostash -X ours origin main || git pull --rebase origin main || true
-          git push origin main || echo "Push completed or already up to date"
+          git pull --rebase --autostash -X ours origin main
+          # No `|| echo`: a failed push must fail the step (and the run) instead of
+          # reporting success while the dedup state never leaves the runner.
+          git push origin main
 
       # 🔴 Watchdog: fires a Telegram alert if ANY earlier step failed (pip install,
       # checkout, cloud_runner crash, etc.) so silent breakage is never invisible.

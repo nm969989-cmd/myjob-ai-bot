@@ -21,6 +21,7 @@ const {
   detectExperience,
   relativeDateToIso,
 } = require('../util');
+const { planSearches } = require('../config');
 
 const BASE = 'https://www.naukri.com';
 
@@ -68,52 +69,49 @@ module.exports = {
     const notes = ctx.note;
     const jobs = [];
     let attempts = 0;
+    const plan = planSearches(ctx.keywords, ctx.cities, ctx.pageLimit);
 
-    for (const keyword of ctx.keywords) {
-      for (const city of ctx.cities) {
-        if (attempts >= ctx.pageLimit) break;
-        if (Date.now() > ctx.deadline) break;
-        attempts += 1;
+    for (const { keyword, city } of plan) {
+      if (Date.now() > ctx.deadline) break;
+      attempts += 1;
 
-        const url = `${BASE}/${slugifyValue(keyword)}-jobs-in-${slugifyValue(city)}`;
+      const url = `${BASE}/${slugifyValue(keyword)}-jobs-in-${slugifyValue(city)}`;
+      try {
+        let payload;
         try {
-          let payload;
-          try {
-            payload = await renderCapture(await ctx.getContext(), url, {
-              urlIncludes: ['jobapi', '/api/', 'job-listings', 'search'],
-              settleMs: 6000,
-              waitForSelector: '.srp-jobtuple-wrapper, article.jobTuple',
-            });
-          } catch (browserError) {
-            // A missing/corrupt browser download must not sink the whole run.
-            ctx.log(`  naukri skipped: browser unavailable (${browserError.message.split('\n')[0]})`);
-            notes('naukri.com', 'blocked', 'headless browser unavailable in this environment');
-            return jobs;
-          }
-          const { json, dom } = payload;
-
-          for (const candidate of parseNaukriDom(dom.html)) jobs.push(candidate);
-          for (const response of json) {
-            for (const candidate of findJobObjects(response.json)) {
-              const job = makeJob({
-                title: candidate.title,
-                company: candidate.company,
-                apply_url: candidate.url,
-                source: registrableDomain(BASE),
-                source_type: 'job_portal',
-                city: detectCity(candidate.location) || undefined,
-                location: candidate.location,
-                extra: `${candidate.title} ${candidate.location}`,
-              });
-              if (job) jobs.push(job);
-            }
-          }
-        } catch (error) {
-          ctx.log(`  naukri page failed (${clip(url, 80)}): ${clip(error.message, 120)}`);
+          payload = await renderCapture(await ctx.getContext(), url, {
+            urlIncludes: ['jobapi', '/api/', 'job-listings', 'search'],
+            settleMs: 6000,
+            waitForSelector: '.srp-jobtuple-wrapper, article.jobTuple',
+          });
+        } catch (browserError) {
+          // A missing/corrupt browser download must not sink the whole run.
+          ctx.log(`  naukri skipped: browser unavailable (${browserError.message.split('\n')[0]})`);
+          notes('naukri.com', 'blocked', 'headless browser unavailable in this environment');
+          return jobs;
         }
+        const { json, dom } = payload;
 
-        if (jobs.length >= ctx.limit) break;
+        for (const candidate of parseNaukriDom(dom.html)) jobs.push(candidate);
+        for (const response of json) {
+          for (const candidate of findJobObjects(response.json)) {
+            const job = makeJob({
+              title: candidate.title,
+              company: candidate.company,
+              apply_url: candidate.url,
+              source: registrableDomain(BASE),
+              source_type: 'job_portal',
+              city: detectCity(candidate.location) || undefined,
+              location: candidate.location,
+              extra: `${candidate.title} ${candidate.location}`,
+            });
+            if (job) jobs.push(job);
+          }
+        }
+      } catch (error) {
+        ctx.log(`  naukri page failed (${clip(url, 80)}): ${clip(error.message, 120)}`);
       }
+
       if (jobs.length >= ctx.limit) break;
     }
 

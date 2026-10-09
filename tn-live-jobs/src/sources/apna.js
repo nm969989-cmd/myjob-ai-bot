@@ -21,6 +21,7 @@ const {
   detectExperience,
   unescapeJsonInScript,
 } = require('../util');
+const { planSearches } = require('../config');
 
 const BASE = 'https://apna.co';
 
@@ -106,43 +107,42 @@ module.exports = {
     let attempts = 0;
     let blocked = 0;
 
-    for (const category of APNA_CATEGORIES) {
-      for (const city of ctx.cities) {
-        if (attempts >= ctx.pageLimit) break;
-        if (Date.now() > ctx.deadline) break;
-        attempts += 1;
+    // apna publishes real category pages; the planner orders the cities.
+    const plan = planSearches(APNA_CATEGORIES, ctx.cities, ctx.pageLimit);
 
-        const url = `${BASE}/jobs/${category}-jobs-in-${slugifyValue(city)}`;
-        try {
-          const response = await fetchText(url, { headers: { referer: `${BASE}/` } });
-          if (response.status === 403 || response.status === 429) {
-            blocked += 1;
-            continue;
-          }
-          if (response.status >= 400) continue;
+    for (const { keyword: category, city } of plan) {
+      if (Date.now() > ctx.deadline) break;
+      attempts += 1;
 
-          for (const entry of parseApnaPayload(response.body)) {
-            const job = makeJob({
-              title: entry.title,
-              company: entry.company,
-              apply_url: entry.applyUrl,
-              source: registrableDomain(BASE),
-              source_type: 'job_portal',
-              city: detectCity(entry.address, entry.title) || undefined,
-              location: entry.address,
-              extra: `${entry.title} ${entry.address} ${entry.tagText}`,
-              salary: entry.salary || undefined,
-              employment_type: detectEmploymentType(entry.tagText),
-              experience: detectExperience(entry.tagText),
-            });
-            if (job) jobs.push(job);
-          }
-        } catch (error) {
-          ctx.log(`  apna page failed (${clip(url, 70)}): ${clip(error.message, 100)}`);
+      const url = `${BASE}/jobs/${category}-jobs-in-${slugifyValue(city)}`;
+      try {
+        const response = await fetchText(url, { headers: { referer: `${BASE}/` } });
+        if (response.status === 403 || response.status === 429) {
+          blocked += 1;
+          continue;
         }
+        if (response.status >= 400) continue;
 
-        if (jobs.length >= ctx.limit) break;
+        for (const entry of parseApnaPayload(response.body)) {
+          const job = makeJob({
+            title: entry.title,
+            company: entry.company,
+            apply_url: entry.applyUrl,
+            source: registrableDomain(BASE),
+            source_type: 'job_portal',
+            city: detectCity(entry.address, entry.title) || undefined,
+            location: entry.address,
+            extra: `${entry.title} ${entry.address} ${entry.tagText}`,
+            salary: entry.salary || undefined,
+            employment_type: detectEmploymentType(entry.tagText),
+            experience: detectExperience(entry.tagText),
+          });
+          if (job) jobs.push(job);
+        }
+      } catch (error) {
+        ctx.log(`  apna page failed (${clip(url, 70)}): ${clip(error.message, 100)}`);
       }
+
       if (jobs.length >= ctx.limit) break;
     }
 

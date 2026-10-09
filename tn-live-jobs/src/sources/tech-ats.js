@@ -63,8 +63,10 @@ function isTamilNaduLocation(loc) {
     (loc.city || '') + ' ' +
     (loc.region || '') + ' ' +
     (loc.fullLocation || '')
-  ).toLowerCase();
-  return /chennai|coimbatore|madurai|trichy|tiruchirappalli|salem|tirunelveli|erode|vellore|thanjavur|tiruppur|tamil\s*nadu|\btn\b/i.test(text);
+  );
+  // Reuse the shared classifier so every city in CITY_ALIASES counts, instead
+  // of a short hardcoded list that silently dropped Hosur, Kanchipuram, etc.
+  return Boolean(detectCity(text)) || /tamil\s*nadu/i.test(text);
 }
 
 /** Fetch and parse jobs from SmartRecruiters for one company. */
@@ -107,7 +109,7 @@ async function scrapeSmartRecruitersCompany(company, ctx) {
         company: company.name,
         apply_url: applyUrl,
         city,
-        state: 'Tamil Nadu',
+        state: city === 'Puducherry' ? 'Puducherry' : 'Tamil Nadu',
         category: detectCategory(title, func, ind),
         employment_type: employmentType,
         experience,
@@ -168,7 +170,6 @@ async function scrapeWorkdayCompany(company, ctx) {
       const title = tidy(p.title);
       const locText = tidy(p.locationsText || '');
       const isTN = isTamilNaduLocation({ fullLocation: locText, city: locText }) ||
-                   /chennai|tamil\s*nadu|\btn\b/i.test(locText) ||
                    /chennai/i.test(title);
       if (!isTN) continue;
 
@@ -183,7 +184,7 @@ async function scrapeWorkdayCompany(company, ctx) {
         company: company.name,
         apply_url: applyUrl,
         city,
-        state: 'Tamil Nadu',
+        state: city === 'Puducherry' ? 'Puducherry' : 'Tamil Nadu',
         category: detectCategory(title),
         employment_type: 'Full-time',
         experience: detectExperience(title),
@@ -218,6 +219,7 @@ module.exports = {
   tier: 1,
   SMART_RECRUITERS_COMPANIES,
   WORKDAY_COMPANIES,
+  isTamilNaduLocation,
 
   async scrape(ctx) {
     const collected = [];

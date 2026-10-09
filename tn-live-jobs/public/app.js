@@ -166,11 +166,13 @@ function showToast(message) {
 
 // ---------- Search & Filter Logic -------------------------------------------
 
-function matchesSearch(job, query) {
-  if (!query) return true;
-  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
-  if (!tokens.length) return true;
-
+/**
+ * Every searchable field of a job, lower-cased once and cached on the record.
+ * Rebuilding this string for every job on every keystroke was the main cost of
+ * typing in the search box, so we build it lazily and reuse it.
+ */
+function searchHaystack(job) {
+  if (job.__search) return job.__search;
   const skillsStr = Array.isArray(job.skills) ? job.skills.join(' ') : '';
   const haystack = (
     (job.title || '') + ' ' +
@@ -182,8 +184,123 @@ function matchesSearch(job, query) {
     skillsStr + ' ' +
     (job.source || '')
   ).toLowerCase();
+  try {
+    Object.defineProperty(job, '__search', { value: haystack, enumerable: false, writable: true });
+  } catch (e) {
+    job.__search = haystack;
+  }
+  return haystack;
+}
 
-  return tokens.every(token => haystack.includes(token));
+function matchesSearch(job, query) {
+  if (!query) return true;
+  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!tokens.length) return true;
+  return tokens.every(token => tokenMatches(job, token));
+}
+
+/** Split a job's searchable text into unique words of 4+ characters. */
+function searchWords(job) {
+  const haystack = searchHaystack(job);
+  const words = new Set();
+  for (const word of haystack.split(/[^a-z0-9+#.]+/)) {
+    if (word.length >= 4) words.add(word);
+  }
+  return Array.from(words);
+}
+
+/**
+ * Optimal string alignment distance, capped at `max`. Counts a transposition
+ * as one edit, so "pyhton" -> "python" costs 1. Bails out early once a row
+ * exceeds the cap, so it stays cheap on the long description words.
+ */
+function osaDistance(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  const rows = a.length;
+  const cols = b.length;
+  const matrix = [];
+  for (let row = 0; row <= rows; row++) matrix.push([row]);
+  for (let col = 1; col <= cols; col++) matrix[0][col] = col;
+  for (let row = 1; row <= rows; row++) {
+    let rowMin = Infinity;
+    for (let col = 1; col <= cols; col++) {
+      const cost = a[row - 1] === b[col - 1] ? 0 : 1;
+      matrix[row][col] = Math.min(
+        matrix[row - 1][col] + 1,
+        matrix[row][col - 1] + 1,
+        matrix[row - 1][col - 1] + cost
+      );
+      if (row > 1 && col > 1 && a[row - 1] === b[col - 2] && a[row - 2] === b[col - 1]) {
+        matrix[row][col] = Math.min(matrix[row][col], matrix[row - 2][col - 2] + 1);
+      }
+      rowMin = Math.min(rowMin, matrix[row][col]);
+    }
+    if (rowMin > max) return max + 1;
+  }
+  return matrix[rows][cols];
+}
+
+/**
+ * True when a token is present in a job. Exact substring wins; otherwise a
+ * long-enough token is allowed a single-edit near match, so a typo such as
+ * "pyhton" still finds Python roles.
+ */
+function tokenMatches(job, token) {
+  const haystack = searchHaystack(job);
+  if (haystack.includes(token)) return true;
+  if (token.length < 4) return false;
+  return searchWords(job).some(word => Math.abs(word.length - token.length) <= 1 && osaDistance(token, word, 1) <= 1);
+}
+
+/** Relevance of a job to the tokens: tokens matched, plus a title bonus. */
+function jobSearchScore(job, tokens) {
+  const title = String(job.title || '').toLowerCase();
+  let score = 0;
+  for (const token of tokens) {
+    if (tokenMatches(job, token)) {
+      score += 5;
+      if (title.includes(token)) score += 3;
+    }
+  }
+  return score;
+}
+
+/**
+ * Search filter with a forgiving fallback. Jobs matching every token come
+ * first; when none do, jobs matching at least one token are shown so a narrow
+ * query is not a dead end. Results are ordered by relevance, then left stable
+ * for the caller's own sort to break ties.
+ */
+function applySearch(list, query) {
+  const trimmed = (query || '').trim();
+  if (!trimmed) return list;
+  const tokens = trimmed.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!tokens.length) return list;
+  const strict = list.filter(job => matchesSearch(job, trimmed));
+  const pool = strict.length ? strict : list.filter(job => tokens.some(token => tokenMatches(job, token)));
+  return pool
+    .map(job => ({ job, score: jobSearchScore(job, tokens) }))
+    .sort((a, b) => b.score - a.score)
+    .map(entry => entry.job);
+}
+
+/** Comparator for the selected sort mode, matching the previous behaviour. */
+function sortComparator(sort) {
+  if (sort === 'city') {
+    return (a, b) => String(a.city || '').localeCompare(String(b.city || ''));
+  }
+  if (sort === 'company') {
+    return (a, b) => String(a.company || '').localeCompare(String(b.company || ''));
+  }
+  if (sort === 'salary') {
+    return (a, b) => {
+      const aSal = Boolean(a.salary);
+      const bSal = Boolean(b.salary);
+      if (aSal !== bSal) return aSal ? -1 : 1;
+      return String(b.posted_at || '').localeCompare(String(a.posted_at || ''));
+    };
+  }
+  return (a, b) => String(b.posted_at || '').localeCompare(String(a.posted_at || ''));
 }
 
 function matchesQuickChip(job, chip) {
@@ -225,7 +342,7 @@ function matchesFreshness(job, freshness) {
 }
 
 function applyFilters() {
-  const q = state.query.trim();
+  const query = state.query.trim();
 
   let list = state.allJobs.filter(job => {
     if (!matchesQuickChip(job, state.quickChip)) return false;
@@ -234,26 +351,12 @@ function applyFilters() {
     if (state.type && job.employment_type !== state.type) return false;
     if (!matchesExperience(job, state.experience)) return false;
     if (!matchesFreshness(job, state.freshness)) return false;
-    if (!matchesSearch(job, q)) return false;
     return true;
   });
 
-  // Sorting
-  if (state.sort === 'city') {
-    list.sort((a, b) => String(a.city || '').localeCompare(String(b.city || '')));
-  } else if (state.sort === 'company') {
-    list.sort((a, b) => String(a.company || '').localeCompare(String(b.company || '')));
-  } else if (state.sort === 'salary') {
-    list.sort((a, b) => {
-      const aSal = Boolean(a.salary);
-      const bSal = Boolean(b.salary);
-      if (aSal !== bSal) return aSal ? -1 : 1;
-      return String(b.posted_at || '').localeCompare(String(a.posted_at || ''));
-    });
-  } else {
-    // Newest first
-    list.sort((a, b) => String(b.posted_at || '').localeCompare(String(a.posted_at || '')));
-  }
+  // Search ranks by relevance; other sort modes then reorder by their key.
+  list = applySearch(list, query);
+  list = list.slice().sort(sortComparator(state.sort));
 
   state.filteredJobs = list;
   state.visibleCount = PAGE_SIZE;
@@ -263,17 +366,78 @@ function applyFilters() {
 
 // ---------- URL State Sync --------------------------------------------------
 
+// Filter values that are fixed in the markup or the app logic.
+const EXPERIENCE_VALUES = new Set(['fresher', 'mid', 'senior']);
+const FRESHNESS_VALUES = new Set(['24h', '3d', '7d']);
+const SORT_VALUES = new Set(['newest', 'city', 'company', 'salary']);
+const CHIP_VALUES = new Set(['all', 'fresher', 'govt', 'it', 'healthcare', 'finance', 'saved']);
+const TYPE_VALUES = new Set(['Full-time', 'Internship', 'Contract', 'Part-time']);
+const EMPLOYMENT_TYPE_ALIASES = {
+  'full time': 'Full-time',
+  fulltime: 'Full-time',
+  'part time': 'Part-time',
+  parttime: 'Part-time',
+  contractual: 'Contract',
+  intern: 'Internship',
+};
+
+// City and category options are built from the data; filled in when the
+// dropdowns are populated.
+const CITY_VALUES = new Set();
+const CATEGORY_VALUES = new Set();
+/** Populate the City and Category dropdowns from the loaded job data. */
+function populateFilterOptions() {
+  const distinct = (key) =>
+    Array.from(new Set(state.allJobs.map((job) => job[key]).filter(Boolean))).sort();
+  if (els.city && els.city.options.length <= 1) {
+    distinct('city').forEach((city) => els.city.append(new Option(city, city)));
+  }
+  if (els.category && els.category.options.length <= 1) {
+    distinct('category').forEach((cat) => els.category.append(new Option(cat, cat)));
+  }
+  CITY_VALUES.clear();
+  CATEGORY_VALUES.clear();
+  if (els.city) Array.from(els.city.options).forEach((o) => o.value && CITY_VALUES.add(o.value));
+  if (els.category) Array.from(els.category.options).forEach((o) => o.value && CATEGORY_VALUES.add(o.value));
+}
+
+/**
+ * Resolve a raw URL value to the canonical option it matches, or '' when it is
+ * not a permitted value. Link parameters arrive from anywhere (search engines,
+ * chat apps), so an unknown value must never leave the board empty with no way
+ * for the visitor to clear it.
+ */
+function sanitiseChoice(raw, allowed) {
+  const value = String(raw || '').trim();
+  if (!value || value.toLowerCase() === 'all') return '';
+  const lower = value.toLowerCase();
+  for (const candidate of allowed) {
+    if (String(candidate).toLowerCase() === lower) return candidate;
+  }
+  return '';
+}
+
+function canonicalEmploymentType(raw) {
+  const value = String(raw || '').trim().toLowerCase();
+  if (!value) return '';
+  if (EMPLOYMENT_TYPE_ALIASES[value]) return EMPLOYMENT_TYPE_ALIASES[value];
+  for (const candidate of TYPE_VALUES) {
+    if (candidate.toLowerCase() === value) return candidate;
+  }
+  return '';
+}
+
 function readUrlParams() {
   try {
     const params = new URLSearchParams(window.location.search);
-    if (params.has('q')) state.query = params.get('q');
-    if (params.has('city')) state.city = params.get('city');
-    if (params.has('cat')) state.category = params.get('cat');
-    if (params.has('chip')) state.quickChip = params.get('chip');
-    if (params.has('exp')) state.experience = params.get('exp');
-    if (params.has('type')) state.type = params.get('type');
-    if (params.has('fresh')) state.freshness = params.get('fresh');
-    if (params.has('sort')) state.sort = params.get('sort');
+    if (params.has('q')) state.query = String(params.get('q') || '').slice(0, 120);
+    state.city = sanitiseChoice(params.get('city'), CITY_VALUES);
+    state.category = sanitiseChoice(params.get('cat'), CATEGORY_VALUES);
+    state.quickChip = sanitiseChoice(params.get('chip'), CHIP_VALUES) || 'all';
+    state.experience = sanitiseChoice(params.get('exp'), EXPERIENCE_VALUES);
+    state.type = canonicalEmploymentType(params.get('type'));
+    state.freshness = sanitiseChoice(params.get('fresh'), FRESHNESS_VALUES);
+    state.sort = sanitiseChoice(params.get('sort'), SORT_VALUES) || 'newest';
   } catch (e) {}
 }
 
@@ -369,20 +533,28 @@ function renderListOnly() {
     els.loadMoreWrap.hidden = true;
   }
 
-  els.empty.hidden = state.filteredJobs.length !== 0;
+  if (state.filteredJobs.length === 0) {
+    els.empty.hidden = false;
+    if (els.emptyMessage) els.emptyMessage.textContent = emptyStateMessage();
+  } else {
+    els.empty.hidden = true;
+  }
+}
+
+/** Explain why the board is empty and what to do next. */
+function emptyStateMessage() {
+  const q = state.query.trim();
+  if (q && state.allJobs.length) {
+    return `No openings matched "${q}". Try a shorter or different keyword, or clear your filters.`;
+  }
+  return 'Try searching for broader keywords, clearing specific filters, or choosing "All Cities".';
 }
 
 function render() {
   renderListOnly();
 
   // Populate Dropdown Filters (City, Category) once
-  const distinct = key => Array.from(new Set(state.allJobs.map(j => j[key]).filter(Boolean))).sort();
-  if (els.city.options.length <= 1) {
-    distinct('city').forEach(c => els.city.append(new Option(c, c)));
-  }
-  if (els.category.options.length <= 1) {
-    distinct('category').forEach(c => els.category.append(new Option(c, c)));
-  }
+  populateFilterOptions();
 
   // Synchronize inputs with state
   if (els.search.value !== state.query) els.search.value = state.query;
@@ -766,6 +938,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   els.loadMoreBtn = document.getElementById('loadMoreBtn');
   els.loadMoreCount = document.getElementById('loadMoreCount');
   els.empty = document.getElementById('empty');
+  els.emptyMessage = document.getElementById('emptyMessage');
   els.emptyResetBtn = document.getElementById('emptyResetBtn');
 
   // Modal elements
@@ -802,6 +975,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   state.allJobs = (payload.jobs || []).filter(j => j && j.verified === true);
   stampHeader(payload);
 
+  // Fill the dropdowns first so URL values can be validated against them.
+  populateFilterOptions();
   readUrlParams();
   applyFilters();
 });

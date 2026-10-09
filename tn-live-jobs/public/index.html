@@ -7,9 +7,12 @@
   <meta name="description" content="Discover verified, currently live job vacancies in Tamil Nadu, India. Listings include recorded verification timestamps and direct source links. Direct official links with no fake posts." />
   <meta name="theme-color" content="#0b1220" />
   <meta name="color-scheme" content="dark light" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://nm969989-cmd.github.io/tn-live-jobs/" />
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Tamil Nadu Live Jobs" />
+  <meta property="og:url" content="https://nm969989-cmd.github.io/tn-live-jobs/" />
   <meta property="og:title" content="Tamil Nadu Live Jobs | Real, Verified Vacancies" />
   <meta property="og:description" content="Discover verified, currently live job vacancies in Tamil Nadu, India, with recorded verification timestamps and direct source links." />
   <meta property="og:locale" content="en_IN" />
@@ -22,8 +25,14 @@
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Tamil Nadu Live Jobs",
+    "url": "https://nm969989-cmd.github.io/tn-live-jobs/",
     "description": "Verified, currently live job vacancies in Tamil Nadu, India, with recorded verification timestamps and direct source links.",
-    "inLanguage": "en-IN"
+    "inLanguage": "en-IN",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://nm969989-cmd.github.io/tn-live-jobs/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
   }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -184,7 +193,7 @@
     <div id="empty" class="empty-state" hidden>
       <div class="empty-icon">&#128269;</div>
       <h3>No matching jobs found</h3>
-      <p>Try searching for broader keywords, clearing specific filters, or choosing "All Cities".</p>
+      <p id="emptyMessage">Try searching for broader keywords, clearing specific filters, or choosing "All Cities".</p>
       <div class="empty-suggestions">
         <span>Suggested:</span>
         <button class="chip-suggest" data-query="Developer" type="button">Developer</button>

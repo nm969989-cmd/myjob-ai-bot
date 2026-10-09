@@ -1,6 +1,8 @@
 """Offline Flask regressions. No polling workers, messages or applications."""
 import csv
 import importlib
+import io
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -60,3 +62,78 @@ def test_miniapp_aliases(dashboard):
         response = client.get(path + '?token=offline-admin')
         assert response.status_code == 200
         assert 'X-Admin-Token' in response.get_data(as_text=True)
+
+
+def test_download_helper_keeps_token_out_of_url(dashboard):
+    _, client = dashboard
+    html = client.get('/?token=offline-admin').get_data(as_text=True)
+    # The admin token must travel in the X-Admin-Token header, never in a URL
+    # that ends up in browser history or access logs.
+    assert "url.searchParams.set('token'" not in html
+    assert 'async function downloadAdminFile' in html
+    assert "headers.set('X-Admin-Token', adminToken)" in html
+
+
+def test_logs_route_escapes_and_hides_errors(dashboard):
+    _, client = dashboard
+    auth = {'X-Admin-Token': 'offline-admin'}
+    assert client.get('/logs').status_code == 401
+    with open('debug.log', 'w', encoding='utf-8') as handle:
+        handle.write('<script>alert(1)</script>\n')
+    response = client.get('/logs', headers=auth)
+    assert response.status_code == 200
+    assert '<script>alert(1)</script>' not in response.get_data(as_text=True)
+    assert '&lt;script&gt;' in response.get_data(as_text=True)
+
+    with patch('builtins.open', side_effect=OSError('secret-path')):
+        failed = client.get('/logs', headers=auth)
+    assert failed.status_code == 500
+    assert 'secret-path' not in failed.get_data(as_text=True)
+
+
+def test_api_errors_do_not_leak_exception_details(dashboard):
+    _, client = dashboard
+    auth = {'X-Admin-Token': 'offline-admin'}
+    # A failing resume build must not echo the exception text to the client.
+    with patch('subprocess.run', side_effect=OSError('/private/path/generate_resume.py')):
+        response = client.post('/api/regenerate_resume', headers=auth)
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body['status'] == 'error'
+    assert 'private' not in body['message']
+
+    # Empty/absent JSON bodies must not crash the route with an AttributeError.
+    for path in ('/api/manual_apply', '/api/update_profile', '/api/mark_crm', '/api/add_channel'):
+        response = client.post(path, headers=auth, data=b'', content_type='application/json')
+        assert response.status_code == 200
+        assert response.get_json()['status'] == 'error'
+
+
+def test_upload_rejects_wrong_extension_case_insensitively(dashboard):
+    _, client = dashboard
+    auth = {'X-Admin-Token': 'offline-admin'}
+    pdf = (io.BytesIO(b'%PDF-1.4 test'), 'resume.PDF')
+    response = client.post('/api/upload_resume', headers=auth,
+                           data={'resume': pdf}, content_type='multipart/form-data')
+    assert response.get_json()['status'] == 'success'
+
+    txt = (io.BytesIO(b'nope'), 'resume.txt')
+    response = client.post('/api/upload_resume', headers=auth,
+                           data={'resume': txt}, content_type='multipart/form-data')
+    assert response.get_json()['status'] == 'error'
+
+    state = (io.BytesIO(b'{}'), 'state.JSON')
+    response = client.post('/api/upload_auth', headers=auth,
+                           data={'auth': state}, content_type='multipart/form-data')
+    assert response.get_json()['status'] == 'success'
+
+
+def test_screenshot_route_does_not_traverse_out_of_directory(dashboard, tmp_path):
+    _, client = dashboard
+    auth = {'X-Admin-Token': 'offline-admin'}
+    (tmp_path / 'screenshots').mkdir()
+    secret = tmp_path / 'secret.txt'
+    secret.write_text('top-secret', encoding='utf-8')
+    response = client.get('/screenshots/../secret.txt', headers=auth)
+    assert response.status_code in (400, 403, 404)
+    assert b'top-secret' not in response.get_data()

@@ -34,6 +34,7 @@ const {
   detectSalary,
   relativeDateToIso,
 } = require('../util');
+const { planSearches } = require('../config');
 
 const COMPANY_NAMES = {
   'zohocorp.com': 'Zoho Corporation',
@@ -170,30 +171,28 @@ async function scrapeFreshersworld(ctx) {
   const base = 'https://www.freshersworld.com';
   let fetches = 0;
 
-  for (const keyword of ctx.keywords) {
-    for (const city of ctx.cities) {
-      if (fetches >= ctx.pageLimit) break;
-      if (Date.now() > ctx.deadline) break;
+  const plan = planSearches(ctx.keywords, ctx.cities, ctx.pageLimit);
 
-      const path = `/jobs/jobsearch/${slugify(keyword)}-jobs-in-${slugify(city === 'Tamil Nadu' ? 'chennai' : city)}`;
-      const url = `${base}${path}`;
-      fetches += 1;
-      try {
-        const response = await fetchText(url, { headers: { referer: `${base}/jobs` } });
-        if (response.status >= 400) {
-          // A 404 just means "we have no listing for that keyword in that city".
-          continue;
-        }
-        const $ = cheerio.load(response.body);
-        const cards = $('.job-container');
-        cards.each((index, element) => {
-          const job = parseFreshersworldCard($, element);
-          if (job) jobs.push(job);
-        });
-      } catch (error) {
-        ctx.log(`  freshersworld fetch failed (${path}): ${clip(error.message, 120)}`);
+  for (const { keyword, city } of plan) {
+    if (Date.now() > ctx.deadline) break;
+
+    const path = `/jobs/jobsearch/${slugify(keyword)}-jobs-in-${slugify(city === 'Tamil Nadu' ? 'chennai' : city)}`;
+    const url = `${base}${path}`;
+    fetches += 1;
+    try {
+      const response = await fetchText(url, { headers: { referer: `${base}/jobs` } });
+      if (response.status >= 400) {
+        // A 404 just means "we have no listing for that keyword in that city".
+        continue;
       }
-      if (jobs.length >= ctx.limit) break;
+      const $ = cheerio.load(response.body);
+      const cards = $('.job-container');
+      cards.each((index, element) => {
+        const job = parseFreshersworldCard($, element);
+        if (job) jobs.push(job);
+      });
+    } catch (error) {
+      ctx.log(`  freshersworld fetch failed (${path}): ${clip(error.message, 120)}`);
     }
     if (jobs.length >= ctx.limit) break;
   }

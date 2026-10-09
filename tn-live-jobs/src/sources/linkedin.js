@@ -13,7 +13,7 @@ const cheerio = require('cheerio');
 const { fetchText, makeJob } = require('../scraper');
 const { tidy, clip, registrableDomain, detectCity, detectEmploymentType, relativeDateToIso, toIsoDate } = require('../util');
 
-const { cityLocation } = require('../config');
+const { cityLocation, planSearches } = require('../config');
 const BASE = 'https://www.linkedin.com';
 const SEARCH = `${BASE}/jobs-guest/jobs/api/seeMoreJobPostings/search`;
 
@@ -54,50 +54,47 @@ module.exports = {
     let attempts = 0;
     let blocked = 0;
 
-    for (const keyword of ctx.keywords) {
-      for (const city of ctx.cities) {
-        if (attempts >= ctx.pageLimit) break;
-        if (Date.now() > ctx.deadline) break;
-        attempts += 1;
+    const plan = planSearches(ctx.keywords, ctx.cities, ctx.pageLimit);
 
-        const location = cityLocation(city);
-        const url = `${SEARCH}?keywords=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}&start=0`;
-
-        try {
-          const response = await fetchText(url, {
-            headers: { referer: `${BASE}/jobs/search`, accept: 'text/html, */*' },
-          });
-          if (response.status === 429 || response.status === 403) {
-            blocked += 1;
-            ctx.log('  linkedin started rate-limiting us, stopping this source');
-            if (blocked >= 3) break;
-            continue;
-          }
-          if (response.status >= 400) continue;
-
-          for (const card of parseLinkedInCards(response.body, location)) {
-            const job = makeJob({
-              title: card.title,
-              company: card.company,
-              apply_url: card.applyUrl,
-              source: registrableDomain(BASE),
-              source_type: 'job_portal',
-              city: detectCity(card.location, card.title) || undefined,
-              location: card.location,
-              extra: `${card.title} ${card.location}`,
-              employment_type: detectEmploymentType(card.location),
-              posted_at: card.postedAt,
-            });
-            if (job) jobs.push(job);
-          }
-        } catch (error) {
-          ctx.log(`  linkedin request failed (${clip(location, 40)}): ${clip(error.message, 100)}`);
-        }
-
-        if (jobs.length >= ctx.limit) break;
-      }
-      if (jobs.length >= ctx.limit) break;
+    for (const { keyword, city } of plan) {
+      if (Date.now() > ctx.deadline) break;
       if (blocked >= 3) break;
+      attempts += 1;
+
+      const location = cityLocation(city);
+      const url = `${SEARCH}?keywords=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}&start=0`;
+
+      try {
+        const response = await fetchText(url, {
+          headers: { referer: `${BASE}/jobs/search`, accept: 'text/html, */*' },
+        });
+        if (response.status === 429 || response.status === 403) {
+          blocked += 1;
+          ctx.log('  linkedin started rate-limiting us, stopping this source');
+          continue;
+        }
+        if (response.status >= 400) continue;
+
+        for (const card of parseLinkedInCards(response.body, location)) {
+          const job = makeJob({
+            title: card.title,
+            company: card.company,
+            apply_url: card.applyUrl,
+            source: registrableDomain(BASE),
+            source_type: 'job_portal',
+            city: detectCity(card.location, card.title) || undefined,
+            location: card.location,
+            extra: `${card.title} ${card.location}`,
+            employment_type: detectEmploymentType(card.location),
+            posted_at: card.postedAt,
+          });
+          if (job) jobs.push(job);
+        }
+      } catch (error) {
+        ctx.log(`  linkedin request failed (${clip(location, 40)}): ${clip(error.message, 100)}`);
+      }
+
+      if (jobs.length >= ctx.limit) break;
     }
 
     if (jobs.length) notes('linkedin.com', 'ok', `${jobs.length} job(s) from ${attempts} search request(s)`);

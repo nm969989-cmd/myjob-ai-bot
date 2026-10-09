@@ -4,7 +4,7 @@ Every 6 hours, this project searches the web for **real, open job vacancies in
 Tamil Nadu, India**, re-opens every advert to prove it is still live, and
 publishes the survivors to a mobile-friendly job board.
 
-- **Live board:** `https://<your-github-username>.github.io/tn-live-jobs/`
+- **Live board:** `https://<your-github-username>.github.io/tn-live-jobs/` (ships a `sitemap.xml` and `robots.txt`)
 - **Excel:** `data/jobs.csv`
 - **Machine friendly:** `data/jobs.json` (everything) and `public/data/jobs.json` (verified only)
 
@@ -50,8 +50,10 @@ Extra knobs (same names work in `env:` blocks in CI):
 | Variable              | What it does                                  |
 | --------------------- | --------------------------------------------- |
 | `QUERY=staff nurse`   | add one extra search keyword                  |
-| `CITY=Madurai`        | search a single city instead of all ten       |
+| `CITY=Madurai`        | search a single city instead of every city    |
 | `MAX_TOTAL_JOBS=25`   | cap the number of jobs for short test runs    |
+| `SEARCH_PAGES_PER_SOURCE=12` | how many (keyword, city) searches per source |
+| `SOURCE_CONCURRENCY=3` | how many different sources to scrape at once |
 | `ENABLE_TIER3=true`   | also try the optional Tier 3 source           |
 | `SKIP_SPA_SITES=true` | skip slow JavaScript-only corporate sites     |
 | `VALIDATE_CONCURRENCY=4` | how many different sites verify at once   |
