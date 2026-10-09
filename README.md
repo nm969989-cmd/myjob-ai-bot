@@ -9,6 +9,26 @@ pinned: false
 
 Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
 
+## Project Overview
+
+**MyJob AI Radar** is an autonomous Telegram job bot that discovers, verifies, and applies to engineering job vacancies across multiple platforms with a focus on Tamil Nadu, India. It includes a Flask web dashboard, a public GitHub Pages job board, and a Node/Playwright scraper for verified live listings.
+
+### Live Sites
+- **Web Dashboard** (Flask, port 7860): `https://<space-id>.hf.space/` (requires `DASHBOARD_TOKEN`)
+- **Telegram Mini-App** (served at `/app`): `https://<space-id>.hf.space/app?token=<DASHBOARD_TOKEN>`
+- **Public Job Board** (GitHub Pages): `https://nm969989-cmd.github.io/myjob-ai-bot/` — Tamil Nadu Job Radar with live search, walk-ins, national drives
+- **Live Job Board** (Node scraper): `https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/` — Verified TN vacancies with advanced filters
+
+### Features
+- **Multi-source job discovery**: LinkedIn, Indeed, Glassdoor (JobSpy), SimplifyJobs, government portals, company ATS (Workday, Lever, Greenhouse, SmartRecruiters)
+- **Tamil Nadu priority**: Chennai, Coimbatore, Tiruvannamalai, Puducherry searched first
+- **Walk-in drives**: GPS-enabled venue cards with reminders, calendar export, maps
+- **National mass drives**: Deadline radar with countdown timers
+- **AI-powered application**: Playwright + stealth + Gemini/Groq for form filling
+- **ATS resume matcher**: Skill gap analysis, in-hand CTC calculator, cold outreach generator
+- **Telegram mini-app**: Interactive job browser with haptic feedback, saved jobs, ATS match
+- **Web dashboard**: Real-time stats, radar trigger, manual apply, profile management, resume upload
+
 ## Regional discovery and walk-in cards
 
 The first search/posting tier is **Tiruvannamalai, Vellore, Puducherry/Pondicherry, and Chennai**. All four cities share the preferred tier; relevance and freshness determine ordering within it. Other Tamil Nadu, India, and remote results remain available as fallbacks.
@@ -34,9 +54,9 @@ The continuous service must be running for hourly searches and interactive remin
 
 ### Walk-in actions
 
-`/walkins` and automated walk-in alerts send one compact card per drive, with **Full details**, **Remind me**, employer-page, and Maps actions. Cards show source links, recorded retrieval/link-check timestamps, and an unconfirmed warning unless explicit employer-confirmation metadata exists. A live URL or a feed claiming to be “verified” does not prove the event is employer-confirmed. Existing undated saved drives are not treated as newly confirmed vacancies.
+`/walkins` and automated walk-in alerts send one compact card per drive, with **Full details**, **Remind me**, employer-page, and Maps actions. Cards show source links, recorded retrieval/link-check timestamps, and an unconfirmed warning unless explicit employer-confirmation metadata exists. A live URL or a feed claiming to be "verified" does not prove the event is employer-confirmed. Existing undated saved drives are not treated as newly confirmed vacancies.
 
-Reminders require a source-supplied `event_start` ISO datetime, or `walkin_date`/`event_date` (`YYYY-MM-DD`) plus `reporting_time` (`HH:MM`, 24-hour). A datetime without an offset is interpreted as IST. Relative phrases such as “Upcoming Saturday” are deliberately **not** resolved into guessed dates. Date-only listings show their date but cannot schedule a reminder until a reporting time is provided.
+Reminders require a source-supplied `event_start` ISO datetime, or `walkin_date`/`event_date` (`YYYY-MM-DD`) plus `reporting_time` (`HH:MM`, 24-hour). A datetime without an offset is interpreted as IST. Relative phrases such as "Upcoming Saturday" are deliberately **not** resolved into guessed dates. Date-only listings show their date but cannot schedule a reminder until a reporting time is provided.
 
 - **Remind me** schedules 24 hours before the event, or immediately if it is less than 24 hours away.
 - **Add to calendar** exports an `.ics` event when an exact date/time is available.
@@ -53,3 +73,9 @@ node --test tn-live-jobs/test_priority_cities.js
 ```
 
 These tests mock portal calls and Telegram delivery. They do not submit applications or publish live Telegram messages.
+
+### Legacy Files
+The following files are retained for historical reference but are not actively used:
+- `dashboard_FINAL.html`, `dashboard_pro.html` — earlier dashboard iterations
+- `instahyre_login.html`, `instahyre_login_headful.html` — debug artifacts from Instahyre engine
+- `graphify-out/` — code analysis artifacts (gitignored, untracked)
