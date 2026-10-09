@@ -1,5 +1,4 @@
 """Offline private-state and delivery tests. Never import the production main bot."""
-import json
 from pathlib import Path
 import tempfile
 import unittest
