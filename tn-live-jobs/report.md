@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-08T19:21:46.804Z
-- **Finished:** 2026-10-08T19:27:35.213Z
-- **Duration:** 173 s
-- **Trigger:** GitHub Actions (schedule)
+- **Started:** 2026-10-09T00:24:34.549Z
+- **Finished:** 2026-10-09T00:30:10.297Z
+- **Duration:** 170 s
+- **Trigger:** GitHub Actions (push)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, nurse, teacher, sales executive, data entry | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Tamil Nadu
-- **Live verified jobs: 95** (kept this run: 147, new: 10, gone since last run: 8)
+- **Live verified jobs: 93** (kept this run: 147, new: 1, gone since last run: 1)
 
 ## Results per source
 
@@ -36,7 +36,7 @@
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
 | apna.co | 2 | :white_check_mark: ok | 0 | 65 | 100 job(s) from 4 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 30 | 58 job(s) from 4 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 30 | 59 job(s) from 4 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -46,39 +46,23 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 147 |
-| :white_check_mark: Verified live | 95 |
+| :white_check_mark: Verified live | 93 |
 | Government documents verified | 8 |
 | Login required (kept, not published) | 1 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 50 |
+| Dead link (HTTP 4xx/5xx) | 52 |
 | Could not be reached | 0 |
 
-## New this run (10)
+## New this run (1)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Branch Manager - Gold Loan | Tata Capital Ltd. | Chennai | Other | no (http_481) | https://apna.co/job/chennai/branch-manager-gold-loan-311372597 |
-| Area Sales Manager-Chennai-Building Matrials Industry | The Banyan Hr Consults Chennai | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai/area-sales-manager-chennai-building-matrials-indus-678816717 |
-| SAP EWM Technical Consultant | People Prime Worldwide | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/sap-ewm-technical-consultant-at-people-prime-worldwide-4477414704 |
-| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Tamil Nadu | Software | no (http_429) | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
-| Sr Java Developer – Contract Role | Heurova Technologies | Tiruvannamalai | Software | yes | https://in.linkedin.com/jobs/view/sr-java-developer-%E2%80%93-contract-role-4474237844 |
-| Interesting Job Opportunity: QX Impact - Lead Data Analyst | QX Impact | Vellore | Data & Analytics | yes | https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022 |
-| Web Developer | Digitalfactoryindia | Puducherry | Software | no (http_429) | https://in.linkedin.com/jobs/view/web-developer-4475732330 |
-| WEB WORDPRESS ( JUNIOR FULLTIME) | HyperZ Digital | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/web-wordpress-junior-fulltime-at-hyperz-digital-4461484242 |
-| WEB WORDPRESS (INTERN – FULLTIME) | HyperZ Digital | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/web-wordpress-intern-%E2%80%93-fulltime-at-hyperz-digital-4461806167 |
-| TOS Navis N4 Groovy, US Accounts and Freshers | Easy Outdesk | Puducherry | Accounting & Finance | yes | https://in.linkedin.com/jobs/view/tos-navis-n4-groovy-us-accounts-and-freshers-at-easy-outdesk-4475771948 |
+| Oracle HCM Consultant | Altraize | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/oracle-hcm-consultant-at-altraize-4462920900 |
 
-## Gone since last run (8)
+## Gone since last run (1)
 
-- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
-- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
-- 𝗦𝗔𝗣 𝗕𝗣𝗖 𝗖𝗢𝗡𝗦𝗨𝗟𝗧𝗔𝗡𝗧 (Heurova Technologies)
-- Oracle HCM Consultant (Altraize)
-- Salesforce Architect (SuccessMetrics Corp)
-- Accountant (Asiatic Pharmacare)
-- Senior Account Executive (Energec Chem Specialities Private Limit…)
-- Senior Associate Manager (Dhanalakshmi Havan Worldwide Private Li…)
+- Web Developer (Digitalfactoryindia)
 
 ## Data integrity
 
