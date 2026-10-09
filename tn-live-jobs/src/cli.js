@@ -63,14 +63,14 @@ const DIFF_FILE = path.join(WORK_DIR, 'diff.json');
 const STEPS = new Set(['all', 'scrape', 'validate', 'diff', 'export', 'report', 'serve']);
 
 function parseArgs(argv) {
-  const args = { step: 'all' };
+  const args = { step: 'all', stepExplicit: false };
   for (const raw of argv.slice(2)) {
     const value = raw.startsWith('--') ? raw.slice(2) : raw;
     const parts = value.split('=');
     const key = parts[0];
     const rest = parts.slice(1).join('=');
     if (key === 'help') args.help = true;
-    else if (key === 'step') args.step = rest || 'all';
+    else if (key === 'step') { args.step = rest || 'all'; args.stepExplicit = true; }
   }
   return args;
 }
@@ -636,8 +636,8 @@ async function main() {
     process.exitCode = 2;
     return;
   }
-  // An explicit --step wins; otherwise a bare word names the step.
-  const step = args.step === 'all' ? bare.step : args.step;
+  // An explicit --step always wins; otherwise a bare word names the step.
+  const step = args.stepExplicit ? args.step : bare.step;
   if (step === 'serve') {
     runServe();
     return;

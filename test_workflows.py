@@ -53,4 +53,7 @@ def test_workflows_are_valid_yaml_and_have_expected_triggers():
 
     assert "jobs" in bot and "jobs" in static and "jobs" in verify
     # PyYAML maps the bare `on:` key to the boolean True.
-    assert "pull_request" in verify[True] or "pull_request" in verify.get("on", {})
+    triggers = verify.get(True, verify.get("on", {})) or {}
+    if isinstance(triggers, str):
+        triggers = [triggers]
+    assert "pull_request" in triggers

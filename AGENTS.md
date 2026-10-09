@@ -23,7 +23,7 @@ python -m pytest -q                     # full offline suite
 cd tn-live-jobs && npm ci
 node --test test_priority_cities.js test_client.js
 node src/cli.js --help
-node src/cli.js --step=scrape           # full pipeline: scrape -> validate -> diff -> export -> report
+node src/cli.js --step=all              # full pipeline: scrape -> validate -> diff -> export -> report
 npm run serve                           # preview the board at http://localhost:5173
 ```
 

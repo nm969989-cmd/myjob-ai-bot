@@ -213,11 +213,19 @@ const MAX_JOBS_PER_SOURCE = 150;
  * How many (keyword, city) searches one source may run per run.
  * Each search costs one polite page fetch, so this is the main coverage/speed
  * dial: raise it for wider Tamil Nadu coverage, lower it for a quick run.
- * Override with SEARCH_PAGES_PER_SOURCE=<n>.
+ * Override with SEARCH_PAGES_PER_SOURCE=<n>. Overrides are clamped to
+ * MAX_PAGES_PER_SOURCE_LIMIT so a stray value cannot blow the scrape budget.
  */
-const MAX_PAGES_PER_SOURCE = Math.max(
-  1,
-  Number(process.env.SEARCH_PAGES_PER_SOURCE || process.env.MAX_PAGES_PER_SOURCE) || 12
+const MAX_PAGES_PER_SOURCE_LIMIT = 40;
+
+function resolvePageLimit(raw) {
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 1) return 12;
+  return Math.min(Math.floor(parsed), MAX_PAGES_PER_SOURCE_LIMIT);
+}
+
+const MAX_PAGES_PER_SOURCE = resolvePageLimit(
+  process.env.SEARCH_PAGES_PER_SOURCE || process.env.MAX_PAGES_PER_SOURCE
 );
 
 

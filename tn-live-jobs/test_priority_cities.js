@@ -150,7 +150,7 @@ test('bounded runner isolates failures instead of cancelling the batch', async (
 });
 
 test('search plan searches every keyword in the preferred cities before others', () => {
-  const plan = config.planSearches(['a', 'b'], config.CITIES, config.MAX_PAGES_PER_SOURCE);
+  const plan = config.planSearches(['a', 'b'], config.CITIES, 8);
   // The first 8 searches must be both keywords across all four preferred cities.
   const firstRound = plan.slice(0, 8);
   assert.deepEqual([...new Set(firstRound.map((p) => p.city))].sort(), [...config.PRIORITY_CITIES].sort());
@@ -158,11 +158,33 @@ test('search plan searches every keyword in the preferred cities before others',
   assert.ok(firstRound.every((p) => config.PRIORITY_CITIES.includes(p.city)));
 });
 
+test('a page-limit override is clamped to a safe maximum', () => {
+  const { spawnSync } = require('node:child_process');
+  // A stray, huge override must not blow the scrape budget.
+  const res = spawnSync(process.execPath, [
+    '-e',
+    "const c=require('./src/config');console.log(c.MAX_PAGES_PER_SOURCE)",
+  ], { cwd: __dirname, encoding: 'utf8', env: { ...process.env, SEARCH_PAGES_PER_SOURCE: '100000' } });
+  assert.equal(res.stdout.trim(), '40');
+});
+
+test('an explicit --step is recorded as explicit and a bare step is not', () => {
+  const { parseArgs } = require('./src/cli');
+  const explicit = parseArgs(['node', 'cli.js', '--step=all', 'scrape']);
+  assert.equal(explicit.stepExplicit, true);
+  assert.equal(explicit.step, 'all');
+  const bare = parseArgs(['node', 'cli.js', 'scrape']);
+  assert.equal(bare.stepExplicit, false);
+  assert.equal(bare.step, 'all');
+});
+
+
 test('the generated sitemap is valid and points at the deployed site', () => {
   const xml = buildSitemap();
   assert.ok(xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'));
   assert.ok(xml.includes(`<loc>${SITE_URL}</loc>`));
   assert.ok(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/.test(xml));
+
 });
 
 test('the CLI rejects an unknown step instead of running everything', () => {

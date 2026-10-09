@@ -199,16 +199,14 @@ function matchesSearch(job, query) {
   return tokens.every(token => tokenMatches(job, token));
 }
 
-/** Cached list of the searchable words on a job, for near-match checks. */
+/** Split a job's searchable text into unique words of 4+ characters. */
 function searchWords(job) {
-  if (job.__words) return job.__words;
-  const words = Array.from(new Set(searchHaystack(job).split(/[^a-z0-9+#.]+/).filter(w => w.length >= 4)));
-  try {
-    Object.defineProperty(job, '__words', { value: words, enumerable: false, writable: true });
-  } catch (e) {
-    job.__words = words;
+  const haystack = searchHaystack(job);
+  const words = new Set();
+  for (const word of haystack.split(/[^a-z0-9+#.]+/)) {
+    if (word.length >= 4) words.add(word);
   }
-  return words;
+  return Array.from(words);
 }
 
 /**
@@ -218,22 +216,28 @@ function searchWords(job) {
  */
 function osaDistance(a, b, max) {
   if (Math.abs(a.length - b.length) > max) return max + 1;
-  const d = [];
-  for (let i = 0; i <= a.length; i++) d.push([i]);
-  for (let j = 0; j <= b.length; j++) d[0][j] = j;
-  for (let i = 1; i <= a.length; i++) {
+  const rows = a.length;
+  const cols = b.length;
+  const matrix = [];
+  for (let row = 0; row <= rows; row++) matrix.push([row]);
+  for (let col = 1; col <= cols; col++) matrix[0][col] = col;
+  for (let row = 1; row <= rows; row++) {
     let rowMin = Infinity;
-    for (let j = 1; j <= b.length; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
-      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
-        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    for (let col = 1; col <= cols; col++) {
+      const cost = a[row - 1] === b[col - 1] ? 0 : 1;
+      matrix[row][col] = Math.min(
+        matrix[row - 1][col] + 1,
+        matrix[row][col - 1] + 1,
+        matrix[row - 1][col - 1] + cost
+      );
+      if (row > 1 && col > 1 && a[row - 1] === b[col - 2] && a[row - 2] === b[col - 1]) {
+        matrix[row][col] = Math.min(matrix[row][col], matrix[row - 2][col - 2] + 1);
       }
-      rowMin = Math.min(rowMin, d[i][j]);
+      rowMin = Math.min(rowMin, matrix[row][col]);
     }
     if (rowMin > max) return max + 1;
   }
-  return d[a.length][b.length];
+  return matrix[rows][cols];
 }
 
 /**
@@ -268,11 +272,11 @@ function jobSearchScore(job, tokens) {
  * for the caller's own sort to break ties.
  */
 function applySearch(list, query) {
-  const q = (query || '').trim();
-  if (!q) return list;
-  const tokens = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const trimmed = (query || '').trim();
+  if (!trimmed) return list;
+  const tokens = trimmed.toLowerCase().split(/\s+/).filter(Boolean);
   if (!tokens.length) return list;
-  const strict = list.filter(job => matchesSearch(job, q));
+  const strict = list.filter(job => matchesSearch(job, trimmed));
   const pool = strict.length ? strict : list.filter(job => tokens.some(token => tokenMatches(job, token)));
   return pool
     .map(job => ({ job, score: jobSearchScore(job, tokens) }))
@@ -338,7 +342,7 @@ function matchesFreshness(job, freshness) {
 }
 
 function applyFilters() {
-  const q = state.query.trim();
+  const query = state.query.trim();
 
   let list = state.allJobs.filter(job => {
     if (!matchesQuickChip(job, state.quickChip)) return false;
@@ -351,7 +355,7 @@ function applyFilters() {
   });
 
   // Search ranks by relevance; other sort modes then reorder by their key.
-  list = applySearch(list, q);
+  list = applySearch(list, query);
   list = list.slice().sort(sortComparator(state.sort));
 
   state.filteredJobs = list;
