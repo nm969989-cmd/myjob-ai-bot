@@ -101,3 +101,5 @@ graphify-out/cost.json
 # TN Live Jobs artifacts
 tn-live-jobs/node_modules/
 tn-live-jobs/work/
+# Agent scratch/plan files
+.agents_tmp/
