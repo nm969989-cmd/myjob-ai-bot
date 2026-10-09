@@ -42,6 +42,8 @@ const CITIES = [
   'Nilgiris',
   'Dharmapuri',
   'Krishnagiri',
+  'Pudukkottai',
+  'Theni',
   'Tamil Nadu',
 ];
 
@@ -85,6 +87,8 @@ const CITY_ALIASES = {
   Nilgiris: ['nilgiris', 'the nilgiris', 'ooty', 'udagamandalam'],
   Dharmapuri: ['dharmapuri'],
   Krishnagiri: ['krishnagiri'],
+  Pudukkottai: ['pudukkottai', 'pudukottai'],
+  Theni: ['theni', 'thenkasi', 'periyakulam', 'bodinayakanur'],
   'Tamil Nadu': ['tamil nadu', 'tamilnadu', 'across tamil nadu'],
 };
 

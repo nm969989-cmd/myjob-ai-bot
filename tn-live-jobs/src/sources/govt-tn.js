@@ -232,6 +232,8 @@ const DISTRICT_SITES = [
   { id: 'nilgiris', name: 'Nilgiris' },
   { id: 'dharmapuri', name: 'Dharmapuri' },
   { id: 'krishnagiri', name: 'Krishnagiri' },
+  { id: 'pudukkottai', name: 'Pudukkottai' },
+  { id: 'theni', name: 'Theni' },
 ];
 
 /** Official District Collectorate recruitment pages on NIC / S3WaaS. */

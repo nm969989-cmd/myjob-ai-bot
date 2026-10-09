@@ -21,10 +21,18 @@ const linkedin = require('./linkedin');
 const govtTnExtended = require('./govt-tn-extended');
 const greenhouse = require('./greenhouse');
 const lever = require('./lever');
+const timesjobs = require('./timesjobs');
+const monsterindia = require('./monsterindia');
+const shine = require('./shine');
+const cutshort = require('./cutshort');
+const wellfound = require('./wellfound');
+const hirect = require('./hirect');
+const jobhai = require('./jobhai');
+const ncs = require('./ncs');
 const internshala = require('./internshala');
 
 /** Every source we know about, in priority order. */
-const ALL_SOURCES = [govtTn, govtTnExtended, greenhouse, lever, companyCareers, techAts, naukri, apna, indeed, linkedin, internshala];
+const ALL_SOURCES = [govtTn, govtTnExtended, greenhouse, lever, companyCareers, techAts, naukri, apna, indeed, linkedin, timesjobs, monsterindia, shine, cutshort, wellfound, hirect, jobhai, ncs, internshala];
 
 /** The sources that will actually run in this process. */
 function loadSources() {
@@ -60,6 +68,16 @@ const SITE_TIERS = {
   'apna.co': 2,
   'indeed.co.in': 2,
   'linkedin.com': 2,
+  'pudukkottai.nic.in': 1,
+  'theni.nic.in': 1,
+  'timesjobs.com': 2,
+  'monsterindia.com': 2,
+  'shine.com': 2,
+  'cutshort.io': 2,
+  'wellfound.com': 2,
+  'hirect.in': 2,
+  'jobhai.com': 2,
+  'ncs.gov.in': 2,
   'internshala.com': 3,
 };
 
@@ -73,6 +91,17 @@ module.exports = {
   SITE_TIERS,
   tierForSite,
   govtTn,
+  govtTnExtended,
+  timesjobs,
+  monsterindia,
+  shine,
+  cutshort,
+  wellfound,
+  hirect,
+  jobhai,
+  ncs,
+  greenhouse,
+  lever,
   companyCareers,
   techAts,
   naukri,
@@ -80,7 +109,6 @@ module.exports = {
   indeed,
   linkedin,
   internshala,
-  govtTnExtended,
   'trb.tn.gov.in': 1,
   'tnusrb.tn.gov.in': 1,
   'tangedco.gov.in': 1,

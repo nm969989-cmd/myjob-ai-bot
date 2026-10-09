@@ -1,0 +1,69 @@
+'use strict';
+
+const cheerio = require('cheerio');
+const { fetchText, makeJob } = require('../scraper');
+const { tidy, registrableDomain, detectCity, detectCategory, detectSkills, detectEducation, detectExperience, cleanSummary } = require('../util');
+
+const BASE = 'https://wellfound.com';
+
+function parseWellfound(html) {
+  const $ = cheerio.load(html);
+  const jobs = [];
+  $('div.jobs-listing a[href*="/jobs/"], a.JobCard_jobCardLink__hNnpq').each((i, el) => {
+    const anchor = $(el);
+    const title = tidy(anchor.text());
+    let href = anchor.attr('href');
+    const $card = anchor.closest('div');
+    const company = tidy($card.find('.company-name, [data-test="company-name"]').first().text());
+    const location = tidy($card.find('.location, [data-test="location"]').first().text());
+    const text = tidy($card.text());
+    if (!title || !href) return;
+    if (!href.startsWith('http')) href = `${BASE}${href}`;
+    jobs.push({ title, company, applyUrl: href, location, text });
+  });
+  return jobs;
+}
+
+module.exports = {
+  id: 'wellfound',
+  label: 'Wellfound (AngelList Talent)',
+  tier: 2,
+  async scrape(ctx) {
+    const jobs = [];
+    const keywords = ['software', 'engineer'];
+    for (const kw of keywords) {
+      for (const city of ctx.cities.slice(0, 6)) {
+        if (Date.now() > ctx.deadline) break;
+        const url = `https://wellfound.com/jobs/search?term=${encodeURIComponent(kw)}&location=${encodeURIComponent(city + ', Tamil Nadu')}`;
+        try {
+          const res = await fetchText(url, { timeout: 25000 });
+          if (res.status >= 400) continue;
+          for (const e of parseWellfound(res.body)) {
+            const cityDetected = detectCity(e.location, e.text) || city;
+            const job = makeJob({
+              title: e.title,
+              company: e.company,
+              apply_url: e.applyUrl,
+              city: cityDetected,
+              state: 'Tamil Nadu',
+              category: detectCategory(e.title, e.text),
+              employment_type: 'Full-time',
+              experience: detectExperience(e.text, e.title) || null,
+              qualification: detectEducation(e.title) || null,
+              skills: detectSkills(e.title, e.text),
+              description: cleanSummary(e.text),
+              source: registrableDomain(BASE),
+              source_type: 'job_portal',
+              extra: `${e.title} ${e.location} ${e.text}`,
+            });
+            if (job) jobs.push(job);
+          }
+        } catch (err) {
+          ctx.note('wellfound.com', 'unreachable', err.message);
+        }
+      }
+    }
+    ctx.log(`  ${module.exports.label}: ${jobs.length} record(s)`);
+    return jobs;
+  },
+};
