@@ -1,0 +1,6 @@
+# Tamil Nadu Live Jobs - Verified Vacancies
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://nm969989-cmd.github.io/myjob-ai-bot/tn-live-jobs/sitemap.xml

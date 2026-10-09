@@ -1,0 +1,6 @@
+# MyJob AI Radar - Tamil Nadu Job Board
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://nm969989-cmd.github.io/myjob-ai-bot/sitemap.xml
