@@ -13,7 +13,7 @@ const cheerio = require('cheerio');
 const { fetchText, makeJob } = require('../scraper');
 const { tidy, clip, registrableDomain, detectCity, relativeDateToIso } = require('../util');
 
-const { cityLocation } = require('../config');
+const { cityLocation, planSearches } = require('../config');
 const BASE = 'https://in.indeed.com';
 const MAX_TRIES = 4;
 
@@ -48,45 +48,43 @@ module.exports = {
     let blocked = 0;
     let attempts = 0;
 
-    for (const keyword of ctx.keywords) {
-      for (const city of ctx.cities) {
-        if (attempts >= MAX_TRIES) break;
-        if (Date.now() > ctx.deadline) break;
-        attempts += 1;
+    const plan = planSearches(ctx.keywords, ctx.cities, Math.min(ctx.pageLimit, MAX_TRIES));
 
-        const location = cityLocation(city);
-        const url = `${BASE}/jobs?q=${encodeURIComponent(keyword)}&l=${encodeURIComponent(location)}`;
-        try {
-          const response = await fetchText(url, { attempts: 1, headers: { referer: `${BASE}/` } });
-          if (
-            response.status === 403 ||
-            response.status === 429 ||
-            /captcha|cf-chl|just a moment/i.test(response.body)
-          ) {
-            blocked += 1;
-            continue;
-          }
-          if (response.status >= 400) continue;
+    for (const { keyword, city } of plan) {
+      if (Date.now() > ctx.deadline) break;
+      attempts += 1;
 
-          for (const card of parseIndeed(response.body, location)) {
-            const job = makeJob({
-              title: card.title,
-              company: card.company,
-              apply_url: card.applyUrl,
-              source: registrableDomain(BASE),
-              source_type: 'job_portal',
-              city: detectCity(card.location, card.title) || undefined,
-              location: card.location,
-              extra: `${card.title} ${card.location}`,
-              posted_at: card.postedAt,
-            });
-            if (job) jobs.push(job);
-          }
-        } catch (error) {
+      const location = cityLocation(city);
+      const url = `${BASE}/jobs?q=${encodeURIComponent(keyword)}&l=${encodeURIComponent(location)}`;
+      try {
+        const response = await fetchText(url, { attempts: 1, headers: { referer: `${BASE}/` } });
+        if (
+          response.status === 403 ||
+          response.status === 429 ||
+          /captcha|cf-chl|just a moment/i.test(response.body)
+        ) {
           blocked += 1;
-          ctx.log(`  indeed request failed: ${clip(error.message, 100)}`);
+          continue;
         }
-        if (jobs.length >= ctx.limit) break;
+        if (response.status >= 400) continue;
+
+        for (const card of parseIndeed(response.body, location)) {
+          const job = makeJob({
+            title: card.title,
+            company: card.company,
+            apply_url: card.applyUrl,
+            source: registrableDomain(BASE),
+            source_type: 'job_portal',
+            city: detectCity(card.location, card.title) || undefined,
+            location: card.location,
+            extra: `${card.title} ${card.location}`,
+            posted_at: card.postedAt,
+          });
+          if (job) jobs.push(job);
+        }
+      } catch (error) {
+        blocked += 1;
+        ctx.log(`  indeed request failed: ${clip(error.message, 100)}`);
       }
       if (jobs.length >= ctx.limit) break;
     }

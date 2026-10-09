@@ -166,11 +166,13 @@ function showToast(message) {
 
 // ---------- Search & Filter Logic -------------------------------------------
 
-function matchesSearch(job, query) {
-  if (!query) return true;
-  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
-  if (!tokens.length) return true;
-
+/**
+ * Every searchable field of a job, lower-cased once and cached on the record.
+ * Rebuilding this string for every job on every keystroke was the main cost of
+ * typing in the search box, so we build it lazily and reuse it.
+ */
+function searchHaystack(job) {
+  if (job.__search) return job.__search;
   const skillsStr = Array.isArray(job.skills) ? job.skills.join(' ') : '';
   const haystack = (
     (job.title || '') + ' ' +
@@ -182,7 +184,19 @@ function matchesSearch(job, query) {
     skillsStr + ' ' +
     (job.source || '')
   ).toLowerCase();
+  try {
+    Object.defineProperty(job, '__search', { value: haystack, enumerable: false, writable: true });
+  } catch (e) {
+    job.__search = haystack;
+  }
+  return haystack;
+}
 
+function matchesSearch(job, query) {
+  if (!query) return true;
+  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!tokens.length) return true;
+  const haystack = searchHaystack(job);
   return tokens.every(token => haystack.includes(token));
 }
 

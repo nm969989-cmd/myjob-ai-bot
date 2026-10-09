@@ -138,26 +138,75 @@ const DEFAULT_CATEGORY = 'Other';
 
 /**
  * The keywords we search for on each source, taken from the categories above.
- * Kept short on purpose, because every keyword means one page fetch.
+ * Order matters: with a small page budget only the first few are reached, so
+ * the broadest, highest-volume fresher searches come first.
  */
 const SEARCH_KEYWORDS = [
   'software developer',
   'fresher',
   'data analyst',
   'accountant',
+  'data entry',
   'nurse',
   'teacher',
   'sales executive',
-  'data entry',
 ];
+
+/**
+ * Build the ordered list of (keyword, city) searches a source should run.
+ *
+ * Sources used to loop `for keyword { for city }` and stop after the page
+ * budget, which meant only the FIRST keyword was ever searched (in the first
+ * few cities) - most of Tamil Nadu and most keywords were never reached.
+ *
+ * This plan fixes that: every preferred city is searched with each keyword
+ * before the broader cities are touched, so a small budget still covers the
+ * places and roles that matter most. `limit` caps how many searches run.
+ */
+function planSearches(keywords, cities, limit) {
+  const keywordList = (keywords || []).filter(Boolean);
+
+  const seen = new Set();
+  const cityList = [];
+  for (const city of cities || []) {
+    const key = String(city || '').trim().toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    cityList.push(city);
+  }
+
+  const priorityIndex = new Map(PRIORITY_CITIES.map((city, index) => [city.toLowerCase(), index]));
+  const ordered = cityList.slice().sort((a, b) => {
+    const rankA = priorityIndex.has(String(a).toLowerCase()) ? priorityIndex.get(String(a).toLowerCase()) : PRIORITY_CITIES.length;
+    const rankB = priorityIndex.has(String(b).toLowerCase()) ? priorityIndex.get(String(b).toLowerCase()) : PRIORITY_CITIES.length;
+    return rankA - rankB;
+  });
+
+  const preferred = ordered.filter((city) => priorityIndex.has(String(city).toLowerCase()));
+  const rest = ordered.filter((city) => !priorityIndex.has(String(city).toLowerCase()));
+
+  const pairs = [];
+  for (const keyword of keywordList) for (const city of preferred) pairs.push({ keyword, city });
+  for (const keyword of keywordList) for (const city of rest) pairs.push({ keyword, city });
+
+  return Number.isFinite(limit) && limit > 0 ? pairs.slice(0, limit) : pairs;
+}
 
 // ---- Limits and politeness -------------------------------------------------
 
 /** Never take more than this many jobs from one single source module per run. */
 const MAX_JOBS_PER_SOURCE = 150;
 
-/** Never look at more than this many listing pages per source per run. */
-const MAX_PAGES_PER_SOURCE = 4;
+/**
+ * How many (keyword, city) searches one source may run per run.
+ * Each search costs one polite page fetch, so this is the main coverage/speed
+ * dial: raise it for wider Tamil Nadu coverage, lower it for a quick run.
+ * Override with SEARCH_PAGES_PER_SOURCE=<n>.
+ */
+const MAX_PAGES_PER_SOURCE = Math.max(
+  1,
+  Number(process.env.SEARCH_PAGES_PER_SOURCE || process.env.MAX_PAGES_PER_SOURCE) || 12
+);
 
 /** Wait a random 1.5-3.5 seconds between requests (as required). */
 const MIN_DELAY_MS = 1500;
@@ -179,6 +228,7 @@ module.exports = {
   PRIORITY_CITIES,
   canonicalCity,
   cityLocation,
+  planSearches,
   CITIES,
   CITY_ALIASES,
   CATEGORIES,

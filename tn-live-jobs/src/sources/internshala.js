@@ -18,6 +18,7 @@ const {
   detectSalary,
   relativeDateToIso,
 } = require('../util');
+const { planSearches } = require('../config');
 
 const BASE = 'https://internshala.com';
 
@@ -64,38 +65,36 @@ module.exports = {
     const jobs = [];
     let attempts = 0;
 
-    for (const keyword of ctx.keywords) {
-      for (const city of ctx.cities) {
-        // Internshala has city pages but no "whole state" page.
-        if (city === 'Tamil Nadu') continue;
-        if (attempts >= Math.min(ctx.pageLimit, 20)) break;
-        if (Date.now() > ctx.deadline) break;
-        attempts += 1;
+    // Internshala has city pages but no "whole state" page.
+    const cities = ctx.cities.filter((city) => city !== 'Tamil Nadu');
+    const plan = planSearches(ctx.keywords, cities, Math.min(ctx.pageLimit, 20));
 
-        const url = `${BASE}/jobs/${slugifyValue(keyword)}-jobs-in-${slugifyValue(city)}/`;
-        try {
-          const response = await fetchText(url);
-          if (response.status >= 400) continue;
-          for (const card of parseInternshala(response.body)) {
-            const job = makeJob({
-              title: card.title,
-              company: card.company,
-              apply_url: card.applyUrl,
-              source: registrableDomain(BASE),
-              source_type: 'job_portal',
-              city: detectCity(card.location, card.title) || undefined,
-              location: card.location,
-              extra: card.cardText,
-              salary: detectSalary(card.cardText),
-              employment_type: card.employmentType || undefined,
-              posted_at: card.postedAt,
-            });
-            if (job) jobs.push(job);
-          }
-        } catch (error) {
-          ctx.log(`  internshala page failed (${slugifyValue(keyword)}/${slugifyValue(city)})`);
+    for (const { keyword, city } of plan) {
+      if (Date.now() > ctx.deadline) break;
+      attempts += 1;
+
+      const url = `${BASE}/jobs/${slugifyValue(keyword)}-jobs-in-${slugifyValue(city)}/`;
+      try {
+        const response = await fetchText(url);
+        if (response.status >= 400) continue;
+        for (const card of parseInternshala(response.body)) {
+          const job = makeJob({
+            title: card.title,
+            company: card.company,
+            apply_url: card.applyUrl,
+            source: registrableDomain(BASE),
+            source_type: 'job_portal',
+            city: detectCity(card.location, card.title) || undefined,
+            location: card.location,
+            extra: card.cardText,
+            salary: detectSalary(card.cardText),
+            employment_type: card.employmentType || undefined,
+            posted_at: card.postedAt,
+          });
+          if (job) jobs.push(job);
         }
-        if (jobs.length >= ctx.limit) break;
+      } catch (error) {
+        ctx.log(`  internshala page failed (${slugifyValue(keyword)}/${slugifyValue(city)})`);
       }
       if (jobs.length >= ctx.limit) break;
     }

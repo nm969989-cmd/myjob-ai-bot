@@ -33,3 +33,36 @@ test('published lists put preferred cities ahead of newer other-city jobs', () =
   assert.deepEqual(sortJobs(jobs).map((job) => job.city), ['Vellore', 'Pondicherry', 'Coimbatore']);
   assert.equal(jobs[0].city, 'Coimbatore');
 });
+
+test('search plan covers every preferred city before broad cities', () => {
+  const { planSearches } = config;
+  const keywords = ['a', 'b', 'c'];
+  const cities = ['Tiruvannamalai', 'Vellore', 'Puducherry', 'Chennai', 'Madurai', 'Salem'];
+  const plan = planSearches(keywords, cities, 6);
+
+  assert.equal(plan.length, 6);
+  // First four searches: the first keyword across all four preferred cities.
+  assert.deepEqual(plan.slice(0, 4).map((p) => p.city), ['Tiruvannamalai', 'Vellore', 'Puducherry', 'Chennai']);
+  // A small budget still reaches a second keyword, so search is not stuck on
+  // one keyword the way the old keyword-outer loop was.
+  assert.equal(plan[4].keyword, 'b');
+  assert.equal(plan[5].keyword, 'b');
+  // Broad cities only appear once every keyword x preferred city is exhausted.
+  assert.ok(plan.every((p) => !['Madurai', 'Salem'].includes(p.city)));
+});
+
+test('search plan reaches non-preferred cities and every keyword when unlimited', () => {
+  const { planSearches } = config;
+  const plan = planSearches(['a', 'b'], config.CITIES, 0);
+  assert.equal(plan.length, 2 * config.CITIES.length);
+  assert.ok(plan.some((p) => p.city === 'Madurai'));
+  assert.equal(new Set(plan.map((p) => p.keyword)).size, 2);
+  // Preferred cities still come first.
+  assert.ok(config.PRIORITY_CITIES.includes(plan[0].city));
+});
+
+test('search plan deduplicates repeated cities', () => {
+  const { planSearches } = config;
+  const plan = planSearches(['a'], ['Chennai', 'chennai', 'Chennai '], 0);
+  assert.equal(plan.length, 1);
+});

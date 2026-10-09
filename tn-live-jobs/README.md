@@ -55,6 +55,7 @@ Extra knobs (same names work in `env:` blocks in CI):
 | `ENABLE_TIER3=true`   | also try the optional Tier 3 source           |
 | `SKIP_SPA_SITES=true` | skip slow JavaScript-only corporate sites     |
 | `VALIDATE_CONCURRENCY=4` | how many different sites verify at once   |
+| `SEARCH_PAGES_PER_SOURCE=12` | (keyword, city) searches per source per run |
 
 ## Put it on GitHub (Actions + Pages)
 
