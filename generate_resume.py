@@ -1,76 +1,30 @@
 # -*- coding: utf-8 -*-
 """
-Generate a professional PDF resume from profile.json using fpdf2.
+Generate an EXAMPLE PDF resume using fpdf2.
+Replace every placeholder below with your verified details before using it.
+This template does not read profile.json. Keep personal copies private.
 Run: python generate_resume.py
 """
 from fpdf import FPDF
 
-# ─── YOUR PROFILE DATA ────────────────────────────────────────────────────────
-NAME          = "S Manoj"
-PHONE         = "+91 9345027137"
-EMAIL         = "gokuuchihatamil@gmail.com"
-LOCATION      = "Bengaluru, Karnataka"
-LINKEDIN      = "linkedin.com/in/smanoj"
-GITHUB        = "github.com/smanoj"
-PORTFOLIO     = "smanoj.dev"
+# Example-only profile: no real person's details or career claims.
+NAME = "EXAMPLE - YOUR NAME"
+PHONE = "YOUR PHONE"
+EMAIL = "you@example.invalid"
+LOCATION = "YOUR CITY"
+LINKEDIN = "YOUR LINKEDIN URL"
+GITHUB = "YOUR GITHUB URL"
+PORTFOLIO = "YOUR WEBSITE"
+ABOUT = "Replace this example with your own verified professional summary."
+SKILLS = ["YOUR VERIFIED SKILL"]
+PROJECTS = [{"name": "YOUR VERIFIED PROJECT",
+             "desc": "Describe work you actually completed; do not submit this example.",
+             "tech": "YOUR PROJECT TECHNOLOGIES"}]
+EDUCATION = {"degree": "YOUR DEGREE", "college": "YOUR COLLEGE",
+             "year": "YOUR GRADUATION YEAR", "location": "YOUR COLLEGE LOCATION"}
+CERTIFICATIONS = ["YOUR VERIFIED CERTIFICATION"]
 
-ABOUT = (
-    "Self-motivated fresher software developer with a strong passion for web scraping, "
-    "browser automation, and AI integrations. Eager to contribute and grow in a fast-paced "
-    "tech environment. Quick learner with hands-on experience in building real-world "
-    "automation tools and full-stack web applications."
-)
-
-SKILLS = [
-    "Python", "JavaScript", "HTML & CSS", "SQL",
-    "Playwright (Browser Automation)", "Web Scraping (BeautifulSoup)",
-    "AI Integration (Gemini API, Groq)", "Git & GitHub",
-    "REST APIs", "Flask", "Telegram Bot API", "Linux / Docker"
-]
-
-PROJECTS = [
-    {
-        "name": "Autonomous Job Application Bot",
-        "desc": (
-            "Built a fully autonomous Telegram bot that scans 11+ job channels, "
-            "uses Gemini AI to filter fresher roles, and auto-fills application forms "
-            "using Playwright. Deployed 24/7 on Hugging Face Spaces."
-        ),
-        "tech": "Python, Playwright, Gemini API, Telegram Bot API, Flask"
-    },
-    {
-        "name": "Social Media Auto-Poster",
-        "desc": (
-            "Developed an automation pipeline that generates AI content and "
-            "automatically posts to Instagram, YouTube, and Pinterest using "
-            "authenticated browser sessions."
-        ),
-        "tech": "Python, Playwright, Google APIs, Telegram Bot API"
-    },
-    {
-        "name": "AI News Canvas Generator",
-        "desc": (
-            "Created a tool that fetches trending news, summarizes it using AI, "
-            "and generates visually rich HTML/image canvases for social media."
-        ),
-        "tech": "Python, HTML, CSS, Gemini API, Pillow"
-    }
-]
-
-EDUCATION = {
-    "degree": "Bachelor of Engineering (B.E.) - Computer Science",
-    "college": "Anna University Affiliated College",
-    "year": "2024",
-    "location": "Tamil Nadu, India"
-}
-
-CERTIFICATIONS = [
-    "Python for Everybody - Coursera",
-    "Web Development Bootcamp - Udemy",
-    "Google AI Essentials - Google"
-]
-
-# ─── PDF BUILDER ──────────────────────────────────────────────────────────────
+# PDF builder (unchanged behavior).
 class ResumePDF(FPDF):
     PRIMARY   = (30, 30, 60)     # Dark navy
     ACCENT    = (52, 120, 246)   # Blue
@@ -198,7 +152,7 @@ def build_resume():
     size = os.path.getsize(out_path)
     print(f"[OK] Resume generated: {out_path}")
     print(f"     File size: {size:,} bytes ({size//1024} KB)")
-    print(f"\n[NEXT] Upload resume.pdf to your Hugging Face Space Files tab!")
+    print("\n[NEXT] Keep resume.pdf on private deployment storage; never commit it to a public repo.")
 
 
 if __name__ == "__main__":
