@@ -14,6 +14,12 @@ import requests
 from typing import Optional, Dict, List, Any
 from job_discovery import event_label, priority_city, source_lines, timestamp_now
 
+try:
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+except Exception:
+    InlineKeyboardMarkup = None
+    InlineKeyboardButton = None
+
 
 # ─────────────────────────────────────────────────────────────────
 # FEATURE 0: 🎨 SHARED TELEGRAM CARD DESIGN SYSTEM
@@ -2232,13 +2238,9 @@ def get_all_drive_deadlines(drives: list = None, ref_date=None) -> list:
     return parsed
 
 def format_deadlines_radar_report(drives: list = None, urgent_only: bool = False, ref_date=None) -> list:
-    """
-    Generates Telegram-ready HTML cards for National Mass Drive deadlines with countdowns.
-    Returns chunked HTML list (each under 3,400 chars) ensuring safe delivery.
-    """
-    import html
     import datetime
-    
+    import html
+    # Choose reference date
     if ref_date is None:
         today = datetime.date.today()
     elif isinstance(ref_date, str):
@@ -2251,18 +2253,19 @@ def format_deadlines_radar_report(drives: list = None, urgent_only: bool = False
 
     today_str = today.strftime("%d %b %Y")
     parsed_drives = get_all_drive_deadlines(drives, ref_date=today)
-    
+
     if urgent_only:
-        filtered = [d for d in parsed_drives if d["urgency_tier"] in ["critical", "closing_soon"]]
+        filtered = [d for d in parsed_drives
+                    if d.get("urgency_tier") in ("critical", "closing_soon")]
         if not filtered:
-            return [(
+            return [
                 f"⏳ <b>MASS DRIVE DEADLINE RADAR (URGENT ONLY)</b> ⏳\n"
                 f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
                 f"📅 <b>Today:</b> <code>{today_str}</code>\n\n"
                 f"🎉 <b>All Clear!</b> No national drives are closing within the next 10 days.\n"
                 f"All 18 active drives have comfortable application windows.\n\n"
                 f"<i>Type <code>/deadlines</code> to view all upcoming national cycles.</i>"
-            )]
+            ]
         parsed_drives = filtered
 
     header = (
@@ -2273,14 +2276,16 @@ def format_deadlines_radar_report(drives: list = None, urgent_only: bool = False
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
     )
 
-    # Group by urgency
-    critical = [d for d in parsed_drives if d["urgency_tier"] == "critical"]
-    closing_soon = [d for d in parsed_drives if d["urgency_tier"] == "closing_soon"]
-    active = [d for d in parsed_drives if d["urgency_tier"] == "active"]
-    rolling = [d for d in parsed_drives if d["urgency_tier"] in ["rolling", "past"]]
+    # Group by urgency tier
+    critical = [d for d in parsed_drives if d.get("urgency_tier") == "critical"]
+    closing_soon = [d for d in parsed_drives if d.get("urgency_tier") == "closing_soon"]
+    active = [d for d in parsed_drives if d.get("urgency_tier") == "active"]
+    rolling = [d for d in parsed_drives
+                if d.get("urgency_tier") in ("rolling", "past")]
 
     chunks = []
     current_chunk = header
+
 
     def add_section(title, drive_items):
         nonlocal current_chunk, chunks
@@ -2674,7 +2679,6 @@ def dispatch_walkin_alerts(bot=None, chat_id=None, city=None, once_per_day=True,
         return True
 
     try:
-        from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
         markup = InlineKeyboardMarkup()
         markup.row(
             InlineKeyboardButton("📍 Chennai Walk-Ins", callback_data="walkins:chennai"),
@@ -3689,8 +3693,6 @@ def format_search_results_report(query, results=None, page=0, has_more=False, di
 
     import html
     import hashlib
-    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-
     markup = InlineKeyboardMarkup()
 
     # If results exist, add direct apply for top result + ATS match button + AI Auto-Apply
@@ -3844,8 +3846,6 @@ def match_job_compatibility(job_text_or_url: str, profile: dict = None) -> tuple
     Returns: (report_text: str, reply_markup: InlineKeyboardMarkup)
     """
     import html
-    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-
     if not job_text_or_url or not isinstance(job_text_or_url, str) or not job_text_or_url.strip():
         guide = (
             "🎯 <b>ATS Resume & Job Matcher Guide</b>\n\n"
@@ -4091,8 +4091,6 @@ def format_oa_report(company_key: str = None) -> tuple:
     Returns: (text: str, reply_markup: InlineKeyboardMarkup)
     """
     import html
-    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-
     markup = InlineKeyboardMarkup()
     # If no company or menu requested, render interactive company selector
     if not company_key or company_key.lower() in ["menu", "all", "list"]:
@@ -4460,8 +4458,6 @@ def format_simplify_jobs_report(jobs: list, keyword: str = None) -> tuple:
     premium Walk-in Drives aesthetic with direct interactive buttons.
     Returns (chunks: list[str], reply_markup: InlineKeyboardMarkup)
     """
-    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-
     if not jobs:
         msg = (
             "🎓 <b>SIMPLIFYJOBS LIVE TECH FEED</b> 🌐\n"
@@ -4652,8 +4648,6 @@ def format_ctc_report(ctc_data: dict, ctc_input_raw: str = None) -> tuple:
     earnings components, and statutory deductions with quick preset buttons.
     Returns (card_text: str, reply_markup: InlineKeyboardMarkup)
     """
-    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-
     c = ctc_data
     tax_note = "✅ <b>100% Tax-Free</b> (Sec 87A rebate)" if c["tax_free"] else f"₹{c['monthly_tax']:,}/mo TDS"
 
@@ -4706,7 +4700,10 @@ def parse_resume_pdf(pdf_path_or_bytes) -> dict:
     Parses a candidate's resume PDF using pypdf.
     Extracts name, email, phone, and technical skills against a rich taxonomy.
     """
-    import pypdf
+    try:
+        import pypdf
+    except ImportError:
+        raise ImportError("pypdf is required for resume PDF parsing. Install it with: pip install pypdf")
     import io
 
     if isinstance(pdf_path_or_bytes, (str, bytes, os.PathLike)):
@@ -4788,8 +4785,6 @@ def format_resume_ats_audit(parsed_data: dict, top_matches: list = None) -> tupl
     extracted tech skills, ATS score, and top matching live vacancies.
     Returns (chunks: list[str], reply_markup: InlineKeyboardMarkup)
     """
-    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-
     p = parsed_data
     skills_list = p.get("skills", [])
     skills_preview = ", ".join(skills_list[:10]) if skills_list else "General Software Development"

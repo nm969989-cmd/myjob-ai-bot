@@ -13,12 +13,20 @@ from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 
 IST = timezone(timedelta(hours=5, minutes=30))
+
 PRIORITY_CITIES = {
     "Tiruvannamalai": ("tiruvannamalai", "thiruvannamalai", "thiruannamalai", "tiruvanamalai"),
     "Vellore": ("vellore",),
     "Puducherry": ("puducherry", "pondicherry", "pondi"),
     "Chennai": ("chennai", "madras"),
 }
+
+
+try:
+    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+except Exception:
+    InlineKeyboardMarkup = None
+    InlineKeyboardButton = None
 PRIORITY_LABEL = "Tiruvannamalai • Vellore • Puducherry/Pondicherry • Chennai"
 _STATE_LOCK = threading.RLock()
 _SEARCH_LOCK = threading.Lock()
@@ -112,7 +120,8 @@ def event_start(job):
         return None
 
 
-def event_label(job):
+def event_label(job) -> str:
+    """A compact, predictable label for Telegram notifications and reminders."""
     start = event_start(job)
     if start:
         return start.strftime("%a, %d %b %Y • %I:%M %p IST")
@@ -122,8 +131,21 @@ def event_label(job):
             return datetime.fromisoformat(str(raw)).strftime("%a, %d %b %Y") + " • reporting time unconfirmed"
     except ValueError:
         pass
-    return "Date unconfirmed — verify with the employer"
-
+    ev = str(job.get('event') or job.get('type') or job.get('title') or '').strip()
+    loc = str(job.get('location') or job.get('city') or job.get('venue') or '').strip()
+    if not ev and not loc:
+        return 'Mass drive / campus drive / walk-in / off-campus drive'
+    ev_low = ev.lower()
+    if any(k in ev_low for k in ('walk-in', 'walkin', 'walk in')):
+        kind = 'Walk-in'
+    elif any(k in ev_low for k in ('off-campus', 'off campus', 'offcampus')):
+        kind = 'Off-campus drive'
+    elif any(k in ev_low for k in ('campus', 'pool', 'mass drive', 'mass recruitment', 'drive')):
+        kind = 'Campus/mass drive'
+    else:
+        kind = ev if len(ev) <= 60 else ev[:57].rstrip() + '...'
+    loc_pref = loc if len(loc) <= 40 else loc[:37].rstrip() + '...'
+    return f'{kind} · {loc_pref}' if loc_pref else kind
 
 def compact_walkin(job):
     def esc(key, fallback="Not stated"):
@@ -174,7 +196,6 @@ def get_card(key, path=None):
 
 
 def walkin_keyboard(job):
-    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
     key = store_card(job)
     markup = InlineKeyboardMarkup()
     markup.row(InlineKeyboardButton("📄 Full details", callback_data=f"jobcard:details:{key}"),
@@ -292,7 +313,6 @@ def send_walkin_cards(bot, chat_id, drives, navigation=None):
 
 
 def add_priority_buttons(markup, prefix='search'):
-    from telebot.types import InlineKeyboardButton
     cities = list(PRIORITY_CITIES)
     for index in range(0, len(cities), 2):
         markup.row(*[InlineKeyboardButton(f'📍 {city}', callback_data=f'{prefix}:{city.lower()}') for city in cities[index:index + 2]])

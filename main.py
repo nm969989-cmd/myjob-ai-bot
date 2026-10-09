@@ -468,7 +468,7 @@ Reply in this format:
     if bot and chat_id:
         try:
             full_msg = f"🚨 *Bot Error Detected!*\n\n{fix_msg}\n\n_Context: {context[:100]}_"
-            bot.send_message(chat_id, full_msg[:4096], parse_mode=None)
+            bot.send_message(chat_id, full_msg[:4096], parse_mode="Markdown")
         except Exception as tg_err:
             print(f"[AutoBugFixer] Telegram send failed: {tg_err}")
 
@@ -2174,7 +2174,7 @@ def run_playwright_apply(job_url, job_description=""):
                                     f"🔗 *LinkedIn:* {profile.get('linkedin','')}\n"
                                     f"⏰ *Time:* {time.strftime('%d %b %Y, %I:%M %p')}"
                                 ),
-                                parse_mode=None
+                                parse_mode="Markdown"
                             )
                     except Exception as gh_e:
                         print(f"[Greenhouse] Screenshot send failed: {gh_e}")
@@ -2199,7 +2199,7 @@ def run_playwright_apply(job_url, job_description=""):
                                     f"📞 *Phone:* {profile.get('phone','')}\n"
                                     f"⏰ *Time:* {time.strftime('%d %b %Y, %I:%M %p')}"
                                 ),
-                                parse_mode=None
+                                parse_mode="Markdown"
                             )
                 except Exception as sr_e:
                     print(f"[SmartRecruiters] Screenshot send notice: {sr_e}")
@@ -2264,7 +2264,7 @@ def run_playwright_apply(job_url, job_description=""):
                 if bot and active_chat_id in ghost_mode_chats:
                     try:
                         with open(screenshot_path, "rb") as ghost_img:
-                            bot.send_photo(active_chat_id, ghost_img, caption=f"👻 *Ghost Mode (Live):* Step {step+1}", parse_mode=None)
+                            bot.send_photo(active_chat_id, ghost_img, caption=f"👻 *Ghost Mode (Live):* Step {step+1}", parse_mode="Markdown")
                     except Exception as e:
                         print(f"[GhostMode] Failed to send live screenshot: {e}")
                 
@@ -2429,7 +2429,7 @@ def run_playwright_apply(job_url, job_description=""):
                     if is_comment:
                         print("[Browser] 🧠 Intelligence Module: Detected a blog 'Leave a Reply' comment form instead of a job application. Aborting to save quota.")
                         if bot and active_chat_id:
-                            try: bot.send_message(active_chat_id, "⚠️ *Intelligence Alert:*\nBot detected a blog comment form instead of a real job application form. Aborting.", parse_mode=None)
+                            try: bot.send_message(active_chat_id, "⚠️ *Intelligence Alert:*\nBot detected a blog comment form instead of a real job application form. Aborting.", parse_mode="Markdown")
                             except: pass
                         break
                 
@@ -2440,7 +2440,7 @@ def run_playwright_apply(job_url, job_description=""):
                 if last_form_signature == current_signature:
                     print("[Browser] 🧠 Intelligence Module: Form signature is identical to previous step. Stuck in an error loop (e.g., validation failed). Aborting to save API quota.")
                     if bot and active_chat_id:
-                        try: bot.send_message(active_chat_id, "⚠️ *Intelligence Alert:*\nForm validation failed (e.g. incorrect password or missing required data). Bot broke the infinite loop to save API quota.", parse_mode=None)
+                        try: bot.send_message(active_chat_id, "⚠️ *Intelligence Alert:*\nForm validation failed (e.g. incorrect password or missing required data). Bot broke the infinite loop to save API quota.", parse_mode="Markdown")
                         except: pass
                     break
                 last_form_signature = current_signature
@@ -2996,7 +2996,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                                     with open(post_submit_path, "rb") as ps_photo:
                                         bot.send_photo(active_chat_id, ps_photo,
                                             caption="✅ *AI Verified: Application Submitted Successfully!*\n\n_Gemini Vision confirmed this is a success/confirmation page._",
-                                            parse_mode=None)
+                                            parse_mode="Markdown")
                                 except Exception: pass
                             break  # Stop the loop — we're done!
 
@@ -3007,7 +3007,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                                     with open(post_submit_path, "rb") as ps_photo:
                                         bot.send_photo(active_chat_id, ps_photo,
                                             caption="⚠️ *AI Detected a Form Error After Submit*\n\n_Gemini Vision saw a validation error. The bot will re-analyze and retry the form._",
-                                            parse_mode=None)
+                                            parse_mode="Markdown")
                                 except Exception: pass
                             # Don't break — let the loop re-analyze the form with errors visible
 
@@ -3018,13 +3018,13 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                                     with open(post_submit_path, "rb") as ps_photo:
                                         bot.send_photo(active_chat_id, ps_photo,
                                             caption="🔒 *CAPTCHA Detected*\n\nThe bot encountered a CAPTCHA after submitting. Manual intervention may be needed.",
-                                            parse_mode=None)
+                                            parse_mode="Markdown")
                                 except Exception: pass
 
                         elif page_state == 'login':
                             print("[AI Verify] 🔑 Login wall detected after submit.")
                             if bot and active_chat_id:
-                                try: bot.send_message(active_chat_id, f"🔑 *Login Required*\n\nThe site is asking for login/account creation after submit.\n\n{job_url}", parse_mode=None)
+                                try: bot.send_message(active_chat_id, f"🔑 *Login Required*\n\nThe site is asking for login/account creation after submit.\n\n{job_url}", parse_mode="Markdown")
                                 except Exception: pass
                             break  # Stop — cannot continue without login
 
@@ -3052,7 +3052,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                             handoff_path = "handoff_stuck.png"
                             page.screenshot(path=handoff_path)
                             with open(handoff_path, "rb") as photo:
-                                bot.send_photo(active_chat_id, photo, caption="🚨 *Manual Handoff Required*\n\nThe bot is stuck. Click the link below to take over the browser and solve the form:\n\n🔗 http://localhost:7860/live\n\n_The bot is paused and waiting for you to finish._", parse_mode=None)
+                                bot.send_photo(active_chat_id, photo, caption="🚨 *Manual Handoff Required*\n\nThe bot is stuck. Click the link below to take over the browser and solve the form:\n\n🔗 http://localhost:7860/live\n\n_The bot is paused and waiting for you to finish._", parse_mode="Markdown")
                         except: pass
                         
                     # Wait for user to finish and hit resume
@@ -3182,7 +3182,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                 try:
                     print("[Features] Generating Interview Prep...")
                     prep = generate_interview_prep(job_url, full_jd, gemini_client, groq_client=groq_client)
-                    bot.send_message(active_chat_id, f"🧠 *Interview Cheat Sheet:*\n\n{prep}", parse_mode=None)
+                    bot.send_message(active_chat_id, f"🧠 *Interview Cheat Sheet:*\n\n{prep}", parse_mode="Markdown")
                 except Exception as prep_err:
                     print(f"[Interview Prep] Failed: {prep_err}")
             
@@ -3206,7 +3206,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                         bot.send_message(
                             active_chat_id,
                             f"*Q{num}.* {q}",
-                            parse_mode=None,
+                            parse_mode="Markdown",
                             reply_markup=markup
                         )
                 except Exception as qa_err:
@@ -3223,7 +3223,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
             
             if bot and active_chat_id:
                 try:
-                    bot.send_message(active_chat_id, f"🚨 *System Alert: Application Halted*\n\n*Reason:* `{err_text[:150]}...`\n\n_Don't worry, the job has been sent to the Retry Queue._", parse_mode=None)
+                    bot.send_message(active_chat_id, f"🚨 *System Alert: Application Halted*\n\n*Reason:* `{err_text[:150]}...`\n\n_Don't worry, the job has been sent to the Retry Queue._", parse_mode="Markdown")
                 except: pass
                 
             # Take error screenshot
@@ -3253,7 +3253,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                         print(f"[Video] Sending Time-Lapse Video Proof from {video_path}")
                         try:
                             with open(video_path, "rb") as vid:
-                                bot.send_video(active_chat_id, vid, caption="🎥 *Time-Lapse Application Video Proof*\n\nHere is exactly what the bot did.", parse_mode=None)
+                                bot.send_video(active_chat_id, vid, caption="🎥 *Time-Lapse Application Video Proof*\n\nHere is exactly what the bot did.", parse_mode="Markdown")
                         except Exception as ve:
                             print(f"[Video] Telegram send failed: {ve}")
             except Exception as e:
@@ -4091,7 +4091,7 @@ def scrape_telegram_channel():
             except Exception as retry_e:
                 if "GEMINI_RATE_LIMIT" in str(retry_e):
                     if bot and active_chat_id:
-                        try: bot.send_message(active_chat_id, "⏳ *API Cooldown Activated*\n\n_Speed limit hit during retry. Sleeping 15 min._", parse_mode=None)
+                        try: bot.send_message(active_chat_id, "⏳ *API Cooldown Activated*\n\n_Speed limit hit during retry. Sleeping 15 min._", parse_mode="Markdown")
                         except: pass
                     return
                 print(f"[Retry] Error: {retry_e}")
@@ -4577,7 +4577,7 @@ def api_telegram_test():
     if not bot or not chat_id:
         return jsonify({"status": "error", "message": "Bot or chat ID not configured."})
     try:
-        bot.send_message(chat_id, "✅ *Elite Job Bot Dashboard — Connection Test Successful!*\n\n🤖 Your bot is fully online and connected.\n📡 Radar is scanning for your Unicorn Developer jobs.", parse_mode=None)
+        bot.send_message(chat_id, "✅ *Elite Job Bot Dashboard — Connection Test Successful!*\n\n🤖 Your bot is fully online and connected.\n📡 Radar is scanning for your Unicorn Developer jobs.", parse_mode="Markdown")
         return jsonify({"status": "ok", "message": "Test message sent to Telegram!"})
     except Exception:
         app.logger.exception("Telegram test message failed")
@@ -4615,7 +4615,7 @@ def api_instahyre():
             print(f"[Instahyre] {msg}")
             if bot and chat_id:
                 status_icon = "✅" if success else "❌"
-                bot.send_message(chat_id, f"{status_icon} Instahyre Campaign Finished\n\n{msg}", parse_mode=None)
+                bot.send_message(chat_id, f"{status_icon} Instahyre Campaign Finished\n\n{msg}", parse_mode="Markdown")
         except Exception as e:
             err_str = str(e)
             print(f"[Instahyre] Engine Error: {err_str}")
@@ -5079,7 +5079,7 @@ def manual_radar_scan(chat_id):
     import json
     
     if bot:
-        bot.send_message(chat_id, "📡 *South India Job Radar Active!*\n\nScanning portals for Software Engineering jobs in:\n📍 `Tamil Nadu (Chennai, Coimbatore, Madurai)`\n📍 `Bangalore`\n📍 `Kerala`...", parse_mode=None)
+        bot.send_message(chat_id, "📡 *South India Job Radar Active!*\n\nScanning portals for Software Engineering jobs in:\n📍 `Tamil Nadu (Chennai, Coimbatore, Madurai)`\n📍 `Bangalore`\n📍 `Kerala`...", parse_mode="Markdown")
     
     applied = load_applied_jobs()
     found_jobs = 0
@@ -5131,7 +5131,7 @@ def manual_radar_scan(chat_id):
                                 applied.add(url)
                                 save_applied_job(url)
                                 if bot:
-                                    bot.send_message(chat_id, f"🎯 *Remotive Match!*\n\n💻 *Role:* {j.get('title')}\n🏢 *Company:* {j.get('company_name')}\n📍 *Location:* {j.get('candidate_required_location')}\n\n_Added to Queue!_", parse_mode=None)
+                                    bot.send_message(chat_id, f"🎯 *Remotive Match!*\n\n💻 *Role:* {j.get('title')}\n🏢 *Company:* {j.get('company_name')}\n📍 *Location:* {j.get('candidate_required_location')}\n\n_Added to Queue!_", parse_mode="Markdown")
                                 time.sleep(1)
                                 if found_jobs >= 5: break
 
@@ -5155,7 +5155,7 @@ def manual_radar_scan(chat_id):
                                 applied.add(url)
                                 save_applied_job(url)
                                 if bot:
-                                    bot.send_message(chat_id, f"🎯 *Arbeitnow Match!*\n\n💻 *Role:* {j.get('title')}\n🏢 *Company:* {j.get('company_name')}\n📍 *Location:* {j.get('location')}\n\n_Added to Queue!_", parse_mode=None)
+                                    bot.send_message(chat_id, f"🎯 *Arbeitnow Match!*\n\n💻 *Role:* {j.get('title')}\n🏢 *Company:* {j.get('company_name')}\n📍 *Location:* {j.get('location')}\n\n_Added to Queue!_", parse_mode="Markdown")
                                 time.sleep(1)
                                 if found_jobs >= 5: break
                                 
@@ -5163,7 +5163,7 @@ def manual_radar_scan(chat_id):
             print(f"[Radar] Multi-API scan error on {api['url']}: {e}")
 
     if bot:
-        bot.send_message(chat_id, f"✅ *Radar Scan Complete*\nFound {found_jobs} new tech jobs. They are now processing in the background queue.", parse_mode=None)
+        bot.send_message(chat_id, f"✅ *Radar Scan Complete*\nFound {found_jobs} new tech jobs. They are now processing in the background queue.", parse_mode="Markdown")
 
 
 def _send_search_results(bot, chat_id, query, result, display_query=None):
@@ -5245,7 +5245,7 @@ if bot:
         bot.reply_to(message,
             "🎛️ *Elite Bot Command Center*\n\n"
             "Use the interactive buttons below to control your automation empire instantly.",
-            parse_mode=None, reply_markup=markup)
+            parse_mode="Markdown", reply_markup=markup)
 
     def get_main_reply_keyboard():
         markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -5350,21 +5350,21 @@ if bot:
         save_chat_id(message.chat.id)
         text = message.text.replace("/instahyre", "", 1).strip()
         if "|" not in text:
-            bot.reply_to(message, "⚠️ *Invalid Format*\n\nPlease provide your credentials like this:\n`/instahyre your_email@gmail.com | your_password`\n\n_Note: We do not save your password. It is only used once in memory to run the engine._", parse_mode=None)
+            bot.reply_to(message, "⚠️ *Invalid Format*\n\nPlease provide your credentials like this:\n`/instahyre your_email@gmail.com | your_password`\n\n_Note: We do not save your password. It is only used once in memory to run the engine._", parse_mode="Markdown")
             return
             
         parts = text.split("|", 1)
         email = parts[0].strip()
         password = parts[1].strip()
         
-        bot.reply_to(message, "🚀 *Instahyre Mass-Applier Activated!* 🚀\n\nBooting up the headless browser... This will take about 5-10 minutes to finish applying to 20 jobs. I'll notify you when it's done!", parse_mode=None)
+        bot.reply_to(message, "🚀 *Instahyre Mass-Applier Activated!* 🚀\n\nBooting up the headless browser... This will take about 5-10 minutes to finish applying to 20 jobs. I'll notify you when it's done!", parse_mode="Markdown")
         
         def run_engine():
             success, result_msg, _ = run_instahyre_mass_apply(email=email, password=password, skills="Software Engineer Fresher", max_applications=20)
             if success:
-                bot.send_message(message.chat.id, f"✅ *Instahyre Campaign Complete!*\n\n{result_msg}", parse_mode=None)
+                bot.send_message(message.chat.id, f"✅ *Instahyre Campaign Complete!*\n\n{result_msg}", parse_mode="Markdown")
             else:
-                bot.send_message(message.chat.id, f"❌ *Instahyre Campaign Failed*\n\n{result_msg}", parse_mode=None)
+                bot.send_message(message.chat.id, f"❌ *Instahyre Campaign Failed*\n\n{result_msg}", parse_mode="Markdown")
                 
         Thread(target=run_engine, daemon=True).start()
 
@@ -5525,7 +5525,7 @@ if bot:
         BOT_PAUSED = True
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("▶️ Resume Bot", callback_data="resume"))
-        bot.reply_to(message, "⏸️ *Bot Paused!*\n\nAuto job scanning is stopped.\nTap the button below to resume.", parse_mode=None, reply_markup=markup)
+        bot.reply_to(message, "⏸️ *Bot Paused!*\n\nAuto job scanning is stopped.\nTap the button below to resume.", parse_mode="Markdown", reply_markup=markup)
 
     @bot.message_handler(commands=['resume'])
     @admin_only
@@ -5535,7 +5535,7 @@ if bot:
         BOT_PAUSED = False
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("⏸️ Pause Bot", callback_data="pause"))
-        bot.reply_to(message, "▶️ *Bot Resumed!*\n\nAuto job scanning is now active! The bot will find and apply to jobs automatically.", parse_mode=None, reply_markup=markup)
+        bot.reply_to(message, "▶️ *Bot Resumed!*\n\nAuto job scanning is now active! The bot will find and apply to jobs automatically.", parse_mode="Markdown", reply_markup=markup)
 
     @bot.message_handler(commands=['watch', 'ghost'])
     @admin_only
@@ -5544,15 +5544,15 @@ if bot:
         save_chat_id(chat_id)
         if chat_id in ghost_mode_chats:
             ghost_mode_chats.remove(chat_id)
-            bot.reply_to(message, "👻 *Ghost Mode Disabled!*\n\nYou will no longer receive live streaming screenshots.", parse_mode=None)
+            bot.reply_to(message, "👻 *Ghost Mode Disabled!*\n\nYou will no longer receive live streaming screenshots.", parse_mode="Markdown")
         else:
             ghost_mode_chats.add(chat_id)
-            bot.reply_to(message, "👻 *Ghost Mode ENABLED!*\n\nYou will now receive live visual updates while the bot fills out applications in real-time.", parse_mode=None)
+            bot.reply_to(message, "👻 *Ghost Mode ENABLED!*\n\nYou will now receive live visual updates while the bot fills out applications in real-time.", parse_mode="Markdown")
 
     @bot.message_handler(commands=['scan_inbox', 'sync'])
     @admin_only
     def command_scan_inbox(message):
-        bot.reply_to(message, "📧 *Scanning Inbox for CRM Updates...*\nThis might take a few seconds.", parse_mode=None)
+        bot.reply_to(message, "📧 *Scanning Inbox for CRM Updates...*\nThis might take a few seconds.", parse_mode="Markdown")
         import threading
         def _bg_scan():
             try:
@@ -5567,7 +5567,7 @@ if bot:
                 else:
                     bot.send_message(message.chat.id, "📭 No new interview or rejection emails found in the last 7 days.")
             except Exception as e:
-                bot.send_message(message.chat.id, f"⚠️ *Error scanning inbox:* {e}", parse_mode=None)
+                bot.send_message(message.chat.id, f"⚠️ *Error scanning inbox:* {e}", parse_mode="Markdown")
         threading.Thread(target=_bg_scan).start()
 
     @bot.callback_query_handler(func=lambda call: call.data in ["pause", "resume", "status", "dashboard", "history", "profile", "help", "last_job", "qa_memory", "radar", "ghost", "analytics", "drives", "tnjobs", "tnjobs:refresh"])
@@ -5714,7 +5714,7 @@ if bot:
             if os.path.exists("after_submit.png"):
                 try:
                     with open("after_submit.png", "rb") as ph:
-                        bot.send_photo(chat_id, ph, caption="📸 *Last Job Application Result*", parse_mode=None)
+                        bot.send_photo(chat_id, ph, caption="📸 *Last Job Application Result*", parse_mode="Markdown")
                 except Exception as e:
                     bot.send_message(chat_id, f"⚠️ Could not load image: {e}")
             else:
@@ -5772,7 +5772,7 @@ if bot:
                 bot.send_message(chat_id, f"❌ Error loading Tamil Nadu jobs: {e}")
 
         elif call.data == "radar":
-            bot.send_message(chat_id, "📡 *Job Radar Triggered!*\nScanning all configured Telegram channels right now for fresh jobs...", parse_mode=None)
+            bot.send_message(chat_id, "📡 *Job Radar Triggered!*\nScanning all configured Telegram channels right now for fresh jobs...", parse_mode="Markdown")
             # We trigger the manual radar scan thread
             import threading
             threading.Thread(target=manual_radar_scan, args=(chat_id,)).start()
@@ -7740,7 +7740,7 @@ if bot:
                 data = json.load(f)
             jobs = data.get("jobs", [])
             if not jobs:
-                bot.reply_to(message, "📡 *Job Radar* found no recent jobs. Check again later or run a scan from the dashboard.", parse_mode=None)
+                bot.reply_to(message, "📡 *Job Radar* found no recent jobs. Check again later or run a scan from the dashboard.", parse_mode="Markdown")
                 return
             
             def clean_md(text):
@@ -7858,7 +7858,7 @@ if bot:
             bot.reply_to(message, "❌ Job not found or expired from Radar. Please apply manually if possible.")
             return
             
-        bot.reply_to(message, f"⚡ *Initiating Auto-Apply Sequence!*\n\nTarget: {link}\n\n_The Playwright engine is taking over... check the web dashboard for live status!_", parse_mode=None, disable_web_page_preview=True)
+        bot.reply_to(message, f"⚡ *Initiating Auto-Apply Sequence!*\n\nTarget: {link}\n\n_The Playwright engine is taking over... check the web dashboard for live status!_", parse_mode="Markdown", disable_web_page_preview=True)
         
         # Add to the global application queue
         application_queue.put(link)
@@ -8076,7 +8076,7 @@ def radar_loop():
                             f"⏰ Next scan in {interval_minutes} minutes.\n\n"
                             "Priority: Tiruvannamalai, Vellore, Puducherry/Pondicherry and Chennai.\n"
                             "New matches are sent automatically after each scheduled scan.",
-                            parse_mode=None)
+                            parse_mode="Markdown")
                     except: pass
             
             # Sync new radar jobs to Notion CRM

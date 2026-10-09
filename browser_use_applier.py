@@ -54,6 +54,53 @@ BROWSER_USE_INSTALL_HINT = (
 )
 
 
+def _check_browser_use_environment():
+    """Emit a one-time warning when browser-use imported successfully but the
+    environment is in the known broken overlap with python-jobspy.
+
+    browser-use 0.13.x pins markdownify==1.2.2, and python-jobspy 1.1.82 wants
+    markdownify<0.14,>=0.13.1. Those ranges do not overlap, so the two packages
+    cannot share an environment. If pip somehow resolved both (e.g. a custom
+    index, a looser resolver, or a hand-edited install), markdownify ends up at
+    a version that breaks one of them at runtime.
+
+    We only flag this when browser-use actually imported (BROWSER_USE_AVAILABLE
+    is True), because otherwise the conflict is theoretical — the AI applier is
+    just disabled, which is the expected state for the main environment.
+    """
+    import importlib.metadata
+    from packaging.version import Version
+
+    try:
+        md_ver = Version(importlib.metadata.version("markdownify"))
+    except importlib.metadata.PackageNotFoundError:
+        return  # no markdownify installed — nothing to warn about
+
+    # >= 0.14 breaks python-jobspy; the browser-use pin (1.2.2) is also >= 0.14.
+    if md_ver >= Version("0.14"):
+        _conflict_note = (
+            "*** BROWSER-USE ENVIRONMENT WARNING ***\n"
+            "browser-use imported successfully, but markdownify=={md_ver} is installed.\n"
+            "That version is incompatible with python-jobspy (which requires markdownify<0.14),\n"
+            "so this environment is in the known conflict zone between the two packages.\n"
+            "python-jobspy (the live scrapers) may fail at runtime.\n"
+            "Recommended fix: use a separate venv for browser-use:\n"
+            "    python -m venv .venv-applier\n"
+            "    .venv-applier/bin/pip install -r requirements.txt\n"
+            "    .venv-applier/bin/pip install browser-use\n"
+        ).format(md_ver=md_ver)
+        print(_conflict_note, file=sys.stderr)
+
+
+# One-shot probe: runs once at import time, only when browser-use is present.
+if BROWSER_USE_AVAILABLE:
+    try:
+        _check_browser_use_environment()
+    except Exception as _probe_err:
+        # Never let a compatibility check break the import of this module.
+        print(f"[browser_use_applier] environment check skipped: {_probe_err}", file=sys.stderr)
+
+
 class BrowserUseJobApplier:
     def __init__(
         self,
