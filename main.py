@@ -7,7 +7,6 @@ import requests
 import csv
 import html
 import hmac
-import secrets
 
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -21,7 +20,6 @@ from playwright_stealth import stealth_sync
 from google import genai
 from fpdf import FPDF
 import groq
-import base64
 from dotenv import load_dotenv
 
 # Load local environment variables if testing locally (do not override system env vars/secrets)
@@ -32,7 +30,7 @@ import sys
 from bot_features import generate_dynamic_cover_letter, generate_interview_prep, send_cold_email_if_found, check_for_interviews, sync_to_notion, wait_for_otp
 from enterprise_adapters import execute_workday_adapter, execute_lever_adapter, execute_greenhouse_adapter, execute_smartrecruiters_adapter
 from instahyre_engine import run_instahyre_mass_apply
-from job_discovery import (priority_city, send_walkin_cards, walkin_keyboard, source_lines,
+from job_discovery import (priority_city, send_walkin_cards, walkin_keyboard,
                            get_card, schedule_reminder, list_reminders, cancel_reminders,
                            dispatch_due_reminders, add_priority_buttons, calendar_event,
                            automatic_search_interval_minutes, IST)
@@ -45,35 +43,25 @@ from bot_optimizer import (
     generate_linkedin_outreach_note,
     record_learned_qa,
     calculate_skill_match_score,
-    analyze_jd_skill_gap,
-    format_skill_gap_report,
     store_gap_cache,
-    get_gap_cache,
     is_job_link_alive,
     generate_fast_interview_cheat_sheet,
     generate_market_analytics_report,
-    get_national_drives,
     format_national_drives_report,
     format_single_drive_detail,
-    get_all_drive_deadlines,
     format_deadlines_radar_report,
-    get_urgent_deadlines_summary,
     extract_eligible_batch,
     extract_experience_level,
     format_eligibility_badge,
-    get_walkin_drives,
-    format_walkins_report,
     format_single_walkin_detail,
     find_nearby_walkin_drives,
     format_nearby_walkins_report,
     geocode_location_text,
     get_walkin_checklist_text,
     search_jobs_multi_source,
-    fetch_jobspy_live_search,
     format_search_results_report,
     match_job_compatibility,
     format_oa_report,
-    get_company_oa_info,
     get_watchdog_subscriptions,
     add_watchdog_subscription,
     remove_watchdog_subscription,
@@ -337,7 +325,6 @@ def enforce_bot_security_profile(tg_bot):
 # Initialize APIs
 if TELEGRAM_TOKEN:
     from telebot import apihelper
-    from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
     apihelper.CONNECT_TIMEOUT = 60
     apihelper.READ_TIMEOUT = 60
     # Enable automatic session refreshment & retry mechanism to survive Hugging Face SSL/TLS drops
@@ -355,7 +342,6 @@ GEMINI_API_KEYS = [k.strip() for k in str(os.getenv("GEMINI_API_KEY", "")).split
 current_gemini_key_index = 0
 
 def get_gemini_client():
-    global current_gemini_key_index
     if not GEMINI_API_KEYS:
         return None
     try:
@@ -383,7 +369,6 @@ current_groq_key_index = 0
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 def get_groq_client():
-    global current_groq_key_index
     if not GROQ_API_KEYS:
         return None
     try:
@@ -2251,7 +2236,7 @@ def run_playwright_apply(job_url, job_description=""):
                                         verify_btn.click()
                                         print("[Browser] OTP verified successfully! Waiting for redirect...")
                                         time.sleep(5.0)
-                except Exception as otp_e:
+                except Exception:
                     pass  # No OTP requested or check timed out
                 # ----------------------------------
                 
@@ -2528,7 +2513,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                                     print(f"[IMAP] Success! Filling OTP: {value}")
                                 elif otp_result and otp_result["type"] == "link":
                                     # Open the magic link in a new tab to verify
-                                    print(f"[IMAP] Magic link found! Verifying in background...")
+                                    print("[IMAP] Magic link found! Verifying in background...")
                                     temp_page = context.new_page()
                                     try:
                                         temp_page.goto(otp_result["value"], wait_until="domcontentloaded", timeout=20000)
@@ -2887,7 +2872,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                             print(f"[AI Validate] Form has errors: {err_list}")
                             failed_report.extend([f"⚠️ Validation Error: {e}" for e in err_list])
                             # Re-add errors to report
-                            report += f"\n\n⚠️ *AI Validation Found Issues:*\n" + "\n".join([f"• {e}" for e in err_list])
+                            report += "\n\n⚠️ *AI Validation Found Issues:*\n" + "\n".join([f"• {e}" for e in err_list])
                         else:
                             print("[AI Validate] ✅ Form looks correctly filled!")
                     except Exception as val_e:
@@ -3146,7 +3131,7 @@ Reply ONLY with the text of the answer. No formatting, no quotes.
                     f"🗒️ Notion: {notion_status}\n"
                 )
                 if qa_summary_lines:
-                    final_caption += f"\n🧠 *AI Answers Used:*\n" + "\n".join(qa_summary_lines[:5])
+                    final_caption += "\n🧠 *AI Answers Used:*\n" + "\n".join(qa_summary_lines[:5])
                     if len(qa_summary_lines) > 5:
                         final_caption += f"\n… +{len(qa_summary_lines)-5} more answers"
             else:
@@ -3697,7 +3682,6 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
     Supports text links, media captions, and inline keyboard buttons.
     Returns (new_jobs_found, attempts_this_cycle).
     """
-    global _seen_this_cycle
     channel_name = channel_name.replace("@", "").strip()
     session = get_channel_session()
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"}
@@ -3804,7 +3788,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
 
             # Skip if company is invalid or default placeholder with no real info
             if details["company"] in ["Verified Recruiter", "Hugedomains", "Addtoany"] and details["role"] == "Software Developer / Fresher Engineer" and "http" not in final_url:
-                print(f"[Scraper] Skipping generic/unparseable job post.")
+                print("[Scraper] Skipping generic/unparseable job post.")
                 applied_jobs.add(job_link)
                 save_applied_job(job_link)
                 continue
@@ -3855,32 +3839,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
                     import urllib.parse
                     channel_post_url = f"https://t.me/s/{channel_name}"
 
-                    priority_banner = ""
-                    if details.get("is_tamil_nadu"):
-                        priority_banner = (
-                            "🌟 <b>TAMIL NADU PRIORITY OPPORTUNITY</b> 🇮🇳\n"
-                            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                        )
-                    elif "remote" in str(details.get("work_mode", "")).lower() or "remote" in str(details.get("location", "")).lower():
-                        priority_banner = (
-                            "🏠 <b>REMOTE / WORK FROM HOME OPPORTUNITY</b> 🌐\n"
-                            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                        )
-
-                    work_info = f"🛠️ <b>Work Mode / Type:</b>\n   <code>{html.escape(str(details['work_mode']))}</code>\n\n" if details.get('work_mode') else ""
-
-                    desc_section = ""
-                    if details.get('description_summary') and len(details['description_summary']) > 15:
-                        desc_section = (
-                            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-                            "📋 <b>Key Highlights & Responsibilities:</b>\n"
-                            f"<i>{html.escape(str(details['description_summary']))}</i>\n\n"
-                        )
-
                     hr_email_val = str(details.get("hr_email", "")).strip()
-                    hr_email_section = ""
-                    if hr_email_val:
-                        hr_email_section = f"📧 <b>HR Recruiter Email:</b>\n   <code>{html.escape(hr_email_val)}</code>\n\n"
 
                     # Tier 2: AI Outreach Drafter (LinkedIn connection note)
                     linkedin_note = generate_linkedin_outreach_note(details.get("company", ""), details.get("role", ""), profile)
@@ -4023,7 +3982,7 @@ def scrape_single_channel(channel_name, applied_jobs, active_chat_id, max_jobs=2
             try:
                 gc = get_gemini_client()
                 sync_to_notion(final_url, message_text, "Alerted", gc, override_company=details['company'], groq_client=groq_client)
-            except Exception as e:
+            except Exception:
                 pass
 
             # Save last job
@@ -4052,7 +4011,7 @@ def scrape_telegram_channel():
     """
     Loops through all TARGET_CHANNELS and scrapes each one for new engineering fresher jobs.
     """
-    global BOT_PAUSED, _seen_this_cycle
+    global _seen_this_cycle
     if BOT_PAUSED:
         print("[Loop] Bot is paused. Skipping this cycle.")
         return
@@ -4544,7 +4503,7 @@ def api_debug_bot():
     telegram_ok = False
     telegram_err = None
     try:
-        r = requests.get("https://api.telegram.org", timeout=5)
+        requests.get("https://api.telegram.org", timeout=5)
         telegram_ok = True
     except Exception as e:
         telegram_err = str(e)
@@ -4641,8 +4600,6 @@ def home():
     # Recent jobs from CSV
     recent_rows = []
     csv_file = "applied_jobs_log.csv"
-    best_job = None
-    best_score = 0
     if os.path.exists(csv_file):
         try:
             with open(csv_file, "r", encoding="utf-8") as f:
@@ -4738,7 +4695,7 @@ def home():
         resp.headers['Pragma'] = 'no-cache'
         resp.headers['Expires'] = '0'
         return resp
-    except Exception as e:
+    except Exception:
         import traceback
         traceback.print_exc()
         return "Dashboard temporarily unavailable. Check server logs.", 500
@@ -4790,7 +4747,7 @@ def serve_miniapp():
 
 @app.route("/api/miniapp/jobs")
 def api_miniapp_jobs():
-    from job_radar import classify_location, TAMIL_NADU_LOCATIONS
+    from job_radar import classify_location
     jobs = []
     seen_urls = set()
 
@@ -4865,7 +4822,6 @@ def api_miniapp_jobs():
     jobs.sort(key=lambda j: 0 if j.get("is_tamil_nadu") else 1)
     return jsonify({"status": "success", "total": len(jobs), "jobs": jobs})
 
-from flask import request, send_file, jsonify
 
 import subprocess
 
@@ -5994,7 +5950,7 @@ if bot:
                     nav_url = d.get("nav_url", "#")
                     markup.row(
                         InlineKeyboardButton(f"🚗 {comp} ({dist_km} km)", url=nav_url),
-                        InlineKeyboardButton(f"📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
+                        InlineKeyboardButton("📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
                     )
                 markup.row(
                     InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist"),
@@ -6453,7 +6409,7 @@ if bot:
                 f"<code>{html.escape(note)}</code>"
             )
             bot.send_message(chat_id, msg, parse_mode="HTML")
-        except Exception as e:
+        except Exception:
             bot.send_message(chat_id, f"Note: {note}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("email:"))
@@ -6770,7 +6726,8 @@ if bot:
     @bot.message_handler(commands=['apply'])
     @admin_only
     def manual_apply(message):
-        save_chat_id(message.chat.id)
+        chat_id = message.chat.id
+        save_chat_id(chat_id)
         
         # Robust URL extraction
         urls = re.findall(r'(https?://[^\s]+)', message.text)
@@ -7027,7 +6984,7 @@ if bot:
                     nav_url = d.get("nav_url", "#")
                     markup.row(
                         InlineKeyboardButton(f"🚗 Navigate {comp} ({dist_km} km)", url=nav_url),
-                        InlineKeyboardButton(f"📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
+                        InlineKeyboardButton("📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
                     )
                 markup.row(
                     InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist"),
@@ -7075,7 +7032,7 @@ if bot:
                 nav_url = d.get("nav_url", "#")
                 markup.row(
                     InlineKeyboardButton(f"🚗 Navigate {comp} ({dist_km} km)", url=nav_url),
-                    InlineKeyboardButton(f"📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
+                    InlineKeyboardButton("📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
                 )
             markup.row(
                 InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist"),
@@ -7128,7 +7085,7 @@ if bot:
                 nav_url = d.get("nav_url", "#")
                 markup.row(
                     InlineKeyboardButton(f"🚗 {comp} ({dist_km} km)", url=nav_url),
-                    InlineKeyboardButton(f"📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
+                    InlineKeyboardButton("📄 Briefing", callback_data=f"walkin_detail:{d.get('id')}")
                 )
             markup.row(
                 InlineKeyboardButton("🎒 Walk-In Checklist", callback_data="nearme:checklist"),
@@ -7766,7 +7723,7 @@ if bot:
                     
                     if len(msg) + len(block) + len(line) > 3800:
                         messages.append(msg)
-                        msg = f"📡 *JOB RADAR (continued)*\n\n"
+                        msg = "📡 *JOB RADAR (continued)*\n\n"
                     msg += block + line
                     block = "" # Reset header block after printing once
             messages.append(msg)
@@ -8050,7 +8007,6 @@ def radar_loop():
 
 def cleanup_system_resources():
     """Kills orphaned browser processes and cleans cache to prevent resource leaks."""
-    global playwright_active
     if playwright_active:
         print("[Cleanup] Playwright is currently active. Skipping resource cleanup...")
         return
