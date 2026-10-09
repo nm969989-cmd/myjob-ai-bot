@@ -526,11 +526,25 @@
     if (adminToken) headers.set('X-Admin-Token', adminToken);
     return fetch(url, { ...options, headers });
   }
-  function downloadAdminFile(path) {
-    const url = new URL(path, location.href);
-    if (url.origin !== location.origin) return;
-    if (adminToken) url.searchParams.set('token', adminToken);
-    location.href = url.href;
+  async function downloadAdminFile(path) {
+    try {
+      // Fetch with the X-Admin-Token header rather than putting the admin token
+      // in the URL, where it would be recorded in browser history and access logs.
+      const res = await adminFetch(path);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const blob = await res.blob();
+      const disposition = res.headers.get('Content-Disposition') || '';
+      const match = /filename="?([^";]+)"?/.exec(disposition);
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = match ? match[1] : path.split('/').pop();
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(link.href);
+    } catch (e) {
+      logToConsole('Download failed: ' + e.message, 'error');
+    }
   }
   // Fast 120s countdown with progress bar
   let secs = 120;

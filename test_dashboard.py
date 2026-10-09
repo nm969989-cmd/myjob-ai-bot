@@ -60,3 +60,30 @@ def test_miniapp_aliases(dashboard):
         response = client.get(path + '?token=offline-admin')
         assert response.status_code == 200
         assert 'X-Admin-Token' in response.get_data(as_text=True)
+
+
+def test_download_helper_keeps_token_out_of_url(dashboard):
+    _, client = dashboard
+    html = client.get('/?token=offline-admin').get_data(as_text=True)
+    # The admin token must travel in the X-Admin-Token header, never in a URL
+    # that ends up in browser history or access logs.
+    assert "url.searchParams.set('token'" not in html
+    assert 'async function downloadAdminFile' in html
+    assert "headers.set('X-Admin-Token', adminToken)" in html
+
+
+def test_logs_route_escapes_and_hides_errors(dashboard):
+    _, client = dashboard
+    auth = {'X-Admin-Token': 'offline-admin'}
+    assert client.get('/logs').status_code == 401
+    with open('debug.log', 'w', encoding='utf-8') as handle:
+        handle.write('<script>alert(1)</script>\n')
+    response = client.get('/logs', headers=auth)
+    assert response.status_code == 200
+    assert '<script>alert(1)</script>' not in response.get_data(as_text=True)
+    assert '&lt;script&gt;' in response.get_data(as_text=True)
+
+    with patch('builtins.open', side_effect=OSError('secret-path')):
+        failed = client.get('/logs', headers=auth)
+    assert failed.status_code == 500
+    assert 'secret-path' not in failed.get_data(as_text=True)

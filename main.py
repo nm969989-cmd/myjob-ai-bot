@@ -4503,9 +4503,14 @@ def view_logs():
     try:
         with open("debug.log", "r", encoding="utf-8") as f:
             lines = f.readlines()
-            return "<pre>" + "".join(lines[-100:]) + "</pre>"  # Show last 100 lines
-    except Exception as e:
-        return f"Log file not found or error: {e}"
+        # Escape the log body: it can contain scraped page/HTML content that would
+        # otherwise be interpreted as markup in the admin browser.
+        return "<pre>" + html.escape("".join(lines[-100:])) + "</pre>"
+    except FileNotFoundError:
+        return "<pre>Log file not found.</pre>", 404
+    except Exception:
+        app.logger.exception("Failed to read debug.log")
+        return "<pre>Log file could not be read.</pre>", 500
 
 # ─── JOB RADAR API ROUTES ─────────────────────────────────
 @app.route("/api/radar")
