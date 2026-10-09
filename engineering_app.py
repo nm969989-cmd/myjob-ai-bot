@@ -20,6 +20,8 @@ def start_engineering(bot, owner):
                     engineering.refresh()
                     engineering.dispatch(bot, owner)
             except Exception as exc:
+                # Deliberate external SDK/source boundary: retain the scheduler
+                # after a recorded failure; never treat it as successful delivery.
                 print(f'Engineering scan/delivery failed: {type(exc).__name__}', flush=True)
             time.sleep(max(900, int(os.environ.get('ENGINEERING_INTERVAL_SECONDS', '3600'))))
     threading.Thread(target=cycle, name='EngineeringSearch', daemon=True).start()
@@ -36,6 +38,10 @@ def main():
     start_engineering(legacy.bot, owner)
     # Exactly the existing supervisor/poller path, not a second infinity_polling call.
     threading.Thread(target=legacy.thread_supervisor, name='ThreadSupervisor', daemon=True).start()
+    # Deliberate container ingress binding, not a claim this Flask server is hardened.
+    # Hugging Face's proxy must reach port 7860; loopback would break that deployment.
+    # Deploy only behind the platform proxy with existing access controls reviewed;
+    # do not expose this development server directly on an untrusted network.
     legacy.app.run(host='0.0.0.0', port=7860, use_reloader=False)
 
 
