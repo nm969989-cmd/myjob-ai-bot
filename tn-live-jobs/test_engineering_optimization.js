@@ -27,7 +27,7 @@ function referenceScore(job,profile,now){const p=search.preset(profile);
   const range=String(job.experience||'').match(/(\d+)\s*(?:-|to)\s*(\d+)\s*(?:years?|yrs?)/i);
   if(p.experience_years!==null&&range&&p.experience_years<Number(range[1])){value-=30;reasons.push('experience_below_stated_minimum');}
   else if(p.experience_years===null)reasons.push('experience_unknown_not_eligibility_checked');
-  const date=Date.parse(job.posted_at);if(Number.isFinite(date)&&date<=now){value+=Math.max(0,15-(now-date)/86400000);reasons.push('posting_date_known');}else reasons.push('posting_date_unknown');
+  const date=Date.parse(job.posted_at);if(Number.isFinite(date)&&date<=now){value+=Math.max(0,15-(now-date)/(24 * 60 * 60 * 1000));reasons.push('posting_date_known');}else reasons.push('posting_date_unknown');
   const state=search.integrity(job);value+=state==='verified'?15:-15;if(['company','government'].includes(job.source_type))value+=5;
   reasons.push(`evidence:${state}`,`source:${job.source||'unknown'}`);if(!p.configured)reasons.push('default_preset_personal_fit_unknown');
   return {score:Math.round(value),reasons,distance_km:km,distance_basis:'approximate city-centre straight-line distance; not travel time',integrity:state};

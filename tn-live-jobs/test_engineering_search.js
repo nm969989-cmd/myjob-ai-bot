@@ -52,9 +52,9 @@ test('retry budget, deferred due times, missing records and queue capacity are b
   const deferred=s.reconcile([],[first.jobs[0]],first.queue,NOW+60000);
   assert.equal(deferred.queue[0].due,first.queue[0].due);assert.equal(deferred.queue[0].attempts,1);
   assert.equal(deferred.jobs[0].verified,false);assert.equal(deferred.jobs[0].integrity,'uncertain');
-  const second=s.reconcile([j],[],first.queue,NOW+4000000),third=s.reconcile([j],[],second.queue,NOW+12000000);
+  const second=s.reconcile([j],[],first.queue,NOW+4000000),third=s.reconcile([j],[],second.queue,NOW+(12 * 1000000));
   assert.equal(third.queue.length,0);assert.equal(third.jobs[0].retry_state,'exhausted_uncertain');
-  assert.equal(s.reconcile([j],[],first.queue,NOW+8*86400000).queue.length,0);
+  assert.equal(s.reconcile([j],[],first.queue,NOW+8*(24 * 60 * 60 * 1000)).queue.length,0);
   const many=s.reconcile(Array.from({length:220},(_,i)=>job({verify_reason:'timeout',apply_url:`https://careers.wipro.com/job/test/${i}`})),[],[],NOW);
   assert.equal(many.queue.length,200);assert.equal(many.jobs.filter(j=>j.retry_state==='capacity_deferred_uncertain').length,20);
 });
