@@ -18,10 +18,13 @@ const naukri = require('./naukri');
 const apna = require('./apna');
 const indeed = require('./indeed');
 const linkedin = require('./linkedin');
+const govtTnExtended = require('./govt-tn-extended');
+const greenhouse = require('./greenhouse');
+const lever = require('./lever');
 const internshala = require('./internshala');
 
 /** Every source we know about, in priority order. */
-const ALL_SOURCES = [govtTn, companyCareers, techAts, naukri, apna, indeed, linkedin, internshala];
+const ALL_SOURCES = [govtTn, govtTnExtended, greenhouse, lever, companyCareers, techAts, naukri, apna, indeed, linkedin, internshala];
 
 /** The sources that will actually run in this process. */
 function loadSources() {
@@ -77,4 +80,35 @@ module.exports = {
   indeed,
   linkedin,
   internshala,
+  govtTnExtended,
+  'trb.tn.gov.in': 1,
+  'tnusrb.tn.gov.in': 1,
+  'tangedco.gov.in': 1,
+  'twadboard.tn.gov.in': 1,
+  'revenue.tn.gov.in': 1,
+  'pwd.tn.gov.in': 1,
+  'tnpolice.gov.in': 1,
+  'tnfrs.tn.gov.in': 1,
+  'prisons.tn.gov.in': 1,
+  'forests.tn.gov.in': 1,
+  'fisheries.tn.gov.in': 1,
+  'agri.tn.gov.in': 1,
+  'horticulture.tn.gov.in': 1,
+  'animalhusbandry.tn.gov.in': 1,
+  'aavinmilk.com': 1,
+  'cooperation.tn.gov.in': 1,
+  'tansidco.tn.gov.in': 1,
+  'tniic.tn.gov.in': 1,
+  'sipcot.tn.gov.in': 1,
+  'tidco.tn.gov.in': 1,
+  'chennaimetrorail.org': 1,
+  'chennaicorporation.gov.in': 1,
+  'ccmc.gov.in': 1,
+  'maduraicorporation.gov.in': 1,
+  'trichycorporation.gov.in': 1,
+  'salemcorporation.gov.in': 1,
+  'tirunelvelicorporation.gov.in': 1,
+  'tiruppurcorporation.gov.in': 1,
+  'erodecorporation.gov.in': 1,
+  'thanjavurcorporation.gov.in': 1,
 };
