@@ -3187,7 +3187,264 @@ def fetch_jobspy_live_search(query: str, location: str = "Tamil Nadu, India", li
         return []
 
 
-def search_jobs_multi_source(query: str, limit: int = 6) -> list:
+def _query_tokens(query: str) -> list:
+    """Split a raw search string into usable, lower-cased tokens."""
+    return [t for t in re.split(r'[\s,+/|]+', str(query or '').strip().lower()) if t]
+
+
+def _fuzzy_hit(token: str, haystack: str) -> bool:
+    """True when a haystack token is a near-miss for the query token.
+
+    Catches the common case where a query is mistyped (``pyhton`` for
+    ``python``): an 82% close match, or a six-character run shared with a long
+    enough haystack token, so short filler words cannot match by accident.
+    """
+    import difflib
+
+    if len(token) < 4:
+        return False
+    if difflib.get_close_matches(token, haystack.split(), n=1, cutoff=0.82):
+        return True
+    best_run = 0
+    for word in haystack.split():
+        if len(word) < 4:
+            continue
+        for i in range(len(token)):
+            for j in range(len(word)):
+                run = 0
+                while i + run < len(token) and j + run < len(word) and token[i + run] == word[j + run]:
+                    run += 1
+                if run > best_run:
+                    best_run = run
+    return best_run >= 6
+
+
+# Role-family synonyms so related titles match without inventing any job data.
+_SYNONYM_GROUPS = {
+    "python": ["python", "django", "fastapi", "flask", "pyspark", "pandas", "numpy"],
+    "react": ["react", "reactjs", "frontend", "front end", "next.js", "nextjs", "javascript",
+              "typescript", "ui developer", "web developer", "html", "css"],
+    "java": ["java", "spring boot", "springboot", "j2ee", "backend", "back end", "microservices"],
+    "frontend": ["frontend", "front end", "react", "angular", "vue", "ui", "ux", "web developer"],
+    "backend": ["backend", "back end", "server side", "api", "microservices", "node", "django", "flask"],
+    "fullstack": ["full stack", "fullstack", "full-stack", "mern", "mean stack"],
+    "devops": ["devops", "sre", "kubernetes", "docker", "terraform", "aws", "azure", "gcp", "ci/cd"],
+    "qa": ["qa", "tester", "testing", "sdet", "automation", "quality assurance", "manual testing"],
+    "mobile": ["mobile", "android", "ios", "flutter", "react native", "swift", "kotlin"],
+    "data": ["data", "analyst", "data scientist", "machine learning", "ml", "ai", "power bi", "tableau", "sql"],
+    "sde": ["sde", "software engineer", "software developer", "software development engineer", "programmer"],
+    "support": ["support", "customer service", "customer care", "helpdesk", "call center", "bpo"],
+    "sales": ["sales", "business development", "bd", "marketing", "relationship manager"],
+    "accounting": ["accounting", "accountant", "finance", "tally", "gst", "taxation", "audit"],
+    "fresher": ["fresher", "freshers", "trainee", "graduate", "junior", "intern", "entry level", "0-1"],
+    "nurse": ["nurse", "nursing", "staff nurse", "gnm", "anm", "healthcare", "medical"],
+    "teacher": ["teacher", "teaching", "faculty", "lecturer", "tutor", "professor"],
+    "chennai": ["chennai", "madras", "omr", "guindy", "navallur", "siruseri", "sholinganallur", "tambaram"],
+    "coimbatore": ["coimbatore", "kovai", "saravanampatti", "chil sez"],
+    "madurai": ["madurai", "ilandhaikulam", "elcot"],
+    "trichy": ["trichy", "tiruchirappalli", "navalpattu"],
+}
+
+
+def _build_synonyms() -> dict:
+    """Role families plus every preferred-city alias, so city queries match."""
+    from job_discovery import PRIORITY_CITIES
+
+    synonyms = {group: list(terms) for group, terms in _SYNONYM_GROUPS.items()}
+    for aliases in PRIORITY_CITIES.values():
+        for alias in aliases:
+            synonyms[alias] = list(aliases)
+    return synonyms
+
+
+def _expand_tokens(tokens, synonyms: dict) -> set:
+    expanded = set(tokens)
+    for token in tokens:
+        expanded.update(synonyms.get(token, ()))
+    return expanded
+
+
+def _build_relevance_scorer(q_tokens, expanded_tokens):
+    """Return a scorer that ranks a listing against the query tokens.
+
+    Exact hits in the company (40), title (30), location (15) and body (5)
+    outrank a synonym hit (3), which in turn outranks a near-miss typo (2/1).
+    Higher scores sort first, so a title match still beats an incidental
+    description mention.
+    """
+    def score(title, company, location, text_blob=""):
+        title_l, company_l, location_l = title.lower(), company.lower(), location.lower()
+        haystack = f"{title_l} {company_l} {location_l} {text_blob}".lower()
+        total = 0
+        for token in q_tokens:
+            if token in company_l:
+                total += 40
+            if token in title_l:
+                total += 30
+            if token in location_l:
+                total += 15
+            if token in haystack and token not in company_l and token not in title_l:
+                total += 5
+        for token in expanded_tokens:
+            if token not in q_tokens and token in haystack:
+                total += 3
+        for token in q_tokens:
+            if token not in haystack and _fuzzy_hit(token, haystack):
+                total += 2 if len(token) >= 6 else 1
+        return total
+
+    return score
+
+
+def _relax_tokens(tokens, synonyms: dict) -> list:
+    """Drop the least specific token, preferring to keep city names.
+
+    Used only when a query matches nothing, so a narrow query still returns
+    something useful. Only existing data is re-ranked; nothing is invented.
+    """
+    tokens = list(tokens)
+    if len(tokens) <= 1:
+        return tokens
+    from job_discovery import priority_city
+
+    def keep_rank(token):
+        return 0 if (priority_city(token) or token in synonyms) else 1
+
+    return sorted(tokens, key=keep_rank)[:-1]
+
+
+def _paginate(candidates: list, page: int, limit: int):
+    """Return one page of a ranked candidate list plus a next-page flag.
+
+    Pages are disjoint slices of a single ranked list, so paging never repeats
+    or skips a result as long as the candidate pool is at least a page ahead.
+    """
+    from job_discovery import rank_jobs
+
+    ranked = rank_jobs(list(candidates))
+    if page <= 0:
+        return ranked[:limit], len(ranked) > limit
+    start = page * limit
+    return ranked[start:start + limit], len(ranked) > start + limit
+
+
+def _make_walkin_match(w, ident, calc_relevance, title, comp, loc, blob):
+    rel = calc_relevance(title, comp, loc, blob)
+    if rel <= 0:
+        return None
+    return {
+        "id": ident,
+        "source_type": "Saved walk-in listing",
+        "source_url": w.get('source_url') or w.get('registration_link', ''),
+        "retrieved_at": w.get('retrieved_at') or w.get('scraped_at'),
+        "source_checked_at": w.get('source_checked_at'),
+        "company": comp,
+        "role": title,
+        "location": loc,
+        "salary": w.get("package", "Competitive"),
+        "batches": w.get("batches", "2024 / 2025 / 2026 Batch"),
+        "experience": w.get("experience", "Freshers (0 - 1 Years)"),
+        "link": w.get("google_maps") or "https://maps.google.com",
+        "link_text": "📍 View Venue in Google Maps",
+        "timing": event_label(w),
+        "snippet": f"Selection: {w.get('selection_rounds', 'Interview')} • Degrees: {w.get('degrees', 'Any')}",
+        "relevance": rel + 5,  # Walk-ins get priority boost
+    }
+
+
+def _make_national_drive_match(d, ident, calc_relevance, title, comp, loc, blob):
+    rel = calc_relevance(title, comp, loc, blob)
+    if rel <= 0:
+        return None
+    return {
+        "id": ident,
+        "source_type": "📢 National Off-Campus Drive",
+        "company": comp,
+        "role": title,
+        "location": loc,
+        "salary": d.get("package", "Standard Fresher Band"),
+        "batches": d.get("batch", "2025 / 2026 Batches"),
+        "experience": "Freshers (0 - 1 Years)",
+        "link": d.get("link", ""),
+        "link_text": "🚀 Apply on Official Company Portal",
+        "timing": f"Deadline: {d.get('deadline', 'Open')}",
+        "snippet": f"Eligibility: {d.get('eligibility', 'Any Graduate')} • Test: {d.get('test_pattern', 'Cognitive & Coding')}",
+        "relevance": rel,
+    }
+
+
+def _make_scraped_match(j, calc_relevance, title, comp, loc, blob, link):
+    rel = calc_relevance(title, comp, loc, blob)
+    if rel <= 0:
+        return None
+    is_gov = j.get("category") == "Government" or "gov" in str(j.get("source", "")).lower()
+    src_tag = "🏛️ Govt of Tamil Nadu • Official" if is_gov else f"💼 Real Portal • {j.get('source', 'Verified')}"
+    return {
+        "id": f"tnlive_{j.get('id', '')}",
+        "source_type": src_tag,
+        "source_url": j.get('source_url') or link,
+        "retrieved_at": j.get('scraped_at'),
+        "source_checked_at": j.get('verified_at'),
+        "company": comp,
+        "role": title,
+        "location": loc,
+        "salary": j.get("salary") or "As per Govt / Industry Norms",
+        "batches": j.get('qualification') or 'Not stated — check source',
+        "experience": j.get("experience") or "Not stated — check source",
+        "link": link,
+        "link_text": "🚀 Direct Official Application Page",
+        "timing": "Verified Live Opportunity",
+        "snippet": f"Category: {j.get('category', 'General')} • Verified live via {j.get('source', 'Web')}",
+        "relevance": rel,
+    }
+
+
+def _make_radar_match(j, calc_relevance, title, comp, loc, blob, link):
+    rel = calc_relevance(title, comp, loc, blob)
+    if rel <= 0:
+        return None
+    return {
+        "id": f"tn_{link}",
+        "source_type": j.get('source', 'Regional radar'),
+        "source_url": j.get('source_url') or j.get('raw_link') or link,
+        "retrieved_at": j.get('retrieved_at') or j.get('found_at'),
+        "source_checked_at": j.get('source_checked_at'),
+        "company": comp,
+        "role": title,
+        "location": loc,
+        "salary": j.get("salary") or "Best in Industry",
+        "batches": j.get("batch") or j.get('batches') or "Not stated — check source",
+        "experience": j.get("experience") or "Not stated — check source",
+        "link": link,
+        "link_text": "🚀 Direct Apply (Official)",
+        "timing": "Verified Fresh Opening",
+        "snippet": str(j.get("description", ""))[:160] or "Direct application on official career portal.",
+        "relevance": rel,
+    }
+
+
+def _make_simplify_match(sj, calc_relevance, title, comp, loc):
+    rel = calc_relevance(title, comp, loc, f"{sj.get('terms', '')} {sj.get('sponsorship', '')}")
+    if rel <= 0:
+        return None
+    return {
+        "id": f"simplify_{sj.get('id', comp)}",
+        "source_type": "⚡ SimplifyJobs • Official ATS",
+        "company": comp,
+        "role": title,
+        "location": loc or "Remote / Global",
+        "salary": "Competitive / Industry Standard",
+        "batches": "2025 / 2026 Batch",
+        "experience": "New Grad / Entry Level",
+        "link": sj.get("link", ""),
+        "link_text": "🚀 Apply on Company ATS",
+        "timing": f"Posted: {sj.get('date_posted', 'Recent')}",
+        "snippet": f"Terms: {sj.get('terms', 'Full Time')} • Sponsorship: {sj.get('sponsorship', 'Available')}",
+        "relevance": rel,
+    }
+
+
+def search_jobs_multi_source(query: str, limit: int = 6, page: int = 0, _depth: int = 0) -> list:
     """
     Performs comprehensive search across all real-data pipelines:
     1. Verified Walk-In Drives (Chennai, Coimbatore, Madurai, Trichy, Hosur)
@@ -3195,64 +3452,42 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
     3. Scraped Real Tamil Nadu Portal Jobs (tn-live-jobs: Govt TN, Freshersworld, apna.co, LinkedIn)
     4. Tamil Nadu Job Radar Cache
     5. Real-Time On-Demand Adzuna India Live API
-    Returns ranked, verified real job postings.
+
+    Pages through one ranked candidate list: ``page=0`` is the first batch,
+    ``page=1`` the next, and so on. Returns a dict with ``results`` (the page),
+    ``page``, ``has_more`` (another page exists), and ``total_available``.
+    An unknown query relaxes to broader tokens before giving up.
     """
     if not query or not isinstance(query, str) or not query.strip():
         return []
 
-    q_clean = query.strip().lower()
-    q_tokens = [t for t in re.split(r'[\s,+/|]+', q_clean) if t]
+    try:
+        page = max(0, int(page))
+    except (TypeError, ValueError):
+        page = 0
+    limit = max(1, int(limit)) if str(limit).lstrip('-').isdigit() else 6
+
+    q_tokens = _query_tokens(query)
     if not q_tokens:
         return []
 
-    SYNONYMS = {
-        "python": ["python", "django", "fastapi", "flask", "pyspark", "data science"],
-        "react": ["react", "frontend", "next.js", "nextjs", "javascript", "typescript", "ui developer", "web developer"],
-        "java": ["java", "spring boot", "springboot", "j2ee", "backend"],
-        "fresher": ["fresher", "freshers", "trainee", "graduate", "junior", "intern", "entry level", "0-1"],
-        "analyst": ["analyst", "data analyst", "business analyst", "power bi", "tableau", "sql"],
-        "tester": ["tester", "qa", "testing", "sdet", "automation", "quality assurance"],
-        "chennai": ["chennai", "madras", "omr", "guindy", "navallur", "siruseri", "sholinganallur", "tambaram"],
-        "coimbatore": ["coimbatore", "kovai", "saravanampatti", "chil sez"],
-        "madurai": ["madurai", "ilandhaikulam", "elcot"],
-        "trichy": ["trichy", "tiruchirappalli", "navalpattu"],
-    }
+    from job_discovery import (
+        priority_city, city_matches, canonical_link, fetch_priority_search,
+    )
 
-    from job_discovery import PRIORITY_CITIES, priority_city, city_matches, rank_jobs, canonical_link, fetch_priority_search
-    for aliases in PRIORITY_CITIES.values():
-        for alias in aliases:
-            SYNONYMS[alias] = list(aliases)
+    synonyms = _build_synonyms()
+    expanded_tokens = _expand_tokens(q_tokens, synonyms)
+    calc_relevance = _build_relevance_scorer(q_tokens, expanded_tokens)
 
-    # Expand query tokens with synonyms
-    expanded_tokens = set(q_tokens)
-    for t in q_tokens:
-        if t in SYNONYMS:
-            expanded_tokens.update(SYNONYMS[t])
+    # Pull a pool a few pages ahead so later pages stay non-empty; a first-page
+    # request asks for limit + buffer, same as before.
+    pool = limit * (page + 1) + 3
 
     matches = []
     seen_identifiers = set()
 
-    def calc_relevance(title, company, location, text_blob=""):
-        full_haystack = f"{title} {company} {location} {text_blob}".lower()
-        score = 0
-        for token in q_tokens:
-            if token in company.lower():
-                score += 40  # Direct company match is top priority! (e.g. searching 'zoho' must rank Zoho #1)
-            if token in title.lower():
-                score += 30  # Direct title match is highest priority
-            if token in location.lower():
-                score += 15  # Location match
-            if token in full_haystack and token not in company.lower() and token not in title.lower():
-                score += 5   # General match in description or keywords
-
-        for token in expanded_tokens:
-            if token not in q_tokens and token in full_haystack:
-                score += 3   # Synonym match
-
-        return score
-
     # Always search the preferred cities live; cached results must not suppress discovery.
-    for live_job in fetch_priority_search(query, [fetch_jobspy_live_search, fetch_live_adzuna_search], limit=max(limit, 6)):
+    for live_job in fetch_priority_search(query, [fetch_jobspy_live_search, fetch_live_adzuna_search], limit=max(pool, 6)):
         link = canonical_link(live_job.get('link'))
         if link and link not in seen_identifiers:
             seen_identifiers.add(link)
@@ -3261,146 +3496,75 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
 
     # 1. Search Weekend Walk-In Drives
     try:
-        walkins = get_walkin_drives()
-        for w in walkins:
+        for w in get_walkin_drives():
             title = w.get("role", "")
             comp = w.get("company", "")
             loc = f"{w.get('city', '')} ({w.get('location_area', '')})"
             blob = f"{w.get('batches', '')} {w.get('degrees', '')} {w.get('selection_rounds', '')} {w.get('package', '')} {w.get('key_skills', '')}"
-            rel = calc_relevance(title, comp, loc, blob)
-            if rel > 0:
-                ident = f"walkin_{w.get('id', comp)}"
-                if ident not in seen_identifiers:
+            make = _make_walkin_match
+            ident = f"walkin_{w.get('id', comp)}"
+            if ident not in seen_identifiers:
+                item = make(w, ident, calc_relevance, title, comp, loc, blob)
+                if item:
                     seen_identifiers.add(ident)
-                    matches.append({
-                        "id": ident,
-                        "source_type": "Saved walk-in listing",
-                        "source_url": w.get('source_url') or w.get('registration_link', ''),
-                        "retrieved_at": w.get('retrieved_at') or w.get('scraped_at'),
-                        "source_checked_at": w.get('source_checked_at'),
-                        "company": comp,
-                        "role": title,
-                        "location": loc,
-                        "salary": w.get("package", "Competitive"),
-                        "batches": w.get("batches", "2024 / 2025 / 2026 Batch"),
-                        "experience": w.get("experience", "Freshers (0 - 1 Years)"),
-                        "link": w.get("google_maps") or "https://maps.google.com",
-                        "link_text": "📍 View Venue in Google Maps",
-                        "timing": event_label(w),
-                        "snippet": f"Selection: {w.get('selection_rounds', 'Interview')} • Degrees: {w.get('degrees', 'Any')}",
-                        "relevance": rel + 5  # Walk-ins get priority boost
-                    })
+                    matches.append(item)
     except Exception as e:
         print(f"[Search Engine] Walkin scan notice: {e}")
 
     # 2. Search National Mass Drives
     try:
-        drives = get_national_drives()
-        for d in drives:
+        for d in get_national_drives():
             title = d.get("role", "")
             comp = d.get("company", "")
             loc = d.get("locations", "Pan-India")
             blob = f"{d.get('batch', '')} {d.get('eligibility', '')} {d.get('syllabus_highlights', '')} {d.get('test_pattern', '')}"
-            rel = calc_relevance(title, comp, loc, blob)
-            if rel > 0:
-                ident = f"drive_{d.get('id', comp)}"
-                if ident not in seen_identifiers:
+            ident = f"drive_{d.get('id', comp)}"
+            if ident not in seen_identifiers:
+                item = _make_national_drive_match(d, ident, calc_relevance, title, comp, loc, blob)
+                if item:
                     seen_identifiers.add(ident)
-                    matches.append({
-                        "id": ident,
-                        "source_type": "📢 National Off-Campus Drive",
-                        "company": comp,
-                        "role": title,
-                        "location": loc,
-                        "salary": d.get("package", "Standard Fresher Band"),
-                        "batches": d.get("batch", "2025 / 2026 Batches"),
-                        "experience": "Freshers (0 - 1 Years)",
-                        "link": d.get("link", ""),
-                        "link_text": "🚀 Apply on Official Company Portal",
-                        "timing": f"Deadline: {d.get('deadline', 'Open')}",
-                        "snippet": f"Eligibility: {d.get('eligibility', 'Any Graduate')} • Test: {d.get('test_pattern', 'Cognitive & Coding')}",
-                        "relevance": rel
-                    })
+                    matches.append(item)
     except Exception as e:
         print(f"[Search Engine] National drives scan notice: {e}")
 
     # 3. Search Real Scraped TN-Live-Jobs Database
     try:
-        scraped_jobs = get_tn_scraped_live_jobs()
-        for j in scraped_jobs:
+        for j in get_tn_scraped_live_jobs():
             title = j.get("title", "")
             comp = j.get("company", "Tamil Nadu Employer")
             city = j.get("city", "Tamil Nadu")
             loc = f"{city}, {'India' if priority_city(city) == 'Puducherry' else 'Tamil Nadu'}"
             blob = f"{j.get('category', '')} {j.get('source', '')} {j.get('apply_url', '')} {j.get('salary', '')}"
-            rel = calc_relevance(title, comp, loc, blob)
-            if rel > 0:
-                link = j.get("apply_url", "")
-                if link and link not in seen_identifiers:
+            link = j.get("apply_url", "")
+            if link and link not in seen_identifiers:
+                item = _make_scraped_match(j, calc_relevance, title, comp, loc, blob, link)
+                if item:
                     seen_identifiers.add(link)
-                    is_gov = j.get("category") == "Government" or "gov" in str(j.get("source", "")).lower()
-                    src_tag = "🏛️ Govt of Tamil Nadu • Official" if is_gov else f"💼 Real Portal • {j.get('source', 'Verified')}"
-                    matches.append({
-                        "id": f"tnlive_{j.get('id', '')}",
-                        "source_type": src_tag,
-                        "source_url": j.get('source_url') or link,
-                        "retrieved_at": j.get('scraped_at'),
-                        "source_checked_at": j.get('verified_at'),
-                        "company": comp,
-                        "role": title,
-                        "location": loc,
-                        "salary": j.get("salary") or "As per Govt / Industry Norms",
-                        "batches": j.get('qualification') or 'Not stated — check source',
-                        "experience": j.get("experience") or "Not stated — check source",
-                        "link": link,
-                        "link_text": "🚀 Direct Official Application Page",
-                        "timing": "Verified Live Opportunity",
-                        "snippet": f"Category: {j.get('category', 'General')} • Verified live via {j.get('source', 'Web')}",
-                        "relevance": rel
-                    })
+                    matches.append(item)
     except Exception as e:
         print(f"[Search Engine] Scraped jobs scan notice: {e}")
 
     # 4. Search Tamil Nadu Job Radar
     try:
         from job_radar import get_tamil_nadu_jobs
-        tn_jobs = get_tamil_nadu_jobs(limit=50, force_refresh=False)
-        for j in tn_jobs:
+        for j in get_tamil_nadu_jobs(limit=50, force_refresh=False):
             title = j.get("title", "")
             comp = j.get("company", "")
             loc = j.get("location", "Tamil Nadu")
             blob = f"{j.get('batches', '')} {j.get('experience', '')} {j.get('source', '')} {j.get('link', '')} {j.get('description', '')}"
-            rel = calc_relevance(title, comp, loc, blob)
-            if rel > 0:
-                link = j.get("link", "")
-                if link and link not in seen_identifiers:
+            link = j.get("link", "")
+            if link and link not in seen_identifiers:
+                item = _make_radar_match(j, calc_relevance, title, comp, loc, blob, link)
+                if item:
                     seen_identifiers.add(link)
-                    matches.append({
-                        "id": f"tn_{link}",
-                        "source_type": j.get('source', 'Regional radar'),
-                        "source_url": j.get('source_url') or j.get('raw_link') or link,
-                        "retrieved_at": j.get('retrieved_at') or j.get('found_at'),
-                        "source_checked_at": j.get('source_checked_at'),
-                        "company": comp,
-                        "role": title,
-                        "location": loc,
-                        "salary": j.get("salary") or "Best in Industry",
-                        "batches": j.get("batch") or j.get('batches') or "Not stated — check source",
-                        "experience": j.get("experience") or "Not stated — check source",
-                        "link": link,
-                        "link_text": "🚀 Direct Apply (Official)",
-                        "timing": "Verified Fresh Opening",
-                        "snippet": str(j.get("description", ""))[:160] or "Direct application on official career portal.",
-                        "relevance": rel
-                    })
+                    matches.append(item)
     except Exception as e:
         print(f"[Search Engine] TN jobs scan notice: {e}")
 
-    # 5. On-Demand Real-Time Live Search (Adzuna India) if local results < limit
-    if len(matches) < limit:
+    # 5. On-Demand Real-Time Live Search (Adzuna India) if local results < pool
+    if len(matches) < pool:
         try:
-            live_adzuna = fetch_live_adzuna_search(query=query, location="Tamil Nadu", limit=limit - len(matches) + 3)
-            for aj in live_adzuna:
+            for aj in fetch_live_adzuna_search(query=query, location="Tamil Nadu", limit=pool - len(matches) + 3):
                 link = aj.get("link", "")
                 if link and link not in seen_identifiers:
                     seen_identifiers.add(link)
@@ -3409,10 +3573,9 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
             print(f"[Search Engine] Live Adzuna query notice: {e}")
 
     # 6. On-Demand Real-Time Multi-Portal Search via JobSpy (LinkedIn, Indeed India, Google Jobs)
-    if len(matches) < limit:
+    if len(matches) < pool:
         try:
-            live_jobspy = fetch_jobspy_live_search(query=query, location="Tamil Nadu, India", limit=limit - len(matches) + 2)
-            for jj in live_jobspy:
+            for jj in fetch_jobspy_live_search(query=query, location="Tamil Nadu, India", limit=pool - len(matches) + 2):
                 link = jj.get("link", "")
                 if link and link not in seen_identifiers:
                     seen_identifiers.add(link)
@@ -3421,33 +3584,18 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
             print(f"[Search Engine] Live JobSpy query notice: {e}")
 
     # 7. Check SimplifyJobs (New Grad / Entry Level / Direct ATS)
-    if len(matches) < limit:
+    if len(matches) < pool:
         try:
-            simplify_positions = fetch_simplify_jobs(limit=100, force_refresh=False)
-            for sj in simplify_positions:
+            for sj in fetch_simplify_jobs(limit=100, force_refresh=False):
                 comp = sj.get("company", "")
                 title = sj.get("title", "")
                 loc = sj.get("location", "")
-                rel = calc_relevance(title, comp, loc, f"{sj.get('terms', '')} {sj.get('sponsorship', '')}")
-                if rel > 0:
-                    link = sj.get("link", "")
-                    if link and link not in seen_identifiers:
+                link = sj.get("link", "")
+                if link and link not in seen_identifiers:
+                    item = _make_simplify_match(sj, calc_relevance, title, comp, loc)
+                    if item:
                         seen_identifiers.add(link)
-                        matches.append({
-                            "id": f"simplify_{sj.get('id', comp)}",
-                            "source_type": "⚡ SimplifyJobs • Official ATS",
-                            "company": comp,
-                            "role": title,
-                            "location": loc or "Remote / Global",
-                            "salary": "Competitive / Industry Standard",
-                            "batches": "2025 / 2026 Batch",
-                            "experience": "New Grad / Entry Level",
-                            "link": link,
-                            "link_text": "🚀 Apply on Company ATS",
-                            "timing": f"Posted: {sj.get('date_posted', 'Recent')}",
-                            "snippet": f"Terms: {sj.get('terms', 'Full Time')} • Sponsorship: {sj.get('sponsorship', 'Available')}",
-                            "relevance": rel
-                        })
+                        matches.append(item)
         except Exception as e:
             print(f"[Search Engine] SimplifyJobs query notice: {e}")
 
@@ -3459,7 +3607,39 @@ def search_jobs_multi_source(query: str, limit: int = 6) -> list:
         key = canonical_link(item.get('link')) or str(item.get('id'))
         if key not in unique or item.get('relevance', 0) > unique[key].get('relevance', 0):
             unique[key] = item
-    return rank_jobs(list(unique.values()))[:limit]
+
+    candidates = list(unique.values())
+
+    # Nothing matched: retry once with a relaxed token set rather than returning
+    # an empty board. Existing listings are only re-ranked, never invented.
+    if not candidates and len(q_tokens) > 1 and _depth < 2:
+        relaxed = _relax_tokens(q_tokens, synonyms)
+        if relaxed and relaxed != q_tokens:
+            relaxed_query = " ".join(relaxed)
+            if relaxed_query != query.strip().lower():
+                relaxed_result = search_jobs_multi_source(relaxed_query, limit=limit, page=page, _depth=_depth + 1)
+                if isinstance(relaxed_result, dict):
+                    for item in relaxed_result.get("results", []):
+                        item["relaxed_from"] = query.strip()
+                        item["relaxed_to"] = relaxed_query
+                    return relaxed_result
+                return relaxed_result
+
+    if page == 0:
+        results, has_more = _paginate(candidates, 0, limit)
+        return {
+            "results": results,
+            "page": 0,
+            "has_more": has_more,
+            "total_available": len(candidates),
+        }
+    results, has_more = _paginate(candidates, page, limit)
+    return {
+        "results": results,
+        "page": page,
+        "has_more": has_more,
+        "total_available": len(candidates),
+    }
 
 
 _URL_CACHE = {}
@@ -3473,15 +3653,39 @@ def get_url_cache(key: str) -> str:
     return _URL_CACHE.get(key, "")
 
 
-def format_search_results_report(query, results=None) -> tuple:
+# Search-query cache. "Search More" buttons carry a short hash instead of the
+# raw query so callback_data stays inside Telegram's 64-byte limit.
+_SEARCH_QUERY_CACHE = {}
+
+def store_search_query(key: str, query: str):
+    global _SEARCH_QUERY_CACHE
+    _SEARCH_QUERY_CACHE[key] = query
+
+def get_search_query(key: str) -> str:
+    return _SEARCH_QUERY_CACHE.get(key, "")
+
+
+def _register_search_query(query) -> str:
+    """Memoize a search query and return its short callback key."""
+    import hashlib
+    qkey = hashlib.md5(str(query).encode("utf-8")).hexdigest()[:10]
+    store_search_query(qkey, str(query))
+    return qkey
+
+
+def format_search_results_report(query, results=None, page=0, has_more=False, display_query=None) -> tuple:
     """
     Formats search results into Telegram HTML cards and builds interactive filter markup.
+    ``query`` is the term to re-run for "Search More"; ``display_query`` optionally
+    overrides what the header shows (e.g. a "JobSpy:" label).
     Returns: (chunks: list[str], reply_markup: InlineKeyboardMarkup)
     """
     if isinstance(query, list) and (isinstance(results, str) or results is None):
         results, query = query, (results or "Jobs")
     elif results is None:
         results = []
+    if display_query is None:
+        display_query = query
 
     import html
     import hashlib
@@ -3526,25 +3730,47 @@ def format_search_results_report(query, results=None) -> tuple:
         InlineKeyboardButton("🏠 Remote", callback_data="search:remote"),
         InlineKeyboardButton("📢 Mass Drives", callback_data="drives")
     )
-    markup.row(
-        InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all"),
-        InlineKeyboardButton("🔄 Refresh Search", callback_data=f"search:{query}")
-    )
+    # Refresh re-runs the same query. Very long queries use a hashed callback
+    # key so the button stays inside Telegram's 64-byte callback_data limit.
+    refresh_row = None
+    if not isinstance(query, str) or len(f"search:{query}".encode("utf-8")) <= 64:
+        refresh_row = [InlineKeyboardButton("🔄 Refresh Search", callback_data=f"search:{query}")]
+    elif query:
+        qkey = _register_search_query(query)
+        refresh_row = [InlineKeyboardButton("🔄 Refresh Search", callback_data=f"search_more:{qkey}:1")]
+    if refresh_row:
+        refresh_row.append(InlineKeyboardButton("🚶‍♂️ Weekend Walk-Ins", callback_data="walkins:all"))
+        markup.row(*refresh_row)
+
+    # Paging: offer the next batch when the search reports one, plus a way back.
+    if has_more:
+        qkey = _register_search_query(query)
+        markup.row(InlineKeyboardButton("➡️ Search More", callback_data=f"search_more:{qkey}:{int(page) + 1}"))
+        markup.row(InlineKeyboardButton("⬅️ Dashboard", callback_data="dashboard"))
 
     if not results:
         no_res_msg = (
             f"🔍 <b>SEARCH RESULTS FOR:</b> <code>{html.escape(query.upper())}</code>\n\n"
-            f"⚠️ No matching listings returned for '{html.escape(query)}'. Some sources may be unavailable or rate-limited.\n\n"
+            f"⚠️ No matching listings returned for '{html.escape(str(display_query))}'. Some sources may be unavailable or rate-limited.\n\n"
             f"💡 <b>Search Suggestions:</b>\n"
             f"• Try broader keywords: <code>python</code>, <code>react</code>, <code>fresher</code>, <code>chennai</code>, <code>zoho</code>\n"
             f"• Tap any of the quick-search categories below:"
         )
         return ([no_res_msg], markup)
 
+    relaxed_from = ""
+    if results and str(results[0].get("relaxed_from", "")).strip():
+        relaxed_from = str(results[0].get("relaxed_from"))
+
+    page_line = f"📄 <i>Page {int(page) + 1}</i> — " if int(page) > 0 else "📍 "
     header = (
-        f"🔍 <b>SEARCH RESULTS FOR:</b> <code>{html.escape(query.upper())}</code>\n"
-        f"📍 <i>Found {len(results)} listings — verify each source before applying.</i>\n"
-                "⭐ <i>Priority: Tiruvannamalai, Vellore, Puducherry &amp; Chennai</i>\n"
+        f"🔍 <b>SEARCH RESULTS FOR:</b> <code>{html.escape(str(display_query).upper())}</code>\n"
+        f"{page_line}<i>Found {len(results)} listings — verify each source before applying.</i>\n"
+        + (
+            f"🪄 <i>No exact matches for '{html.escape(relaxed_from)}' — showing broader results.</i>\n"
+            if relaxed_from else ""
+        )
+        + "⭐ <i>Priority: Tiruvannamalai, Vellore, Puducherry &amp; Chennai</i>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
     )
 

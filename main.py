@@ -71,6 +71,7 @@ from bot_optimizer import (
     search_jobs_multi_source,
     fetch_jobspy_live_search,
     format_search_results_report,
+    get_search_query,
     match_job_compatibility,
     format_oa_report,
     get_company_oa_info,
@@ -5164,6 +5165,30 @@ def manual_radar_scan(chat_id):
     if bot:
         bot.send_message(chat_id, f"✅ *Radar Scan Complete*\nFound {found_jobs} new tech jobs. They are now processing in the background queue.", parse_mode=None)
 
+
+def _send_search_results(bot, chat_id, query, result, display_query=None):
+    """Send one page of search results, wiring the "Search More" button.
+
+    ``result`` is the dict returned by ``search_jobs_multi_source``. On the
+    final page the button is simply absent, so the user cannot page past the
+    end. Returns the number of listings sent.
+    """
+    page = int(result.get("page", 0) or 0)
+    has_more = bool(result.get("has_more"))
+    results = result.get("results", []) or []
+    chunks, markup = format_search_results_report(
+        query, results, page=page, has_more=has_more, display_query=display_query,
+    )
+    for idx, chunk in enumerate(chunks):
+        is_last = (idx == len(chunks) - 1)
+        try:
+            bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
+        except Exception:
+            bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
+        time.sleep(0.3)
+    return len(results)
+
+
 if bot:
     @bot.message_handler(commands=['dashboard', 'menu'])
     @admin_only
@@ -6059,17 +6084,43 @@ if bot:
         except Exception:
             pass
         try:
-            results = search_jobs_multi_source(query=query, limit=6)
-            chunks, markup = format_search_results_report(query=f"JobSpy: {query}", results=results)
-            for idx, chunk in enumerate(chunks):
-                is_last = (idx == len(chunks) - 1)
-                try:
-                    bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                except Exception:
-                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                time.sleep(0.3)
+            result = search_jobs_multi_source(query=query, limit=6)
+            _send_search_results(bot, chat_id, query, result, display_query=f"JobSpy: {query}")
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ JobSpy error: {e}")
+
+    @bot.callback_query_handler(func=lambda call: call.data.startswith("search_more:"))
+    @admin_only
+    def handle_search_more_callback(call):
+        chat_id = call.message.chat.id
+        save_chat_id(chat_id)
+        try:
+            _, qkey, page_raw = call.data.split(":", 2)
+            page = max(1, int(page_raw))
+        except (ValueError, TypeError):
+            try:
+                bot.answer_callback_query(call.id, text="⚠️ Could not load more results. Please search again.")
+            except Exception:
+                pass
+            return
+        query = get_search_query(qkey)
+        if not query:
+            try:
+                bot.answer_callback_query(call.id, text="⌛ Search expired — please run the search again.", show_alert=True)
+            except Exception:
+                pass
+            return
+        try:
+            bot.answer_callback_query(call.id, text=f"➡️ Loading page {page + 1}…")
+        except Exception:
+            pass
+        try:
+            result = search_jobs_multi_source(query=query, limit=6, page=page)
+            sent = _send_search_results(bot, chat_id, query, result)
+            if sent == 0:
+                bot.send_message(chat_id, "✅ That was the last page — no more results for this search.")
+        except Exception as e:
+            bot.send_message(chat_id, f"⚠️ Search More error: {e}")
 
     @bot.callback_query_handler(func=lambda call: call.data.startswith("simplify:") or call.data == "simplify")
     @admin_only
@@ -6275,15 +6326,8 @@ if bot:
 
         try:
             bot.send_message(chat_id, '🔍 Searching priority cities: Tiruvannamalai, Vellore, Puducherry/Pondicherry and Chennai…')
-            results = search_jobs_multi_source(query=query, limit=6)
-            chunks, markup = format_search_results_report(query=query, results=results)
-            for idx, chunk in enumerate(chunks):
-                is_last = (idx == len(chunks) - 1)
-                try:
-                    bot.send_message(chat_id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                except Exception:
-                    bot.send_message(chat_id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                time.sleep(0.3)
+            result = search_jobs_multi_source(query=query, limit=6)
+            _send_search_results(bot, chat_id, query, result)
         except Exception as e:
             bot.send_message(chat_id, f"⚠️ Search error: {e}")
 
@@ -7220,22 +7264,13 @@ if bot:
             status_msg = None
 
         try:
-            results = search_jobs_multi_source(query=query, limit=6)
-
-            chunks, markup = format_search_results_report(query=f"JobSpy: {query}", results=results)
+            result = search_jobs_multi_source(query=query, limit=6)
             if status_msg:
                 try:
                     bot.delete_message(message.chat.id, status_msg.message_id)
                 except Exception:
                     pass
-
-            for idx, chunk in enumerate(chunks):
-                is_last = (idx == len(chunks) - 1)
-                try:
-                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                except Exception:
-                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                time.sleep(0.3)
+            _send_search_results(bot, message.chat.id, query, result, display_query=f"JobSpy: {query}")
         except Exception as e:
             bot.send_message(message.chat.id, f"⚠️ JobSpy query error: {e}")
 
@@ -7343,15 +7378,8 @@ if bot:
 
         try:
             bot.send_message(message.chat.id, '🔍 Searching priority cities: Tiruvannamalai, Vellore, Puducherry/Pondicherry and Chennai…')
-            results = search_jobs_multi_source(query=query, limit=6)
-            chunks, markup = format_search_results_report(query=query, results=results)
-            for idx, chunk in enumerate(chunks):
-                is_last = (idx == len(chunks) - 1)
-                try:
-                    bot.send_message(message.chat.id, chunk, parse_mode="HTML", reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                except Exception:
-                    bot.send_message(message.chat.id, re.sub(r'<[^>]+>', '', chunk), parse_mode=None, reply_markup=markup if is_last else None, disable_web_page_preview=True)
-                time.sleep(0.3)
+            result = search_jobs_multi_source(query=query, limit=6)
+            _send_search_results(bot, message.chat.id, query, result)
         except Exception as e:
             bot.send_message(message.chat.id, f"⚠️ Search error: {e}")
 

@@ -60,6 +60,19 @@ running everything.
 - **`tn-live-jobs/public/index.html` has no build step.** It is served as-is; the
   CSS is already complete (animations, `prefers-reduced-motion`, responsive
   breakpoints, focus styles), so avoid redesigning it without cause.
+- **Bot search paging.** `bot_optimizer.search_jobs_multi_source(query, limit,
+  page)` returns a dict: `{results, page, has_more, total_available}`. Render it
+  with `format_search_results_report(..., page=, has_more=, display_query=)` and
+  send it through `main._send_search_results`, which attaches the "Search More"
+  button. The callback is `search_more:<md5-prefix>:<next_page>`; the raw query
+  is held in `bot_optimizer._SEARCH_QUERY_CACHE` because a long query will not
+  fit Telegram's 64-byte `callback_data` limit. Every callback_data must stay
+  ≤64 bytes — `test_job_discovery.SearchQualityTests` asserts this.
+- **Relevance is exact-first.** `search_jobs_multi_source` scores company (40),
+  title (30), location (15), body (5), then synonyms (3) and typo near-misses
+  (1–2), so a title hit always outranks an incidental description mention. An
+  unknown query relaxes one token at a time (city tokens kept) before returning
+  an empty board; nothing is invented.
 
 ## Tests in CI
 

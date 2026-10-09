@@ -76,7 +76,7 @@ class RegionalDiscoveryTests(unittest.TestCase):
              patch.object(bot_optimizer, 'get_national_drives', return_value=[]), \
              patch.object(bot_optimizer, 'get_tn_scraped_live_jobs', return_value=[]), \
              patch.object(job_radar, 'get_tamil_nadu_jobs', return_value=[]):
-            results = bot_optimizer.search_jobs_multi_source('python', limit=1)
+            results = bot_optimizer.search_jobs_multi_source('python', limit=1)['results']
         fetch.assert_called_once()
         self.assertEqual(results[0]['location'], 'Vellore')
 
@@ -304,6 +304,111 @@ class CardAndReminderTests(unittest.TestCase):
         job = job_radar._make_job('Developer', 'Employer', 'https://example.com', 'Vellore', 'Portal')
         self.assertEqual(job['date_posted'], '')
         self.assertIn('found_at', job)
+
+
+class SearchQualityTests(unittest.TestCase):
+    """Match-quality and paging regressions for the multi-source search."""
+
+    def _patch_sources(self, jobs):
+        return (
+            patch.object(discovery, 'fetch_priority_search', return_value=list(jobs)),
+            patch.object(bot_optimizer, 'get_walkin_drives', return_value=[]),
+            patch.object(bot_optimizer, 'get_national_drives', return_value=[]),
+            patch.object(bot_optimizer, 'get_tn_scraped_live_jobs', return_value=[]),
+            patch.object(bot_optimizer, 'fetch_live_adzuna_search', return_value=[]),
+            patch.object(bot_optimizer, 'fetch_jobspy_live_search', return_value=[]),
+            patch.object(bot_optimizer, 'fetch_simplify_jobs', return_value=[]),
+            patch.object(job_radar, 'get_tamil_nadu_jobs', return_value=[]),
+        )
+
+    def _search(self, jobs, query, **kwargs):
+        patches = self._patch_sources(jobs)
+        for p in patches:
+            p.start()
+            self.addCleanup(p.stop)
+        return bot_optimizer.search_jobs_multi_source(query, **kwargs)
+
+    def test_exact_title_and_company_outrank_description_only(self):
+        jobs = [
+            {'role': 'Sales Executive', 'company': 'Acme', 'location': 'Chennai',
+             'link': 'https://example.com/sales', 'snippet': 'Python skills a plus'},
+            {'role': 'Python Developer', 'company': 'Zoho', 'location': 'Chennai',
+             'link': 'https://example.com/python', 'snippet': 'Build APIs'},
+        ]
+        result = self._search(jobs, 'python', limit=5)
+        # Real title match ranks above an incidental description mention.
+        self.assertEqual(result['results'][0]['link'], 'https://example.com/python')
+        self.assertGreater(result['results'][0]['relevance'], result['results'][1]['relevance'])
+
+    def test_typo_query_still_matches_python(self):
+        jobs = [{'role': 'Python Developer', 'company': 'Acme', 'location': 'Vellore',
+                 'link': 'https://example.com/py', 'snippet': 'Backend'}]
+        result = self._search(jobs, 'pyhton', limit=5)
+        self.assertEqual(len(result['results']), 1)
+
+    def test_synonym_query_matches_related_role(self):
+        # "frontend" is absent from the listing; only the synonym (react) matches.
+        jobs = [{'role': 'React Developer', 'company': 'Acme', 'location': 'Chennai',
+                 'link': 'https://example.com/fe', 'snippet': 'Build web UI'}]
+        result = self._search(jobs, 'frontend', limit=5)
+        self.assertEqual(len(result['results']), 1)
+        self.assertNotIn('frontend', (jobs[0]['role'] + jobs[0]['snippet']).lower())
+
+    def test_pages_are_disjoint_and_has_more_flips(self):
+        jobs = [
+            {'role': f'Python Developer {i}', 'company': 'Acme', 'location': 'Chennai',
+             'link': f'https://example.com/j{i}', 'snippet': 'python'}
+            for i in range(5)
+        ]
+        first = self._search(jobs, 'python', limit=2, page=0)
+        second = self._search(jobs, 'python', limit=2, page=1)
+        self.assertTrue(first['has_more'])
+        self.assertTrue(second['has_more'])
+        self.assertEqual(first['page'], 0)
+        self.assertEqual(second['page'], 1)
+        first_links = {j['link'] for j in first['results']}
+        second_links = {j['link'] for j in second['results']}
+        self.assertFalse(first_links & second_links)
+        self.assertEqual(len(first['results']), 2)
+
+    def test_last_page_reports_no_more(self):
+        jobs = [
+            {'role': f'Python Developer {i}', 'company': 'Acme', 'location': 'Chennai',
+             'link': f'https://example.com/j{i}', 'snippet': 'python'}
+            for i in range(3)
+        ]
+        last = self._search(jobs, 'python', limit=2, page=1)
+        self.assertEqual(len(last['results']), 1)
+        self.assertFalse(last['has_more'])
+        self.assertEqual(last['total_available'], 3)
+
+    def test_search_more_button_hashed_and_absent_on_last_page(self):
+        jobs = [{'role': 'Python Developer', 'company': 'Acme', 'location': 'Chennai',
+                 'link': 'https://example.com/py', 'snippet': 'python'}]
+        long_query = 'python developer chennai remote senior immediate joiner'
+        chunks, markup = bot_optimizer.format_search_results_report(
+            long_query, jobs, page=0, has_more=True,
+        )
+        buttons = markup.to_dict()['inline_keyboard']
+        callbacks = [b['callback_data'] for row in buttons for b in row if 'callback_data' in b]
+        self.assertTrue(all(len(c.encode()) <= 64 for c in callbacks))
+        more = [c for c in callbacks if c.startswith('search_more:')]
+        self.assertTrue(more)
+        # The hashed key resolves back to the original query.
+        qkey = more[0].split(':')[1]
+        self.assertEqual(bot_optimizer.get_search_query(qkey), long_query)
+
+        _, last_markup = bot_optimizer.format_search_results_report(long_query, jobs, page=3, has_more=False)
+        last_callbacks = [b.get('callback_data') for row in last_markup.to_dict()['inline_keyboard'] for b in row]
+        self.assertFalse(any((c or '').startswith('search_more:') for c in last_callbacks))
+
+    def test_refresh_button_stays_within_callback_limit(self):
+        jobs = [{'role': 'Python Developer', 'company': 'Acme', 'location': 'Chennai',
+                 'link': 'https://example.com/py', 'snippet': 'python'}]
+        long_query = 'x' * 200
+        _, markup = bot_optimizer.format_search_results_report(long_query, jobs, has_more=True)
+        callbacks = [b['callback_data'] for row in markup.to_dict()['inline_keyboard'] for b in row if 'callback_data' in b]
+        self.assertTrue(all(len(c.encode()) <= 64 for c in callbacks))
 
 
 if __name__ == '__main__':

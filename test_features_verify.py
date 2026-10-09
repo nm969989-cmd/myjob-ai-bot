@@ -192,13 +192,16 @@ def run_all_tests():
 
     # 12. Multi-Source Unified Job Search Engine (/search)
     from bot_optimizer import search_jobs_multi_source, format_search_results_report
-    py_matches = search_jobs_multi_source("python", limit=5)
+    py_result = search_jobs_multi_source("python", limit=5)
+    py_matches = py_result["results"]
     assert len(py_matches) > 0, "Expected at least 1 Python match across integrated sources"
-    
-    zoho_matches = search_jobs_multi_source("zoho", limit=3)
+
+    zoho_matches = search_jobs_multi_source("zoho", limit=3)["results"]
     assert any("zoho" in (m["company"] + m["role"]).lower() for m in zoho_matches), "Expected Zoho match"
 
-    search_chunks, search_markup = format_search_results_report("python", py_matches)
+    search_chunks, search_markup = format_search_results_report(
+        "python", py_matches, page=py_result["page"], has_more=py_result["has_more"],
+    )
     assert len(search_chunks) > 0
     assert "SEARCH RESULTS" in search_chunks[0]
     assert search_markup is not None
