@@ -4963,7 +4963,6 @@ def api_download_profile():
 
 @app.route("/api/add_channel", methods=["POST"])
 def api_add_channel():
-    global TARGET_CHANNELS
     data = request.get_json(silent=True) or {}
     channel = str(data.get("channel", "") or "").replace("@", "").strip()
     if channel:
