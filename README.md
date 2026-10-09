@@ -163,3 +163,15 @@ python -m unittest test_lever_apply -v
 The portal search plan now covers 44 configured location entries, retaining Puducherry as a separately labeled nearby UT. Each portal gets up to 12 query pages, mixing roles and cities instead of consuming its page budget on the first role. Coverage rotates daily and across sources. Query budgets remain bounded, respect existing delays/rate-limit stops, and share the remaining run time across sources. Individual in-flight requests can exceed a source's soft time budget. Official/company sources retain their existing search mechanisms. No source can guarantee every vacancy.
 
 Use **`/tnall 7`** in the authorized Telegram chat to receive a CSV containing every unique matching dated result from the currently published feed and radar cache (choose 1–90 days). It includes all available job categories, original links and recorded check status; it is not restricted to the ten-card preview. Explicitly expired/failed checks are omitted; undated records are counted separately instead of being assigned today's date. Puducherry is labeled separately. This command reads available feeds and does not itself trigger scraping; refresh with the existing `npm --prefix tn-live-jobs run scrape` workflow first when needed. Python delivery reads the shared city-alias JSON directly and does not need Node installed in the bot container. No new automatic notification schedule is enabled by this change.
+
+#### Reliable regional search and download
+
+Use `/tnall 7 Chennai` or `/tnall 30 Hosur` to filter a city/district; aliases such as Madras are accepted. The authenticated career workspace also has **Tamil Nadu feed search** with date/city fields and a CSV download. Invalid queries clear the old download link; missing feeds are reported explicitly rather than presented as zero jobs. These controls read existing feeds; they do not trigger a new scrape.
+
+“Last 7 days” now means today plus the previous six calendar days in Asia/Kolkata. Future timestamps and dates are excluded. Duplicate URLs use their latest recorded availability observation, retaining descriptive fields if the newer record only contains a link check. Malformed records are counted/skipped; an unavailable feed is distinguished from a valid empty feed. CSV includes the source and recorded check status. Telegram captions include up to three direct job links while staying within caption limits; the complete list stays in the attachment. Successful delivery is reported only when Telegram accepts the document.
+
+A local export is also available without Telegram or a browser:
+
+```sh
+python -m tn_search_delivery --days 7 --city Chennai --output /tmp/chennai-jobs.csv
+```

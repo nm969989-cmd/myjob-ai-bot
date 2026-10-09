@@ -405,6 +405,20 @@ def register_routes(app, root, store=None):
         except Conflict as error:
             return jsonify(error=str(error)), 409
 
+    @app.route('/api/career/tn-search')
+    def career_tn_search():
+        from tn_search_delivery import search, csv_bytes, FeedUnavailable
+        from flask import Response
+        try:
+            result = search(root, int(request.args.get('days', '7')), request.args.get('city'))
+            if request.args.get('download') == 'csv':
+                return Response(csv_bytes(result['jobs']), mimetype='text/csv', headers={'Content-Disposition': 'attachment; filename=tamil-nadu-jobs.csv'})
+            return jsonify(result)
+        except FeedUnavailable as error:
+            return jsonify(error=str(error)), 503
+        except ValueError as error:
+            return jsonify(error=str(error)), 400
+
     @app.route('/api/career/jobs')
     def career_jobs():
         return jsonify(jobs=load_jobs(root))

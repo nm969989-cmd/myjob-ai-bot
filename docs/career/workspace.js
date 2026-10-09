@@ -160,6 +160,22 @@
     await syncBookmarks();
     populate(); renderMatches(); renderTracker(); health();
     if (config.server) {
+      const searchPanel = document.createElement('section'); searchPanel.className = 'cw-section';
+      searchPanel.innerHTML = '<h2>Tamil Nadu feed search</h2><p>Search all available categories in saved feeds. This does not run a new scrape. Dates use India time; Puducherry is labeled separately.</p><form id="cw-tn-form"><div class="cw-grid"><label>Last calendar days<input id="cw-tn-days" type="number" min="1" max="90" value="7" required></label><label>City or district (optional)<input id="cw-tn-city" placeholder="Chennai, Hosur, Tenkasi…"></label></div><button type="submit" id="cw-tn-submit">Search feeds</button></form><p id="cw-tn-result" role="status"></p><a id="cw-tn-download" class="cw-link" hidden>Download results CSV</a>';
+      host.querySelector('details').append(searchPanel);
+      $('tn-form').addEventListener('submit', async event => {
+        event.preventDefault(); $('tn-submit').disabled = true; $('tn-download').hidden = true;
+        $('tn-result').textContent = 'Searching available feeds…';
+        const query = new URLSearchParams({days:$('tn-days').value, city:$('tn-city').value});
+        try {
+          const response = await fetch('/api/career/tn-search?' + query); const data = await response.json();
+          if (!response.ok) throw Error(data.error || 'Search failed. Try again.');
+          const unavailable = data.sources.filter(s => s.status !== 'loaded').length;
+          $('tn-result').textContent = `${data.jobs.length} listings · ${data.from_date} to ${data.to_date} IST · ${data.undated} undated excluded · ${unavailable} feeds unavailable. Recorded checks may be stale.`;
+          query.set('download', 'csv'); $('tn-download').href = '/api/career/tn-search?' + query; $('tn-download').hidden = false;
+        } catch (error) { $('tn-result').textContent = error.message; }
+        finally { $('tn-submit').disabled = false; }
+      });
       const panel = document.createElement('section'); panel.className = 'cw-section';
       panel.innerHTML = '<h2>Automatic applications</h2><p>Opt-in Lever applications to selected employers. Each attempt counts against the daily cap. Confirmed submissions update your tracker and send a Telegram message with the job link. Unknown results are not retried.</p><p>Set exact company names and Lever slugs, allowed roles/cities, minimum LPA (0 means no salary limit), dailyLimit and timezone. Set profileConfirmed only after reviewing your real server profile.json and resume.pdf. Unfamiliar forms and CAPTCHA require manual handling.</p><label>Automation settings (JSON)<textarea id="cw-automation" rows="16" spellcheck="false"></textarea></label><button type="button" id="cw-save-automation" disabled>Save automation settings</button><p id="cw-automation-status" role="status"></p><div id="cw-auto-attempts"></div>';
       host.querySelector('details').append(panel);

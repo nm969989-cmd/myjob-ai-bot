@@ -7659,9 +7659,10 @@ if bot:
         try:
             parts = message.text.split()
             days = int(parts[1]) if len(parts) > 1 else 7
-            send(bot, message.chat.id, os.path.dirname(os.path.abspath(__file__)), days)
-        except (ValueError, TypeError):
-            bot.reply_to(message, 'Use /tnall 7 (choose 1–90 days).')
+            city = ' '.join(parts[2:]) or None
+            send(bot, message.chat.id, os.path.dirname(os.path.abspath(__file__)), days, city)
+        except (ValueError, TypeError) as error:
+            bot.reply_to(message, f'{error} Use /tnall 7 or /tnall 7 Chennai (1–90 days).', parse_mode=None)
         except Exception:
             bot.reply_to(message, 'Could not prepare or send the job file. Check the feed refresh and Telegram connection; try again.')
 
