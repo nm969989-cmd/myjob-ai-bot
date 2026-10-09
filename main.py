@@ -4645,7 +4645,9 @@ def home():
             with open(csv_file, "r", encoding="utf-8") as f:
                 rows = list(csv.reader(f))
                 if len(rows) > 1:
-                    recent_rows = list(reversed(rows[-10:]))
+                    # Skip header row (rows[0]), then take last 10 data rows
+                    data_rows = rows[1:]
+                    recent_rows = list(reversed(data_rows[-10:]))
         except Exception:
             pass
 
@@ -4654,10 +4656,14 @@ def home():
         recent_jobs_html += '<thead><tr class="border-b border-white/10 text-xs text-gray-400 uppercase"><th class="py-2 pl-2">Status</th><th class="py-2">Job URL / Title</th><th class="py-2">Date</th><th class="py-2 text-right pr-2">CRM Actions</th></tr></thead><tbody class="text-sm">'
         for row in recent_rows:
             if len(row) >= 4:
-                date, title, url, status = row[0], row[1][:50], row[2], row[3]
+                # Escape all CSV values to prevent XSS
+                date = html.escape(row[0])
+                title = html.escape(row[1][:50])
+                url = html.escape(row[2])
+                status = html.escape(row[3])
                 
                 # Check if it was marked as interview previously in notes or status
-                notes = row[4] if len(row) > 4 else ""
+                notes = html.escape(row[4]) if len(row) > 4 else ""
                 if "Interview" in status or "Interview" in notes:
                     badge = '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-purple-900/80 text-purple-300 border border-purple-500 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">📞 INTERVIEW</span>'
                 elif "Rejected" in status or "Rejected" in notes:
@@ -7581,6 +7587,18 @@ if bot:
             markup.row(InlineKeyboardButton("🌐 Open Live Job Board (MiniApp)", web_app=WebAppInfo(url=board_url)))
         except Exception:
             markup.row(InlineKeyboardButton("🌐 Open Live Job Board (Web)", url=board_url))
+
+        # The Flask mini-app (/app) is gated by DASHBOARD_TOKEN, and Telegram can
+        # only pass it as a ?token= query parameter. Offer the authenticated
+        # deep-link only when a token is configured and the public base URL is known.
+        miniapp_url = ""
+        if DASHBOARD_TOKEN:
+            base_url = str(os.getenv("PUBLIC_BASE_URL", "")).strip().rstrip("/")
+            if not base_url and os.environ.get("SPACE_HOST"):
+                base_url = f"https://{os.environ['SPACE_HOST'].strip().rstrip('/')}"
+            if base_url:
+                miniapp_url = f"{base_url}/app?token={DASHBOARD_TOKEN}"
+                markup.row(InlineKeyboardButton("📱 Open Bot Mini-App", url=miniapp_url))
 
         markup.row(
             InlineKeyboardButton("💻 Browse Tech Jobs", callback_data="tnjobs:tech"),

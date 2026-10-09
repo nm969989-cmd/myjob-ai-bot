@@ -218,6 +218,17 @@
     let savedJobIds = JSON.parse(localStorage.getItem('myjob_saved_jobs') || '[]');
     let appliedJobUrls = JSON.parse(localStorage.getItem('myjob_applied_urls') || '[]');
 
+    // The API is gated by DASHBOARD_TOKEN (see _enforce_dashboard_auth in
+    // main.py). Telegram can only pass it as a ?token= query parameter, so we
+    // forward it as the X-Admin-Token header on the jobs request.
+    const dashboardToken = (() => {
+      try {
+        const fromUrl = new URLSearchParams(window.location.search).get('token');
+        if (fromUrl) { sessionStorage.setItem('myjob_dashboard_token', fromUrl); return fromUrl; }
+        return sessionStorage.getItem('myjob_dashboard_token') || '';
+      } catch (e) { return ''; }
+    })();
+
     // Color gradients for company avatars
     const gradients = [
       'from-blue-600 to-indigo-600',
@@ -250,13 +261,32 @@
       }
 
       try {
-        const response = await fetch('/api/miniapp/jobs');
+        const headers = dashboardToken ? { 'X-Admin-Token': dashboardToken } : {};
+        const response = await fetch('/api/miniapp/jobs', { headers });
+        if (response.status === 401) throw new Error('unauthorized');
         if (!response.ok) throw new Error('API offline');
         const data = await response.json();
         allJobs = data.jobs || [];
         renderJobs();
       } catch (err) {
         console.warn('Fallback to local test jobs:', err);
+        if (err && err.message === 'unauthorized') {
+          // Surface the auth problem instead of silently showing demo data.
+          const list = document.getElementById('jobFeed');
+          if (list) {
+            list.innerHTML = `
+              <div class="glass-card rounded-2xl p-5 text-center">
+                <div class="text-3xl mb-2" aria-hidden="true">🔐</div>
+                <h3 class="text-sm font-bold text-white">Dashboard token required</h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                  This mini-app must be opened with <code class="text-amber-300">?token=</code>
+                  appended to its URL, matching the server's <code class="text-amber-300">DASHBOARD_TOKEN</code>.
+                </p>
+              </div>`;
+          }
+          document.getElementById('loadingSkeleton')?.classList.add('hidden');
+          return;
+        }
         // Fallback demo data if testing locally without backend
         if (allJobs.length === 0) {
           allJobs = [
