@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Elite Job Bot | Command Center</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * { font-family: 'Outfit', sans-serif; }
@@ -56,6 +56,58 @@
   #countdown { color: #94a3b8; }
   .glass-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
   .glass-btn:hover { transform: translateY(-2px) scale(1.05); filter: brightness(1.2); }
+
+  /* A11y: Focus visible for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  /* A11y: Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .orb, .pulse-dot, .stat-card, .feed-card, .channel-chip,
+    .ring-progress, .pro-btn, .glass-btn, [style*="animation"], [style*="transition"] {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* Card entrance animation */
+  .stat-card, .feed-card, .pro-card, .glass-strong {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .stat-card:nth-child(1) { animation-delay: 50ms; }
+  .stat-card:nth-child(2) { animation-delay: 100ms; }
+  .stat-card:nth-child(3) { animation-delay: 150ms; }
+  .stat-card:nth-child(4) { animation-delay: 200ms; }
+  .feed-card:nth-child(1) { animation-delay: 250ms; }
+  .feed-card:nth-child(2) { animation-delay: 300ms; }
+  .feed-card:nth-child(3) { animation-delay: 350ms; }
+  .feed-card:nth-child(4) { animation-delay: 400ms; }
+
+  @keyframes cardFadeIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Stat count-up animation */
+  .stat-value { transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+  /* Respect reduced motion for all animations */
+  @media (prefers-reduced-motion: reduce) {
+    .orb, .pulse-dot, .stat-card, .feed-card, .pro-card, .glass-strong,
+    .pro-btn, .glass-btn, [style*="animation"], [style*="transition"] {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* Focus visible for keyboard accessibility */
+  :focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
 </style>
 </head>
 <body>
@@ -63,6 +115,36 @@
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 <div class="orb orb3"></div>
+
+<!-- 🔐 DASHBOARD UNLOCK GATE
+     The Flask API requires an X-Admin-Token header (see _enforce_dashboard_auth
+     in main.py). The page itself is served open, so the token is never rendered
+     into the HTML — it is entered once and kept in sessionStorage for this tab. -->
+<div id="authGate" class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-[#060918]/95 backdrop-blur-xl" role="dialog" aria-modal="true" aria-labelledby="authGateTitle">
+  <form id="authForm" class="pro-card rounded-3xl p-8 w-full max-w-md" autocomplete="off">
+    <div class="flex flex-col items-center gap-4 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center shadow-[0_0_40px_rgba(37,99,235,0.5)] border border-blue-400/30">
+        <span class="text-3xl" aria-hidden="true">🔐</span>
+      </div>
+      <div>
+        <h2 id="authGateTitle" class="text-2xl font-black tracking-tight text-white">Unlock Command Center</h2>
+        <p class="text-blue-200/80 mt-1 text-sm font-semibold">Enter your <code class="text-blue-300">DASHBOARD_TOKEN</code> to control the bot.</p>
+      </div>
+    </div>
+    <label for="authToken" class="block text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-6 mb-2">Dashboard Token</label>
+    <input id="authToken" type="password" name="token" autocomplete="current-password" required
+           class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-500/40 transition-all"
+           placeholder="Paste token here…" aria-describedby="authGateMsg">
+    <p id="authGateMsg" class="text-xs mt-3 min-h-[1.25rem] text-gray-400" role="status" aria-live="polite"></p>
+    <button type="submit" class="pro-btn w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-500 border border-blue-400/50 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-[0_0_20px_rgba(37,99,235,0.4)]">
+      🔓 Unlock Dashboard
+    </button>
+    <p class="text-[10px] text-gray-500 mt-4 text-center leading-relaxed">
+      The token is stored only in this browser tab (sessionStorage) and is sent as the
+      <code class="text-gray-400">X-Admin-Token</code> header on every request.
+    </p>
+  </form>
+</div>
 
 <div class="relative z-10 max-w-6xl mx-auto px-4 py-8">
 
@@ -325,7 +407,7 @@
       <button onclick="if(confirm('Are you sure you want to delete all application logs and stats?')) resetHistory()" class="pro-btn px-4 py-2.5 rounded-xl font-bold text-xs" style="background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;box-shadow:0 4px 15px rgba(239,68,68,0.4)">
         🗑️ Reset Logs
       </button>
-      <div id="ctrlStatus" class="text-sm text-gray-400 ml-2"></div>
+      <div id="ctrlStatus" class="text-sm text-gray-400 ml-2" aria-live="polite" aria-atomic="true"></div>
       <div class="ml-auto text-xs px-3 py-1.5 rounded-full font-semibold" id="botStateBadge" style="background:{{'rgba(34,197,94,0.15)' if not BOT_PAUSED else 'rgba(245,158,11,0.15)'}};border:1px solid {{'rgba(34,197,94,0.4)' if not BOT_PAUSED else 'rgba(245,158,11,0.4)'}};color:{{'#4ade80' if not BOT_PAUSED else '#fbbf24'}}">
         {{'▶️ RUNNING' if not BOT_PAUSED else '⏸️ PAUSED'}}
       </div>
@@ -392,9 +474,9 @@
         <h3 class="text-xs text-gray-400 font-bold mb-2 uppercase">📥 Data Exports & Links</h3>
         <div class="flex flex-wrap gap-2">
           <button onclick="window.open('{{notion_url}}', '_blank')" class="pro-btn bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(79,70,229,0.4)]">↗️ Open Notion CRM</button>
-          <button onclick="window.location.href='api/download_log'" class="pro-btn bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(20,184,166,0.3)]">CSV Log</button>
-          <button onclick="window.location.href='api/download_profile'" class="pro-btn bg-gradient-to-r from-gray-700 to-gray-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(75,85,99,0.3)]">profile.json</button>
-          <button onclick="window.location.href='api/download_qa'" class="pro-btn bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(168,85,247,0.3)]">Q&A Brain</button>
+          <button onclick="window.location.href = apiUrl('api/download_log')" class="pro-btn bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(20,184,166,0.3)]">CSV Log</button>
+          <button onclick="window.location.href = apiUrl('api/download_profile')" class="pro-btn bg-gradient-to-r from-gray-700 to-gray-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(75,85,99,0.3)]">profile.json</button>
+          <button onclick="window.location.href = apiUrl('api/download_qa')" class="pro-btn bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(168,85,247,0.3)]">Q&A Brain</button>
         </div>
       </div>
     </div>
@@ -421,7 +503,7 @@
           <p class="text-xs text-gray-400 mb-4">Autonomously logs in and mass-applies to 20 Fresher Software Engineer roles using human-mimicry.</p>
           <div class="flex flex-col gap-2">
                                     <button onclick="triggerInstahyre()" class="pro-btn bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white px-4 py-3 rounded-lg text-sm font-black mt-1 shadow-[0_0_15px_rgba(217,70,239,0.5)] border border-fuchsia-400/50 hover:scale-[1.02] transition-transform">🚀 LAUNCH CAMPAIGN NOW</button>
-            <div id="instaStatus" class="text-xs mt-2 font-bold text-center h-4"></div>
+            <div id="instaStatus" class="text-xs mt-2 font-bold text-center h-4" aria-live="polite" aria-atomic="true"></div>
           </div>
         </div>
       </div>
@@ -471,29 +553,29 @@
         🚀 Scan Now
       </button>
     </div>
-    <div id="radarStatus" class="text-xs text-gray-400 mb-4">Last scan: Loading...</div>
+    <div id="radarStatus" class="text-xs text-gray-400 mb-4" aria-live="polite" aria-atomic="true">Last scan: Loading...</div>
     <div id="radarJobList" class="space-y-2">
       <div class="text-center text-gray-500 text-xs py-4">⏳ Loading radar results...</div>
     </div>
   </div>
 
   <!-- 📊 STATS FOOTER BAR -->
-  <div class="glass rounded-2xl p-4 mb-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+  <div class="glass rounded-2xl p-4 mb-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
     <div>
       <p class="text-xs text-gray-500 uppercase tracking-widest">Failed Jobs</p>
-      <p class="text-2xl font-black text-red-400">{{stats.get('failed', 0)}}</p>
+      <p class="text-2xl font-black text-red-400 stat-value">{{stats.get('failed', 0)}}</p>
     </div>
     <div>
       <p class="text-xs text-gray-500 uppercase tracking-widest">Weekly Applied</p>
-      <p class="text-2xl font-black text-green-400" id="weeklyApplied">—</p>
+      <p class="text-2xl font-black text-green-400 stat-value" id="weeklyApplied">—</p>
     </div>
     <div>
       <p class="text-xs text-gray-500 uppercase tracking-widest">Retry Queue</p>
-      <p class="text-2xl font-black text-orange-400" id="retryCount">—</p>
+      <p class="text-2xl font-black text-orange-400 stat-value" id="retryCount">—</p>
     </div>
     <div>
       <p class="text-xs text-gray-500 uppercase tracking-widest">Bot Uptime</p>
-      <p class="text-2xl font-black text-purple-400" id="uptime">—</p>
+      <p class="text-2xl font-black text-purple-400 stat-value" id="uptime">—</p>
     </div>
   </div>
   <footer class="text-center text-xs text-gray-600 pb-4">
@@ -502,6 +584,84 @@
 </div>
 
 <script>
+  // ─────────────────────────────────────────────────────────────
+  // DASHBOARD AUTHENTICATION
+  // main.py gates every API route behind DASHBOARD_TOKEN
+  // (_enforce_dashboard_auth). The token is read once from the URL
+  // (?token=…) or entered in the unlock gate, then attached as the
+  // X-Admin-Token header on every request from this page.
+  // ─────────────────────────────────────────────────────────────
+  const TOKEN_KEY = 'myjob_dashboard_token';
+  let authed = false;
+
+  function getToken() {
+    try {
+      const fromUrl = new URLSearchParams(window.location.search).get('token');
+      if (fromUrl) { sessionStorage.setItem(TOKEN_KEY, fromUrl); return fromUrl; }
+      return sessionStorage.getItem(TOKEN_KEY) || '';
+    } catch (e) { return ''; }
+  }
+
+  function apiUrl(path) {
+    // Direct browser navigations (download links) cannot send headers,
+    // so the token travels as a query parameter instead.
+    const t = getToken();
+    if (!t) return path;
+    return path + (path.indexOf('?') === -1 ? '?' : '&') + 'token=' + encodeURIComponent(t);
+  }
+
+  async function apiFetch(path, options) {
+    options = options || {};
+    const token = getToken();
+    if (!token) {
+      showAuthGate('Enter your dashboard token to continue.');
+      const err = new Error('unauthorized'); err.status = 401; throw err;
+    }
+    const headers = Object.assign({}, options.headers, { 'X-Admin-Token': token });
+    const res = await fetch(path, Object.assign({}, options, { headers }));
+    if (res.status === 401) {
+      sessionStorage.removeItem(TOKEN_KEY);
+      showAuthGate('Token rejected. Check DASHBOARD_TOKEN and try again.');
+      const err = new Error('unauthorized'); err.status = 401; throw err;
+    }
+    return res;
+  }
+
+  function showAuthGate(message) {
+    authed = false;
+    const gate = document.getElementById('authGate');
+    const msg = document.getElementById('authGateMsg');
+    if (msg && message) { msg.textContent = message; msg.className = 'text-xs mt-3 min-h-[1.25rem] text-red-400'; }
+    if (gate) {
+      gate.classList.remove('hidden');
+      const input = document.getElementById('authToken');
+      if (input) { input.value = ''; input.focus(); }
+    }
+  }
+
+  function hideAuthGate() {
+    authed = true;
+    const gate = document.getElementById('authGate');
+    if (gate) gate.classList.add('hidden');
+  }
+
+  function describeApiError(err) {
+    if (err && err.status === 503) return 'Server has no DASHBOARD_TOKEN configured.';
+    if (err && err.status === 401) return 'Unauthorized — unlock the dashboard first.';
+    return (err && err.message) ? err.message : 'Request failed';
+  }
+
+  document.getElementById('authForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const input = document.getElementById('authToken');
+    const token = (input.value || '').trim();
+    if (!token) return;
+    sessionStorage.setItem(TOKEN_KEY, token);
+    hideAuthGate();
+    loadStats();
+    loadRadar();
+  });
+
   // Fast 120s countdown with progress bar
   let secs = 120;
   const startSecs = 120;
@@ -528,18 +688,38 @@
   if (el2) el2.textContent = hoursSaved + ' Hours';
 
   // Load queue & stats from API
-  async function loadStats() {
+  function loadStats() {
+    if (!authed) return;
     try {
-      const res = await fetch('api/status');
+      const res = await apiFetch('api/status');
       const data = await res.json();
       const q = document.getElementById('queueSize');
       const w = document.getElementById('weeklyApplied');
       const r = document.getElementById('retryCount');
       const u = document.getElementById('uptime');
-      if (q) q.textContent = data.queue_size ?? '0';
-      if (w) w.textContent = data.weekly_applied ?? '—';
-      if (r) r.textContent = data.retry_count ?? '0';
-      if (u) u.textContent = data.uptime ?? '—';
+      
+      // Count-up animation for stat values
+      function animateValue(el, newVal) {
+        if (!el) return;
+        const current = parseInt(el.textContent) || 0;
+        const target = typeof newVal === 'number' ? newVal : (parseInt(newVal) || 0);
+        if (current === target) return;
+        const duration = 600;
+        const start = performance.now();
+        function step(now) {
+          const progress = Math.min((now - start) / 600, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(current + (target - current) * eased);
+          if (progress < 1) requestAnimationFrame(step);
+          else el.textContent = target;
+        }
+        requestAnimationFrame(step);
+      }
+      
+      if (q) animateValue(q, data.queue_size ?? 0);
+      if (w) animateValue(w, data.weekly_applied ?? 0);
+      if (r) animateValue(r, data.retry_count ?? 0);
+      if (u) animateValue(u, data.uptime ?? 0);
       
       isEngineRunning = !!data.instahyre_running;
       if (isEngineRunning) {
@@ -549,15 +729,16 @@
               statusEl.style.color = '#9ca3af';
           }
       }
-    } catch(e) { console.log('Stats load error', e); }
+    } catch(e) { console.log('Stats load error', describeApiError(e)); }
   }
-  loadStats();
-  setInterval(loadStats, 5000); // Check status every 5 seconds
+  if (getToken()) { hideAuthGate(); loadStats(); setInterval(loadStats, 5000); }
+  else { showAuthGate(); }
 
   // Load radar results on page load
   async function loadRadar() {
+    if (!authed) return;
     try {
-      const res  = await fetch('api/radar');
+      const res  = await apiFetch('api/radar');
       const data = await res.json();
       document.getElementById('radarStatus').textContent =
         `Last scan: ${data.last_scan || 'Never'}  •  ${data.total || 0} new jobs found`;
@@ -567,7 +748,6 @@
         container.innerHTML = '<div class="text-center text-gray-500 text-xs py-4">No new jobs found yet. Click "Scan Now" to start!</div>';
         return;
       }
-
       // Group by source
       const grouped = {};
       data.jobs.forEach(j => {
@@ -627,7 +807,7 @@
     btn.textContent = '⏳ Scanning...';
     btn.disabled = true;
     try {
-      const res  = await fetch('api/run_radar', {method: 'POST'});
+      const res  = await apiFetch('api/run_radar', {method: 'POST'});
       const data = await res.json();
       status.textContent = '✅ ' + data.message;
       status.style.color = '#4ade80';
@@ -639,13 +819,13 @@
     btn.disabled = false;
   }
 
-  loadRadar(); // Load on page open
+  if (authed) loadRadar(); // Load on page open (after unlock if gated)
 
   async function controlBot(action) {
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = action === 'pause' ? '⏳ Pausing...' : '⏳ Resuming...';
     try {
-      const res = await fetch('api/' + action, {method: 'POST'});
+      const res = await apiFetch('api/' + action, {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = data.message;
       statusEl.style.color = action === 'pause' ? '#fbbf24' : '#4ade80';
@@ -671,7 +851,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Forcing scan...';
     try {
-      const res = await fetch('api/run_radar', {method: 'POST'});
+      const res = await apiFetch('api/run_radar', {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -683,7 +863,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Rotating key...';
     try {
-      const res = await fetch('api/rotate_key', {method: 'POST'});
+      const res = await apiFetch('api/rotate_key', {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -697,7 +877,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Initiating manual apply...';
     try {
-      const res = await fetch('api/manual_apply', {
+      const res = await apiFetch('api/manual_apply', {
         method: 'POST', 
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({url: url})
@@ -716,7 +896,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Updating ' + field + '...';
     try {
-      const res = await fetch('api/update_profile', {
+      const res = await apiFetch('api/update_profile', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({field: field, value: val})
@@ -733,7 +913,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Regenerating PDF...';
     try {
-      const res = await fetch('api/regenerate_resume', {method: 'POST'});
+      const res = await apiFetch('api/regenerate_resume', {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -745,7 +925,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Resetting logs...';
     try {
-      const res = await fetch('api/reset_history', {method: 'POST'});
+      const res = await apiFetch('api/reset_history', {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -757,7 +937,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Pinging AI Models...';
     try {
-      const res = await fetch('api/health_check');
+      const res = await apiFetch('api/health_check');
       const data = await res.json();
       alert(`🩺 AI Engine Health:\n\nGemini: ${data.gemini}\nGroq: ${data.groq}`);
       statusEl.textContent = '';
@@ -768,7 +948,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Scanning Gmail for Interviews...';
     try {
-      const res = await fetch('api/scan_inbox', {method: 'POST'});
+      const res = await apiFetch('api/scan_inbox', {method: 'POST'});
       const data = await res.json();
       alert(data.message);
       statusEl.textContent = '✅ Inbox scan complete!';
@@ -785,7 +965,7 @@
     const formData = new FormData();
     formData.append('resume', fileInput.files[0]);
     try {
-      const res = await fetch('api/upload_resume', {method: 'POST', body: formData});
+      const res = await apiFetch('api/upload_resume', {method: 'POST', body: formData});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -801,7 +981,7 @@
     const formData = new FormData();
     formData.append('auth', fileInput.files[0]);
     try {
-      const res = await fetch('api/upload_auth', {method: 'POST', body: formData});
+      const res = await apiFetch('api/upload_auth', {method: 'POST', body: formData});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -813,7 +993,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Updating CRM...';
     try {
-      const res = await fetch('api/mark_crm', {
+      const res = await apiFetch('api/mark_crm', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({url: url, status: newStatus})
@@ -830,7 +1010,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Adding channel...';
     try {
-      const res = await fetch('api/add_channel', {
+      const res = await apiFetch('api/add_channel', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({channel: ch})
@@ -871,7 +1051,7 @@
     logToConsole('Bypassing Cloudflare protections...', 'info');
     
     try {
-      const res = await fetch('api/instahyre', {
+      const res = await apiFetch('api/instahyre', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
