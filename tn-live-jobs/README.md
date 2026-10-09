@@ -50,7 +50,7 @@ Extra knobs (same names work in `env:` blocks in CI):
 | Variable              | What it does                                  |
 | --------------------- | --------------------------------------------- |
 | `QUERY=staff nurse`   | add one extra search keyword                  |
-| `CITY=Madurai`        | search a single city instead of all ten       |
+| `CITY=Madurai`        | search a single city instead of every city    |
 | `MAX_TOTAL_JOBS=25`   | cap the number of jobs for short test runs    |
 | `ENABLE_TIER3=true`   | also try the optional Tier 3 source           |
 | `SKIP_SPA_SITES=true` | skip slow JavaScript-only corporate sites     |

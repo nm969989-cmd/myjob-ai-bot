@@ -17,11 +17,24 @@ const CITIES = [
   'Erode',
   'Thanjavur',
   'Tiruppur',
+  'Hosur',
+  'Kanchipuram',
+  'Dindigul',
+  'Karur',
+  'Nagercoil',
+  'Thoothukudi',
+  'Cuddalore',
+  'Ranipet',
+  'Sivakasi',
+  'Kumbakonam',
+  'Neyveli',
   'Tamil Nadu',
 ];
 
 // When we read a page, how do we know which city it is talking about?
 // Each city maps to the different spellings that appear on real web pages.
+// Keep this in sync with job_radar.py's TAMIL_NADU_LOCATIONS (see
+// test_priority_cities.js, which fails if a locality is missing here).
 const CITY_ALIASES = {
   Tiruvannamalai: ['tiruvannamalai', 'thiruvannamalai', 'thiruannamalai', 'tiruvanamalai'],
   Vellore: ['vellore'],
@@ -35,6 +48,17 @@ const CITY_ALIASES = {
   Erode: ['erode'],
   Thanjavur: ['thanjavur', 'tanjore'],
   Tiruppur: ['tiruppur', 'tirupur'],
+  Hosur: ['hosur'],
+  Kanchipuram: ['kanchipuram', 'kancheepuram', 'kanchi'],
+  Dindigul: ['dindigul', 'dindigal'],
+  Karur: ['karur'],
+  Nagercoil: ['nagercoil', 'nagarcoil'],
+  Thoothukudi: ['thoothukudi', 'tuticorin'],
+  Cuddalore: ['cuddalore', 'kadalur'],
+  Ranipet: ['ranipet', 'ranipettai'],
+  Sivakasi: ['sivakasi'],
+  Kumbakonam: ['kumbakonam'],
+  Neyveli: ['neyveli'],
   'Tamil Nadu': ['tamil nadu', 'tamilnadu', 'across tamil nadu'],
 };
 

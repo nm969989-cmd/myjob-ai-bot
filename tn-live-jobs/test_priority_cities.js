@@ -1,6 +1,8 @@
 'use strict';
 // Offline tests: no portal requests or scraping CLI execution.
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { test } = require('node:test');
 const config = require('./src/config');
 const { detectCity } = require('./src/util');
@@ -65,4 +67,53 @@ test('search plan deduplicates repeated cities', () => {
   const { planSearches } = config;
   const plan = planSearches(['a'], ['Chennai', 'chennai', 'Chennai '], 0);
   assert.equal(plan.length, 1);
+});
+
+test('every Tamil Nadu locality known to the Python radar is searchable here', () => {
+  // The Python bot (job_radar.py) and this scraper must agree on what counts
+  // as Tamil Nadu. If a locality is added on one side only, jobs in that city
+  // are silently dropped or never searched. Read the Python list directly so
+  // the two cannot drift apart unnoticed.
+  const radarPath = path.join(__dirname, '..', 'job_radar.py');
+  const source = fs.readFileSync(radarPath, 'utf8');
+  const block = /TAMIL_NADU_LOCATIONS\s*=\s*\[([\s\S]*?)\]/.exec(source);
+  assert.ok(block, 'could not find TAMIL_NADU_LOCATIONS in job_radar.py');
+
+  const localities = [...block[1].matchAll(/"([^"]+)"/g)].map((m) => m[1].toLowerCase());
+  assert.ok(localities.length > 20, 'expected a substantial locality list');
+
+  // Bare "tn" is ambiguous (Tennessee) and "tamilnadu" is a spelling, not a
+  // city, so neither needs its own alias entry.
+  const skip = new Set(['tn', 'tamil nadu', 'tamilnadu']);
+  const unresolved = localities
+    .filter((name) => !skip.has(name))
+    .filter((name) => !detectCity(name));
+
+  assert.deepEqual(unresolved, [], `localities not recognised by detectCity: ${unresolved.join(', ')}`);
+});
+
+test('newly covered cities are searched and classified', () => {
+  const added = ['Hosur', 'Kanchipuram', 'Dindigul', 'Karur', 'Nagercoil', 'Thoothukudi', 'Cuddalore', 'Ranipet', 'Sivakasi', 'Kumbakonam', 'Neyveli'];
+  const plan = config.planSearches(['software developer'], config.CITIES, 0);
+  const searched = new Set(plan.map((p) => p.city));
+  for (const city of added) {
+    assert.ok(config.CITIES.includes(city), `${city} missing from CITIES`);
+    assert.ok(searched.has(city), `${city} never reached by the search plan`);
+    assert.equal(detectCity(city), city, `${city} not classified by detectCity`);
+  }
+  // Tuticorin is the common English spelling of Thoothukudi.
+  assert.equal(detectCity('Tuticorin'), 'Thoothukudi');
+  // Non-Tamil-Nadu cities must still be rejected, so we do not over-collect.
+  assert.equal(detectCity('Bangalore, India'), null);
+});
+
+test('ATS location filter accepts new TN cities but still rejects other states', () => {
+  const { isTamilNaduLocation } = require('./src/sources/tech-ats');
+  assert.equal(isTamilNaduLocation({ city: 'Hosur' }), true);
+  assert.equal(isTamilNaduLocation({ fullLocation: 'Hosur, India' }), true);
+  assert.equal(isTamilNaduLocation({ fullLocation: 'Kanchipuram, Tamil Nadu, India' }), true);
+  assert.equal(isTamilNaduLocation({ region: 'Tamil Nadu' }), true);
+  assert.equal(isTamilNaduLocation({ fullLocation: 'Bengaluru, India' }), false);
+  assert.equal(isTamilNaduLocation({ fullLocation: 'Pune' }), false);
+  assert.equal(isTamilNaduLocation({}), false);
 });
