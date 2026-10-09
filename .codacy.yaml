@@ -1,0 +1,13 @@
+---
+# Codacy repository configuration.
+#
+# Bandit's B101 ("Use of assert detected") is a false positive for the test
+# suites: `assert` is the idiomatic assertion mechanism for pytest, and the
+# tests run with assertions enabled. Excluding only the test modules keeps
+# Bandit's real security checks (hardcoded secrets, subprocess usage, weak
+# hashing, ...) active on the application code in main.py and the other
+# runtime modules.
+engines:
+  bandit:
+    exclude_paths:
+      - "test_*.py"
