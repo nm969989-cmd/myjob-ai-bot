@@ -1,19 +1,19 @@
 {
   "status": "ok",
-  "started_at": "2026-10-09T00:24:34.549Z",
-  "finished_at": "2026-10-09T00:30:10.297Z",
-  "duration_seconds": 170,
-  "validate_seconds": 166,
+  "started_at": "2026-10-09T04:13:15.900Z",
+  "finished_at": "2026-10-09T04:18:06.349Z",
+  "duration_seconds": 156,
+  "validate_seconds": 134,
   "trigger": "GitHub Actions (push)",
   "keywords": [
     "software developer",
     "fresher",
     "data analyst",
     "accountant",
+    "data entry",
     "nurse",
     "teacher",
-    "sales executive",
-    "data entry"
+    "sales executive"
   ],
   "cities": [
     "Tiruvannamalai",
@@ -28,18 +28,29 @@
     "Erode",
     "Thanjavur",
     "Tiruppur",
+    "Hosur",
+    "Kanchipuram",
+    "Dindigul",
+    "Karur",
+    "Nagercoil",
+    "Thoothukudi",
+    "Cuddalore",
+    "Ranipet",
+    "Sivakasi",
+    "Kumbakonam",
+    "Neyveli",
     "Tamil Nadu"
   ],
-  "scraped_records": 147,
-  "verified_jobs": 93,
-  "new_jobs": 1,
-  "removed_jobs": 1,
+  "scraped_records": 150,
+  "verified_jobs": 123,
+  "new_jobs": 35,
+  "removed_jobs": 32,
   "login_required": 1,
   "validate_stats": {
-    "checked": 147,
-    "live": 93,
+    "checked": 150,
+    "live": 123,
     "loginRequired": 1,
-    "dead": 52,
+    "dead": 25,
     "noSignal": 1,
     "redirected": 0,
     "documents": 8,
@@ -50,8 +61,8 @@
       "id": "astrazeneca.com",
       "label": "astrazeneca.com",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "HTTP 400 for https://astrazeneca.wd3.myworkdayjobs.com/wday/cxs/astrazeneca/Careers/jobs"
+      "status": "ok",
+      "detail": "14 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -79,7 +90,7 @@
       "label": "Freshersworld",
       "tier": 1,
       "status": "no_listings",
-      "detail": "0 job(s) from 4 listing page(s)"
+      "detail": "0 job(s) from 12 listing page(s)"
     },
     {
       "id": "freshworks.com",
@@ -106,8 +117,8 @@
       "id": "kyndryl.com",
       "label": "kyndryl.com",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "HTTP 400 for https://kyndryl.wd5.myworkdayjobs.com/wday/cxs/kyndryl/KyndrylProfessionalCareers/jobs"
+      "status": "ok",
+      "detail": "7 opening(s) in Tamil Nadu"
     },
     {
       "id": "madurai.nic.in",
@@ -120,15 +131,15 @@
       "id": "paypal.com",
       "label": "paypal.com",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "HTTP 400 for https://paypal.wd1.myworkdayjobs.com/wday/cxs/paypal/jobs/jobs"
+      "status": "ok",
+      "detail": "1 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "19 opening(s) in Tamil Nadu"
+      "detail": "35 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -212,7 +223,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "100 job(s) from 4 category page(s)"
+      "detail": "155 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -226,7 +237,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "59 job(s) from 4 search request(s)"
+      "detail": "155 job(s) from 9 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -239,19 +250,19 @@
   "per_source": {
     "govt-tn": 8,
     "company-careers": 3,
-    "tech-ats": 41,
+    "tech-ats": 79,
     "naukri": 0,
-    "apna": 100,
+    "apna": 155,
     "indeed": 0,
-    "linkedin": 59
+    "linkedin": 155
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
-    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
-    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
+    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 0
+  "dropped_records": 118
 }
