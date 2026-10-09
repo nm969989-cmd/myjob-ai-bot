@@ -40,6 +40,18 @@ def query(profile):
                             cwd=ROOT, timeout=20, check=True)
     return json.loads(result.stdout)
 
+def query_batch(profiles):
+    """One process/snapshot per dispatch; each result retains its own validation error."""
+    if not profiles or len(profiles) > 4:
+        raise ValueError('Use 1-4 digest profiles')
+    result = subprocess.run(['node', str(ROOT / 'tn-live-jobs/src/engineering.js'), '--query-batch'],
+                            input=json.dumps({'profiles': profiles}), text=True, capture_output=True,
+                            cwd=ROOT, timeout=80, check=True)
+    values = json.loads(result.stdout)
+    if not isinstance(values, list) or len(values) != len(profiles):
+        raise ValueError('Invalid query batch response')
+    return values
+
 def refresh():
     subprocess.run(['node', str(ROOT / 'tn-live-jobs/src/engineering.js')],
                    cwd=ROOT, timeout=600, check=True)
@@ -125,10 +137,15 @@ def dispatch(bot, owner, new_only=True):
         rotation = (items[cursor:] + items[:cursor])[:4]
         state['cursor'] = (cursor + len(rotation)) % len(items)
         save_state(state)
-        for name, criteria in rotation:
+        profiles = []
+        for _, criteria in rotation:
             profile = state.get('profile', dict(DEFAULT))
             if criteria.get('role'): profile = search_profile(profile, criteria['role'], criteria['city'])
-            result = query(profile)
+            profiles.append(profile)
+        results = query_batch(profiles)
+        for (name, _), result in zip(rotation, results):
+            if 'error' in result:
+                raise ValueError('Saved search could not be evaluated')
             seen = set(state.setdefault('seen', {}).get(name, []))
             fresh = [j for j in result['jobs'] if f"{j['id']}:{j['match']['integrity']}" not in seen]
             if new_only and not fresh: continue

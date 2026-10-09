@@ -50,7 +50,7 @@ class EngineeringTelegramTests(unittest.TestCase):
         self.assertIn('no current verified matches claimed',e.digest_text('default',result(jobs,age=49),jobs))
     def test_success_marks_only_rendered_ids_and_repeated_scan_is_quiet(self):
         jobs=[job(i) for i in range(20)]
-        with patch.object(e,'query',return_value=result(jobs)):
+        with patch.object(e,'query_batch',side_effect=lambda profiles:[result(jobs) for _ in profiles]):
             bot=Mock()
             e.dispatch(bot,'123')
             seen=e.load_state()['seen']['default']
@@ -59,13 +59,13 @@ class EngineeringTelegramTests(unittest.TestCase):
             self.assertLess(len(seen),len(jobs))
     def test_failed_send_does_not_mark_seen(self):
         bot=Mock();bot.send_message.side_effect=RuntimeError('fixture provider failure')
-        with patch.object(e,'query',return_value=result([job(1)])):
+        with patch.object(e,'query_batch',side_effect=lambda profiles:[result([job(1)]) for _ in profiles]):
             with self.assertRaises(RuntimeError): e.dispatch(bot,'123')
         self.assertNotIn('default',e.load_state()['seen'])
     def test_saved_searches_round_robin_and_integrity_upgrade(self):
         state=e.load_state();state['searches']={f's{i}':{'role':'python','city':'Chennai'} for i in range(10)};e.save_state(state)
         bot=Mock()
-        with patch.object(e,'query',return_value=result([job(1)])):
+        with patch.object(e,'query_batch',side_effect=lambda profiles:[result([job(1)]) for _ in profiles]):
             e.dispatch(bot,'123');e.dispatch(bot,'123');e.dispatch(bot,'123')
         self.assertEqual(len(e.load_state()['seen']),10)
         self.assertEqual(bot.send_message.call_count,10)

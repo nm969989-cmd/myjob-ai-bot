@@ -18,7 +18,7 @@
     "serve": "node src/cli.js --step=serve",
     "clean": "node -e \"require('fs').rmSync('work',{recursive:true,force:true})\"",
     "engineering:refresh": "node src/engineering.js",
-    "engineering:test": "node --test test_engineering_search.js test_http_transport.js"
+    "engineering:test": "node --test test_engineering_search.js test_http_transport.js test_engineering_optimization.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0",

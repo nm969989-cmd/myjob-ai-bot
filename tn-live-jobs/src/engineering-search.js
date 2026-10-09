@@ -82,17 +82,23 @@ function reconcile(current, previous = [], queue = [], now = Date.now()) {
   const bounded = next.sort((a,b) => a.due-b.due).slice(0,200), queuedKeys = new Set(bounded.map(q=>q.key));
   for(const j of combined) if(j.retry_state==='pending'&&!queuedKeys.has(key(j))) { j.retry_state='capacity_deferred_uncertain'; delete j.retry_due; }
   return { jobs: combined, queue: bounded }; }
-function score(job, profile, now = Date.now()) { const p = preset(profile);
-  const title = text(job.title), hay = [job.title, job.description, ...(job.skills || [])].join(' ');
-  const aliases = p.roles.flatMap(expand).filter(w => w !== 'data'); const roleMatch = aliases.some(w => contains(title,w));
+function compileProfile(profile) {
+  const p = preset(profile), aliases = p.roles.flatMap(expand).filter(w => w !== 'data');
+  const distances = new Map(Object.keys(CITIES).map(c => [c, Math.min(...p.cities.map(origin => distance(origin,c)))]));
+  return { p, aliases: aliases.map(w => ` ${text(w)} `), branch: p.branch ? ` ${text(p.branch)} ` : null,
+    skills: p.skills.map(s => ({ original:s, needle:` ${text(s)} ` })), distances };
+}
+function scoreCompiled(job, compiled, now) { const { p, aliases, distances } = compiled;
+  const title = ` ${text(job.title)} `, hay = ` ${text([job.title, job.description, ...(job.skills || [])].join(' '))} `;
+  const roleMatch = aliases.some(w => title.includes(w));
   if (!roleMatch) return { score: -1, reasons: ['role_not_matched'] };
   // Prefer original location evidence to a legacy canonical city that collapsed suburbs.
-  const location = city(job.location) || city(job.city); const km = location ? Math.min(...p.cities.map(c => distance(c,location))) : null;
+  const location = city(job.location) || city(job.city); const km = location ? distances.get(location) : null;
   if (km === null || km > p.travel_radius_km) return { score: -1, reasons: ['location_outside_preset_or_unknown'] };
   const reasons = ['role_match', km === 0 ? 'selected_city' : `approx_${km}km_city_centres`];
   let value = 50 + (km === 0 ? 20 : Math.max(0,15-km/20));
-  if(p.branch && contains(hay,p.branch)) { value += 5; reasons.push('stated_branch_mentioned_not_eligibility_guarantee'); }
-  const hits = p.skills.filter(s => contains(hay,s)); value += Math.min(15,hits.length*5); if (hits.length) reasons.push(`skills:${hits.join(',')}`);
+  if(compiled.branch && hay.includes(compiled.branch)) { value += 5; reasons.push('stated_branch_mentioned_not_eligibility_guarantee'); }
+  const hits = compiled.skills.filter(s => hay.includes(s.needle)).map(s => s.original); value += Math.min(15,hits.length*5); if (hits.length) reasons.push(`skills:${hits.join(',')}`);
   const range = String(job.experience || '').match(/(\d+)\s*(?:-|to)\s*(\d+)\s*(?:years?|yrs?)/i);
   if (p.experience_years !== null && range && p.experience_years < Number(range[1])) { value -= 30; reasons.push('experience_below_stated_minimum'); }
   else if (p.experience_years === null) reasons.push('experience_unknown_not_eligibility_checked');
@@ -104,7 +110,11 @@ function score(job, profile, now = Date.now()) { const p = preset(profile);
   reasons.push(`evidence:${state}`, `source:${job.source || 'unknown'}`);
   if (!p.configured) reasons.push('default_preset_personal_fit_unknown');
   return { score: Math.round(value), reasons, distance_km: km, distance_basis: 'approximate city-centre straight-line distance; not travel time', integrity: state }; }
-function rank(jobs, profile = DEFAULT, now = Date.now()) { return dedupe(jobs).map(j => ({ ...j, match: score(j,profile,now) }))
-  .filter(j => j.match.score >= 0 && !['closed','access_denied'].includes(j.match.integrity))
-  .sort((a,b) => b.match.score-a.match.score || a.id.localeCompare(b.id)); }
+function score(job, profile, now = Date.now()) { return scoreCompiled(job,compileProfile(profile),now); }
+function rank(jobs, profile = DEFAULT, now = Date.now()) {
+  const unique = dedupe(jobs); if(!unique.length) return [];
+  const compiled = compileProfile(profile);
+  return unique.map(j => ({ ...j, match: scoreCompiled(j,compiled,now) }))
+    .filter(j => j.match.score >= 0 && !['closed','access_denied'].includes(j.match.integrity))
+    .sort((a,b) => b.match.score-a.match.score || a.id.localeCompare(b.id)); }
 module.exports = { DEFAULT, GROUPS, CITIES, preset, expand, city, distance, canonicalUrl, key, dedupe, integrity, transient, retryAfter, reconcile, score, rank };
