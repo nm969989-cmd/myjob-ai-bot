@@ -4470,27 +4470,33 @@ def api_status():
 
 @app.route("/api/live_screenshot")
 def live_screenshot():
+    """Return a PNG screenshot of the active handoff browser page."""
     if not HANDOFF_ACTIVE or not HANDOFF_PAGE:
         return "No active handoff", 404
     try:
         ss_bytes = HANDOFF_PAGE.screenshot()
         return send_file(io.BytesIO(ss_bytes), mimetype='image/png')
-    except Exception as e:
-        return str(e), 500
+    except Exception:
+        app.logger.exception("Live screenshot failed")
+        return "Screenshot unavailable", 500
+
 
 @app.route("/api/live_action", methods=["POST"])
 def live_action():
-    if not HANDOFF_ACTIVE or not HANDOFF_PAGE: return "No active handoff", 400
+    """Forward a click/type action to the active handoff browser page."""
+    if not HANDOFF_ACTIVE or not HANDOFF_PAGE:
+        return "No active handoff", 400
     try:
-        data = request.json
+        data = request.get_json(silent=True) or {}
         if data.get('action') == 'click':
             HANDOFF_PAGE.mouse.click(data['x'], data['y'])
         elif data.get('action') == 'type':
             HANDOFF_PAGE.keyboard.type(data['text'])
             HANDOFF_PAGE.keyboard.press('Enter')
         return jsonify({"status": "ok"})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except Exception:
+        app.logger.exception("Live action failed")
+        return jsonify({"error": "Live action failed"}), 500
 
 @app.route("/api/live_resume", methods=["POST"])
 def live_resume():
@@ -4500,6 +4506,7 @@ def live_resume():
 
 @app.route("/logs")
 def view_logs():
+    """Render the last 100 lines of debug.log as escaped, admin-only HTML."""
     try:
         with open("debug.log", "r", encoding="utf-8") as f:
             lines = f.readlines()
@@ -4571,8 +4578,9 @@ def api_telegram_test():
     try:
         bot.send_message(chat_id, "✅ *Elite Job Bot Dashboard — Connection Test Successful!*\n\n🤖 Your bot is fully online and connected.\n📡 Radar is scanning for your Unicorn Developer jobs.", parse_mode=None)
         return jsonify({"status": "ok", "message": "Test message sent to Telegram!"})
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)})
+    except Exception:
+        app.logger.exception("Telegram test message failed")
+        return jsonify({"status": "error", "message": "Could not send the test message. Check server logs."})
 
 @app.route("/api/force_scan", methods=["POST"])
 def api_force_scan():
@@ -4876,7 +4884,8 @@ import subprocess
 
 @app.route("/api/manual_apply", methods=["POST"])
 def api_manual_apply():
-    data = request.json
+    """Queue a Playwright application for a manually supplied job URL."""
+    data = request.get_json(silent=True) or {}
     url = data.get("url")
     if url:
         if not url.startswith("http"):
@@ -4897,7 +4906,8 @@ def api_manual_apply():
 
 @app.route("/api/update_profile", methods=["POST"])
 def api_update_profile():
-    data = request.json
+    """Persist a single profile field from the dashboard editor."""
+    data = request.get_json(silent=True) or {}
     field = data.get("field")
     value = data.get("value")
     if field and value:
@@ -4908,28 +4918,33 @@ def api_update_profile():
                 json.dump(profile, f, indent=4)
             print(f"[Dashboard] Profile updated: {field} = {value}")
             return {"status": "success", "message": f"{field} updated."}
-        except Exception as e:
-            return {"status": "error", "message": str(e)}
+        except Exception:
+            app.logger.exception("Profile update failed")
+            return {"status": "error", "message": "Could not save the profile."}
     return {"status": "error", "message": "Missing data"}
 
 @app.route("/api/regenerate_resume", methods=["POST"])
 def api_regenerate_resume():
+    """Regenerate the resume PDF from the stored profile."""
     try:
         subprocess.run(["python", "generate_resume.py"], check=True)
         return {"status": "success", "message": "Resume regenerated."}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+    except Exception:
+        app.logger.exception("Resume regeneration failed")
+        return {"status": "error", "message": "Resume generation failed. Check server logs."}
 
 @app.route("/api/reset_history", methods=["POST"])
 def api_reset_history():
+    """Delete the applied-jobs log and stats files."""
     try:
         if os.path.exists("applied_jobs_log.csv"):
             os.remove("applied_jobs_log.csv")
         if os.path.exists(STATS_FILE):
             os.remove(STATS_FILE)
         return {"status": "success", "message": "History and stats wiped."}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
+    except Exception:
+        app.logger.exception("History reset failed")
+        return {"status": "error", "message": "Could not reset history."}
 
 @app.route("/api/health_check", methods=["GET"])
 def api_health_check():
@@ -4968,8 +4983,9 @@ def api_download_profile():
 
 @app.route("/api/add_channel", methods=["POST"])
 def api_add_channel():
+    """Append a Telegram channel (without the leading @) to the scan list."""
     global TARGET_CHANNELS
-    data = request.json
+    data = request.get_json(silent=True) or {}
     channel = data.get("channel", "").replace("@", "").strip()
     if channel:
         if channel not in TARGET_CHANNELS:
@@ -4981,30 +4997,33 @@ def api_add_channel():
 
 @app.route("/api/upload_resume", methods=["POST"])
 def api_upload_resume():
+    """Replace the stored resume with an uploaded PDF."""
     if 'resume' not in request.files:
         return {"status": "error", "message": "No file part"}
     file = request.files['resume']
     if file.filename == '':
         return {"status": "error", "message": "No selected file"}
-    if file and file.filename.endswith('.pdf'):
+    if file.filename.lower().endswith('.pdf'):
         file.save(RESUME_FILE)
         return {"status": "success", "message": "Resume uploaded successfully!"}
     return {"status": "error", "message": "Invalid file type. Must be PDF."}
 
 @app.route("/api/upload_auth", methods=["POST"])
 def api_upload_auth():
+    """Store an uploaded Playwright storage-state JSON for the applier."""
     if 'auth' not in request.files:
         return {"status": "error", "message": "No file part"}
     file = request.files['auth']
     if file.filename == '':
         return {"status": "error", "message": "No selected file"}
-    if file and file.filename.endswith('.json'):
+    if file.filename.lower().endswith('.json'):
         file.save("instahyre_auth.json")
         return {"status": "success", "message": "Session auth state uploaded successfully!"}
     return {"status": "error", "message": "Invalid file type. Must be a .json file containing Playwright storage state."}
 
 @app.route("/api/scan_inbox", methods=["POST"])
 def api_scan_inbox():
+    """Scan the configured mailbox for recent interview invitations."""
     try:
         from imap_handler import scan_for_interview_invites
         results = scan_for_interview_invites()
@@ -5013,12 +5032,14 @@ def api_scan_inbox():
         else:
             msg = "No new interview emails found in the last 7 days."
         return {"status": "success", "message": msg}
-    except Exception as e:
-        return {"status": "error", "message": f"IMAP Error: {str(e)}"}
+    except Exception:
+        app.logger.exception("IMAP inbox scan failed")
+        return {"status": "error", "message": "IMAP scan failed. Check server logs and mailbox credentials."}
 
 @app.route("/api/mark_crm", methods=["POST"])
 def api_mark_crm():
-    data = request.json
+    """Update the CRM status column for a job row in the applied-jobs log."""
+    data = request.get_json(silent=True) or {}
     url = data.get("url")
     new_status = data.get("status")
     
@@ -5040,8 +5061,9 @@ def api_mark_crm():
                 writer = csv.writer(f)
                 writer.writerows(rows)
             return {"status": "success", "message": f"Marked as {new_status}"}
-        except Exception as e:
-            return {"status": "error", "message": str(e)}
+        except Exception:
+            app.logger.exception("CRM status update failed")
+            return {"status": "error", "message": "Could not update the CRM status."}
     return {"status": "error", "message": "No log file found"}
 
 
