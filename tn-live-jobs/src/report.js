@@ -28,8 +28,8 @@ function table(headers, rows) {
 function buildReport(run) {
   const { meta, sites, sourceCounts, foundCounts, validateStats, diff, latest, guard } = run;
   const d = diff || {};
-  const newList = d.newJobs || d.new || [];
-  const removedList = d.removed || [];
+  const newList = d.new || d.newJobs || [];
+  const removedList = d.removed || d.removedJobs || [];
   const found = foundCounts || {};
   const parts = [];
 

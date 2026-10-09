@@ -16,6 +16,7 @@
     "step:export": "node src/cli.js --step=export",
     "step:report": "node src/cli.js --step=report",
     "serve": "node src/cli.js --step=serve",
+    "test": "node --test test_priority_cities.js",
     "clean": "node -e \"require('fs').rmSync('work',{recursive:true,force:true})\""
   },
   "dependencies": {

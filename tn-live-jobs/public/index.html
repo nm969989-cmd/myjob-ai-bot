@@ -5,13 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tamil Nadu Live Jobs | Real, Verified Vacancies</title>
   <meta name="description" content="Discover verified, currently live job vacancies in Tamil Nadu, India. Re-verified by headless browser every 6 hours. Direct official links with no fake posts." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#1d4ed8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)" />
+  <link rel="canonical" href="" id="canonicalLink" />
+
+  <!-- Open Graph / Twitter (url is filled in from the live location by app.js) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tamil Nadu Live Jobs" />
+  <meta property="og:title" content="Tamil Nadu Live Jobs | Real, Verified Vacancies" />
+  <meta property="og:description" content="Verified, currently live job vacancies across Tamil Nadu. Every advert is re-opened in a headless browser before it is published." />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="og:url" content="" id="ogUrl" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Tamil Nadu Live Jobs | Real, Verified Vacancies" />
+  <meta name="twitter:description" content="Verified, currently live job vacancies across Tamil Nadu. No fake posts, no dead links." />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" /></noscript>
   <link rel="stylesheet" href="./style.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>" />
+
+  <!-- Structured data is generated from the loaded jobs data (see app.js) -->
+  <script type="application/ld+json" id="jobsJsonLd">{"@context":"https://schema.org","@type":"WebSite","name":"Tamil Nadu Live Jobs","inLanguage":"en-IN"}</script>
 </head>
 <body>
+  <a class="skip-link" href="#list">Skip to job listings</a>
+
   <!-- Header -->
   <header class="site-header">
     <div class="wrap header-wrap">
@@ -26,12 +49,12 @@
         <p class="tagline">Real job vacancies verified live in Tamil Nadu. Every advert tested before publishing.</p>
         <div class="header-meta">
           <span id="updated" class="meta-item">Checking updates…</span>
-          <span class="meta-dot">•</span>
+          <span class="meta-dot" aria-hidden="true">•</span>
           <span id="counts" class="meta-item">Loading live jobs…</span>
         </div>
       </div>
       <div class="header-actions">
-        <button id="themeToggle" class="btn-theme" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">
+        <button id="themeToggle" class="btn-theme" type="button" aria-label="Toggle dark or light theme" aria-pressed="false" title="Toggle theme">
           <span class="theme-icon light-icon" aria-hidden="true">&#9728;</span>
           <span class="theme-icon dark-icon" aria-hidden="true">&#9790;</span>
         </button>
@@ -40,11 +63,11 @@
   </header>
 
   <!-- Main Content -->
-  <main class="wrap main-wrap">
+  <main id="main" class="wrap main-wrap">
     <!-- Controls Section -->
     <section class="controls" aria-label="Search and filter jobs">
       <!-- Search Input -->
-      <div class="search-box">
+      <div class="search-box" role="search">
         <span class="search-icon" aria-hidden="true">&#128269;</span>
         <input 
           id="search" 
@@ -52,20 +75,22 @@
           placeholder="Search by title, skills (Python, Tally, Nurse), company, or city… (Press '/' to focus)" 
           autocomplete="off" 
           aria-label="Search jobs"
+          aria-describedby="searchHint"
         />
         <button id="searchClear" class="search-clear" type="button" aria-label="Clear search" hidden>&times;</button>
-        <kbd class="search-kbd" title="Press / to search">/</kbd>
+        <kbd class="search-kbd" title="Press / to search" aria-hidden="true">/</kbd>
+        <span id="searchHint" class="sr-only">Type to filter jobs by title, company, city, category or skills. Press the Escape key to clear.</span>
       </div>
 
       <!-- Quick Filter Pills -->
-      <div class="quick-chips" id="quickChips" role="radiogroup" aria-label="Quick filters">
-        <button class="chip active" data-chip="all" type="button">All Jobs</button>
-        <button class="chip" data-chip="fresher" type="button">&#128293; Freshers Welcome</button>
-        <button class="chip" data-chip="govt" type="button">&#127963; Govt &amp; TNPSC</button>
-        <button class="chip" data-chip="it" type="button">&#128187; IT &amp; Software</button>
-        <button class="chip" data-chip="healthcare" type="button">&#127973; Healthcare &amp; Nursing</button>
-        <button class="chip" data-chip="finance" type="button">&#128188; Finance &amp; Accounts</button>
-        <button class="chip" data-chip="saved" type="button" id="savedChip">&#11088; Saved (<span id="savedCount">0</span>)</button>
+      <div class="quick-chips" id="quickChips" role="group" aria-label="Quick filters">
+        <button class="chip active" data-chip="all" type="button" aria-pressed="true">All Jobs</button>
+        <button class="chip" data-chip="fresher" type="button" aria-pressed="false">&#128293; Freshers Welcome</button>
+        <button class="chip" data-chip="govt" type="button" aria-pressed="false">&#127963; Govt &amp; TNPSC</button>
+        <button class="chip" data-chip="it" type="button" aria-pressed="false">&#128187; IT &amp; Software</button>
+        <button class="chip" data-chip="healthcare" type="button" aria-pressed="false">&#127973; Healthcare &amp; Nursing</button>
+        <button class="chip" data-chip="finance" type="button" aria-pressed="false">&#128188; Finance &amp; Accounts</button>
+        <button class="chip" data-chip="saved" type="button" id="savedChip" aria-pressed="false">&#11088; Saved (<span id="savedCount">0</span>)</button>
       </div>
 
       <!-- Multi-select Filters Row -->
@@ -135,7 +160,7 @@
     </section>
 
     <!-- Stats & Result Meta -->
-    <section id="stats" class="stats-bar" aria-live="polite">
+    <section id="stats" class="stats-bar">
       <div class="stats-pills">
         <span class="pill pill-primary" id="statLive">… live jobs</span>
         <span class="pill pill-fresh" id="statFresh">… in last 24h</span>
@@ -143,8 +168,11 @@
       <div class="stats-count" id="statShowing">Showing all jobs</div>
     </section>
 
+    <!-- Screen-reader announcements (kept separate so the card grid is not read out) -->
+    <p id="srStatus" class="sr-only" role="status" aria-live="polite"></p>
+
     <!-- Job Cards List -->
-    <section id="list" class="cards" aria-live="polite"></section>
+    <section id="list" class="cards" aria-busy="true" aria-label="Job vacancies"></section>
 
     <!-- Load More Button -->
     <div id="loadMoreWrap" class="load-more-wrap" hidden>
@@ -155,7 +183,7 @@
 
     <!-- Empty State -->
     <div id="empty" class="empty-state" hidden>
-      <div class="empty-icon">&#128269;</div>
+      <div class="empty-icon" aria-hidden="true">&#128269;</div>
       <h3>No matching jobs found</h3>
       <p>Try searching for broader keywords, clearing specific filters, or choosing "All Cities".</p>
       <div class="empty-suggestions">
@@ -168,11 +196,18 @@
       </div>
       <button id="emptyResetBtn" class="btn-secondary" type="button">Clear All Filters</button>
     </div>
+
+    <noscript>
+      <p class="noscript-note">
+        This board needs JavaScript to filter and open job details. You can still download the raw
+        data: <a href="./data/jobs.json">jobs.json</a> or <a href="./data/jobs.csv">jobs.csv</a>.
+      </p>
+    </noscript>
   </main>
 
   <!-- Job Details Modal / Drawer -->
-  <div id="jobModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal-dialog">
+  <div id="jobModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+    <div class="modal-dialog" role="document">
       <div class="modal-header">
         <div class="modal-badge-row">
           <span id="modalSource" class="tag tag-source"></span>
@@ -184,7 +219,7 @@
         <h2 id="modalTitle" class="modal-title"></h2>
         <div class="modal-sub">
           <span id="modalCompany" class="modal-company"></span>
-          <span class="meta-dot">•</span>
+          <span class="meta-dot" aria-hidden="true">•</span>
           <span id="modalCity" class="modal-city"></span>
         </div>
 
@@ -231,7 +266,7 @@
         <!-- Live Guarantee Card -->
         <div class="verify-box">
           <div class="verify-box-header">
-            <span class="verify-box-icon">&#128737;</span>
+            <span class="verify-box-icon" aria-hidden="true">&#128737;</span>
             <strong>Automated Live Verification Guarantee</strong>
           </div>
           <p class="verify-box-text">
@@ -244,14 +279,14 @@
       <!-- Modal Footer Actions -->
       <div class="modal-footer">
         <div class="modal-footer-left">
-          <button id="modalBookmarkBtn" class="btn-modal-bookmark" type="button">
-            <span class="bm-icon">&#9734;</span>
+          <button id="modalBookmarkBtn" class="btn-modal-bookmark" type="button" aria-pressed="false">
+            <span class="bm-icon" aria-hidden="true">&#9734;</span>
             <span class="bm-text">Save Job</span>
           </button>
           <div class="modal-share-group">
-            <button id="modalShareWhatsapp" class="btn-share btn-whatsapp" type="button" title="Share via WhatsApp">&#128172; WhatsApp</button>
-            <button id="modalShareTelegram" class="btn-share btn-telegram" type="button" title="Share via Telegram">&#9992; Telegram</button>
-            <button id="modalShareCopy" class="btn-share btn-copy" type="button" title="Copy Job Link">&#128203; Copy</button>
+            <button id="modalShareWhatsapp" class="btn-share btn-whatsapp" type="button" title="Share via WhatsApp" aria-label="Share via WhatsApp">&#128172; WhatsApp</button>
+            <button id="modalShareTelegram" class="btn-share btn-telegram" type="button" title="Share via Telegram" aria-label="Share via Telegram">&#9992; Telegram</button>
+            <button id="modalShareCopy" class="btn-share btn-copy" type="button" title="Copy Job Link" aria-label="Copy job link">&#128203; Copy</button>
           </div>
         </div>
         <a id="modalApplyBtn" class="btn-apply-modal" href="#" target="_blank" rel="noopener noreferrer">
@@ -273,10 +308,10 @@
           Postings that return HTTP 404, redirect to login walls, or are expired are removed automatically.
         </p>
         <p class="footer-links">
-          <a href="./data/jobs.json" target="_blank">Raw JSON Data</a>
-          <span class="meta-dot">•</span>
+          <a href="./data/jobs.json" target="_blank" rel="noopener">Raw JSON Data</a>
+          <span class="meta-dot" aria-hidden="true">•</span>
           <a href="./data/jobs.csv" download>Download CSV (Excel)</a>
-          <span class="meta-dot">•</span>
+          <span class="meta-dot" aria-hidden="true">•</span>
           <span>Updated automatically by GitHub Actions</span>
         </p>
       </div>

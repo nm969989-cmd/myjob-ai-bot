@@ -32,6 +32,7 @@ const state = {
   freshness: '',
   sort: 'newest',
   selectedJob: null,
+  lastFocused: null,
   savedIds: new Set(),
 };
 
@@ -88,12 +89,14 @@ function initTheme() {
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   const theme = saved || (prefersDark ? 'dark' : 'light');
   document.documentElement.setAttribute('data-theme', theme);
+  if (els.themeToggle) els.themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
 }
 
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme') || 'light';
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
+  if (els.themeToggle) els.themeToggle.setAttribute('aria-pressed', next === 'dark' ? 'true' : 'false');
   try {
     localStorage.setItem('tn_theme', next);
   } catch (e) {}
@@ -107,6 +110,15 @@ function escapeHtml(val) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function safeUrl(value) {
+  const raw = String(value == null ? '' : value).trim();
+  return /^https?:\/\//i.test(raw) ? raw : '#';
+}
+
+function announce(message) {
+  if (els.srStatus) els.srStatus.textContent = message;
 }
 
 function daysAgo(dateString) {
@@ -131,10 +143,11 @@ function highlightText(text, query) {
   const words = query.trim().split(/\s+/).filter(Boolean);
   if (!words.length) return escapeHtml(text);
   const escapedWords = words.map(w => w.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'));
-  const regex = new RegExp(`(${escapedWords.join('|')})`, 'gi');
-  const parts = String(text).split(regex);
+  const splitRegex = new RegExp(`(${escapedWords.join('|')})`, 'gi');
+  const testRegex = new RegExp(`^(${escapedWords.join('|')})$`, 'i');
+  const parts = String(text).split(splitRegex);
   return parts.map(part => {
-    if (regex.test(part)) {
+    if (testRegex.test(part)) {
       return `<mark>${escapeHtml(part)}</mark>`;
     }
     return escapeHtml(part);
@@ -191,12 +204,23 @@ function matchesQuickChip(job, chip) {
   return true;
 }
 
+function experienceYears(job) {
+  if (job.is_fresher === true) return 0;
+  const expStr = String(job.experience || '').toLowerCase();
+  if (!expStr) return null;
+  if (/fresher|entry level|no experience/.test(expStr)) return 0;
+  const match = /(\d{1,2})/.exec(expStr);
+  if (!match) return null;
+  return parseInt(match[1], 10);
+}
+
 function matchesExperience(job, expFilter) {
   if (!expFilter) return true;
-  if (expFilter === 'fresher') return job.is_fresher === true;
-  const expStr = String(job.experience || '').toLowerCase();
-  if (expFilter === 'mid') return /1|2|3\s*years?/.test(expStr);
-  if (expFilter === 'senior') return /3\+|4|5|6|7|8|9|10/.test(expStr);
+  if (expFilter === 'fresher') return job.is_fresher === true || experienceYears(job) === 0;
+  const years = experienceYears(job);
+  if (years === null) return false;
+  if (expFilter === 'mid') return years >= 1 && years <= 3;
+  if (expFilter === 'senior') return years >= 3;
   return true;
 }
 
@@ -246,6 +270,11 @@ function applyFilters() {
   state.visibleCount = PAGE_SIZE;
   render();
   updateUrlParams();
+  announce(
+    state.filteredJobs.length === 1
+      ? '1 job matches your filters.'
+      : state.filteredJobs.length + ' jobs match your filters.'
+  );
 }
 
 // ---------- URL State Sync --------------------------------------------------
@@ -333,7 +362,7 @@ function createCardHtml(job) {
       ${skillsHtml}
       <div class="card-actions">
         <button class="btn-details" type="button" data-view="${escapeHtml(job.id)}">View Details</button>
-        <a class="btn-apply" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noopener noreferrer">Apply Now &rarr;</a>
+        <a class="btn-apply" href="${escapeHtml(safeUrl(job.apply_url))}" target="_blank" rel="noopener noreferrer">Apply Now &rarr;</a>
       </div>
     </article>
   `;
@@ -355,6 +384,7 @@ function renderListOnly() {
   }
 
   els.empty.hidden = state.filteredJobs.length !== 0;
+  els.list.setAttribute('aria-busy', 'false');
 }
 
 function render() {
@@ -381,7 +411,9 @@ function render() {
 
   // Active quick chip styling
   document.querySelectorAll('.chip').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.chip === state.quickChip);
+    const isActive = btn.dataset.chip === state.quickChip;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
   });
 
   // Active Filters Bar
@@ -464,6 +496,7 @@ function resetAllFilters() {
 // ---------- Modal Details Drawer --------------------------------------------
 
 function openJobModal(job) {
+  state.lastFocused = document.activeElement;
   state.selectedJob = job;
   els.modalTitle.textContent = job.title || '';
   els.modalCompany.textContent = job.company || '';
@@ -502,8 +535,8 @@ function openJobModal(job) {
     els.modalSkills.innerHTML = '';
   }
 
-  // Apply button
-  els.modalApplyBtn.href = job.apply_url;
+  // Apply button (http/https only)
+  els.modalApplyBtn.href = safeUrl(job.apply_url);
 
   // Bookmark button
   updateModalBookmarkBtn();
@@ -515,12 +548,14 @@ function openJobModal(job) {
   els.jobModal.classList.add('open');
   els.jobModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+  els.modalClose.focus();
 }
 
 function updateModalBookmarkBtn() {
   if (!state.selectedJob) return;
   const isSaved = state.savedIds.has(state.selectedJob.id);
   els.modalBookmarkBtn.classList.toggle('saved', isSaved);
+  els.modalBookmarkBtn.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
   const icon = els.modalBookmarkBtn.querySelector('.bm-icon');
   const text = els.modalBookmarkBtn.querySelector('.bm-text');
   if (icon) icon.innerHTML = isSaved ? '&#9733;' : '&#9734;';
@@ -528,16 +563,17 @@ function updateModalBookmarkBtn() {
 }
 
 function setupModalShare(job) {
-  const shareText = encodeURIComponent(`📌 Job Vacancy: ${job.title} at ${job.company} (${job.city || 'Tamil Nadu'}). Check details & apply: ${job.apply_url}`);
+  const applyUrl = safeUrl(job.apply_url);
+  const shareText = encodeURIComponent(`📌 Job Vacancy: ${job.title} at ${job.company} (${job.city || 'Tamil Nadu'}). Check details & apply: ${applyUrl}`);
   els.modalShareWhatsapp.onclick = () => {
-    window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
+    window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank', 'noopener');
   };
   els.modalShareTelegram.onclick = () => {
-    window.open(`https://t.me/share/url?url=${encodeURIComponent(job.apply_url)}&text=${encodeURIComponent(`${job.title} at ${job.company} (${job.city})`)}`, '_blank');
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(applyUrl)}&text=${encodeURIComponent(`${job.title} at ${job.company} (${job.city})`)}`, '_blank', 'noopener');
   };
   els.modalShareCopy.onclick = async () => {
     try {
-      await navigator.clipboard.writeText(job.apply_url);
+      await navigator.clipboard.writeText(applyUrl);
       showToast('Apply link copied to clipboard! 📋');
     } catch (e) {
       showToast('Could not copy link');
@@ -550,6 +586,10 @@ function closeJobModal() {
   els.jobModal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
   state.selectedJob = null;
+  if (state.lastFocused && typeof state.lastFocused.focus === 'function') {
+    state.lastFocused.focus();
+  }
+  state.lastFocused = null;
 }
 
 // ---------- Boot & Event Listeners ------------------------------------------
@@ -559,7 +599,8 @@ function stampHeader(payload) {
   els.updated.textContent = Number.isNaN(when.getTime())
     ? 'Last updated: just now'
     : 'Last updated: ' + when.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
-  els.counts.textContent = `${payload.count} live verified jobs • ${payload.new_count || 0} new this run`;
+  const total = typeof payload.count === 'number' ? payload.count : state.allJobs.length;
+  els.counts.textContent = `${total} live verified jobs • ${payload.new_count || 0} new this run`;
 }
 
 function attachEvents() {
@@ -656,6 +697,24 @@ function attachEvents() {
     if (e.target === els.jobModal) closeJobModal();
   });
 
+  // Keep keyboard focus inside the dialog while it is open.
+  els.jobModal.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab' || !els.jobModal.classList.contains('open')) return;
+    const focusable = els.jobModal.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
   // Modal bookmark button
   els.modalBookmarkBtn.addEventListener('click', () => {
     if (state.selectedJob) {
@@ -665,8 +724,10 @@ function attachEvents() {
 
   // Global Keyboard Shortcuts
   document.addEventListener('keydown', (e) => {
-    // Focus search with '/'
-    if (e.key === '/' && document.activeElement !== els.search) {
+    const tag = (e.target && e.target.tagName) || '';
+    const typing = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+    // Focus search with '/' - but never while the user is typing elsewhere.
+    if (e.key === '/' && !typing && document.activeElement !== els.search) {
       e.preventDefault();
       els.search.focus();
       els.search.select();
@@ -702,6 +763,68 @@ async function loadJobsPayload() {
   }
 
   return { generated_at: null, count: 0, new_count: 0, jobs: [] };
+}
+
+function renderSkeleton() {
+  const block = '<div class="skeleton-card" aria-hidden="true">' +
+    '<div class="skeleton-line w40"></div>' +
+    '<div class="skeleton-line w80"></div>' +
+    '<div class="skeleton-line w60"></div>' +
+    '<div class="skeleton-line w40"></div>' +
+    '</div>';
+  els.list.innerHTML = block.repeat(6);
+  els.list.setAttribute('aria-busy', 'true');
+}
+
+function updateSeoMeta(payload) {
+  let pageUrl = '';
+  try {
+    pageUrl = window.location.origin + window.location.pathname;
+  } catch (e) {
+    pageUrl = '';
+  }
+  const canonical = document.getElementById('canonicalLink');
+  const ogUrl = document.getElementById('ogUrl');
+  if (canonical && pageUrl) canonical.setAttribute('href', pageUrl);
+  if (ogUrl && pageUrl) ogUrl.setAttribute('content', pageUrl);
+
+  const node = document.getElementById('jobsJsonLd');
+  if (!node) return;
+
+  const site = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Tamil Nadu Live Jobs',
+    inLanguage: 'en-IN',
+  };
+  if (pageUrl) site.url = pageUrl;
+
+  const items = state.allJobs.slice(0, 50).map(function (job, index) {
+    const applyUrl = safeUrl(job.apply_url);
+    const posting = {
+      '@type': 'JobPosting',
+      title: job.title,
+      description: job.description || job.page_title || (job.title + ' vacancy at ' + job.company),
+      datePosted: job.posted_at || undefined,
+      validThrough: job.deadline || undefined,
+      employmentType: job.employment_type || undefined,
+      hiringOrganization: job.company ? { '@type': 'Organization', name: job.company } : undefined,
+      jobLocation: {
+        '@type': 'Place',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: job.city || 'Tamil Nadu',
+          addressRegion: job.state || 'Tamil Nadu',
+          addressCountry: 'IN',
+        },
+      },
+    };
+    if (applyUrl !== '#') posting.url = applyUrl;
+    return { '@type': 'ListItem', position: index + 1, item: posting };
+  });
+
+  site.mainEntity = { '@type': 'ItemList', itemListElement: items };
+  node.textContent = JSON.stringify(site);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -757,15 +880,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   els.modalShareCopy = document.getElementById('modalShareCopy');
   els.modalApplyBtn = document.getElementById('modalApplyBtn');
   els.toast = document.getElementById('toast');
+  els.srStatus = document.getElementById('srStatus');
 
   initTheme();
   loadSavedIds();
   updateSavedBadge();
   attachEvents();
+  renderSkeleton();
 
-  const payload = await loadJobsPayload();
+  let payload;
+  try {
+    payload = await loadJobsPayload();
+  } catch (err) {
+    payload = { generated_at: null, count: 0, new_count: 0, jobs: [] };
+  }
   state.allJobs = (payload.jobs || []).filter(j => j && j.verified === true);
   stampHeader(payload);
+  updateSeoMeta(payload);
 
   readUrlParams();
   applyFilters();

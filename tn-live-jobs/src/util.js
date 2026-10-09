@@ -57,14 +57,15 @@ function clip(value, max) {
 }
 
 /** Remove surrounding quotes and common HTML entities. */
+// Note: `&amp;` is decoded LAST so a literal "&amp;lt;" stays "&lt;".
 function unescapeEntities(value) {
   return tidy(value)
-    .replace(/&amp;/g, '&')
     .replace(/&nbsp;/g, ' ')
     .replace(/&#39;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
     .replace(/^["'\u201c\u2018]+|["'\u201d\u2019]+$/g, '');
 }
 

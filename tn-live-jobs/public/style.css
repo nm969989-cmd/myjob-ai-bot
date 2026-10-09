@@ -15,8 +15,8 @@
   --bg-input: #ffffff;
 
   --text-main: #0f172a;
-  --text-muted: #64748b;
-  --text-subtle: #94a3b8;
+  --text-muted: #52606f;
+  --text-subtle: #5a6b80;
 
   --border-subtle: #e2e8f0;
   --border-hover: #cbd5e1;
@@ -64,8 +64,8 @@
   --bg-input: #151e30;
 
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
+  --text-muted: #a9b6c8;
+  --text-subtle: #8b9bb4;
 
   --border-subtle: #1e293b;
   --border-hover: #334155;
@@ -1193,4 +1193,176 @@ body {
   .modal-footer { flex-direction: column; align-items: stretch; }
   .btn-apply-modal { text-align: center; }
   .modal-dialog { max-height: 94vh; }
+}
+
+/* ==========================================================================
+   Accessibility, motion & polish
+   ========================================================================== */
+
+/* Visually hidden but still announced by screen readers. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Keyboard-only "skip to listings" link. */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -64px;
+  z-index: 2000;
+  background: var(--primary);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  text-decoration: none;
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: 12px;
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* One consistent, high-contrast keyboard focus ring for every control. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Keep the selected quick-filter chip readable for mouse and screen readers. */
+.chip[aria-pressed="true"] {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+/* Icon-only buttons get a comfortable 40px touch target. */
+.btn-theme,
+.modal-close,
+.btn-bookmark {
+  min-width: 40px;
+  min-height: 40px;
+}
+
+/* Smooth in-page jumps (disabled again under prefers-reduced-motion). */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Gentle entrance for freshly rendered cards instead of a hard pop-in. */
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+  animation: cardIn 260ms ease both;
+}
+
+/* Loading skeleton shown while jobs.json is being fetched (avoids layout shift). */
+.cards {
+  min-height: 240px;
+  align-content: start;
+}
+
+.skeleton-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-line {
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--border-subtle) 37%, var(--bg-elevated) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.skeleton-line.w40 { width: 40%; }
+.skeleton-line.w60 { width: 60%; }
+.skeleton-line.w80 { width: 80%; }
+
+@keyframes shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
+.noscript-note {
+  background: var(--accent-amber-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  color: var(--text-main);
+}
+
+.noscript-note a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Responsive refinements & reduced motion
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toast {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    text-align: center;
+  }
+
+  .modal-footer-left {
+    width: 100%;
+  }
+}
+
+/* Respect the operating-system "reduce motion" setting. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .card:hover {
+    transform: none;
+  }
 }

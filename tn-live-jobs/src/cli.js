@@ -274,18 +274,24 @@ async function runValidate() {
   const browser = await scraper.launchBrowser();
   const context = await scraper.newContext(browser);
 
-  const { jobs, stats } = await validateJobs(scraped.jobs, {
-    context,
-    concurrency: readNumber(process.env.VALIDATE_CONCURRENCY, 4),
-    onProgress: (done, total, job) => {
-      if (done % 10 === 0 || done === total) {
-        log(`  checked ${done}/${total} ... last: ${job.verify_reason}`);
-      }
-    },
-  });
-
-  await context.close().catch(() => undefined);
-  await scraper.closeBrowser();
+  let result;
+  try {
+    result = await validateJobs(scraped.jobs, {
+      context,
+      concurrency: readNumber(process.env.VALIDATE_CONCURRENCY, 4),
+      onProgress: (done, total, job) => {
+        if (done % 10 === 0 || done === total) {
+          log(`  checked ${done}/${total} ... last: ${job.verify_reason}`);
+        }
+      },
+    });
+  } finally {
+    // Always release the browser, even when verification throws, so a failed
+    // run never leaves a Chromium process (and its file handles) behind.
+    await context.close().catch(() => undefined);
+    await scraper.closeBrowser();
+  }
+  const { jobs, stats } = result;
 
   const payload = Object.assign({}, scraped, {
     validated_at: new Date().toISOString(),
@@ -535,11 +541,22 @@ const MIME = {
 function runServe() {
   const port = readNumber(process.env.PORT, 5173);
   const server = http.createServer((request, response) => {
-    const requested = decodeURIComponent(request.url.split('?')[0]);
+    let requested;
+    try {
+      requested = decodeURIComponent(String(request.url || '/').split('?')[0]);
+    } catch (error) {
+      // A malformed %-escape must not crash the preview server.
+      response.writeHead(400, { 'content-type': 'text/plain; charset=utf-8' });
+      response.end('Bad request\n');
+      return;
+    }
     const relative = requested === '/' ? 'index.html' : requested.replace(/^\/+/, '');
-    const target = path.join(PUBLIC_DIR, relative);
-    if (!target.startsWith(PUBLIC_DIR)) {
-      response.writeHead(403).end('Forbidden');
+    // resolve() + a separator-aware prefix check blocks ../ escapes and sibling
+    // folders such as "public-secret" that a plain startsWith() would allow.
+    const target = path.resolve(PUBLIC_DIR, relative);
+    if (target !== PUBLIC_DIR && !target.startsWith(PUBLIC_DIR + path.sep)) {
+      response.writeHead(403, { 'content-type': 'text/plain; charset=utf-8' });
+      response.end('Forbidden');
       return;
     }
     fs.readFile(target, (error, data) => {
