@@ -12,6 +12,8 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>" />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to jobs</a>
+  <noscript>Enable JavaScript to search jobs, or download the <a href="./data/jobs.json">job data</a>.</noscript>
   <!-- Header -->
   <header class="site-header">
     <div class="wrap header-wrap">
@@ -40,7 +42,7 @@
   </header>
 
   <!-- Main Content -->
-  <main class="wrap main-wrap">
+  <main class="wrap main-wrap" id="main-content" tabindex="-1">
     <!-- Controls Section -->
     <section class="controls" aria-label="Search and filter jobs">
       <!-- Search Input -->
@@ -171,7 +173,7 @@
   </main>
 
   <!-- Job Details Modal / Drawer -->
-  <div id="jobModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true">
+  <div id="jobModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-dialog">
       <div class="modal-header">
         <div class="modal-badge-row">
@@ -284,7 +286,6 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="./data/jobs.js" defer></script>
   <script src="./app.js" defer></script>
 </body>
 </html>

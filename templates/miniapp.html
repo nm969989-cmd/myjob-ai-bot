@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>MyJob AI Radar — Job Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+<title>MyJob AI Radar — Job Hub</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Tailwind CSS via CDN -->
@@ -66,10 +67,23 @@
     .pulse-dot {
       animation: pulse-slow 2s infinite ease-in-out;
     }
-  </style>
+
+    :focus-visible { outline: 3px solid #38bdf8; outline-offset: 4px; }
+    .skip-link { position: fixed; top: 8px; left: 8px; z-index: 9999; padding: 12px 18px; background: #fff; color: #0f172a; border-radius: 12px; transform: translateY(-150%); }
+    .skip-link:focus { transform: translateY(0); }
+    button, input, select, textarea { touch-action: manipulation; }
+    article { overflow-wrap: anywhere; }
+    @keyframes enter-card { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    article { animation: enter-card 220ms ease-out; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+
+</style>
 </head>
 <body class="min-h-screen pb-24 bg-[#080d1a] text-slate-100 flex flex-col">
 
+  <p id="feedStatus" role="status" class="px-4 py-2 text-sm text-amber-300"></p>
   <!-- TOP APP BAR -->
   <header class="sticky top-0 z-40 bg-[#080d1a]/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
     <div class="flex items-center justify-between">
@@ -90,7 +104,7 @@
         </div>
       </div>
 
-      <button id="refreshBtn" onclick="fetchJobs(true)" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
+      <button id="refreshBtn" aria-label="Refresh jobs" onclick="fetchJobs(true)" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
         <i data-lucide="rotate-cw" id="refreshIcon" class="w-4 h-4"></i>
       </button>
     </div>
@@ -100,12 +114,12 @@
       <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
       <input 
         type="text" 
-        id="searchInput" 
+        id="searchInput" aria-label="Search jobs"
         oninput="handleSearch()" 
         placeholder="Search company, role, skills, Chennai, Python..." 
         class="w-full pl-10 pr-9 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all"
       >
-      <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+      <button id="clearSearchBtn" aria-label="Clear search" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
         <i data-lucide="x" class="w-3.5 h-3.5"></i>
       </button>
     </div>
@@ -195,7 +209,7 @@
       <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
       <span class="text-[11px]">Syncing with Radar channels</span>
     </div>
-    <button onclick="Telegram.WebApp.close()" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 active:scale-95 transition-all flex items-center gap-1">
+    <button onclick="window.Telegram?.WebApp?.close()" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 active:scale-95 transition-all flex items-center gap-1">
       <i data-lucide="check" class="w-3.5 h-3.5"></i> Done
     </button>
   </footer>
@@ -214,9 +228,16 @@
     }
 
     let allJobs = [];
+    let demoMode = false;
     let currentFilter = 'all';
-    let savedJobIds = JSON.parse(localStorage.getItem('myjob_saved_jobs') || '[]');
-    let appliedJobUrls = JSON.parse(localStorage.getItem('myjob_applied_urls') || '[]');
+    function readStoredList(key) {
+      try { const value = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(value) ? value.filter(item => typeof item === 'string') : []; } catch { return []; }
+    }
+    function storeList(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* Saving remains available for this session. */ }
+    }
+    let savedJobIds = readStoredList('myjob_saved_jobs');
+    let appliedJobUrls = readStoredList('myjob_applied_urls');
 
     // Color gradients for company avatars
     const gradients = [
@@ -253,12 +274,17 @@
         const response = await fetch('/api/miniapp/jobs');
         if (!response.ok) throw new Error('API offline');
         const data = await response.json();
-        allJobs = data.jobs || [];
+        if (!Array.isArray(data.jobs)) throw new Error('Invalid job feed');
+        allJobs = data.jobs;
+        demoMode = false;
+        document.getElementById('feedStatus').textContent = '';
         renderJobs();
       } catch (err) {
         console.warn('Fallback to local test jobs:', err);
+        document.getElementById('feedStatus').textContent = allJobs.length && !demoMode ? 'Refresh failed. Showing previously loaded jobs.' : 'Feed unavailable. Showing sample listings for preview only; availability is not verified.';
         // Fallback demo data if testing locally without backend
         if (allJobs.length === 0) {
+          demoMode = true;
           allJobs = [
             {
               id: "demo-1",
@@ -355,7 +381,7 @@
       } else {
         savedJobIds.push(jobId);
       }
-      localStorage.setItem('myjob_saved_jobs', JSON.stringify(savedJobIds));
+      storeList('myjob_saved_jobs', savedJobIds);
       renderJobs();
     }
 
@@ -364,18 +390,19 @@
       triggerHaptic('success');
       if (!appliedJobUrls.includes(jobUrl)) {
         appliedJobUrls.push(jobUrl);
-        localStorage.setItem('myjob_applied_urls', JSON.stringify(appliedJobUrls));
+        storeList('myjob_applied_urls', appliedJobUrls);
       }
       renderJobs();
     }
 
     function openApplyLink(url, event) {
       if (event) event.stopPropagation();
+      try { if (!/^https?:$/.test(new URL(url).protocol)) return; } catch { return; }
       triggerHaptic('medium');
       if (tg && tg.openLink) {
         tg.openLink(url);
       } else {
-        window.open(url, '_blank');
+        window.open(url, '_blank', 'noopener,noreferrer');
       }
     }
 
@@ -425,7 +452,7 @@
       if (filtered.length === 0) {
         container.innerHTML = '';
         emptyState.classList.remove('hidden');
-        lucide.createIcons();
+        window.lucide?.createIcons();
         return;
       }
 
@@ -462,7 +489,7 @@
             <div class="flex items-start justify-between gap-3">
               <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-xl bg-gradient-to-tr ${avatarGradient} flex items-center justify-center text-white font-black text-lg shadow-md flex-shrink-0">
-                  ${initial}
+                  ${escapeHtml(initial)}
                 </div>
                 <div>
                   <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">${escapeHtml(job.company)}</div>
@@ -470,7 +497,7 @@
                 </div>
               </div>
 
-              <button onclick="toggleSave('${job.id}', event)" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all flex-shrink-0">
+              <button aria-label="Save job" aria-pressed="${isSaved}" onclick="toggleSave(${escapeHtml(JSON.stringify(job.id))}, event)" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all flex-shrink-0">
                 <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'fill-indigo-400 text-indigo-400' : ''}"></i>
               </button>
             </div>
@@ -507,16 +534,16 @@
 
             <!-- ACTION BUTTONS -->
             <div class="flex items-center gap-2 pt-1">
-              <button onclick="openApplyLink('${job.link}', event)" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
+              <button onclick="openApplyLink(${escapeHtml(JSON.stringify(job.link))}, event)" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Direct Apply
               </button>
 
-              <button onclick="markApplied('${job.link}', event)" title="Mark Applied" class="p-2.5 rounded-xl ${isApplied ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'} border active:scale-95 transition-all">
+              <button onclick="markApplied(${escapeHtml(JSON.stringify(job.link))}, event)" title="Mark Applied" class="p-2.5 rounded-xl ${isApplied ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'} border active:scale-95 transition-all">
                 <i data-lucide="check" class="w-4 h-4"></i>
               </button>
 
               ${job.source ? `
-                <button onclick="openApplyLink('https://t.me/s/${job.source.replace('@', '')}', event)" title="View Source Channel" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white active:scale-95 transition-all">
+                <button onclick="openApplyLink(${escapeHtml(JSON.stringify("https://t.me/s/" + job.source.replace("@", "")))}, event)" title="View Source Channel" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white active:scale-95 transition-all">
                   <i data-lucide="send" class="w-4 h-4 text-sky-400"></i>
                 </button>
               ` : ''}
@@ -526,7 +553,7 @@
       });
 
       container.innerHTML = html;
-      lucide.createIcons();
+      window.lucide?.createIcons();
     }
 
     function escapeHtml(str) {
@@ -542,7 +569,7 @@
     // Auto-fetch on load
     window.addEventListener('DOMContentLoaded', () => {
       fetchJobs();
-      lucide.createIcons();
+      window.lucide?.createIcons();
     });
   </script>
 </body>

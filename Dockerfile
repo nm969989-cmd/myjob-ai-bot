@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy
+FROM mcr.microsoft.com/playwright/python:v1.58.0-noble
 
 # Set environment variable to ensure prints are flushed instantly
 ENV PYTHONUNBUFFERED=1

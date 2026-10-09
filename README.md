@@ -53,3 +53,35 @@ node --test tn-live-jobs/test_priority_cities.js
 ```
 
 These tests mock portal calls and Telegram delivery. They do not submit applications or publish live Telegram messages.
+
+## Development and quality checks
+
+The project retains three independent entry points:
+
+- `main.py`: Flask command center and Telegram bot, with Playwright application adapters, AI clients, email, Notion and Sheets integrations.
+- `tn-live-jobs/`: Node scraper → verifier → diff → export → report, plus the static job board at `public/`.
+- `docs/index.html`: GitHub Pages careers hub with saved jobs, walk-ins, drives, ATS matching and salary tools. The Pages workflow publishes `docs/`; the Node board is a separate preview.
+
+Use **Python 3.11** (`.python-version`) and **Node 20+**. The Python Playwright version matches the Docker image; stealth is pinned to the API used by the existing adapters.
+
+```sh
+python -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip check
+.venv/bin/python -m unittest test_job_discovery test_careerops_integration test_dashboard -v
+npm --prefix tn-live-jobs ci --ignore-scripts
+npm --prefix tn-live-jobs test
+npm --prefix tn-live-jobs run serve
+# Separate Pages preview:
+python -m http.server 5174 --directory docs
+```
+
+The offline tests use synthetic data and mocked portal responses. Pull requests run them without provider secrets. Browser-dependent scraping still needs `python -m playwright install chromium` (Python) or `npx playwright install chromium` from `tn-live-jobs` (Node), plus each runtime's OS dependencies.
+
+### Dashboard access
+
+Set `DASHBOARD_TOKEN` to a long random secret. Open `/?token=YOUR_TOKEN` over HTTPS once: the server redirects to a clean URL and issues an eight-hour signed, HttpOnly, SameSite=Strict cookie. API requests and downloads then use that cookie. Header-based clients can continue using `X-Admin-Token` or `Authorization: Bearer`. Cookie-authenticated POST requests require a matching `Origin`.
+
+The application expects one trusted reverse proxy to overwrite `X-Forwarded-Proto`; it uses that scheme for Secure cookies and Origin validation. Do not expose the upstream HTTP listener directly in production. Local HTTP previews use cookies without Secure. Rotating the token invalidates existing sessions. `/` without credentials and `/healthz` return only service health, not private dashboard content. Only `/healthz` permits public cross-origin reads. Authenticated pages and APIs are not cached or indexed.
+
+Open the administrative miniapp directly in its own browser origin. Telegram iframe authentication is not implemented; the public Pages hub remains the public job browsing surface. Live provider authentication, delivery and job submissions require a separate deployment smoke check.

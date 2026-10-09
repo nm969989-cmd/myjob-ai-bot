@@ -212,7 +212,7 @@ async function runScrape() {
   // 3. Take a fair share from every source, round-robin, up to the total cap.
   //    Without this the government portal alone would swallow the whole budget
   //    and the company / job-portal sources would never appear.
-  const queues = Array.from(perBucket.values());
+  const queues = Array.from(perBucket.values(), bucket => bucket.slice());
   const jobs = [];
   let progressed = true;
   while (jobs.length < maxTotal && progressed) {
@@ -532,13 +532,19 @@ const MIME = {
   '.csv': 'text/csv; charset=utf-8',
 };
 
-function runServe() {
-  const port = readNumber(process.env.PORT, 5173);
+function runServe(port = readNumber(process.env.PORT, 5173)) {
   const server = http.createServer((request, response) => {
-    const requested = decodeURIComponent(request.url.split('?')[0]);
+    let requested;
+    try {
+      requested = decodeURIComponent(request.url.split('?')[0]);
+      if (requested.includes('\0')) throw new Error('Invalid path');
+    } catch {
+      response.writeHead(400).end('Bad request');
+      return;
+    }
     const relative = requested === '/' ? 'index.html' : requested.replace(/^\/+/, '');
     const target = path.join(PUBLIC_DIR, relative);
-    if (!target.startsWith(PUBLIC_DIR)) {
+    if (target !== PUBLIC_DIR && !target.startsWith(PUBLIC_DIR + path.sep)) {
       response.writeHead(403).end('Forbidden');
       return;
     }
@@ -644,6 +650,6 @@ async function runAll(plan, stepName) {
   }
 }
 
-main();
+if (require.main === module) main();
 
-module.exports = { parseArgs, resolveCities, resolveKeywords, ROOT, WORK_DIR, PUBLIC_DIR };
+module.exports = { parseArgs, resolveCities, resolveKeywords, runServe, ROOT, WORK_DIR, PUBLIC_DIR };

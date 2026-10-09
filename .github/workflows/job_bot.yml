@@ -54,11 +54,7 @@ jobs:
       - name: 🧪 Run Unit Tests
         run: |
           python -m pip install --quiet pytest
-          # Only the offline suite runs in CI. test_features_verify.py is a manual
-          # smoke script (its entrypoint is run_all_tests, not test_*) and other
-          # tests hit the live network, which is slow and flaky here.
-          python -m pytest test_careerops_integration.py -q \
-            -k "not network and not live and not adzuna and not scrape" || true
+          python -m pytest test_careerops_integration.py test_dashboard.py -q
 
       - name: 🧪 Verify Regional Search and Automatic Delivery
         run: python -m unittest test_job_discovery -v
@@ -88,7 +84,7 @@ jobs:
           npm ci
 
       - name: 🧪 Verify Priority-City Website Search
-        run: node --test tn-live-jobs/test_priority_cities.js
+        run: npm --prefix tn-live-jobs test
 
       - name: 🔍 Refresh Verified TN Jobs (Zero-Bot-Block ATS & Govt)
         run: |

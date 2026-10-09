@@ -4301,6 +4301,10 @@ import io
 import time as _time_module
 _server_start_time = _time_module.time()  # Track when server started (for uptime)
 app = Flask(__name__)
+# The hosting reverse proxy terminates TLS. Trust only its scheme header,
+# never forwarded host/IP values, for Secure cookies and Origin comparisons.
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1)
 
 # ─────────────────────────────────────────────────────────────────
 # 🔒  DASHBOARD AUTHENTICATION
@@ -4313,7 +4317,7 @@ DASHBOARD_TOKEN = str(os.getenv("DASHBOARD_TOKEN", "")).strip()
 
 # Kept reachable without a token so the hosting platform's health probe still
 # succeeds. None of these expose job, profile, credential or browser data.
-_DASHBOARD_OPEN_PATHS = {"/", "/healthz", "/favicon.ico"}
+_DASHBOARD_OPEN_PATHS = {"/healthz", "/favicon.ico"}
 
 
 def _dashboard_health_response():
@@ -4330,7 +4334,7 @@ def _dashboard_healthz():
 
 
 def _dashboard_token_is_valid(candidate: str) -> bool:
-    return bool(candidate) and hmac.compare_digest(candidate, DASHBOARD_TOKEN)
+    return bool(candidate) and hmac.compare_digest(candidate.encode("utf-8"), DASHBOARD_TOKEN.encode("utf-8"))
 
 
 def _extract_dashboard_token(req):
@@ -4370,6 +4374,9 @@ def _dashboard_unauthorised(req):
 def _enforce_dashboard_auth():
     from flask import request
 
+    if request.path == "/" and not _extract_dashboard_token(request) and not request.cookies.get("dashboard_session"):
+        return _dashboard_health_response()
+
     if request.method == "OPTIONS":
         return None
 
@@ -4390,8 +4397,34 @@ def _enforce_dashboard_auth():
     if request.path in _DASHBOARD_OPEN_PATHS:
         return None
 
-    if _dashboard_token_is_valid(_extract_dashboard_token(request)):
+    candidate = _extract_dashboard_token(request)
+    if _dashboard_token_is_valid(candidate):
+        if request.method == "GET" and request.args.get("token") and not request.path.startswith("/api/"):
+            from flask import redirect
+            from urllib.parse import urlencode
+            from itsdangerous import URLSafeTimedSerializer
+            query = urlencode([(key, value) for key, value in request.args.items(multi=True) if key != "token"])
+            response = redirect(request.path + ("?" + query if query else ""))
+            signed = URLSafeTimedSerializer(DASHBOARD_TOKEN, salt="dashboard-session").dumps("admin")
+            response.set_cookie("dashboard_session", signed, max_age=28800, httponly=True,
+                                secure=request.is_secure, samesite="Strict")
+            return response
         return None
+
+    # Explicit invalid credentials must not fall back to a valid browser cookie.
+    if not candidate and request.cookies.get("dashboard_session"):
+        from itsdangerous import URLSafeTimedSerializer, BadSignature
+        try:
+            identity = URLSafeTimedSerializer(DASHBOARD_TOKEN, salt="dashboard-session").loads(
+                request.cookies["dashboard_session"], max_age=28800)
+            if identity == "admin":
+                if request.method not in {"GET", "HEAD", "OPTIONS"}:
+                    origin = request.headers.get("Origin", "")
+                    if origin.rstrip("/") != request.host_url.rstrip("/"):
+                        return jsonify({"error": "cross_origin_request"}), 403
+                return None
+        except BadSignature:
+            pass
 
     app.logger.warning(
         "Rejected unauthenticated dashboard request: %s %s from %s",
@@ -4404,6 +4437,10 @@ def _dashboard_security_headers(resp):
     resp.headers.setdefault("X-Content-Type-Options", "nosniff")
     resp.headers.setdefault("X-Frame-Options", "DENY")
     resp.headers.setdefault("Referrer-Policy", "no-referrer")
+    resp.headers.setdefault("Cache-Control", "no-store")
+    resp.headers.setdefault("X-Robots-Tag", "noindex, nofollow")
+    if request.path == "/healthz":
+        resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
 @app.route("/live")
@@ -4500,7 +4537,7 @@ def view_logs():
     try:
         with open("debug.log", "r", encoding="utf-8") as f:
             lines = f.readlines()
-            return "<pre>" + "".join(lines[-100:]) + "</pre>"  # Show last 100 lines
+            return "<pre>" + html.escape("".join(lines[-100:])) + "</pre>"  # Show last 100 lines
     except Exception as e:
         return f"Log file not found or error: {e}"
 
@@ -4669,14 +4706,17 @@ def home():
                 else:
                     badge = '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-gray-800/60 text-gray-300 border border-gray-600">⏭ SKIPPED</span>'
                 
+                safe_url = html.escape(url if re.match(r"^https?://", url, re.I) else "#", quote=True)
+                url_argument = html.escape(json.dumps(url), quote=True)
+                title, date = html.escape(title), html.escape(date)
                 recent_jobs_html += f'''
                 <tr class="border-b border-white/5 hover:bg-white/5 transition-all">
                     <td class="py-3 pl-2">{badge}</td>
-                    <td class="py-3 max-w-[200px] truncate"><a href="{url}" target="_blank" class="text-blue-400 hover:text-blue-300 hover:underline">{title}</a></td>
+                    <td class="py-3 max-w-[200px] truncate"><a href="{safe_url}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 hover:underline">{title}</a></td>
                     <td class="py-3 text-xs text-gray-400">{date}</td>
                     <td class="py-3 text-right pr-2">
-                        <button onclick="markCRM('{url}', 'Interview')" class="px-2 py-1 bg-purple-600/30 hover:bg-purple-500 border border-purple-500/50 rounded text-xs text-purple-200 hover:text-white transition-all mr-1">📞 Interview</button>
-                        <button onclick="markCRM('{url}', 'Rejected')" class="px-2 py-1 bg-red-900/50 hover:bg-red-700 border border-red-700/50 rounded text-xs text-red-200 hover:text-white transition-all">❌ Reject</button>
+                        <button onclick="markCRM({url_argument}, 'Interview')" class="px-2 py-1 bg-purple-600/30 hover:bg-purple-500 border border-purple-500/50 rounded text-xs text-purple-200 hover:text-white transition-all mr-1">📞 Interview</button>
+                        <button onclick="markCRM({url_argument}, 'Rejected')" class="px-2 py-1 bg-red-900/50 hover:bg-red-700 border border-red-700/50 rounded text-xs text-red-200 hover:text-white transition-all">❌ Reject</button>
                     </td>
                 </tr>'''
         recent_jobs_html += '</tbody></table></div>'
@@ -4686,7 +4726,7 @@ def home():
     # Channel grid
     channels_html = ""
     for ch in TARGET_CHANNELS:
-        channels_html += f'<div class="channel-chip flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-blue-500/50 transition-all"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse flex-shrink-0"></span><span class="text-xs text-gray-300 truncate">@{ch}</span></div>'
+        channels_html += f'<div class="channel-chip flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-blue-500/50 transition-all"><span class="w-2 h-2 rounded-full bg-green-400 animate-pulse flex-shrink-0"></span><span class="text-xs text-gray-300 truncate">@{html.escape(ch)}</span></div>'
 
     from flask import render_template_string
     try:
@@ -4733,7 +4773,7 @@ def home():
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return f"Error loading dashboard template: {e}"
+        return "Unable to load dashboard. Check the server logs.", 500
 
 # (Radar routes defined earlier in file)
 

@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore regional job listings, walk-in drives, career tools and saved opportunities across Tamil Nadu and Puducherry.">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="canonical" href="https://nm969989-cmd.github.io/myjob-ai-bot/">
+  <meta property="og:title" content="MyJob AI Radar — Regional Careers Hub">
+  <meta property="og:description" content="Find regional jobs, walk-in drives and career tools in one place.">
+  <meta property="og:type" content="website">
   <title>MyJob AI Radar — Tamil Nadu & Multi-Platform Tech Careers Hub</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -91,7 +97,27 @@
     #toast {
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
     }
-  </style>
+
+    :focus-visible { outline: 3px solid #38bdf8; outline-offset: 4px; }
+    .skip-link { position: fixed; top: 8px; left: 8px; z-index: 9999; padding: 12px 18px; background: #fff; color: #0f172a; border-radius: 12px; transform: translateY(-150%); }
+    .skip-link:focus { transform: translateY(0); }
+    button, input, select, textarea { touch-action: manipulation; }
+    article, .job-card { min-width: 0; overflow-wrap: anywhere; }
+    @keyframes enter-card { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    article, .job-card { animation: enter-card 220ms ease-out; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+
+    @media (min-width: 900px) {
+      #tab-jobs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; }
+      #tab-jobs.hidden { display: none; }
+      #tab-jobs > :not(.job-card) { grid-column: 1 / -1; }
+      body > header, body > main, .tab-content { width: 100%; max-width: 1200px; margin-inline: auto; }
+    }
+    @media (max-width: 640px) { .orb { display: none; } }
+    nav { padding-bottom: max(8px, env(safe-area-inset-bottom)) !important; }
+</style>
 </head>
 <body class="min-h-screen pb-24 text-slate-100 flex flex-col">
 
@@ -134,7 +160,7 @@
           <i data-lucide="send" class="w-3.5 h-3.5"></i>
           <span class="hidden sm:inline">Bot</span>
         </a>
-        <button id="refreshBtn" onclick="fetchAllData(true)" title="Refresh Feed" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
+        <button id="refreshBtn" aria-label="Refresh jobs" onclick="fetchAllData(true)" title="Refresh Feed" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
           <i data-lucide="rotate-cw" id="refreshIcon" class="w-4 h-4"></i>
         </button>
       </div>
@@ -146,13 +172,13 @@
         <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
         <input 
           type="text" 
-          id="searchInput" 
+          id="searchInput" aria-label="Search jobs"
           oninput="handleSearch()" 
           onkeydown="if(event.key === 'Enter') executeSearch()"
           placeholder="Search Python, React, Chennai, Coimbatore, Zoho, Walk-in..." 
           class="w-full pl-10 pr-9 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 transition-all"
         >
-        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+        <button id="clearSearchBtn" aria-label="Clear search" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -298,12 +324,12 @@
       <div class="flex flex-col gap-3 mt-3">
         <div>
           <label class="text-xs font-semibold text-slate-300 mb-1 block">1. Your Resume Skills / Text Summary:</label>
-          <textarea id="resumeInput" rows="4" class="w-full p-3 rounded-xl bg-slate-900/80 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500" placeholder="e.g. B.E CSE 2025 Batch, Python, Django, REST API, SQL, JavaScript, React, Git, Problem Solving, Docker..."></textarea>
+          <textarea id="resumeInput" aria-label="Resume text" rows="4" class="w-full p-3 rounded-xl bg-slate-900/80 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500" placeholder="e.g. B.E CSE 2025 Batch, Python, Django, REST API, SQL, JavaScript, React, Git, Problem Solving, Docker..."></textarea>
         </div>
 
         <div>
           <label class="text-xs font-semibold text-slate-300 mb-1 block">2. Target Job Description / Requirements:</label>
-          <textarea id="jdInput" rows="4" class="w-full p-3 rounded-xl bg-slate-900/80 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500" placeholder="Paste the job description or requirements here..."></textarea>
+          <textarea id="jdInput" aria-label="Job description" rows="4" class="w-full p-3 rounded-xl bg-slate-900/80 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500" placeholder="Paste the job description or requirements here..."></textarea>
         </div>
 
         <button onclick="calculateLiveATS()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-slate-900 font-extrabold text-sm shadow-lg shadow-amber-500/25 active:scale-95 transition-all flex items-center justify-center gap-2 font-heading">
@@ -390,7 +416,7 @@
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <!-- INTERACTIVE FULL JOB DETAILS & APPLICATION MODAL -->
   <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div id="jobDetailsModal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md">
+  <div id="jobDetailsModal" role="dialog" aria-modal="true" aria-labelledby="modalRole" tabindex="-1" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md">
     <div class="glass-card modal-enter w-full sm:max-w-xl max-h-[90vh] flex flex-col rounded-t-3xl sm:rounded-2xl border-white/20 bg-[#0c1228] shadow-2xl overflow-hidden">
       
       <!-- MODAL HEADER -->
@@ -407,7 +433,7 @@
             <p id="modalCompany" class="text-xs sm:text-sm font-semibold text-amber-300">Company Name</p>
           </div>
         </div>
-        <button onclick="closeDetailsModal()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
+        <button onclick="closeDetailsModal()" aria-label="Close job details" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
@@ -497,7 +523,7 @@
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <!-- FRESHER CTC vs IN-HAND MONTHLY SALARY CALCULATOR MODAL -->
   <!-- ═══════════════════════════════════════════════════════════════ -->
-  <div id="ctcModal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md">
+  <div id="ctcModal" role="dialog" aria-modal="true" aria-label="Salary calculator" tabindex="-1" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md">
     <div class="glass-card modal-enter w-full sm:max-w-lg max-h-[90vh] flex flex-col rounded-t-3xl sm:rounded-2xl border-white/20 bg-[#0c1228] shadow-2xl overflow-hidden">
       <!-- HEADER -->
       <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-[#0a0f24]">
@@ -523,7 +549,7 @@
             <span class="text-xs font-semibold text-slate-300">Annual Offer CTC:</span>
             <span id="ctcDisplayBadge" class="text-sm font-extrabold text-emerald-400 font-mono">₹4.50 LPA</span>
           </div>
-          <input type="range" id="ctcSlider" min="2.5" max="15.0" step="0.25" value="4.5" oninput="updateCtcCalculator(this.value)" class="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
+          <input type="range" id="ctcSlider" aria-label="Annual salary in lakhs" min="2.5" max="15.0" step="0.25" value="4.5" oninput="updateCtcCalculator(this.value)" class="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
           <div class="flex items-center justify-between text-[10px] text-slate-500 mt-1 font-mono">
             <span>₹2.5L</span>
             <span>₹4.5L</span>
@@ -625,7 +651,13 @@
     let currentFilter = 'tn'; // TAMIL NADU DEFAULT FIRST!
     let currentTab = 'jobs';
     let walkinCity = 'all';
-    let savedJobIds = JSON.parse(localStorage.getItem('myjob_saved') || '[]');
+    function readStoredList(key) {
+      try { const value = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(value) ? value.filter(item => typeof item === 'string') : []; } catch { return []; }
+    }
+    function storeList(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* Saving remains available for this session. */ }
+    }
+    let savedJobIds = readStoredList('myjob_saved');
     let activeModalJob = null;
 
     function triggerHaptic(type = 'light') {
@@ -667,7 +699,7 @@
       // failure as "offline" rather than as a sign the backend is healthy.
       try {
         const BACKEND = 'https://nmnm969989-myjob-bot.hf.space';
-        const ping = await fetch(`${BACKEND}/api/status`, {
+        const ping = await fetch(`${BACKEND}/healthz`, {
           method: 'GET',
           mode: 'cors',
           signal: AbortSignal.timeout(2500)
@@ -679,7 +711,7 @@
 
       // Fetch latest SimplifyJobs and append dynamically
       try {
-        const res = await fetch('https://raw.githubusercontent.com/SimplifyJobs/New-Grad-Positions/dev/README.md');
+        const res = await fetch('https://raw.githubusercontent.com/SimplifyJobs/New-Grad-Positions/dev/README.md', { signal: AbortSignal.timeout(10000) });
         if (res.ok) {
           const text = await res.text();
           const rowRegex = /<tr>\s*<td>(.*?)<\/td>\s*<td>(.*?)<\/td>\s*<td>(.*?)<\/td>\s*<td>(.*?)<\/td>\s*<td>(.*?)<\/td>\s*<\/tr>/gis;
@@ -730,7 +762,7 @@
 
       updateMetrics();
       renderCurrentView();
-      lucide.createIcons();
+      window.lucide?.createIcons();
       document.getElementById('refreshIcon')?.classList.remove('animate-spin');
     }
 
@@ -753,7 +785,7 @@
       else filterBar?.classList.add('hidden');
 
       renderCurrentView();
-      lucide.createIcons();
+      window.lucide?.createIcons();
     }
 
     function renderCurrentView() {
@@ -870,7 +902,7 @@
         const applyUrl = j.apply_url || j.link || '#';
 
         return `
-          <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 ${isWalkin ? 'border-cyan-500/30' : (isTN ? 'border-amber-500/25' : '')}">
+          <div class="job-card glass-card rounded-2xl p-4 flex flex-col gap-3 ${isWalkin ? 'border-cyan-500/30' : (isTN ? 'border-amber-500/25' : '')}">
             <div class="flex items-start justify-between gap-2">
               <div class="flex-1">
                 <div class="flex items-center gap-1.5 flex-wrap mb-1.5">
@@ -878,7 +910,7 @@
                   ${platformBadge}
                   ${freshnessBadge}
                 </div>
-                <h3 class="text-sm font-bold text-white font-heading cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal('${j.id}')">
+                <h3 class="text-sm font-bold text-white font-heading cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal(${escapeHtml(JSON.stringify(j.id))})">
                   ${escapeHtml(j.role)}
                 </h3>
                 <p class="text-xs font-semibold text-amber-300 flex items-center gap-1 mt-0.5">
@@ -886,7 +918,7 @@
                   <i data-lucide="check-circle" class="w-3 h-3 text-amber-400"></i>
                 </p>
               </div>
-              <button onclick="toggleSave('${j.id}')" title="Save Job" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all shrink-0">
+              <button onclick="toggleSave(${escapeHtml(JSON.stringify(j.id))})" title="Save Job" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all shrink-0">
                 <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'text-pink-400 fill-pink-400' : ''}"></i>
               </button>
             </div>
@@ -915,7 +947,7 @@
                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Apply Link
               </a>
 
-              <button onclick="openDetailsModal('${j.id}')" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+              <button onclick="openDetailsModal(${escapeHtml(JSON.stringify(j.id))})" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
                 <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i> Details
               </button>
 
@@ -925,11 +957,11 @@
                 </a>
               ` : ''}
 
-              <button onclick="shareJob('${j.id}')" title="Share Opening" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+              <button onclick="shareJob(${escapeHtml(JSON.stringify(j.id))})" title="Share Opening" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
                 <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
               </button>
 
-              <button onclick="populateATSMatcher('${escapeHtml(j.role)}', '${escapeHtml(j.company)}', '${escapeHtml(j.description || j.summary || j.role)}')" title="ATS Match" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+              <button onclick="populateATSMatcher(${escapeHtml(JSON.stringify(j.role || ""))}, ${escapeHtml(JSON.stringify(j.company || ""))}, ${escapeHtml(JSON.stringify(j.description || j.summary || j.role || ""))})" title="ATS Match" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
                 <i data-lucide="target" class="w-3.5 h-3.5 text-pink-400"></i>
               </button>
             </div>
@@ -937,7 +969,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      window.lucide?.createIcons();
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -966,7 +998,7 @@
                   <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">🚶‍♂️ Tamil Nadu Walk-In</span>
                   <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">🟢 Active</span>
                 </div>
-                <h3 class="text-sm font-bold text-white font-heading cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal('${w.id}')">${escapeHtml(w.role)}</h3>
+                <h3 class="text-sm font-bold text-white font-heading cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal(${escapeHtml(JSON.stringify(w.id))})">${escapeHtml(w.role)}</h3>
                 <p class="text-xs font-semibold text-amber-300 mt-0.5">${escapeHtml(w.company)}</p>
               </div>
               <span class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">${escapeHtml(w.salary)}</span>
@@ -983,13 +1015,13 @@
               <a href="${safeUrl(applyUrl)}" target="_blank" rel="noopener noreferrer" class="flex-1 min-w-[120px] py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 active:scale-95 transition-all">
                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Apply Link
               </a>
-              <button onclick="openDetailsModal('${w.id}')" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+              <button onclick="openDetailsModal(${escapeHtml(JSON.stringify(w.id))})" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
                 <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i> Details
               </button>
               <a href="${safeUrl(w.maps_url)}" target="_blank" rel="noopener noreferrer" class="py-2.5 px-3 rounded-xl bg-teal-600/20 border border-teal-500/40 text-teal-300 hover:bg-teal-600/30 font-semibold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
                 <i data-lucide="navigation" class="w-3.5 h-3.5 text-teal-400"></i> Google Maps
               </a>
-              <button onclick="shareJob('${w.id}')" title="Share Walk-in" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+              <button onclick="shareJob(${escapeHtml(JSON.stringify(w.id))})" title="Share Walk-in" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
                 <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
               </button>
             </div>
@@ -997,7 +1029,7 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      window.lucide?.createIcons();
     }
 
     function filterWalkinsCity(city) {
@@ -1027,7 +1059,7 @@
             <div class="flex items-start justify-between">
               <div>
                 <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">${escapeHtml(d.source)}</span>
-                <h3 class="text-sm font-bold text-white font-heading mt-1 cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal('${d.id}')">${escapeHtml(d.role)}</h3>
+                <h3 class="text-sm font-bold text-white font-heading mt-1 cursor-pointer hover:text-amber-300 transition-colors" onclick="openDetailsModal(${escapeHtml(JSON.stringify(d.id))})">${escapeHtml(d.role)}</h3>
                 <p class="text-xs text-amber-300 font-semibold">${escapeHtml(d.company)}</p>
               </div>
               <div class="text-right">
@@ -1048,10 +1080,10 @@
               <a href="${safeUrl(applyUrl)}" target="_blank" rel="noopener noreferrer" class="flex-1 min-w-[120px] py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-purple-500/20 active:scale-95 transition-all">
                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Apply Link
               </a>
-              <button onclick="openDetailsModal('${d.id}')" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+              <button onclick="openDetailsModal(${escapeHtml(JSON.stringify(d.id))})" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
                 <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i> Details
               </button>
-              <button onclick="shareJob('${d.id}')" title="Share Mass Drive" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+              <button onclick="shareJob(${escapeHtml(JSON.stringify(d.id))})" title="Share Mass Drive" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
                 <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
               </button>
             </div>
@@ -1059,12 +1091,44 @@
         `;
       }).join('');
 
-      lucide.createIcons();
+      window.lucide?.createIcons();
     }
 
     // ─────────────────────────────────────────────────────────────
     // INTERACTIVE JOB DETAILS MODAL LOGIC
     // ─────────────────────────────────────────────────────────────
+
+    const dialogStack = [];
+    function focusDialog(id) {
+      const dialog = document.getElementById(id);
+      const previous = document.activeElement;
+      dialogStack.push({ id, previous });
+      document.body.style.overflow = 'hidden';
+      (dialog.querySelector('button, input, a[href]') || dialog).focus();
+    }
+    function restoreDialog(id) {
+      const index = dialogStack.findIndex(item => item.id === id);
+      if (index < 0) return;
+      const [item] = dialogStack.splice(index, 1);
+      if (!dialogStack.length) document.body.style.overflow = '';
+      if (item.previous?.isConnected) item.previous.focus();
+    }
+    document.addEventListener('keydown', event => {
+      const active = dialogStack.at(-1);
+      if (!active) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        active.id === 'ctcModal' ? closeCtcModal() : closeDetailsModal();
+      }
+      if (event.key === 'Tab') {
+        const dialog = document.getElementById(active.id);
+        const controls = [...dialog.querySelectorAll('button, input, a[href], textarea')].filter(el => !el.disabled && el.getClientRects().length);
+        const first = controls[0], last = controls.at(-1);
+        if (!controls.length) return;
+        if (event.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+      }
+    });
 
     function openDetailsModal(jobId) {
       triggerHaptic('medium');
@@ -1189,7 +1253,8 @@
       const pitchDrawer = document.getElementById('modalPitchDrawer');
       if (pitchDrawer) pitchDrawer.classList.add('hidden');
       document.getElementById('jobDetailsModal').classList.remove('hidden');
-      lucide.createIcons();
+      focusDialog('jobDetailsModal');
+      window.lucide?.createIcons();
 
       // Native Telegram WebApp Buttons Integration
       if (tg) {
@@ -1219,6 +1284,7 @@
     function closeDetailsModal() {
       triggerHaptic('light');
       document.getElementById('jobDetailsModal').classList.add('hidden');
+      restoreDialog('jobDetailsModal');
       const pitchDrawer = document.getElementById('modalPitchDrawer');
       if (pitchDrawer) pitchDrawer.classList.add('hidden');
       activeModalJob = null;
@@ -1331,7 +1397,7 @@ Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
       document.getElementById('pitchMailtoBtn').href = mailtoUrl;
 
       drawer.classList.remove('hidden');
-      lucide.createIcons();
+      window.lucide?.createIcons();
     }
 
     function copyColdPitch() {
@@ -1341,10 +1407,10 @@ Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
         const btn = document.getElementById('pitchCopyBtn');
         if (btn) {
           btn.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> Copied!`;
-          lucide.createIcons();
+          window.lucide?.createIcons();
           setTimeout(() => {
             btn.innerHTML = `<i data-lucide="copy" class="w-3 h-3"></i> Copy Pitch`;
-            lucide.createIcons();
+            window.lucide?.createIcons();
           }, 2000);
         }
         showToast('Cold outreach pitch copied to clipboard!');
@@ -1363,7 +1429,8 @@ Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
       document.getElementById('ctcSlider').value = initialLpa;
       updateCtcCalculator(initialLpa);
       modal.classList.remove('hidden');
-      lucide.createIcons();
+      focusDialog('ctcModal');
+      window.lucide?.createIcons();
       if (tg && tg.BackButton) {
         tg.BackButton.show();
         tg.BackButton.onClick(closeCtcModal);
@@ -1386,6 +1453,8 @@ Candidate | Phone: +91 9876543210 | Portfolio: Available on request`;
       triggerHaptic('light');
       const modal = document.getElementById('ctcModal');
       if (modal) modal.classList.add('hidden');
+      restoreDialog('ctcModal');
+      if (tg?.BackButton) tg.BackButton.offClick(closeCtcModal);
       if (tg && tg.BackButton && (!activeModalJob || document.getElementById('jobDetailsModal').classList.contains('hidden'))) {
         tg.BackButton.hide();
       }
@@ -1567,7 +1636,7 @@ ${summary}`;
         savedJobIds.push(id);
         showToast('Job saved to Bookmarks!');
       }
-      localStorage.setItem('myjob_saved', JSON.stringify(savedJobIds));
+      storeList('myjob_saved', savedJobIds);
       updateMetrics();
       renderCurrentView();
     }
@@ -1647,7 +1716,7 @@ ${summary}`;
     window.addEventListener('DOMContentLoaded', () => {
       updateMetrics();
       renderCurrentView();
-      lucide.createIcons();
+      window.lucide?.createIcons();
       // Background refresh
       setTimeout(() => { fetchAllData(); }, 1200);
     });

@@ -16,7 +16,8 @@
     "step:export": "node src/cli.js --step=export",
     "step:report": "node src/cli.js --step=report",
     "serve": "node src/cli.js --step=serve",
-    "clean": "node -e \"require('fs').rmSync('work',{recursive:true,force:true})\""
+    "clean": "node -e \"require('fs').rmSync('work',{recursive:true,force:true})\"",
+    "test": "node --test test_*.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0",

@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import Mock, patch
 from bot_optimizer import (
     analyze_jd_skill_gap,
     calculate_skill_match_score,
@@ -84,7 +85,9 @@ class TestCareerOpsIntegration(unittest.TestCase):
         cached = get_gap_cache("test_key_123")
         self.assertEqual(cached.get("company"), "Zoho")
 
-    def test_zero_token_ats_liveness(self):
+    @patch("bot_optimizer._get_probe_session")
+    def test_zero_token_ats_liveness(self, get_session):
+        get_session.return_value.get.return_value = Mock(status_code=404)
         # Invalid / non-existent smartrecruiters posting returns False
         bad_sr = check_ats_liveness_api("https://jobs.smartrecruiters.com/Freshworks/invalid_fake_id_99999")
         self.assertFalse(bad_sr)

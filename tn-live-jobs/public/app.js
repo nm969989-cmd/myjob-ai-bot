@@ -69,7 +69,8 @@ function toggleSaveJob(id) {
     showToast('Saved to your bookmarks! ⭐');
   }
   persistSavedIds();
-  renderListOnly();
+  if (state.quickChip === 'saved') applyFilters();
+  else renderListOnly();
   if (state.selectedJob && state.selectedJob.id === id) {
     updateModalBookmarkBtn();
   }
@@ -84,9 +85,10 @@ function updateSavedBadge() {
 // ---------- Theme Management ------------------------------------------------
 
 function initTheme() {
-  const saved = localStorage.getItem('tn_theme');
+  let saved;
+  try { saved = localStorage.getItem('tn_theme'); } catch {}
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const theme = saved || (prefersDark ? 'dark' : 'light');
+  const theme = ['dark', 'light'].includes(saved) ? saved : (prefersDark ? 'dark' : 'light');
   document.documentElement.setAttribute('data-theme', theme);
 }
 
@@ -109,9 +111,17 @@ function escapeHtml(val) {
     .replace(/"/g, '&quot;');
 }
 
+function safeUrl(value) {
+  try { const url = new URL(value); return /^https?:$/.test(url.protocol) ? url.href : '#'; } catch { return '#'; }
+}
+
+function jobDate(value) {
+  return new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? value + 'T00:00:00' : value);
+}
+
 function daysAgo(dateString) {
   if (!dateString) return '';
-  const then = new Date(dateString + 'T00:00:00');
+  const then = jobDate(dateString);
   if (Number.isNaN(then.getTime())) return '';
   const days = Math.floor((Date.now() - then.getTime()) / 86400000);
   if (days <= 0) return 'Posted today';
@@ -121,7 +131,7 @@ function daysAgo(dateString) {
 
 function fmtDate(dateString) {
   if (!dateString) return 'Not stated';
-  const then = new Date(dateString + 'T00:00:00');
+  const then = jobDate(dateString);
   if (Number.isNaN(then.getTime())) return escapeHtml(dateString);
   return then.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
@@ -201,13 +211,15 @@ function matchesExperience(job, expFilter) {
 }
 
 function matchesFreshness(job, freshness) {
-  if (!freshness || !job.posted_at) return true;
-  const then = new Date(job.posted_at + 'T00:00:00').getTime();
-  if (Number.isNaN(then)) return true;
+  if (!freshness) return true;
+  if (!job.posted_at) return false;
+  const then = jobDate(job.posted_at).getTime();
+  if (Number.isNaN(then)) return false;
   const ageHours = (Date.now() - then) / (3600 * 1000);
-  if (freshness === '24h') return ageHours <= 36;
-  if (freshness === '3d') return ageHours <= 3 * 24 + 12;
-  if (freshness === '7d') return ageHours <= 7 * 24 + 12;
+  if (ageHours < 0) return false;
+  if (freshness === '24h') return ageHours <= 24;
+  if (freshness === '3d') return ageHours <= 3 * 24;
+  if (freshness === '7d') return ageHours <= 7 * 24;
   return true;
 }
 
@@ -259,6 +271,7 @@ function readUrlParams() {
     if (params.has('chip')) state.quickChip = params.get('chip');
     if (params.has('exp')) state.experience = params.get('exp');
     if (params.has('type')) state.type = params.get('type');
+    if (params.has('fresh')) state.freshness = params.get('fresh');
     if (params.has('sort')) state.sort = params.get('sort');
   } catch (e) {}
 }
@@ -272,6 +285,7 @@ function updateUrlParams() {
     if (state.quickChip && state.quickChip !== 'all') params.set('chip', state.quickChip);
     if (state.experience) params.set('exp', state.experience);
     if (state.type) params.set('type', state.type);
+    if (state.freshness) params.set('fresh', state.freshness);
     if (state.sort && state.sort !== 'newest') params.set('sort', state.sort);
 
     const queryStr = params.toString();
@@ -323,7 +337,7 @@ function createCardHtml(job) {
     <article class="card" data-id="${escapeHtml(job.id)}">
       <div class="card-header">
         <span class="card-company">${highlightedCompany}</span>
-        <button class="btn-bookmark ${isSaved ? 'saved' : ''}" type="button" data-save="${escapeHtml(job.id)}" title="${isSaved ? 'Unsave job' : 'Save job'}" aria-label="Bookmark job">
+        <button class="btn-bookmark ${isSaved ? 'saved' : ''}" type="button" data-save="${escapeHtml(job.id)}" title="${isSaved ? 'Unsave job' : 'Save job'}" aria-label="${isSaved ? 'Unsave' : 'Save'} ${escapeHtml(job.title)}" aria-pressed="${isSaved}">
           ${isSaved ? '&#9733;' : '&#9734;'}
         </button>
       </div>
@@ -333,7 +347,7 @@ function createCardHtml(job) {
       ${skillsHtml}
       <div class="card-actions">
         <button class="btn-details" type="button" data-view="${escapeHtml(job.id)}">View Details</button>
-        <a class="btn-apply" href="${escapeHtml(job.apply_url)}" target="_blank" rel="noopener noreferrer">Apply Now &rarr;</a>
+        <a class="btn-apply" href="${escapeHtml(safeUrl(job.apply_url))}" target="_blank" rel="noopener noreferrer">Apply Now &rarr;</a>
       </div>
     </article>
   `;
@@ -382,6 +396,7 @@ function render() {
   // Active quick chip styling
   document.querySelectorAll('.chip').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.chip === state.quickChip);
+    btn.setAttribute('aria-pressed', String(btn.dataset.chip === state.quickChip));
   });
 
   // Active Filters Bar
@@ -390,7 +405,7 @@ function render() {
   // Stats Counters
   const freshCount = state.allJobs.filter(j => {
     if (!j.posted_at) return false;
-    return Date.now() - new Date(j.posted_at + 'T00:00:00').getTime() < 36 * 3600 * 1000;
+    return matchesFreshness(j, '24h');
   }).length;
 
   els.statLive.textContent = `${state.allJobs.length} live jobs verified`;
@@ -463,7 +478,10 @@ function resetAllFilters() {
 
 // ---------- Modal Details Drawer --------------------------------------------
 
+let modalOpener;
+
 function openJobModal(job) {
+  modalOpener = document.activeElement;
   state.selectedJob = job;
   els.modalTitle.textContent = job.title || '';
   els.modalCompany.textContent = job.company || '';
@@ -473,9 +491,9 @@ function openJobModal(job) {
   els.modalExp.textContent = job.experience || 'Not specified';
   els.modalQual.textContent = job.qualification || 'Any Graduate / Refer notice';
   els.modalType.textContent = job.employment_type || 'Full-time / Standard';
-  els.modalPosted.textContent = job.posted_at ? `${fmtDate(job.posted_at)} (${daysAgo(job.posted_at)})` : 'Recently posted';
-  els.modalDeadline.textContent = job.deadline ? `Last date: ${fmtDate(job.deadline)}` : 'Open until filled';
-  els.modalHttpStatus.textContent = job.http_status ? `${job.http_status} OK` : '200 OK';
+  els.modalPosted.textContent = job.posted_at ? `${fmtDate(job.posted_at)} (${daysAgo(job.posted_at)})` : 'Not stated';
+  els.modalDeadline.textContent = job.deadline ? `Last date: ${fmtDate(job.deadline)}` : 'Check official notice';
+  els.modalHttpStatus.textContent = job.http_status ? `${job.http_status} OK` : 'Not recorded';
 
   // Description
   const desc = job.description || job.page_title || `Official recruitment opportunity for ${job.title} at ${job.company} located in ${job.city || 'Tamil Nadu'}. Re-verified live by automated crawler.`;
@@ -503,7 +521,7 @@ function openJobModal(job) {
   }
 
   // Apply button
-  els.modalApplyBtn.href = job.apply_url;
+  els.modalApplyBtn.href = safeUrl(job.apply_url);
 
   // Bookmark button
   updateModalBookmarkBtn();
@@ -515,6 +533,10 @@ function openJobModal(job) {
   els.jobModal.classList.add('open');
   els.jobModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+  document.querySelectorAll('body > header, body > main, body > footer').forEach(el => { el.inert = true; });
+  requestAnimationFrame(() => {
+    if (state.selectedJob) els.modalClose.focus();
+  });
 }
 
 function updateModalBookmarkBtn() {
@@ -549,15 +571,18 @@ function closeJobModal() {
   els.jobModal.classList.remove('open');
   els.jobModal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
+  document.querySelectorAll('body > header, body > main, body > footer').forEach(el => { el.inert = false; });
+  if (modalOpener?.isConnected) modalOpener.focus();
+  else els.search.focus();
   state.selectedJob = null;
 }
 
 // ---------- Boot & Event Listeners ------------------------------------------
 
 function stampHeader(payload) {
-  const when = payload.generated_at ? new Date(payload.generated_at) : new Date();
+  const when = new Date(payload.generated_at || NaN);
   els.updated.textContent = Number.isNaN(when.getTime())
-    ? 'Last updated: just now'
+    ? 'Last update unavailable'
     : 'Last updated: ' + when.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
   els.counts.textContent = `${payload.count} live verified jobs • ${payload.new_count || 0} new this run`;
 }
@@ -665,8 +690,14 @@ function attachEvents() {
 
   // Global Keyboard Shortcuts
   document.addEventListener('keydown', (e) => {
+    if (els.jobModal.classList.contains('open') && e.key === 'Tab') {
+      const buttons = [...els.jobModal.querySelectorAll('button, a[href]')].filter(el => el.getClientRects().length);
+      const first = buttons[0], last = buttons[buttons.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
     // Focus search with '/'
-    if (e.key === '/' && document.activeElement !== els.search) {
+    if (e.key === '/' && !state.selectedJob && !document.activeElement.matches('input, textarea, select, [contenteditable]')) {
       e.preventDefault();
       els.search.focus();
       els.search.select();
@@ -696,12 +727,22 @@ async function loadJobsPayload() {
     /* fallback to jobs.js */
   }
 
+  // Load the compatibility payload only when JSON is unavailable.
+  if (!window.__TN_JOBS__) {
+    await new Promise(resolve => {
+      const script = document.createElement('script');
+      script.src = './data/jobs.js';
+      script.onload = script.onerror = resolve;
+      document.head.append(script);
+    });
+  }
+
   // 2) Fallback: window.__TN_JOBS__ from jobs.js (works on file:// protocol)
   if (window.__TN_JOBS__ && Array.isArray(window.__TN_JOBS__.jobs)) {
     return window.__TN_JOBS__;
   }
 
-  return { generated_at: null, count: 0, new_count: 0, jobs: [] };
+  throw new Error('Job feed unavailable');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -763,7 +804,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateSavedBadge();
   attachEvents();
 
-  const payload = await loadJobsPayload();
+  let payload;
+  try { payload = await loadJobsPayload(); }
+  catch {
+    els.updated.textContent = 'Unable to load the job feed. Please reload to retry.';
+    els.counts.textContent = 'Feed unavailable';
+    els.statShowing.textContent = 'Could not load jobs';
+    els.statLive.textContent = 'Data unavailable';
+    els.statFresh.textContent = 'Please try again shortly';
+    return;
+  }
   state.allJobs = (payload.jobs || []).filter(j => j && j.verified === true);
   stampHeader(payload);
 
