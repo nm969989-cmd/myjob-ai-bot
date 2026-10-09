@@ -122,3 +122,38 @@ No extra provider, API key or JavaScript framework is required. Browser reminder
 Career workspace recommendations on both public boards and the private dashboard group possible duplicates by the same stated title, company and location (case/spacing normalized and existing city aliases applied). Missing employer/location details are not guessed. Expand **source links** to inspect every URL, source-specific availability, salary and warning clues, or turn off **Group possible duplicates**. Each link keeps its own tracking history; existing applications and source data are never merged or deleted. Distinct openings can share those fields, so groups are explicitly marked as possible duplicates. Search and expiry filters apply to individual sources before grouping.
 
 Recommendations and saved tracker snapshots show explainable warning clues for recruitment-payment language, guaranteed-hiring claims, HTTP links, known short-link hosts, internationalized/numeric hosts and missing employer names. These local rules do not resolve links or verify employers, and may miss suspicious listings or flag legitimate ones. No detected pattern is not a safety endorsement. Negated no-fee/no-guarantee statements are excluded by basic clause checks. Warning text is escaped, and warnings do not block applying or remove jobs. Existing bot alerts and original feed lists retain their delivery/browsing behavior.
+
+### Opt-in bounded automatic applications (Lever)
+
+The private dashboard's **Automatic applications** panel configures a new, separate continuous worker. It is disabled by default. Enter settings such as the following, replacing the synthetic employer and preferences with your actual choices:
+
+```json
+{
+  "enabled": false,
+  "employers": [{"company": "Your selected employer", "leverSlug": "their-exact-lever-slug"}],
+  "roles": ["Python Developer"],
+  "cities": ["Chennai"],
+  "minSalaryLpa": 5,
+  "dailyLimit": 3,
+  "timezone": "Asia/Kolkata",
+  "profileConfirmed": false
+}
+```
+
+Before enabling, review the real `profile.json` (full_name, email, phone; optional current_company/linkedin/github/portfolio) and `resume.pdf` on the server. `AUTO_APPLY_RESUME` can override the PDF path. No demo profile fallback or invented answers are used. Set profileConfirmed and enabled to true only after choosing your employer list and reviewing those documents. Keep CAREER_DB_FILE on persistent storage and configure the bot's authorized Telegram chat. The worker processes at most one eligible job each minute while unpaused.
+
+Only HTTPS `jobs.lever.co` and `jobs.eu.lever.co` URLs for configured employer slugs are supported. Employer names and locations must match exactly (case insensitive); allowed role phrases use word boundaries. Listings must be dated within 30 days and not expired/failed checks. A positive salary minimum requires explicit comparable LPA in the listing and a supported salary field on the live page; unknown salary is skipped. Live title and location are checked before filling.
+
+The narrow adapter supports recognized contact/resume fields and optional profile links. CAPTCHA, OTP, unknown questions, consent controls, unrecognized layouts, and other portals stop for manual handling. It does not log into accounts, accept terms, infer answers or bypass challenges. This is limited form automation, not universal support for all Lever forms. The adapter has been verified against synthetic intercepted forms; real employer submission compatibility still needs a separately authorized live check.
+
+A successful POST plus an explicit recognized employer confirmation is required before marking Applied. The bot then sends “Application submitted”, role/company, and the original job link to the authorized Telegram chat. Unknown/unconfirmed attempts send a manual-review message and are never retried automatically. The daily limit counts **all reserved attempts**, including failures and interrupted attempts, to avoid exceeding it after a timeout. Delivery retries do not resubmit applications. A crash after Telegram delivery but before its receipt is stored may repeat the message.
+
+Already tracked and legacy applied_jobs.json entries are skipped. Successful new applications are written to the private tracker; the recent-attempt list shows outcomes and Telegram delivery status. This worker's limits apply only to this new automation; existing manual commands, channel workflows and other application engines retain their own behavior. Avoid running another application engine against the same jobs. Disabling settings or pausing the bot stops future attempts; an in-flight attempt may finish. Career digest quiet hours do not control these application confirmations.
+
+Offline verification:
+
+```sh
+python -m unittest test_auto_apply -v
+# Requires installed Playwright Chromium; every URL is intercepted, no real submissions:
+python -m unittest test_lever_apply -v
+```

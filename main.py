@@ -8145,6 +8145,21 @@ def walkin_reminder_loop():
         time.sleep(30)
 
 
+def bounded_application_loop():
+    from auto_apply_service import tick
+    from career_service import Store, load_jobs
+    from lever_apply import apply
+    store = Store()
+    root = os.path.dirname(os.path.abspath(__file__))
+    while True:
+        try:
+            if bot and not BOT_PAUSED:
+                tick(store, load_jobs(root), root, bot, load_chat_id(), apply)
+        except Exception:
+            store.observe('auto_apply', 'Worker needs attention: check profile, resume and Telegram configuration.')
+        time.sleep(60)
+
+
 def career_notification_loop():
     from career_service import Store, load_jobs, dispatch
     store = Store()
@@ -8166,6 +8181,7 @@ def thread_supervisor():
         "Daily Report": {"target": daily_report_loop, "thread": None},
         "Job Radar Loop": {"target": radar_loop, "thread": None},
         "Career Notifications": {"target": career_notification_loop, "thread": None},
+        "Bounded Applications": {"target": bounded_application_loop, "thread": None},
         "Walk-in Reminders": {"target": walkin_reminder_loop, "thread": None},
     }
     if bot:

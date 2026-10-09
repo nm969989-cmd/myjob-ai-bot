@@ -388,6 +388,23 @@ def register_routes(app, root, store=None):
         except Conflict as error:
             return jsonify(error=str(error)), 409
 
+    @app.route('/api/career/automation', methods=['GET', 'POST'])
+    def career_automation():
+        from auto_apply_service import policy, save_policy
+        if request.method == 'GET':
+            return jsonify(policy(store))
+        if request.content_length is None or request.content_length > 50000:
+            return jsonify(error='Settings must be under 50 KB.'), 413
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            return jsonify(error='Expected JSON object.'), 400
+        try:
+            return jsonify(save_policy(store, data.get('settings'), data.get('revision')))
+        except ValueError as error:
+            return jsonify(error=str(error)), 400
+        except Conflict as error:
+            return jsonify(error=str(error)), 409
+
     @app.route('/api/career/jobs')
     def career_jobs():
         return jsonify(jobs=load_jobs(root))

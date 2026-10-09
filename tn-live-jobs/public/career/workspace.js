@@ -159,6 +159,28 @@
     } catch (e) { notice(e.message + (config.server ? '' : ' Export a backup before closing if storage is unavailable.')); if (config.server) { host.querySelectorAll('button,input,textarea,select').forEach(e => { e.disabled = true; }); return; } }
     await syncBookmarks();
     populate(); renderMatches(); renderTracker(); health();
+    if (config.server) {
+      const panel = document.createElement('section'); panel.className = 'cw-section';
+      panel.innerHTML = '<h2>Automatic applications</h2><p>Opt-in Lever applications to selected employers. Each attempt counts against the daily cap. Confirmed submissions update your tracker and send a Telegram message with the job link. Unknown results are not retried.</p><p>Set exact company names and Lever slugs, allowed roles/cities, minimum LPA (0 means no salary limit), dailyLimit and timezone. Set profileConfirmed only after reviewing your real server profile.json and resume.pdf. Unfamiliar forms and CAPTCHA require manual handling.</p><label>Automation settings (JSON)<textarea id="cw-automation" rows="16" spellcheck="false"></textarea></label><button type="button" id="cw-save-automation" disabled>Save automation settings</button><p id="cw-automation-status" role="status"></p><div id="cw-auto-attempts"></div>';
+      host.querySelector('details').append(panel);
+      let automationRevision;
+      try {
+        const r = await fetch('/api/career/automation'); if (!r.ok) throw Error('Could not load automation settings.');
+        const data = await r.json(); automationRevision = data.revision;
+        $('automation').value = JSON.stringify(data.settings, null, 2); $('save-automation').disabled = false;
+        $('auto-attempts').innerHTML = '<h3>Recent attempts (reload to refresh)</h3>' + (data.attempts || []).map(a => `<p><a class="cw-link" href="${C.escape(a.url)}" target="_blank" rel="noopener noreferrer">Job link</a> ${C.escape(a.status)} · ${C.escape(a.detail)} · Telegram: ${a.notified ? 'sent' : 'pending'}</p>`).join('');
+      } catch (e) { $('automation-status').textContent = e.message; }
+      $('save-automation').addEventListener('click', async () => {
+        $('save-automation').disabled = true;
+        try {
+          const r = await fetch('/api/career/automation', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({settings:JSON.parse($('automation').value), revision:automationRevision})});
+          const data = await r.json(); if (!r.ok) throw Error(data.error || 'Could not save settings.');
+          automationRevision = data.revision; $('automation').value = JSON.stringify(data.settings, null, 2);
+          $('automation-status').textContent = data.settings.enabled ? 'Enabled. The running bot will process eligible supported jobs.' : 'Disabled. No new automatic attempts will start.';
+        } catch(e) { $('automation-status').textContent = e.message; }
+        finally { $('save-automation').disabled = false; }
+      });
+    }
     $('preferences').addEventListener('submit', async event => { event.preventDefault(); const next = clone(state); next.preferences = { skills: C.terms($('skills').value), cities: C.terms($('cities').value), experience: $('experience').value === '' ? null : Number($('experience').value), minSalary: $('salary').value === '' ? null : Number($('salary').value), remote: $('remote').checked }; if (await save(next)) renderMatches(); });
     $('alerts').addEventListener('submit', async event => { event.preventDefault(); const next = clone(state); for (const k of ['time', 'timezone', 'quietStart', 'quietEnd']) next.alerts[k] = $(k).value; for (const k of ['enabled', 'followupsEnabled']) next.alerts[k] = $(k).checked; for (const k of ['minScore', 'maxAgeDays']) next.alerts[k] = Number($(k).value); await save(next); });
     $('tracker').addEventListener('submit', async event => { event.preventDefault(); const form = event.target, key = form.dataset.application; if (!key) return; const next = clone(state); Object.assign(next.applications[key], { status: form.elements.status.value, notes: form.elements.notes.value, followUp: form.elements.followUp.value, updatedAt: new Date().toISOString() }); if (await save(next)) renderTracker(); });

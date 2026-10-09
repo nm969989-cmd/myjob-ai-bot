@@ -54,7 +54,7 @@ jobs:
       - name: 🧪 Run Unit Tests
         run: |
           python -m pip install --quiet pytest
-          python -m pytest test_careerops_integration.py test_dashboard.py test_career_workspace.py -q
+          python -m pytest test_careerops_integration.py test_dashboard.py test_career_workspace.py test_auto_apply.py -q
 
       - name: 🧪 Verify Regional Search and Automatic Delivery
         run: python -m unittest test_job_discovery -v
