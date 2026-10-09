@@ -60,3 +60,22 @@ def test_miniapp_aliases(dashboard):
         response = client.get(path + '?token=offline-admin')
         assert response.status_code == 200
         assert 'X-Admin-Token' in response.get_data(as_text=True)
+
+
+@pytest.mark.parametrize('path', [
+    '/api/manual_apply',
+    '/api/update_profile',
+    '/api/add_channel',
+    '/api/mark_crm',
+])
+def test_json_endpoints_reject_missing_body_without_500(dashboard, path):
+    """A POST with no JSON body used to raise AttributeError on request.json=None."""
+    _, client = dashboard
+    headers = {'X-Admin-Token': 'offline-admin'}
+    empty = client.post(path, headers=headers)
+    assert empty.status_code == 200
+    assert empty.get_json()['status'] == 'error'
+    wrong_type = client.post(path, headers=headers, data='not json',
+                             content_type='text/plain')
+    assert wrong_type.status_code == 200
+    assert wrong_type.get_json()['status'] == 'error'
