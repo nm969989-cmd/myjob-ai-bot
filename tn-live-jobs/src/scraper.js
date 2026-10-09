@@ -14,7 +14,12 @@
  *   - at most 2 attempts per URL
  */
 
-const { chromium } = require('playwright');
+let chromium;
+try {
+  ({ chromium } = require('playwright'));
+} catch (e) {
+  chromium = null;
+}
 const {
   MIN_DELAY_MS,
   MAX_DELAY_MS,
@@ -201,6 +206,9 @@ let sharedBrowser = null;
 /** Start Chromium once per run and reuse it (much faster than per page). */
 async function launchBrowser() {
   if (sharedBrowser) return sharedBrowser;
+  if (!chromium) {
+    throw new Error('headless browser unavailable in this environment');
+  }
   try {
     sharedBrowser = await chromium.launch({
       headless: true,

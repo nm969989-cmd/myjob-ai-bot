@@ -1,0 +1,8 @@
+{
+  "name": "MyJob AI Radar",
+  "description": "Tamil Nadu & Multi-Platform Tech Careers Hub — Real, verified job vacancies, walk-in drives, and career radar.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
