@@ -66,6 +66,16 @@ test('source route allowlist and robots fail closed rather than using alternate 
   assert.equal(feeds.robotsAllow('User-agent: *\nAllow: /\nUser-agent: GPTBot\nDisallow: /\n','/job/test'),false);
   assert.equal(feeds.robotsAllow('User-agent: *\nDisallow: /job/\nAllow: /job/public/\n','/job/public/test'),true);
 });
+test('robots wildcard matching is literal, anchored and fail-closed when bounded',()=>{
+  const policy='User-agent: *\nDisallow: /job/*private$\n';
+  assert.equal(feeds.robotsAllow(policy,'/job/team/private'),false);
+  assert.equal(feeds.robotsAllow(policy,'/job/team/private/public'),true);
+  assert.equal(feeds.robotsAllow('User-agent: *\nDisallow: /job/a+b$\n','/job/a+b'),false);
+  assert.equal(feeds.robotsAllow('User-agent: *\nDisallow: /job/a+b$\n','/job/ab'),true);
+  assert.equal(feeds.robotsAllow(' '.repeat(65537),'/job/test'),false);
+  assert.equal(feeds.robotsAllow(policy,'/'.repeat(8193)),false);
+  assert.throws(()=>feeds.robotsAllow('User-agent: *\n'+ 'Disallow: /job/*a\n'.repeat(60),'/job/'+ 'b'.repeat(5000)),/robots policy matching budget exceeded/);
+});
 test('JobPosting @graph uses explicit location, never footer mentions',()=>{
   const html='<script type="application/ld+json">'+JSON.stringify({'@graph':[{'@type':'JobPosting',title:'Python Developer',
     jobLocation:{address:{addressLocality:'Chennai'}},identifier:{value:'REQ1'},datePosted:'2026-10-08'}]})+'</script><main><h1>Python Developer</h1>Responsibilities Apply now</main>';

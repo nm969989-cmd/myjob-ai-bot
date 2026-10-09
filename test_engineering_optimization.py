@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import engineering_telegram as e
+
 from test_engineering_telegram import job, result
 
 class OptimizationTests(unittest.TestCase):
@@ -20,14 +21,14 @@ class OptimizationTests(unittest.TestCase):
         self.assertEqual(json.loads(kw['input'])['profiles'],profiles)
         self.assertTrue(kw['check'])
     def test_bad_batch_shape_rejected(self):
-        with patch.object(e.subprocess,'run',return_value=Mock(stdout='[]')):
-            with self.assertRaises(ValueError): e.query_batch([dict(e.DEFAULT)])
+        with patch.object(e.subprocess,'run',return_value=Mock(stdout='[]')), self.assertRaises(ValueError):
+            e.query_batch([dict(e.DEFAULT)])
     def test_four_searches_one_batch_and_per_send_ack(self):
         with tempfile.TemporaryDirectory() as tmp, patch.object(e,'STATE',Path(tmp)/'state.json'):
             state=e.load_state();state['searches']={f's{i}':{'role':'python','city':'Chennai'} for i in range(4)};e.save_state(state)
             bot=Mock();bot.send_message.side_effect=[None,RuntimeError('fixture failed')]
-            with patch.object(e,'query_batch',return_value=[result([job(1)])]*4) as batch:
-                with self.assertRaises(RuntimeError): e.dispatch(bot,'123')
+            with patch.object(e,'query_batch',return_value=[result([job(1)])]*4) as batch, self.assertRaises(RuntimeError):
+                e.dispatch(bot,'123')
             self.assertEqual(batch.call_count,1)
             self.assertEqual(len(batch.call_args.args[0]),4)
             after=e.load_state()
@@ -48,8 +49,8 @@ class OptimizationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp, patch.object(e,'STATE',Path(tmp)/'state.json'):
             state=e.load_state();state['searches']={'ok':{},'bad':{}};e.save_state(state)
             bot=Mock()
-            with patch.object(e,'query_batch',return_value=[result([job(1)]),{'error':'fixture invalid city'}]):
-                with self.assertRaises(ValueError): e.dispatch(bot,'123')
+            with patch.object(e,'query_batch',return_value=[result([job(1)]),{'error':'fixture invalid city'}]), self.assertRaises(ValueError):
+                e.dispatch(bot,'123')
             self.assertEqual(bot.send_message.call_count,1)
             self.assertIn('ok',e.load_state()['seen'])
             self.assertNotIn('bad',e.load_state()['seen'])

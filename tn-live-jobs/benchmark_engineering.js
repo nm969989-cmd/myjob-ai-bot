@@ -1,9 +1,10 @@
 'use strict';
-// Offline benchmark. Pass a git-extracted pre-optimization module as argv[2].
-const assert=require('node:assert/strict'),path=require('node:path');
+// Offline benchmark against the audited pre-optimization fixture (PR8 f8b00ca).
+// No CLI-controlled module is executed; equivalence assertions remain mandatory.
+const assert=require('node:assert/strict');
 const {performance}=require('node:perf_hooks');
-if(!process.argv[2])throw Error('Pass baseline engineering-search.js path; see OPTIMIZATION.md');
-const before=require(path.resolve(process.argv[2])),after=require('./src/engineering-search');
+if(process.argv[2])throw Error('Baseline is fixed: omit the former baseline-path argument');
+const before=require('./fixtures/engineering-baseline.cjs'),after=require('./src/engineering-search');
 const now=Date.parse('2026-10-09T00:00:00Z');
 const profile={...before.DEFAULT,configured:true,branch:'computer science',skills:['python','sql','react','aws'],experience_years:1,travel_radius_km:100};
 const sizes=(process.env.BENCH_SIZES||'1000,10000').split(',').map(Number);

@@ -6,7 +6,11 @@ const feeds = require('./sources/engineering-public');
 const { writeJsonIfChanged: writeJson } = require('./engineering-io');
 const { computeDiff } = require('./diff');
 const ROOT = path.resolve(__dirname,'..'), DATA = path.join(ROOT,'data');
-function read(file,fallback){try{return JSON.parse(fs.readFileSync(file,'utf8'));}catch(e){if(e.code==='ENOENT')return fallback;throw e;}}
+// Filesystem audit: read callers use two fixed engineering JSON paths below.
+// stdin profiles cannot select a path; report path is also a fixed local filename.
+// The checkout/data volume must be operator-owned, not writable by remote users.
+const INPUT_FILES = new Set([path.join(DATA,'engineering-matches.json'), path.join(DATA,'engineering-retry-queue.json')]);
+function read(file,fallback){if(!INPUT_FILES.has(file))throw Error('Unapproved engineering input path');try{return JSON.parse(fs.readFileSync(file,'utf8'));}catch(e){if(e.code==='ENOENT')return fallback;throw e;}}
 function jobs(value){return Array.isArray(value)?value:(value.jobs||[]);}
 function expired(j,now){const d=Date.parse(j.deadline||j.expires_at);return Number.isFinite(d)&&d<now;}
 async function check(job,deadline,read=feeds.publicRead){const j={...job,verified:false,verified_at:new Date().toISOString(),retry_deferred:false};

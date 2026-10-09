@@ -38,14 +38,11 @@ python -m unittest test_engineering_telegram test_engineering_optimization test_
 python -m pytest test_careerops_integration.py -q -k 'not network and not live and not adzuna and not scrape'
 ```
 
-No `|| true`: failures are failures. For an offline before/after ranking measurement, retain the baseline independently of the working tree:
+No `|| true`: failures are failures. The independently retained, audited pre-optimization module from PR8 f8b00ca is now `tn-live-jobs/fixtures/engineering-baseline.cjs`. The benchmark uses a literal require of that fixture, never executes a CLI-supplied module, and rejects the former path argument. This is an intentional security boundary change to the benchmark invocation, not removal of before/after or equality checks:
 
 ```sh
-BASE=$(mktemp -d)
-git show f8b00ca3b2e93fb8c0ffbcb09d7ae40dddb70fd7:tn-live-jobs/src/engineering-search.js > "$BASE/before.cjs"
-node --expose-gc tn-live-jobs/benchmark_engineering.js "$BASE/before.cjs"
-BENCH_SIZES=1000,10000,50000 node --expose-gc tn-live-jobs/benchmark_engineering.js "$BASE/before.cjs"
-rm -rf "$BASE"
+node --expose-gc tn-live-jobs/benchmark_engineering.js
+BENCH_SIZES=1000,10000,50000 node --expose-gc tn-live-jobs/benchmark_engineering.js
 ```
 
 The benchmark first asserts baseline/optimized output equality, then warms both, alternates order for five timings, and prints median milliseconds, Node/platform and final process RSS. Final RSS is **not** isolated per-version peak memory; use separate processes with `/usr/bin/time -v` if peak memory comparison is needed. Record actual numbers before deciding the CPU optimization helps at production sizes.

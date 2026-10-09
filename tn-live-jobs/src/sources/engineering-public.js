@@ -26,7 +26,9 @@ async function rawRead(url, deadline = Date.now()+20000) {
   if (Date.now()+delay >= deadline) throw Error('source deadline exceeded');
   if (delay) await new Promise(r => setTimeout(r,delay)); last.set(u.host,Date.now());
   const controller = new AbortController(), timer = setTimeout(() => controller.abort(),Math.min(15000,deadline-Date.now()));
-  try { const r = await fetch(url,{ redirect:'manual', signal:controller.signal, headers:{'user-agent':AGENT, accept:'text/html,application/json,text/plain'} });
+  // SSRF audit: u passed the exact HTTPS host/public-route allowlist above.
+  // Credentials/ports and redirect following are forbidden; arbitrary URLs fail closed.
+  try { const r = await fetch(u,{ redirect:'manual', signal:controller.signal, headers:{'user-agent':AGENT, accept:'text/html,application/json,text/plain'} });
     // No redirects to login, another host, or a blocked route. Caller must review redirects separately.
     if (r.status >= 300 && r.status < 400) return { status:r.status, url, body:'', retry_after:r.headers.get('retry-after'), redirected:true };
     if (Number(r.headers.get('content-length')) > 2000000) throw Error('page too large');
@@ -35,7 +37,26 @@ async function rawRead(url, deadline = Date.now()+20000) {
     return { status:r.status, url, body:Buffer.concat(parts).toString('utf8'), retry_after:r.headers.get('retry-after') };
   } finally { clearTimeout(timer); }
 }
+// Robots patterns are data, never executable regular expressions. A single-star
+// backtracking matcher has bounded polynomial work, unlike constructed RegExp.
+function robotsMatch(rule, pathname, budget) {
+  const anchored = rule.endsWith('$'), pattern = anchored ? rule.slice(0,-1) : rule;
+  let p=0, s=0, star=-1, retry=0;
+  while(s < pathname.length) {
+    if(--budget.remaining < 0) throw Error('robots policy matching budget exceeded');
+    if(p === pattern.length) { if(!anchored) return true; }
+    else if(pattern[p] === '*') { star=p++; retry=s; continue; }
+    else if(pattern[p] === pathname[s]) { p++; s++; continue; }
+    if(star < 0) return false;
+    p=star+1; s=++retry;
+  }
+  while(pattern[p] === '*') p++;
+  return p === pattern.length;
+}
 function robotsAllow(body, pathname) {
+  // Fail closed on oversized policies/paths so even polynomial matching is bounded.
+  if(body.length > 65536 || pathname.length > 8192) return false;
+  const budget={remaining:262144};
   const groups=[]; let agents=[],rules=[],started=false;
   function save(){ if(agents.length) groups.push({agents,rules}); agents=[];rules=[];started=false; }
   for(const line of body.split(/\r?\n/)){ const clean=line.split('#')[0].trim(); const m=clean.match(/^([^:]+):\s*(.*)$/); if(!m)continue;
@@ -46,7 +67,7 @@ function robotsAllow(body, pathname) {
   // Conservative: honor both our advertised crawler identity and GPTBot exclusions.
   const specific=groups.filter(g=>g.agents.some(a=>a!=='*'&&(AGENT.toLowerCase().includes(a)||a==='gptbot')));
   const applicable=[...specific,...groups.filter(g=>g.agents.includes('*'))];
-  for(const g of applicable){ const matched=g.rules.filter(r=>r.path&&new RegExp('^'+r.path.replace(/[.+?^{}()|[\]\\]/g,'\\$&').replace(/\*/g,'.*').replace(/\$$/,'$')).test(pathname)).sort((a,b)=>b.path.length-a.path.length||Number(b.allow)-Number(a.allow));
+  for(const g of applicable){ const matched=g.rules.filter(r=>r.path&&robotsMatch(r.path, pathname, budget)).sort((a,b)=>b.path.length-a.path.length||Number(b.allow)-Number(a.allow));
     if(matched.length&&!matched[0].allow)return false; }
   return true;
 }

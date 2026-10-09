@@ -1,9 +1,10 @@
 """Offline private-state and delivery tests. Never import the production main bot."""
-from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch, Mock
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from unittest.mock import Mock, patch
+
 import engineering_telegram as e
 
 
@@ -58,8 +59,8 @@ class EngineeringTelegramTests(unittest.TestCase):
             self.assertLess(len(seen),len(jobs))
     def test_failed_send_does_not_mark_seen(self):
         bot=Mock();bot.send_message.side_effect=RuntimeError('fixture provider failure')
-        with patch.object(e,'query_batch',side_effect=lambda profiles:[result([job(1)]) for _ in profiles]):
-            with self.assertRaises(RuntimeError): e.dispatch(bot,'123')
+        with patch.object(e,'query_batch',side_effect=lambda profiles:[result([job(1)]) for _ in profiles]), self.assertRaises(RuntimeError):
+            e.dispatch(bot,'123')
         self.assertNotIn('default',e.load_state()['seen'])
     def test_saved_searches_round_robin_and_integrity_upgrade(self):
         state=e.load_state();state['searches']={f's{i}':{'role':'python','city':'Chennai'} for i in range(10)};e.save_state(state)
@@ -68,6 +69,25 @@ class EngineeringTelegramTests(unittest.TestCase):
             e.dispatch(bot,'123');e.dispatch(bot,'123');e.dispatch(bot,'123')
         self.assertEqual(len(e.load_state()['seen']),10)
         self.assertEqual(bot.send_message.call_count,10)
+    def test_absolute_node_fixed_argv_and_stdin(self):
+        executable = Path(self.tmp.name) / 'node'
+        executable.write_text('fixture, never executed', encoding='utf8')
+        executable.chmod(0o755)
+        with patch.object(e.shutil, 'which', return_value=str(executable)), patch.object(e.subprocess, 'run', return_value=Mock(stdout='{}')) as run:
+            e.query({'roles': ['$(not-a-command)']})
+        argv, kwargs = run.call_args.args[0], run.call_args.kwargs
+        self.assertEqual(argv, [str(executable.resolve()), str(e.ROOT / 'tn-live-jobs/src/engineering.js'), '--query'])
+        self.assertFalse(kwargs['shell'])
+        self.assertEqual(e.json.loads(kwargs['input'])['profile']['roles'], ['$(not-a-command)'])
+    def test_missing_node_fails_closed(self):
+        with patch.object(e.shutil, 'which', return_value=None), self.assertRaises(FileNotFoundError):
+            e.query(dict(e.DEFAULT))
+    def test_invalid_private_state_not_overwritten(self):
+        e.STATE.parent.mkdir(parents=True)
+        e.STATE.write_text('[]', encoding='utf8')
+        with self.assertRaises(TypeError):
+            e.load_state()
+        self.assertEqual(e.STATE.read_text(encoding='utf8'), '[]')
     def test_non_owner_private_command_is_ignored(self):
         bot=Mock();handlers=[]
         bot.message_handler.side_effect=lambda **kw: lambda fn: handlers.append(fn) or fn

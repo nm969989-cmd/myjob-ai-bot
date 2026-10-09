@@ -4,13 +4,29 @@ Private saved searches/profile live outside the checkout. Importing this module 
 import argparse
 import json
 import os
-from pathlib import Path
+import shutil
 import subprocess
 import threading
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+
+def node_executable():
+    """Resolve the operator-installed runtime, never a chat/profile-supplied command."""
+    installed = shutil.which('node')
+    if installed is None:
+        raise FileNotFoundError('Node runtime is required')
+    executable = Path(installed).resolve(strict=True)
+    if not executable.is_file() or not os.access(executable, os.X_OK):
+        raise PermissionError('Node runtime must be an executable file')
+    return str(executable)
+
+# Subprocess audit: only this absolute runtime and a fixed checkout script execute.
+# Profile data goes through JSON stdin, never argv or a shell. PATH and checkout
+# are trusted operator configuration; production must not make them user-writable.
+
 STATE = Path(os.environ.get('ENGINEERING_STATE_DIR', str(Path.home() / '.myjob-search'))) / 'state.json'
 LOCK = threading.RLock()
 DEFAULT = {'configured': False, 'branch': None, 'skills': [], 'experience_years': None,
@@ -22,7 +38,7 @@ def load_state():
         return {'profile': dict(DEFAULT), 'searches': {}, 'seen': {}}
     data = json.loads(STATE.read_text(encoding='utf8'))
     if not isinstance(data, dict):
-        raise ValueError('Invalid private search state; refusing to overwrite it')
+        raise TypeError('Invalid private search state; refusing to overwrite it')
     return data
 
 def save_state(data):
@@ -34,27 +50,31 @@ def save_state(data):
     os.replace(tmp, STATE)
     os.chmod(STATE, 0o600)
 
+def run_node(flag=None, payload=None, timeout=20):
+    """Fixed executable/script/options; all user data is inert JSON on stdin."""
+    if flag not in (None, '--query', '--query-batch'):
+        raise ValueError('Unsupported engineering operation')
+    argv = [node_executable(), str(ROOT / 'tn-live-jobs/src/engineering.js')]
+    if flag is not None:
+        argv.append(flag)
+    return subprocess.run(argv, input=json.dumps(payload) if payload is not None else None,
+                          text=True, capture_output=payload is not None, shell=False,
+                          cwd=ROOT, timeout=timeout, check=True)
+
 def query(profile):
-    result = subprocess.run(['node', str(ROOT / 'tn-live-jobs/src/engineering.js'), '--query'],
-                            input=json.dumps({'profile': profile}), text=True, capture_output=True,
-                            cwd=ROOT, timeout=20, check=True)
-    return json.loads(result.stdout)
+    return json.loads(run_node('--query', {'profile': profile}).stdout)
 
 def query_batch(profiles):
     """One process/snapshot per dispatch; each result retains its own validation error."""
     if not profiles or len(profiles) > 4:
         raise ValueError('Use 1-4 digest profiles')
-    result = subprocess.run(['node', str(ROOT / 'tn-live-jobs/src/engineering.js'), '--query-batch'],
-                            input=json.dumps({'profiles': profiles}), text=True, capture_output=True,
-                            cwd=ROOT, timeout=80, check=True)
-    values = json.loads(result.stdout)
+    values = json.loads(run_node('--query-batch', {'profiles': profiles}, timeout=80).stdout)
     if not isinstance(values, list) or len(values) != len(profiles):
         raise ValueError('Invalid query batch response')
     return values
 
 def refresh():
-    subprocess.run(['node', str(ROOT / 'tn-live-jobs/src/engineering.js')],
-                   cwd=ROOT, timeout=600, check=True)
+    run_node(timeout=600)
 
 def parse_profile(raw, existing):
     p = dict(existing)
@@ -161,6 +181,18 @@ def dispatch(bot, owner, new_only=True):
                 save_state(state)
         return sent
 
+def save_search(bot, owner, state, raw):
+    name, role, city_name = [v.strip() for v in raw.split('|')]
+    if not name or len(name) > 40:
+        raise ValueError('Name must be 1-40 characters')
+    if name not in state['searches'] and len(state['searches']) >= 10:
+        raise ValueError('At most 10 saved searches')
+    query(search_profile(state['profile'], role, city_name))
+    state['searches'][name] = {'role': role[:80], 'city': city_name[:80]}
+    state['seen'].pop(name, None)
+    save_state(state)
+    bot.send_message(owner, f'Saved {name}: {role} | {city_name}. New-match digest after scans.', parse_mode=None)
+
 def install_handlers(bot, owner):
     def authorised(m):
         return str(m.chat.id) == str(owner) and m.chat.type == 'private'
@@ -181,14 +213,7 @@ def install_handlers(bot, owner):
                     bot.send_message(owner, 'Private profile: ' + json.dumps(state['profile']) +
                                      '\nSet: /engineering_profile branch=...;skills=python,sql;experience=unknown;radius=0\nUnknown fields stay unknown; radius is not travel time.', parse_mode=None)
                 elif command == 'save_search':
-                    name, role, city_name = [v.strip() for v in raw.split('|')]
-                    if not name or len(name) > 40: raise ValueError('Name must be 1-40 characters')
-                    if name not in state['searches'] and len(state['searches']) >= 10: raise ValueError('At most 10 saved searches')
-                    query(search_profile(state['profile'], role, city_name))  # validates city/role before persisting
-                    state['searches'][name] = {'role': role[:80], 'city': city_name[:80]}
-                    state['seen'].pop(name, None)
-                    save_state(state)
-                    bot.send_message(owner, f'Saved {name}: {role} | {city_name}. New-match digest after scans.', parse_mode=None)
+                    save_search(bot, owner, state, raw)
                 elif command == 'searches':
                     bot.send_message(owner, 'Saved searches:\n' + json.dumps(state['searches'], ensure_ascii=False) +
                                      '\n/save_search name | backend | Chennai\n/esearch python | Vellore\n/remove_search name', parse_mode=None)
@@ -204,6 +229,10 @@ def install_handlers(bot, owner):
                     bot.send_message(owner, 'Refreshing bounded public sources; this does not submit applications.', parse_mode=None)
                     refresh(); dispatch(bot, owner, new_only=False)
         except Exception as exc:
+            # Deliberate external-provider command boundary: SDK/source failures
+            # have no closed exception taxonomy. Report failure without secrets;
+            # never acknowledge unseen cards or overwrite rejected private state.
+            # KeyboardInterrupt/SystemExit (BaseException) are not swallowed.
             # Never include tokens or command subprocess stdout in a chat error.
             bot.send_message(owner, f'Search could not complete ({type(exc).__name__}). Check configuration/logs; no improved coverage is claimed.', parse_mode=None)
 
@@ -229,7 +258,10 @@ def main():
         while True:
             try:
                 with LOCK: refresh(); dispatch(bot, owner)
-            except Exception as exc: print(f'Engineering scan/delivery failed: {type(exc).__name__}', flush=True)
+            except Exception as exc:
+                # Deliberate worker boundary: record SDK/source failure and keep
+                # the scheduler alive; no failed delivery is acknowledged.
+                print(f'Engineering scan/delivery failed: {type(exc).__name__}', flush=True)
             time.sleep(max(900, int(os.environ.get('ENGINEERING_INTERVAL_SECONDS', '3600'))))
     threading.Thread(target=cycle, name='EngineeringSearch', daemon=True).start()
     # Run instead of another bot poller; do not change/delete webhooks automatically.

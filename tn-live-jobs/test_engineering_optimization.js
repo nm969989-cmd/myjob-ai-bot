@@ -1,4 +1,6 @@
 'use strict';
+// Dynamic fs paths below are mkdtemp-owned offline fixture paths, never user input.
+// Keep these atomic-write checks: removing them to satisfy a heuristic loses coverage.
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
 const search=require('./src/engineering-search');
