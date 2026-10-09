@@ -5,7 +5,24 @@ import os
 import json
 from playwright.sync_api import sync_playwright
 
-from playwright_stealth import stealth_sync
+# playwright-stealth renamed its API in 2.0: the module-level stealth_sync()
+# helper was replaced by Stealth().apply_stealth_sync(page_or_context).
+# requirements.txt only pins ">=1.0.6", so a fresh install pulls 2.x and a bare
+# "from playwright_stealth import stealth_sync" raises ImportError at import
+# time, which takes down the whole bot. Support both versions and, as a last
+# resort, degrade to a no-op instead of refusing to start.
+try:  # playwright-stealth < 2.0
+    from playwright_stealth import stealth_sync
+except ImportError:  # playwright-stealth >= 2.0
+    try:
+        from playwright_stealth import Stealth
+        _stealth_engine = Stealth()
+
+        def stealth_sync(target):
+            return _stealth_engine.apply_stealth_sync(target)
+    except Exception:
+        def stealth_sync(target):
+            return target
 from bot_features import wait_for_otp
 
 def human_scroll(page):

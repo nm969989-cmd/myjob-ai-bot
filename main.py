@@ -16,8 +16,24 @@ from threading import Thread
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from playwright.sync_api import sync_playwright
-# pyrefly: ignore [missing-import]
-from playwright_stealth import stealth_sync
+# playwright-stealth renamed its API in 2.0: the module-level stealth_sync()
+# helper was replaced by Stealth().apply_stealth_sync(page_or_context).
+# requirements.txt only pins ">=1.0.6", so a fresh install pulls 2.x and a bare
+# "from playwright_stealth import stealth_sync" raises ImportError at import
+# time, which takes down the whole bot. Support both versions and, as a last
+# resort, degrade to a no-op instead of refusing to start.
+try:  # playwright-stealth < 2.0
+    from playwright_stealth import stealth_sync
+except ImportError:  # playwright-stealth >= 2.0
+    try:
+        from playwright_stealth import Stealth
+        _stealth_engine = Stealth()
+
+        def stealth_sync(target):
+            return _stealth_engine.apply_stealth_sync(target)
+    except Exception:
+        def stealth_sync(target):
+            return target
 from google import genai
 from fpdf import FPDF
 import groq
@@ -432,7 +448,10 @@ playwright_active = False
 # --- 1.5 THREAD-SAFE STORAGE UTILITIES ---
 import threading
 import queue
-file_lock = threading.Lock()
+# Reentrant so save_applied_job() can hold the lock across its whole
+# read-modify-write while safe_load_json/safe_save_json re-acquire it on
+# the same thread. A plain Lock would deadlock there.
+file_lock = threading.RLock()
 application_queue = queue.Queue()
 
 def auto_bug_fixer(error: Exception, context: str = ""):
@@ -529,11 +548,19 @@ def load_applied_jobs():
 
 def save_applied_job(job_url):
     global _APPLIED_JOBS_CACHE, _APPLIED_JOBS_MTIME
-    applied = load_applied_jobs()
-    applied.add(job_url)
-    safe_save_json(STATE_FILE, list(applied))
-    _APPLIED_JOBS_CACHE = applied
-    _APPLIED_JOBS_MTIME = os.path.getmtime(STATE_FILE) if os.path.exists(STATE_FILE) else time.time()
+    if not job_url:
+        return
+    # Hold file_lock across the whole read-modify-write. Previously the load
+    # and the save were two separate lock acquisitions, so two apply threads
+    # could both read the same set and overwrite each other's addition --
+    # losing the dedup entry and letting the same job be applied twice.
+    # safe_load_json/safe_save_json re-acquire the same reentrant lock.
+    with file_lock:
+        applied = load_applied_jobs()
+        applied.add(job_url)
+        safe_save_json(STATE_FILE, list(applied))
+        _APPLIED_JOBS_CACHE = applied
+        _APPLIED_JOBS_MTIME = os.path.getmtime(STATE_FILE) if os.path.exists(STATE_FILE) else time.time()
 
 # --- QA Memory: remember answers to custom job questions ---
 def load_qa_memory():
@@ -4313,7 +4340,12 @@ DASHBOARD_TOKEN = str(os.getenv("DASHBOARD_TOKEN", "")).strip()
 
 # Kept reachable without a token so the hosting platform's health probe still
 # succeeds. None of these expose job, profile, credential or browser data.
-_DASHBOARD_OPEN_PATHS = {"/", "/healthz", "/favicon.ico"}
+# NOTE: "/" is deliberately NOT in this set. The "/" route renders the full
+# dashboard (job URLs, applied-jobs log, chat id, profile stats), so leaving it
+# open leaked that data to anyone who could reach the host. Unauthenticated
+# requests to "/" now receive the harmless health payload (see below), which
+# keeps the hosting platform's root health probe green without exposing data.
+_DASHBOARD_OPEN_PATHS = {"/healthz", "/favicon.ico"}
 
 
 def _dashboard_health_response():
@@ -4381,6 +4413,10 @@ def _enforce_dashboard_auth():
         )
         if request.path in _DASHBOARD_OPEN_PATHS:
             return None
+        # "/" is the platform's health-probe path, but the same route renders
+        # the full dashboard. Only ever answer it with the harmless payload.
+        if request.path == "/":
+            return _dashboard_health_response()
         return (
             jsonify({"error": "dashboard_disabled",
                      "detail": "DASHBOARD_TOKEN is not configured on the server"}),
@@ -4392,6 +4428,11 @@ def _enforce_dashboard_auth():
 
     if _dashboard_token_is_valid(_extract_dashboard_token(request)):
         return None
+
+    # Unauthenticated root request: return the health payload instead of leaking
+    # the dashboard (job URLs, applied-jobs log, chat id, profile stats).
+    if request.path == "/":
+        return _dashboard_health_response()
 
     app.logger.warning(
         "Rejected unauthenticated dashboard request: %s %s from %s",
@@ -4479,7 +4520,7 @@ def live_screenshot():
 def live_action():
     if not HANDOFF_ACTIVE or not HANDOFF_PAGE: return "No active handoff", 400
     try:
-        data = request.json
+        data = request.get_json(silent=True) or {}
         if data.get('action') == 'click':
             HANDOFF_PAGE.mouse.click(data['x'], data['y'])
         elif data.get('action') == 'type':
@@ -4863,7 +4904,7 @@ import subprocess
 
 @app.route("/api/manual_apply", methods=["POST"])
 def api_manual_apply():
-    data = request.json
+    data = request.get_json(silent=True) or {}
     url = data.get("url")
     if url:
         if not url.startswith("http"):
@@ -4884,7 +4925,7 @@ def api_manual_apply():
 
 @app.route("/api/update_profile", methods=["POST"])
 def api_update_profile():
-    data = request.json
+    data = request.get_json(silent=True) or {}
     field = data.get("field")
     value = data.get("value")
     if field and value:
@@ -4956,7 +4997,7 @@ def api_download_profile():
 @app.route("/api/add_channel", methods=["POST"])
 def api_add_channel():
     global TARGET_CHANNELS
-    data = request.json
+    data = request.get_json(silent=True) or {}
     channel = data.get("channel", "").replace("@", "").strip()
     if channel:
         if channel not in TARGET_CHANNELS:
@@ -4973,7 +5014,7 @@ def api_upload_resume():
     file = request.files['resume']
     if file.filename == '':
         return {"status": "error", "message": "No selected file"}
-    if file and file.filename.endswith('.pdf'):
+    if file and file.filename.lower().endswith('.pdf'):
         file.save(RESUME_FILE)
         return {"status": "success", "message": "Resume uploaded successfully!"}
     return {"status": "error", "message": "Invalid file type. Must be PDF."}
@@ -4985,7 +5026,7 @@ def api_upload_auth():
     file = request.files['auth']
     if file.filename == '':
         return {"status": "error", "message": "No selected file"}
-    if file and file.filename.endswith('.json'):
+    if file and file.filename.lower().endswith('.json'):
         file.save("instahyre_auth.json")
         return {"status": "success", "message": "Session auth state uploaded successfully!"}
     return {"status": "error", "message": "Invalid file type. Must be a .json file containing Playwright storage state."}
@@ -5005,7 +5046,7 @@ def api_scan_inbox():
 
 @app.route("/api/mark_crm", methods=["POST"])
 def api_mark_crm():
-    data = request.json
+    data = request.get_json(silent=True) or {}
     url = data.get("url")
     new_status = data.get("status")
     
@@ -6808,7 +6849,7 @@ if bot:
                         res = applier.apply_sync(final_url, "Software Developer", "Target Employer")
                         if res.get("status") == "dry_run":
                             try:
-                                bot.send_message(chat_id, "🧪 <b>Dry run complete</b> — the form was filled but <b>not submitted</b>.\n\n"
+                                bot.send_message(message.chat.id, "🧪 <b>Dry run complete</b> — the form was filled but <b>not submitted</b>.\n\n"
                                                          f"Steps: {res.get('steps_taken', 0)} · {res.get('duration_seconds', 0)}s\n\n"
                                                          f"<i>{html.escape(str(res.get('message', ''))[:600])}</i>", parse_mode="HTML")
                             except Exception:
