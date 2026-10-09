@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Pinch-zoom is intentionally allowed (WCAG 1.4.4); viewport-fit=cover keeps
+       the Telegram WebApp layout clear of notches and home bars. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>MyJob AI Radar — Job Hub</title>
+  <meta name="description" content="MyJob AI Radar job hub: verified Tamil Nadu walk-in drives, off-campus drives and fresher tech openings, straight from the Telegram bot.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#080d1a">
+  <meta name="color-scheme" content="dark">
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Tailwind CSS via CDN -->
@@ -66,9 +72,30 @@
     .pulse-dot {
       animation: pulse-slow 2s infinite ease-in-out;
     }
+    /* ── Accessibility (added) ─────────────────────────────────────── */
+    :focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; border-radius: 6px; }
+    .skip-link { position: absolute; left: 0.75rem; top: -4rem; z-index: 200; padding: 0.6rem 1rem;
+      border-radius: 0.75rem; background: #3b82f6; color: #fff; font-weight: 700; font-size: 0.75rem;
+      transition: top 0.2s ease; }
+    .skip-link:focus { top: 0.75rem; }
+
+    /* ── Motion (added) ────────────────────────────────────────────── */
+    @keyframes cardIn { from { opacity: 0; transform: translateY(12px) scale(0.985); }
+                        to { opacity: 1; transform: translateY(0) scale(1); } }
+    .card-in { animation: cardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+               animation-delay: calc(var(--i, 0) * 35ms); }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important; }
+      .pulse-dot { animation: none !important; }
+    }
+    /* Keep the fixed bottom bar clear of the iOS home indicator. */
+    .safe-bottom { padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px)); }
   </style>
 </head>
 <body class="min-h-screen pb-24 bg-[#080d1a] text-slate-100 flex flex-col">
+
+  <a href="#jobFeed" class="skip-link">Skip to job listings</a>
 
   <!-- TOP APP BAR -->
   <header class="sticky top-0 z-40 bg-[#080d1a]/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
@@ -90,7 +117,7 @@
         </div>
       </div>
 
-      <button id="refreshBtn" onclick="fetchJobs(true)" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
+      <button id="refreshBtn" onclick="fetchJobs(true)" aria-label="Refresh job feed" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
         <i data-lucide="rotate-cw" id="refreshIcon" class="w-4 h-4"></i>
       </button>
     </div>
@@ -100,35 +127,39 @@
       <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
       <input 
         type="text" 
-        id="searchInput" 
+        id="searchInput"
+        type="search"
+        aria-label="Search jobs by role, company or city"
+        autocomplete="off"
+        enterkeyhint="search" 
         oninput="handleSearch()" 
         placeholder="Search company, role, skills, Chennai, Python..." 
         class="w-full pl-10 pr-9 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all"
       >
-      <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+      <button id="clearSearchBtn" onclick="clearSearch()" aria-label="Clear search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
         <i data-lucide="x" class="w-3.5 h-3.5"></i>
       </button>
     </div>
 
     <!-- FILTER CHIPS SCROLL -->
     <div class="flex items-center gap-2 overflow-x-auto no-scrollbar mt-3 pt-1 pb-0.5 text-xs">
-      <button onclick="setFilter('all')" id="filter-all" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-blue-600 text-white shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5">
+      <button onclick="setFilter('all')" id="filter-all" aria-pressed="true" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-blue-600 text-white shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5">
         <i data-lucide="sparkles" class="w-3 h-3"></i> All Jobs <span id="count-all" class="text-[10px] opacity-80">(0)</span>
       </button>
 
-      <button onclick="setFilter('tamil_nadu')" id="filter-tamil_nadu" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-white/5 border border-amber-500/30 text-amber-300 hover:bg-amber-500/10 transition-all flex items-center gap-1.5">
+      <button onclick="setFilter('tamil_nadu')" id="filter-tamil_nadu" aria-pressed="false" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-white/5 border border-amber-500/30 text-amber-300 hover:bg-amber-500/10 transition-all flex items-center gap-1.5">
         <span>⭐</span> Tamil Nadu <span id="count-tn" class="text-[10px] text-amber-400 font-bold">(0)</span>
       </button>
 
-      <button onclick="setFilter('freshers')" id="filter-freshers" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition-all flex items-center gap-1.5">
+      <button onclick="setFilter('freshers')" id="filter-freshers" aria-pressed="false" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition-all flex items-center gap-1.5">
         <i data-lucide="graduation-cap" class="w-3 h-3"></i> Freshers (0-2 Yrs)
       </button>
 
-      <button onclick="setFilter('high_ctc')" id="filter-high_ctc" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition-all flex items-center gap-1.5">
+      <button onclick="setFilter('high_ctc')" id="filter-high_ctc" aria-pressed="false" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition-all flex items-center gap-1.5">
         <i data-lucide="wallet" class="w-3 h-3"></i> High CTC (> ₹6 LPA)
       </button>
 
-      <button onclick="setFilter('saved')" id="filter-saved" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition-all flex items-center gap-1.5">
+      <button onclick="setFilter('saved')" id="filter-saved" aria-pressed="false" class="filter-pill px-3 py-1.5 rounded-lg font-medium whitespace-nowrap bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 transition-all flex items-center gap-1.5">
         <i data-lucide="bookmark" class="w-3 h-3 text-indigo-400"></i> Saved <span id="count-saved" class="text-[10px]">(0)</span>
       </button>
     </div>
@@ -151,9 +182,9 @@
   </section>
 
   <!-- MAIN JOB FEED -->
-  <main class="px-4 py-3 flex-1 flex flex-col gap-3" id="jobFeed">
+  <main class="px-4 py-3 flex-1 flex flex-col gap-3" id="jobFeed" aria-live="polite" aria-busy="true">
     <!-- LOADING SKELETON -->
-    <div id="loadingSkeleton" class="flex flex-col gap-3">
+    <div id="loadingSkeleton" role="status" aria-live="polite" aria-label="Loading jobs" class="flex flex-col gap-3">
       <div class="glass-card rounded-2xl p-4 animate-pulse">
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-xl bg-white/10"></div>
@@ -305,6 +336,7 @@
       } finally {
         document.getElementById('loadingSkeleton')?.classList.add('hidden');
         document.getElementById('refreshIcon')?.classList.remove('animate-spin');
+        document.getElementById('jobFeed')?.setAttribute('aria-busy', 'false');
       }
     }
 
@@ -318,8 +350,10 @@
         btn.classList.add('bg-white/5', 'text-slate-300');
       });
 
+      document.querySelectorAll('.filter-pill').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
       const activeBtn = document.getElementById(`filter-${filterName}`);
       if (activeBtn) {
+        activeBtn.setAttribute('aria-pressed', 'true');
         activeBtn.classList.remove('bg-white/5', 'text-slate-300');
         activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-500/20');
       }
@@ -369,14 +403,34 @@
       renderJobs();
     }
 
+    // Only http(s) links are ever opened; a scraped `javascript:` URL is dropped.
+    function safeUrl(url) {
+      const raw = String(url == null ? '' : url).trim();
+      return /^https?:\/\//i.test(raw) ? raw : '';
+    }
+
     function openApplyLink(url, event) {
       if (event) event.stopPropagation();
       triggerHaptic('medium');
+      const target = safeUrl(url);
+      if (!target) return;
       if (tg && tg.openLink) {
-        tg.openLink(url);
+        tg.openLink(target);
       } else {
-        window.open(url, '_blank');
+        window.open(target, '_blank', 'noopener,noreferrer');
       }
+    }
+
+    // Reads the URL from a data-* attribute instead of a JS string literal, so a
+    // quote in the scraped link can no longer break out of the inline handler.
+    function openApplyFromEl(el, event) {
+      if (!el) return;
+      openApplyLink(el.dataset.applyUrl || '', event);
+    }
+
+    function markAppliedFromEl(el, event) {
+      if (!el) return;
+      markApplied(el.dataset.jobUrl || '', event);
     }
 
     function renderJobs() {
@@ -434,7 +488,8 @@
       let html = '';
       filtered.forEach((job, idx) => {
         const isSaved = savedJobIds.includes(job.id);
-        const isApplied = appliedJobUrls.includes(job.link);
+        const jobLink = safeUrl(job.link);
+        const isApplied = jobLink !== '' && appliedJobUrls.includes(jobLink);
         const initial = (job.company || 'C').charAt(0).toUpperCase();
         const avatarGradient = getGradient(job.company || 'Comp');
 
@@ -455,7 +510,7 @@
         ` : '';
 
         html += `
-          <article class="glass-card rounded-2xl p-4 transition-all active:scale-[0.99] flex flex-col gap-3 relative overflow-hidden">
+          <article class="glass-card card-in rounded-2xl p-4 transition-all active:scale-[0.99] flex flex-col gap-3 relative overflow-hidden" style="--i:${Math.min(idx, 10)}">
             ${job.is_tamil_nadu ? '<div class="absolute -right-12 -top-12 w-28 h-28 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>' : ''}
             
             <!-- HEADER ROW -->
@@ -470,8 +525,8 @@
                 </div>
               </div>
 
-              <button onclick="toggleSave('${job.id}', event)" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all flex-shrink-0">
-                <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'fill-indigo-400 text-indigo-400' : ''}"></i>
+              <button type="button" onclick="toggleSave('${job.id}', event)" aria-label="Save this job" aria-pressed="${isSaved}" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all flex-shrink-0">
+                <i data-lucide="bookmark" aria-hidden="true" class="w-4 h-4 ${isSaved ? 'fill-indigo-400 text-indigo-400' : ''}"></i>
               </button>
             </div>
 
@@ -507,17 +562,23 @@
 
             <!-- ACTION BUTTONS -->
             <div class="flex items-center gap-2 pt-1">
-              <button onclick="openApplyLink('${job.link}', event)" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Direct Apply
+              ${jobLink ? `
+              <button type="button" data-apply-url="${escapeHtml(jobLink)}" onclick="openApplyFromEl(this, event)" aria-label="Apply to ${escapeHtml(job.role)} at ${escapeHtml(job.company)}" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
+                <i data-lucide="external-link" aria-hidden="true" class="w-3.5 h-3.5"></i> Direct Apply
               </button>
+              ` : `
+              <span aria-disabled="true" title="No usable application link was published for this listing" class="flex-1 py-2.5 px-4 rounded-xl bg-white/5 border border-white/10 text-slate-400 font-semibold text-xs flex items-center justify-center gap-1.5 cursor-not-allowed">
+                <i data-lucide="link-2-off" aria-hidden="true" class="w-3.5 h-3.5"></i> Link unavailable
+              </span>
+              `}
 
-              <button onclick="markApplied('${job.link}', event)" title="Mark Applied" class="p-2.5 rounded-xl ${isApplied ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'} border active:scale-95 transition-all">
-                <i data-lucide="check" class="w-4 h-4"></i>
+              <button type="button" data-job-url="${escapeHtml(jobLink)}" onclick="markAppliedFromEl(this, event)" title="Mark Applied" aria-label="Mark this job as applied" aria-pressed="${isApplied}" class="p-2.5 rounded-xl ${isApplied ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'} border active:scale-95 transition-all">
+                <i data-lucide="check" aria-hidden="true" class="w-4 h-4"></i>
               </button>
 
               ${job.source ? `
-                <button onclick="openApplyLink('https://t.me/s/${job.source.replace('@', '')}', event)" title="View Source Channel" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white active:scale-95 transition-all">
-                  <i data-lucide="send" class="w-4 h-4 text-sky-400"></i>
+                <button type="button" data-apply-url="https://t.me/s/${encodeURIComponent(String(job.source).replace('@', ''))}" onclick="openApplyFromEl(this, event)" title="View Source Channel" aria-label="View the source Telegram channel" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white active:scale-95 transition-all">
+                  <i data-lucide="send" aria-hidden="true" class="w-4 h-4 text-sky-400"></i>
                 </button>
               ` : ''}
             </div>

@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Elite Job Bot | Command Center</title>
+<!-- This is an authenticated control panel, not public content. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#060918">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -56,19 +63,49 @@
   #countdown { color: #94a3b8; }
   .glass-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
   .glass-btn:hover { transform: translateY(-2px) scale(1.05); filter: brightness(1.2); }
+
+  /* ── Accessibility (added) ───────────────────────────────────────── */
+  :focus-visible { outline: 2px solid #f59e0b; outline-offset: 2px; border-radius: 6px; }
+  .skip-link { position: absolute; left: 0.75rem; top: -4rem; z-index: 200; padding: 0.6rem 1rem;
+    border-radius: 0.75rem; background: #f59e0b; color: #0f172a; font-weight: 800; font-size: 0.75rem;
+    transition: top 0.2s ease; }
+  .skip-link:focus { top: 0.75rem; }
+  /* The header texture used to be a third-party PNG; a pure-CSS weave keeps the
+     same look with zero extra requests and no external dependency. */
+  .carbon-weave {
+    background-image:
+      linear-gradient(27deg, rgba(255,255,255,0.05) 5px, transparent 5px),
+      linear-gradient(207deg, rgba(255,255,255,0.05) 5px, transparent 5px),
+      linear-gradient(27deg, rgba(0,0,0,0.15) 5px, transparent 5px),
+      linear-gradient(207deg, rgba(0,0,0,0.15) 5px, transparent 5px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px, 10px 10px, 0 0;
+  }
+
+  /* ── Motion (added) ─────────────────────────────────────────────── */
+  @keyframes cardIn { from { opacity: 0; transform: translateY(12px) scale(0.985); }
+                      to { opacity: 1; transform: translateY(0) scale(1); } }
+  .card-in { animation: cardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+             animation-delay: calc(var(--i, 0) * 35ms); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important; }
+    .orb { animation: none !important; }
+  }
 </style>
 </head>
 <body>
+<a href="#mainContent" class="skip-link">Skip to dashboard content</a>
 <!-- Background Orbs -->
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 <div class="orb orb3"></div>
 
-<div class="relative z-10 max-w-6xl mx-auto px-4 py-8">
+<div id="mainContent" role="main" class="relative z-10 max-w-6xl mx-auto px-4 py-8">
 
   <!-- ENHANCED PRO TOP BAR -->
   <header class="pro-card rounded-3xl p-8 mb-8 flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
-    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
+    <div class="absolute inset-0 carbon-weave opacity-20 mix-blend-overlay" aria-hidden="true"></div>
     <div class="absolute -top-24 -left-24 w-64 h-64 bg-blue-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
     
     <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
@@ -122,8 +159,8 @@
       </div>
       <div>
         <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Refresh in</p>
-        <p class="text-xl font-black text-blue-400" id="countdown">120s</p>
-        <div class="w-24 h-1 bg-white/10 rounded-full mt-1"><div id="progressBar" class="h-1 bg-blue-500 rounded-full transition-all" style="width:100%"></div></div>
+        <p class="text-xl font-black text-blue-400" id="countdown" aria-live="off">120s</p>
+        <div class="w-24 h-1 bg-white/10 rounded-full mt-1" role="progressbar" aria-label="Time until the next automatic scan" aria-valuemin="0" aria-valuemax="120" aria-valuenow="120"><div id="progressBar" class="h-1 bg-blue-500 rounded-full transition-all" style="width:100%"></div></div>
       </div>
     </div>
   </div>
@@ -325,7 +362,7 @@
       <button onclick="if(confirm('Are you sure you want to delete all application logs and stats?')) resetHistory()" class="pro-btn px-4 py-2.5 rounded-xl font-bold text-xs" style="background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;box-shadow:0 4px 15px rgba(239,68,68,0.4)">
         🗑️ Reset Logs
       </button>
-      <div id="ctrlStatus" class="text-sm text-gray-400 ml-2"></div>
+      <div id="ctrlStatus" role="status" aria-live="polite" class="text-sm text-gray-400 ml-2"></div>
       <div class="ml-auto text-xs px-3 py-1.5 rounded-full font-semibold" id="botStateBadge" style="background:{{'rgba(34,197,94,0.15)' if not BOT_PAUSED else 'rgba(245,158,11,0.15)'}};border:1px solid {{'rgba(34,197,94,0.4)' if not BOT_PAUSED else 'rgba(245,158,11,0.4)'}};color:{{'#4ade80' if not BOT_PAUSED else '#fbbf24'}}">
         {{'▶️ RUNNING' if not BOT_PAUSED else '⏸️ PAUSED'}}
       </div>
@@ -421,7 +458,7 @@
           <p class="text-xs text-gray-400 mb-4">Autonomously logs in and mass-applies to 20 Fresher Software Engineer roles using human-mimicry.</p>
           <div class="flex flex-col gap-2">
                                     <button onclick="triggerInstahyre()" class="pro-btn bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white px-4 py-3 rounded-lg text-sm font-black mt-1 shadow-[0_0_15px_rgba(217,70,239,0.5)] border border-fuchsia-400/50 hover:scale-[1.02] transition-transform">🚀 LAUNCH CAMPAIGN NOW</button>
-            <div id="instaStatus" class="text-xs mt-2 font-bold text-center h-4"></div>
+            <div id="instaStatus" role="status" aria-live="polite" class="text-xs mt-2 font-bold text-center h-4"></div>
           </div>
         </div>
       </div>
@@ -434,7 +471,7 @@
           </div>
           <span class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6] animate-pulse"></span>
         </div>
-        <div id="campaignConsole" class="flex-1 overflow-y-auto text-[10px] text-gray-400 space-y-1 h-32 scrollbar-hide">
+        <div id="campaignConsole" role="log" aria-live="polite" aria-label="Instahyre campaign console" class="flex-1 overflow-y-auto text-[10px] text-gray-400 space-y-1 h-32 scrollbar-hide">
           <div><span class="text-green-400">root@bot:~$</span> Ready for campaign launch...</div>
         </div>
       </div>
@@ -471,8 +508,8 @@
         🚀 Scan Now
       </button>
     </div>
-    <div id="radarStatus" class="text-xs text-gray-400 mb-4">Last scan: Loading...</div>
-    <div id="radarJobList" class="space-y-2">
+    <div id="radarStatus" role="status" aria-live="polite" class="text-xs text-gray-400 mb-4">Last scan: Loading...</div>
+    <div id="radarJobList" aria-live="polite" aria-busy="true" class="space-y-2">
       <div class="text-center text-gray-500 text-xs py-4">⏳ Loading radar results...</div>
     </div>
   </div>
@@ -517,6 +554,8 @@
     secs--;
     if (el) el.textContent = secs + 's';
     if (bar) bar.style.width = ((secs / startSecs) * 100) + '%';
+    const track = bar && bar.parentElement;
+    if (track) track.setAttribute('aria-valuenow', String(Math.max(0, secs)));
     if (secs <= 0) window.location.reload();
   }, 1000);
 
@@ -554,6 +593,18 @@
   loadStats();
   setInterval(loadStats, 5000); // Check status every 5 seconds
 
+  // Escapes scraped text before it reaches innerHTML, and rejects any URL that
+  // is not plain http(s) (blocks javascript:/data: injection).
+  function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, (ch) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[ch]));
+  }
+  function safeUrl(url) {
+    const raw = String(url == null ? '' : url).trim();
+    return /^https?:\/\//i.test(raw) ? escapeHtml(raw) : '';
+  }
+
   // Load radar results on page load
   async function loadRadar() {
     try {
@@ -565,6 +616,7 @@
       const container = document.getElementById('radarJobList');
       if (!data.jobs || data.jobs.length === 0) {
         container.innerHTML = '<div class="text-center text-gray-500 text-xs py-4">No new jobs found yet. Click "Scan Now" to start!</div>';
+        container.setAttribute('aria-busy', 'false');
         return;
       }
 
@@ -598,26 +650,34 @@
       let html = '';
       for (const [src, jobs] of Object.entries(grouped)) {
         html += `<div class="mb-4">`;
-        html += `<h3 class="text-xs font-bold mb-2 uppercase tracking-widest" style="color:#f59e0b">${src}</h3>`;
+        html += `<h3 class="text-xs font-bold mb-2 uppercase tracking-widest" style="color:#f59e0b">${escapeHtml(src)}</h3>`;
         html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-2">`;
-        jobs.forEach(j => {
+        jobs.forEach((j, idx) => {
           const displayDate = timeAgo(j.date_posted);
-          const descSnippet = j.description ? `<div class="text-gray-500 text-[9px] mt-1.5 line-clamp-2 italic leading-tight border-l-2 border-white/10 pl-2">${j.description}</div>` : '';
-          html += `
-            <a href="${j.link}" target="_blank" class="block p-3 rounded-xl border transition-all hover:scale-[1.02] hover:border-yellow-500/50 relative overflow-hidden"
-               style="background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.15)">
-              <div class="font-bold text-xs text-yellow-300 truncate pr-6">${j.title}</div>
-              <div class="text-gray-400 text-[10px] mt-1 font-semibold truncate">🏢 ${j.company}</div>
-              <div class="text-gray-400 text-[10px] mt-0.5 truncate">📍 ${j.location}  •  🗓️ ${displayDate}</div>
+          const safeLink = safeUrl(j.link);
+          const descSnippet = j.description
+            ? `<div class="text-gray-500 text-[9px] mt-1.5 line-clamp-2 italic leading-tight border-l-2 border-white/10 pl-2">${escapeHtml(j.description)}</div>`
+            : '';
+          const body = `
+              <div class="font-bold text-xs text-yellow-300 truncate pr-6">${escapeHtml(j.title)}</div>
+              <div class="text-gray-400 text-[10px] mt-1 font-semibold truncate">🏢 ${escapeHtml(j.company)}</div>
+              <div class="text-gray-400 text-[10px] mt-0.5 truncate">📍 ${escapeHtml(j.location)}  •  🗓️ ${escapeHtml(displayDate)}</div>
               ${descSnippet}
-              <div class="mt-2 text-[10px] font-bold uppercase tracking-wide" style="color:#f59e0b">👆 Click to Apply Manually →</div>
-            </a>`;
+              <div class="mt-2 text-[10px] font-bold uppercase tracking-wide" style="color:#f59e0b">👆 Click to Apply Manually →</div>`;
+          // A card without a usable https link is rendered as plain text instead
+          // of an anchor, so a poisoned URL cannot become clickable.
+          html += safeLink
+            ? `<a href="${safeLink}" target="_blank" rel="noopener noreferrer" class="card-in block p-3 rounded-xl border transition-all hover:scale-[1.02] hover:border-yellow-500/50 relative overflow-hidden" style="--i:${Math.min(idx, 10)};background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.15)">${body}</a>`
+            : `<div class="card-in block p-3 rounded-xl border relative overflow-hidden opacity-70" style="--i:${Math.min(idx, 10)};background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.15)">${body}</div>`;
         });
         html += `</div></div>`;
       }
       container.innerHTML = html;
+      container.setAttribute('aria-busy', 'false');
     } catch(e) {
-      document.getElementById('radarJobList').innerHTML = '<div class="text-red-400 text-xs">Failed to load radar data.</div>';
+      const list = document.getElementById('radarJobList');
+      list.setAttribute('aria-busy', 'false');
+      list.innerHTML = '<div class="text-red-400 text-xs">Failed to load radar data.</div>';
     }
   }
 
@@ -855,7 +915,14 @@
     if (type === 'system') color = 'text-blue-400';
     if (type === 'warn') color = 'text-yellow-400';
     
-    line.innerHTML = `<span class="text-gray-600">[${time}]</span> <span class="${color}">${msg}</span>`;
+    const stamp = document.createElement('span');
+    stamp.className = 'text-gray-600';
+    stamp.textContent = `[${time}]`;
+    const body = document.createElement('span');
+    body.className = color;
+    body.textContent = ` ${msg}`;
+    line.appendChild(stamp);
+    line.appendChild(body);
     consoleEl.appendChild(line);
     consoleEl.scrollTop = consoleEl.scrollHeight;
   }
