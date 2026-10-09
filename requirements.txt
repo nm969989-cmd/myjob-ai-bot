@@ -9,7 +9,9 @@ gspread>=5.12.4
 oauth2client>=4.1.3
 groq>=1.0.0
 openai>=1.0.0
-playwright-stealth>=1.0.6
+playwright-stealth>=1.0.6,<2
+# Legacy stealth_sync uses pkg_resources, removed in newer setuptools.
+setuptools>=70,<81
 fpdf2
 python-jobspy==1.1.82
 notion-client
@@ -32,5 +34,6 @@ psutil
 # browser_use_applier.py handles the missing import and reports it clearly.
 # To use the AI applier, install it in a separate environment:
 #     python -m venv .venv-applier
-#     .venv-applier/bin/pip install -r requirements.txt browser-use
-#     .venv-applier/bin/pip install -r requirements_applier.txt   # if present
+#     .venv-applier/bin/pip install browser-use python-dotenv
+#     .venv-applier/bin/python browser_use_applier.py <url> --dry-run
+# Do not install requirements.txt in the applier environment (it includes JobSpy).

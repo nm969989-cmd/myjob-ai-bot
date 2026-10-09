@@ -2,8 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore regional job listings, walk-in details and career resources with MyJob AI Radar. Check each employer source for current availability.">
+  <meta name="theme-color" content="#060918">
+  <meta name="robots" content="index, follow">
+  <meta name="color-scheme" content="dark light">
+  <link rel="canonical" href="https://nm969989-cmd.github.io/myjob-ai-bot/">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MyJob AI Radar">
+  <meta property="og:title" content="MyJob AI Radar — Tamil Nadu & Multi-Platform Tech Careers Hub">
+  <meta property="og:description" content="Explore regional job listings, walk-in details and career resources with MyJob AI Radar. Check each employer source for current availability.">
+  <meta property="og:url" content="https://nm969989-cmd.github.io/myjob-ai-bot/">
+  <meta property="og:locale" content="en_IN">
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MyJob AI Radar — Tamil Nadu & Multi-Platform Tech Careers Hub">
+  <meta name="twitter:description" content="Explore regional job listings, walk-in details and career resources with MyJob AI Radar. Check each employer source for current availability.">
   <title>MyJob AI Radar — Tamil Nadu & Multi-Platform Tech Careers Hub</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "MyJob AI Radar",
+    "url": "https://nm969989-cmd.github.io/myjob-ai-bot/",
+    "description": "Regional job listings, walk-in details and career resources for Tamil Nadu and multi-platform tech careers.",
+    "inLanguage": "en-IN",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://nm969989-cmd.github.io/myjob-ai-bot/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Tailwind CSS via CDN -->
@@ -91,17 +122,30 @@
     #toast {
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
     }
+    :focus-visible { outline: 3px solid #67e8f9; outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body class="min-h-screen pb-24 text-slate-100 flex flex-col">
 
+  <a href="#tab-jobs" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:px-4 focus:py-2 focus:rounded-xl focus:bg-amber-500 focus:text-slate-900 focus:font-bold focus:shadow-lg">Skip to job feed</a>
+
+  <noscript>
+    <div class="m-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm">
+      JavaScript is required to search and filter live listings. A committed snapshot of previously scraped jobs is still shown in the feed once scripts load.
+    </div>
+  </noscript>
+
   <!-- BACKGROUND NEON GLOW ORBS -->
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
+  <div class="orb orb1" aria-hidden="true"></div>
+  <div class="orb orb2" aria-hidden="true"></div>
+  <div class="orb orb3" aria-hidden="true"></div>
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-emerald-500/90 text-slate-900 font-bold text-xs shadow-xl shadow-emerald-500/20 backdrop-blur-md flex items-center gap-2 pointer-events-none opacity-0 -translate-y-4">
+  <div id="toast" role="status" aria-live="polite" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-emerald-500/90 text-slate-900 font-bold text-xs shadow-xl shadow-emerald-500/20 backdrop-blur-md flex items-center gap-2 pointer-events-none opacity-0 -translate-y-4">
     <i data-lucide="check-circle" class="w-4 h-4"></i>
     <span id="toastMsg">Notification</span>
   </div>
@@ -143,17 +187,19 @@
     <!-- UNIVERSAL REAL-TIME SEARCH BAR WITH SEARCH BUTTON -->
     <div class="mt-3 flex items-center gap-2">
       <div class="relative flex-1">
-        <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <i data-lucide="search" aria-hidden="true" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <label for="searchInput" class="sr-only">Search jobs by role, company, city or keyword</label>
         <input 
           type="text" 
           id="searchInput" 
+          aria-label="Search jobs by role, company, city or keyword"
           oninput="handleSearch()" 
           onkeydown="if(event.key === 'Enter') executeSearch()"
           placeholder="Search Python, React, Chennai, Coimbatore, Zoho, Walk-in..." 
           class="w-full pl-10 pr-9 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 transition-all"
         >
-        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
-          <i data-lucide="x" class="w-4 h-4"></i>
+        <button id="clearSearchBtn" onclick="clearSearch()" aria-label="Clear search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+          <i data-lucide="x" aria-hidden="true" class="w-4 h-4"></i>
         </button>
       </div>
       <button 
@@ -353,7 +399,7 @@
             <p class="text-[11px] text-slate-400">Live rows from the SimplifyJobs feed, plus a committed snapshot of previously scraped listings</p>
           </div>
         </div>
-        <span id="backendBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-300 border border-slate-500/30">SNAPSHOT ONLY</span>
+        <span id="backendBadgeStatus" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-300 border border-slate-500/30">SNAPSHOT ONLY</span>
       </div>
 
       <div class="grid grid-cols-2 gap-2 text-xs mb-3">
@@ -407,8 +453,8 @@
             <p id="modalCompany" class="text-xs sm:text-sm font-semibold text-amber-300">Company Name</p>
           </div>
         </div>
-        <button onclick="closeDetailsModal()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
-          <i data-lucide="x" class="w-5 h-5"></i>
+        <button onclick="closeDetailsModal()" aria-label="Close job details" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" aria-hidden="true" class="w-5 h-5"></i>
         </button>
       </div>
 
@@ -510,8 +556,8 @@
             <p class="text-[11px] text-slate-400">New Tax Regime FY 2024-25 / 2025-26 with PF & Tax</p>
           </div>
         </div>
-        <button onclick="closeCtcModal()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
-          <i data-lucide="x" class="w-5 h-5"></i>
+        <button onclick="closeCtcModal()" aria-label="Close salary calculator" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" aria-hidden="true" class="w-5 h-5"></i>
         </button>
       </div>
 
@@ -625,7 +671,14 @@
     let currentFilter = 'tn'; // TAMIL NADU DEFAULT FIRST!
     let currentTab = 'jobs';
     let walkinCity = 'all';
-    let savedJobIds = JSON.parse(localStorage.getItem('myjob_saved') || '[]');
+    // Blocked storage (private mode / disabled cookies) must not abort the script.
+    let savedJobIds = [];
+    try {
+      savedJobIds = JSON.parse(localStorage.getItem('myjob_saved') || '[]');
+      if (!Array.isArray(savedJobIds)) savedJobIds = [];
+    } catch (e) {
+      savedJobIds = [];
+    }
     let activeModalJob = null;
 
     function triggerHaptic(type = 'light') {
@@ -1567,7 +1620,11 @@ ${summary}`;
         savedJobIds.push(id);
         showToast('Job saved to Bookmarks!');
       }
-      localStorage.setItem('myjob_saved', JSON.stringify(savedJobIds));
+      try {
+        localStorage.setItem('myjob_saved', JSON.stringify(savedJobIds));
+      } catch (e) {
+        /* storage blocked: keep the in-memory selection only */
+      }
       updateMetrics();
       renderCurrentView();
     }
@@ -1645,6 +1702,15 @@ ${summary}`;
 
     // INITIAL LOAD
     window.addEventListener('DOMContentLoaded', () => {
+      // Honor a ?q= deep link so the declared SearchAction target resolves to real results.
+      const initialQuery = new URLSearchParams(window.location.search).get('q');
+      if (initialQuery) {
+        const input = document.getElementById('searchInput');
+        if (input) {
+          input.value = initialQuery;
+          document.getElementById('clearSearchBtn')?.classList.remove('hidden');
+        }
+      }
       updateMetrics();
       renderCurrentView();
       lucide.createIcons();

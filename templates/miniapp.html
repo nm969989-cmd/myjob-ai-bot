@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>MyJob AI Radar — Job Hub</title>
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -65,6 +66,10 @@
     }
     .pulse-dot {
       animation: pulse-slow 2s infinite ease-in-out;
+    }
+      :focus-visible { outline: 3px solid #67e8f9; outline-offset: 4px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
   </style>
 </head>
@@ -250,7 +255,7 @@
       }
 
       try {
-        const response = await fetch('/api/miniapp/jobs');
+        const response = await fetch('/api/miniapp/jobs', {headers: {'X-Admin-Token': new URLSearchParams(location.search).get('token') || ''}});
         if (!response.ok) throw new Error('API offline');
         const data = await response.json();
         allJobs = data.jobs || [];

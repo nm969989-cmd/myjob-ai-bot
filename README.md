@@ -53,3 +53,56 @@ node --test tn-live-jobs/test_priority_cities.js
 ```
 
 These tests mock portal calls and Telegram delivery. They do not submit applications or publish live Telegram messages.
+
+## Review and deployment checks
+
+Use **Python 3.11** (the existing Actions runtime) and **Node 20+**. The pinned
+JobSpy dependency set is not compatible with a clean Python 3.13 installation;
+this upgrade intentionally does not replace JobSpy. `stealth_sync` requires the
+legacy `playwright-stealth` API and its compatible setuptools range.
+
+```sh
+python -m pip install -r requirements.txt pytest
+python -m pip check
+python -m pytest test_careerops_integration.py test_job_discovery.py test_dashboard.py test_cloud_runner.py -q
+cd tn-live-jobs && npm ci && cd ..
+node --test tn-live-jobs/test_priority_cities.js tn-live-jobs/test_client.js
+python -m playwright install --with-deps chromium
+python -m pytest test_ui_browser.py -q
+```
+
+The browser suite uses local fixtures at 320px, 390px and 1440px and blocks
+external requests. It checks search, saved jobs, keyboard modal focus, reduced
+motion, horizontal overflow and dashboard API authentication. These checks do
+not prove live portal access, Telegram delivery, AI credentials or deployment
+health. `test_features_verify.py` remains a separate network/data-dependent
+manual smoke script, not part of the offline suite.
+
+Cloud runner exit codes: **0** = no recorded stage/delivery errors; **1** = a
+caught stage or delivery error; **2** = missing Telegram delivery configuration.
+Unavailable individual channels and budget skips remain nonfatal notes. An empty
+successful search is not an error. Errors swallowed inside upstream source
+functions cannot be inferred from these exit codes.
+
+For browser dashboard access, open `/?token=<DASHBOARD_TOKEN>` over HTTPS. The
+page forwards the token only to same-origin API calls; token-bearing URLs remain
+sensitive (including browser history). Header/Bearer access is also supported.
+Keep private dashboards out of search indexes; SEO metadata belongs on public
+job pages, not the admin console.
+
+### Deployment prerequisites still requiring owner action
+
+- GitHub Pages: enable **Settings → Pages → Source → GitHub Actions** as a repository
+  administrator before deploying. The workflow should not try to auto-enable
+  Pages using its limited integration token.
+- Hugging Face: the Space's own root README must contain `sdk: docker` and
+  `app_port: 7860`, with this Dockerfile present. Updating GitHub alone does not
+  update the separate Space or fix a Gradio SDK setting there.
+- Rotate the previously exposed Telegram token through BotFather and update
+  deployment secrets. A clean current tree does not revoke a token in history.
+- Personal resume/contact data, captured login pages, generated graphs and old
+  dashboard variants were intentionally preserved in this review. Decide which
+  should be made private/removed in a separate approved cleanup. Do not reuse
+  captured authentication sessions from public source control.
+- The repository still needs an owner-selected root license; a subproject's
+  `license` field does not license the entire application.

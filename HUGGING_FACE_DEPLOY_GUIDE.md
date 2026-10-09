@@ -59,3 +59,20 @@ Open your private chat with **@myjob_autoapply_bot** on Telegram:
 3. Send `/radar` — Runs and views multi-platform Job Radar matches.
 4. Send `/history` — Views recent job application attempts.
 5. Send `/help` — Lists all available bot commands.
+
+## Docker SDK configuration and verification
+
+The GitHub README already declares `sdk: docker`. A Gradio CONFIG_ERROR on the
+separate Space is not fixed by a GitHub-only commit. In the **Space repository**,
+ensure the root README metadata contains `sdk: docker` and `app_port: 7860` and
+that the Dockerfile and app files are synced from the approved revision.
+Use the Space's supported git/upload flow; the old local `DEPLOY.bat` link above
+is machine-specific and that script is not included in this repository.
+
+Set `DASHBOARD_TOKEN` as a Space secret in addition to the existing bot secrets.
+After an approved deployment, check `/healthz` returns 200 and an unauthenticated
+`/api/status` request returns 401 (503 if the dashboard secret is missing).
+Then open `/?token=<DASHBOARD_TOKEN>` over HTTPS and verify API requests succeed.
+Never put the real token into documentation or screenshots. Run only one bot
+polling instance to avoid Telegram conflicts. The Docker build installs the
+Chromium revision matching the installed Python Playwright package.

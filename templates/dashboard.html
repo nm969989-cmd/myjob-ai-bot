@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Elite Job Bot | Command Center</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -56,9 +57,22 @@
   #countdown { color: #94a3b8; }
   .glass-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
   .glass-btn:hover { transform: translateY(-2px) scale(1.05); filter: brightness(1.2); }
+  :focus-visible { outline: 3px solid #67e8f9; outline-offset: 4px; }
+  .skip-link { position: fixed; top: -100px; left: 1rem; z-index: 100; padding: .75rem; background: #0f172a; }
+  .skip-link:focus { top: 1rem; }
+  @media (max-width: 640px) {
+    header.pro-card { padding: 1.25rem; }
+    h1 { font-size: 2rem !important; flex-wrap: wrap; justify-content: center; }
+    .orb { opacity: .08; filter: blur(50px); }
+    input, select, textarea { max-width: 100%; font-size: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#command-center">Skip to command center</a>
 <!-- Background Orbs -->
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
@@ -67,7 +81,7 @@
 <div class="relative z-10 max-w-6xl mx-auto px-4 py-8">
 
   <!-- ENHANCED PRO TOP BAR -->
-  <header class="pro-card rounded-3xl p-8 mb-8 flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
+  <header id="command-center" tabindex="-1" class="pro-card rounded-3xl p-8 mb-8 flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
     <div class="absolute -top-24 -left-24 w-64 h-64 bg-blue-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
     
@@ -392,9 +406,9 @@
         <h3 class="text-xs text-gray-400 font-bold mb-2 uppercase">📥 Data Exports & Links</h3>
         <div class="flex flex-wrap gap-2">
           <button onclick="window.open('{{notion_url}}', '_blank')" class="pro-btn bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(79,70,229,0.4)]">↗️ Open Notion CRM</button>
-          <button onclick="window.location.href='api/download_log'" class="pro-btn bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(20,184,166,0.3)]">CSV Log</button>
-          <button onclick="window.location.href='api/download_profile'" class="pro-btn bg-gradient-to-r from-gray-700 to-gray-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(75,85,99,0.3)]">profile.json</button>
-          <button onclick="window.location.href='api/download_qa'" class="pro-btn bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(168,85,247,0.3)]">Q&A Brain</button>
+          <button onclick="downloadAdminFile('api/download_log')" class="pro-btn bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(20,184,166,0.3)]">CSV Log</button>
+          <button onclick="downloadAdminFile('api/download_profile')" class="pro-btn bg-gradient-to-r from-gray-700 to-gray-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(75,85,99,0.3)]">profile.json</button>
+          <button onclick="downloadAdminFile('api/download_qa')" class="pro-btn bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-[0_4px_15px_rgba(168,85,247,0.3)]">Q&A Brain</button>
         </div>
       </div>
     </div>
@@ -502,6 +516,22 @@
 </div>
 
 <script>
+  // Query-token navigation must authenticate subsequent API requests too.
+  // Keep the credential in memory, never localStorage or a third-party URL.
+  const adminToken = new URLSearchParams(location.search).get('token') || '';
+  function adminFetch(path, options = {}) {
+    const url = new URL(path, location.href);
+    if (url.origin !== location.origin) throw new Error('Cross-origin admin request refused');
+    const headers = new Headers(options.headers || {});
+    if (adminToken) headers.set('X-Admin-Token', adminToken);
+    return fetch(url, { ...options, headers });
+  }
+  function downloadAdminFile(path) {
+    const url = new URL(path, location.href);
+    if (url.origin !== location.origin) return;
+    if (adminToken) url.searchParams.set('token', adminToken);
+    location.href = url.href;
+  }
   // Fast 120s countdown with progress bar
   let secs = 120;
   const startSecs = 120;
@@ -530,7 +560,7 @@
   // Load queue & stats from API
   async function loadStats() {
     try {
-      const res = await fetch('api/status');
+      const res = await adminFetch('api/status');
       const data = await res.json();
       const q = document.getElementById('queueSize');
       const w = document.getElementById('weeklyApplied');
@@ -557,7 +587,7 @@
   // Load radar results on page load
   async function loadRadar() {
     try {
-      const res  = await fetch('api/radar');
+      const res  = await adminFetch('api/radar');
       const data = await res.json();
       document.getElementById('radarStatus').textContent =
         `Last scan: ${data.last_scan || 'Never'}  •  ${data.total || 0} new jobs found`;
@@ -627,7 +657,7 @@
     btn.textContent = '⏳ Scanning...';
     btn.disabled = true;
     try {
-      const res  = await fetch('api/run_radar', {method: 'POST'});
+      const res  = await adminFetch('api/run_radar', {method: 'POST'});
       const data = await res.json();
       status.textContent = '✅ ' + data.message;
       status.style.color = '#4ade80';
@@ -645,7 +675,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = action === 'pause' ? '⏳ Pausing...' : '⏳ Resuming...';
     try {
-      const res = await fetch('api/' + action, {method: 'POST'});
+      const res = await adminFetch('api/' + action, {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = data.message;
       statusEl.style.color = action === 'pause' ? '#fbbf24' : '#4ade80';
@@ -671,7 +701,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Forcing scan...';
     try {
-      const res = await fetch('api/run_radar', {method: 'POST'});
+      const res = await adminFetch('api/run_radar', {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -683,7 +713,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Rotating key...';
     try {
-      const res = await fetch('api/rotate_key', {method: 'POST'});
+      const res = await adminFetch('api/rotate_key', {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -697,7 +727,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Initiating manual apply...';
     try {
-      const res = await fetch('api/manual_apply', {
+      const res = await adminFetch('api/manual_apply', {
         method: 'POST', 
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({url: url})
@@ -716,7 +746,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Updating ' + field + '...';
     try {
-      const res = await fetch('api/update_profile', {
+      const res = await adminFetch('api/update_profile', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({field: field, value: val})
@@ -733,7 +763,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Regenerating PDF...';
     try {
-      const res = await fetch('api/regenerate_resume', {method: 'POST'});
+      const res = await adminFetch('api/regenerate_resume', {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -745,7 +775,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Resetting logs...';
     try {
-      const res = await fetch('api/reset_history', {method: 'POST'});
+      const res = await adminFetch('api/reset_history', {method: 'POST'});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -757,7 +787,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Pinging AI Models...';
     try {
-      const res = await fetch('api/health_check');
+      const res = await adminFetch('api/health_check');
       const data = await res.json();
       alert(`🩺 AI Engine Health:\n\nGemini: ${data.gemini}\nGroq: ${data.groq}`);
       statusEl.textContent = '';
@@ -768,7 +798,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Scanning Gmail for Interviews...';
     try {
-      const res = await fetch('api/scan_inbox', {method: 'POST'});
+      const res = await adminFetch('api/scan_inbox', {method: 'POST'});
       const data = await res.json();
       alert(data.message);
       statusEl.textContent = '✅ Inbox scan complete!';
@@ -785,7 +815,7 @@
     const formData = new FormData();
     formData.append('resume', fileInput.files[0]);
     try {
-      const res = await fetch('api/upload_resume', {method: 'POST', body: formData});
+      const res = await adminFetch('api/upload_resume', {method: 'POST', body: formData});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -801,7 +831,7 @@
     const formData = new FormData();
     formData.append('auth', fileInput.files[0]);
     try {
-      const res = await fetch('api/upload_auth', {method: 'POST', body: formData});
+      const res = await adminFetch('api/upload_auth', {method: 'POST', body: formData});
       const data = await res.json();
       statusEl.textContent = '✅ ' + data.message;
       statusEl.style.color = '#4ade80';
@@ -813,7 +843,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Updating CRM...';
     try {
-      const res = await fetch('api/mark_crm', {
+      const res = await adminFetch('api/mark_crm', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({url: url, status: newStatus})
@@ -830,7 +860,7 @@
     const statusEl = document.getElementById('ctrlStatus');
     statusEl.textContent = '⏳ Adding channel...';
     try {
-      const res = await fetch('api/add_channel', {
+      const res = await adminFetch('api/add_channel', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({channel: ch})
@@ -871,7 +901,7 @@
     logToConsole('Bypassing Cloudflare protections...', 'info');
     
     try {
-      const res = await fetch('api/instahyre', {
+      const res = await adminFetch('api/instahyre', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

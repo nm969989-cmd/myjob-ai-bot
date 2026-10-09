@@ -1,0 +1,13 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+__pycache__
+*.pyc
+.pytest_cache
+.venv*
+node_modules
+tn-live-jobs/node_modules
+tn-live-jobs/work
+graphify-out
