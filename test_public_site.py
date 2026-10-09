@@ -7,7 +7,6 @@ contacts an employer, Telegram, or the dashboard backend.
 """
 import functools
 import http.server
-import re
 import threading
 from pathlib import Path
 from urllib.parse import urlsplit
