@@ -143,8 +143,25 @@ RESULTS_JSON   = "radar_results.json"
 # 📡 COMPREHENSIVE TELEGRAM CHANNELS DATABASE
 # ──────────────────────────────────────────────────
 
+# Ordered so the highest-signal TN + pan-India fresher channels finish first;
+# the long tail runs only if budget remains. Fixes the prior flat 25s wall-clock
+# cap where 45 channels competed equally and most time was wasted on dead channels.
 RADAR_TELEGRAM_CHANNELS = [
-    # Top Pan-India Engineering & Fresher Job Channels
+    # Tier 1: Tamil Nadu high-signal (Chennai / Coimbatore / Trichy / Madurai)
+    "chennaijobsofficial",
+    "chennaijobs2025",
+    "chennai_it_jobs",
+    "chennai_walkins",
+    "tamilnadujob",
+    "tamilnadujobsalert",
+    "TamilNadu_Govt_Private_Jobs",
+    "coimbatore_jobs",
+    "tn_job_alert",
+    "bangalore_chennai_jobs",
+    "tamil_tech_jobs",
+    "tamilnadu_freshers",
+    "tn_fresher_jobs",
+    # Tier 2: Pan-India engineering / fresher placement channels with strong signal
     "JobSkull",
     "KickCharm",
     "OffCampusJobs4u",
@@ -154,26 +171,12 @@ RADAR_TELEGRAM_CHANNELS = [
     "placementjobs",
     "jobsinternshipplacement",
     "fresheroffcampus",
-    "workfromhomejobs1",
     "offcampusphodenge",
-    "veagance",
     "DailyJobs4You",
     "Foundthejob",
-    # Tamil Nadu & South India High Priority Channels
-    "chennaijobs2025",
-    "chennaijobsofficial",
-    "tamilnadujob",
-    "tamilnadujobsalert",
-    "TamilNadu_Govt_Private_Jobs",
-    "chennai_it_jobs",
-    "coimbatore_jobs",
-    "tn_job_alert",
-    "bangalore_chennai_jobs",
-    "tamil_tech_jobs",
-    "chennai_walkins",
-    "tamilnadu_freshers",
-    "tn_fresher_jobs",
-    # Tech & Placement Update Channels
+    # Tier 3: Long tail — run only if time remains after Tiers 1-2
+    "workfromhomejobs1",
+    "veagance",
     "offcampus_freshers",
     "freshers_jobs_india",
     "tech_jobs_india",
@@ -806,10 +809,16 @@ def scrape_telegram_channels_radar():
     seen_links = set()
 
     import concurrent.futures
-    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
-        future_to_ch = {executor.submit(_scan_single_channel_radar, ch): ch for ch in RADAR_TELEGRAM_CHANNELS}
+    import concurrent.futures as _cf
+    _tn_channels = [ch for ch in RADAR_TELEGRAM_CHANNELS if any(tn in ch.lower() for tn in ("chennai","tamilnadu","tn_","coimbatore","trichy","madurai","puducherry","tamil"))]
+    _other_channels = [ch for ch in RADAR_TELEGRAM_CHANNELS if ch not in _tn_channels]
+    _ordered_channels = _tn_channels + _other_channels
+    future_to_ch = {}
+    with _cf.ThreadPoolExecutor(max_workers=12) as executor:
+        for ch in _ordered_channels:
+            future_to_ch[executor.submit(_scan_single_channel_radar, ch)] = ch
         try:
-            for future in concurrent.futures.as_completed(future_to_ch, timeout=25):
+            for future in _cf.as_completed(future_to_ch, timeout=25):
                 try:
                     res = future.result()
                     if res:
