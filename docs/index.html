@@ -2,18 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MyJob AI Radar — Real-time verified job vacancies in Tamil Nadu and India. Live job board with walk-in drives, national mass drives, and multi-platform search across LinkedIn, Indeed, SimplifyJobs, and government portals.">
+  <meta name="theme-color" content="#060918">
   <title>MyJob AI Radar — Tamil Nadu & Multi-Platform Tech Careers Hub</title>
-  <!-- Telegram WebApp SDK -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="canonical" href="https://nm969989-cmd.github.io/myjob-ai-bot/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MyJob AI Radar — Tamil Nadu Job Board">
+  <meta property="og:description" content="Real-time verified job vacancies in Tamil Nadu. Live job board with walk-in drives, national mass drives, and multi-platform search.">
+  <meta property="og:url" content="https://nm969989-cmd.github.io/myjob-ai-bot/">
+  <meta property="og:image" content="https://nm969989-cmd.github.io/myjob-ai-bot/og-image.png">
+  <meta property="og:site_name" content="MyJob AI Radar">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MyJob AI Radar — Tamil Nadu Job Board">
+  <meta name="twitter:description" content="Real-time verified job vacancies in Tamil Nadu. Live job board with walk-in drives, national mass drives, and multi-platform search.">
+  <meta name="twitter:image" content="https://nm969989-cmd.github.io/myjob-ai-bot/og-image.png">
+  <!-- Telegram WebApp SDK (loaded conditionally inside Telegram) -->
+  <!-- Tailwind CSS via CDN (pinned version) -->
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
   <!-- Google Fonts: Outfit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Lucide Icons (pinned version) -->
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" defer></script>
 
   <style>
     :root {
@@ -28,6 +40,11 @@
       min-height: 100vh;
       overflow-x: hidden;
       -webkit-tap-highlight-color: transparent;
+    }
+    /* Focus visible for keyboard accessibility */
+    :focus-visible {
+      outline: 2px solid #f59e0b;
+      outline-offset: 2px;
     }
     .orb {
       position: fixed; border-radius: 50%; filter: blur(90px);
@@ -91,7 +108,50 @@
     #toast {
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
     }
+    /* Card entrance animation */
+    .card-enter {
+      animation: cardFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    @keyframes cardFadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Stagger delays for card grid */
+    .stagger-1 { animation-delay: 50ms; }
+    .stagger-2 { animation-delay: 100ms; }
+    .stagger-3 { animation-delay: 150ms; }
+    .stagger-4 { animation-delay: 200ms; }
+    .stagger-5 { animation-delay: 250ms; }
+    .stagger-6 { animation-delay: 300ms; }
+    .stagger-7 { animation-delay: 350ms; }
+    .stagger-8 { animation-delay: 400ms; }
+    /* Respect prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      .orb, .pulse-glow, .card-enter, .modal-enter,
+      [style*="animation"], [style*="transition"] {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+    /* Skeleton loader */
+    .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    /* Tab cross-fade */
+    .tab-content { transition: opacity 0.2s ease, transform 0.2s ease; }
+    .tab-content.hidden { opacity: 0; transform: translateY(8px); pointer-events: none; }
+    .tab-content:not(.hidden) { opacity: 1; transform: translateY(0); }
   </style>
+
+  <!-- JSON-LD Structured Data: JobPosting list (populated dynamically from INITIAL_DATA) -->
+  <script type="application/ld+json" id="jsonLdJobs"></script>
 </head>
 <body class="min-h-screen pb-24 text-slate-100 flex flex-col">
 
@@ -130,12 +190,12 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <a href="https://t.me/myjob_autoapply_bot" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-xl bg-blue-600/20 border border-blue-500/40 text-blue-400 hover:bg-blue-600/30 text-xs font-semibold flex items-center gap-1.5 transition-all">
-          <i data-lucide="send" class="w-3.5 h-3.5"></i>
+        <a href="https://t.me/myjob_autoapply_bot" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-xl bg-blue-600/20 border border-blue-500/40 text-blue-400 hover:bg-blue-600/30 text-xs font-semibold flex items-center gap-1.5 transition-all" aria-label="Open Telegram Bot">
+          <i data-lucide="send" class="w-3.5 h-3.5" aria-hidden="true"></i>
           <span class="hidden sm:inline">Bot</span>
         </a>
-        <button id="refreshBtn" onclick="fetchAllData(true)" title="Refresh Feed" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
-          <i data-lucide="rotate-cw" id="refreshIcon" class="w-4 h-4"></i>
+        <button id="refreshBtn" onclick="fetchAllData(true)" aria-label="Refresh Feed" class="p-2 rounded-xl bg-white/5 border border-white/10 active:scale-95 transition-all text-slate-300 hover:text-white">
+          <i data-lucide="rotate-cw" id="refreshIcon" class="w-4 h-4" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -143,24 +203,26 @@
     <!-- UNIVERSAL REAL-TIME SEARCH BAR WITH SEARCH BUTTON -->
     <div class="mt-3 flex items-center gap-2">
       <div class="relative flex-1">
-        <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true"></i>
         <input 
-          type="text" 
+          type="search" 
           id="searchInput" 
           oninput="handleSearch()" 
           onkeydown="if(event.key === 'Enter') executeSearch()"
           placeholder="Search Python, React, Chennai, Coimbatore, Zoho, Walk-in..." 
           class="w-full pl-10 pr-9 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/50 transition-all"
+          aria-label="Search jobs"
+          autocomplete="off"
         >
-        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
-          <i data-lucide="x" class="w-4 h-4"></i>
+        <button id="clearSearchBtn" onclick="clearSearch()" aria-label="Clear search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4" aria-hidden="true"></i>
         </button>
       </div>
       <button 
         onclick="executeSearch()" 
         class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 font-extrabold text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5 shrink-0"
       >
-        <i data-lucide="search" class="w-3.5 h-3.5 text-slate-900"></i>
+        <i data-lucide="search" class="w-3.5 h-3.5 text-slate-900" aria-hidden="true"></i>
         <span>Search</span>
       </button>
     </div>
@@ -183,7 +245,7 @@
     </div>
 
     <!-- CATEGORY FILTER CHIPS -->
-    <div id="filterChipsContainer" class="flex items-center gap-2 overflow-x-auto no-scrollbar mt-3 pt-1 pb-0.5 text-xs">
+    <div id="filterChipsContainer" role="radiogroup" aria-label="Job category filters" class="flex items-center gap-2 overflow-x-auto no-scrollbar mt-3 pt-1 pb-0.5 text-xs">
       <button onclick="setFilter('tn')" id="filter-tn" class="filter-pill px-3 py-1.5 rounded-lg font-bold whitespace-nowrap bg-amber-500 text-slate-900 shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5">
         <span>⭐</span> Tamil Nadu Jobs <span id="count-tn" class="text-[10px] font-extrabold bg-slate-900/20 px-1 rounded">(0)</span>
       </button>
@@ -585,36 +647,53 @@
   </div>
 
   <!-- FIXED BOTTOM NAVIGATION BAR -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#060918]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around text-[10px]">
-    <button onclick="switchTab('jobs')" id="nav-jobs" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all active-nav py-1 px-2">
-      <i data-lucide="briefcase" class="w-4 h-4"></i>
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#060918]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around text-[10px]" role="tablist" aria-label="Main navigation">
+    <button onclick="switchTab('jobs')" id="nav-jobs" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all active-nav py-1 px-2" role="tab" aria-selected="true" aria-controls="tab-jobs">
+      <i data-lucide="briefcase" class="w-4 h-4" aria-hidden="true"></i>
       <span>Jobs</span>
     </button>
-    <button onclick="switchTab('walkins')" id="nav-walkins" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all py-1 px-2">
-      <i data-lucide="map-pin" class="w-4 h-4"></i>
+    <button onclick="switchTab('walkins')" id="nav-walkins" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all py-1 px-2" role="tab" aria-selected="false" aria-controls="tab-walkins">
+      <i data-lucide="map-pin" class="w-4 h-4" aria-hidden="true"></i>
       <span>Walk-Ins</span>
     </button>
-    <button onclick="switchTab('drives')" id="nav-drives" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all py-1 px-2">
-      <i data-lucide="megaphone" class="w-4 h-4"></i>
+    <button onclick="switchTab('drives')" id="nav-drives" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all py-1 px-2" role="tab" aria-selected="false" aria-controls="tab-drives">
+      <i data-lucide="megaphone" class="w-4 h-4" aria-hidden="true"></i>
       <span>Drives</span>
     </button>
-    <button onclick="switchTab('ats')" id="nav-ats" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all py-1 px-2">
-      <i data-lucide="target" class="w-4 h-4"></i>
+    <button onclick="switchTab('ats')" id="nav-ats" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all py-1 px-2" role="tab" aria-selected="false" aria-controls="tab-ats">
+      <i data-lucide="target" class="w-4 h-4" aria-hidden="true"></i>
       <span>ATS Match</span>
     </button>
-    <button onclick="switchTab('status')" id="nav-status" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all py-1 px-2">
-      <i data-lucide="settings" class="w-4 h-4"></i>
+    <button onclick="switchTab('status')" id="nav-status" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-all py-1 px-2" role="tab" aria-selected="false" aria-controls="tab-status">
+      <i data-lucide="settings" class="w-4 h-4" aria-hidden="true"></i>
       <span>Status</span>
     </button>
   </nav>
 
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
-    const tg = window.Telegram ? window.Telegram.WebApp : null;
-    if (tg) {
-      tg.expand();
-      tg.ready();
+    // Load Telegram WebApp SDK only when running inside Telegram
+    // (avoids unnecessary network request on public web)
+    function loadTelegramSDK() {
+      if (!window.Telegram && !document.getElementById('telegram-sdk')) {
+        const s = document.createElement('script');
+        s.id = 'telegram-sdk';
+        s.src = 'https://telegram.org/js/telegram-web-app.js';
+        s.onload = () => {
+          window.tg = window.Telegram ? window.Telegram.WebApp : null;
+          if (window.tg) { window.tg.expand(); window.tg.ready(); }
+        };
+        document.head.appendChild(s);
+      }
     }
+    // Detect Telegram WebApp context (check for initData or userAgent)
+    if (window.Telegram || /TelegramWebView|TelegramBot/i.test(navigator.userAgent) || new URLSearchParams(location.search).has('tgWebAppPlatform')) {
+      loadTelegramSDK();
+    }
+    // Global tg reference (null until SDK loads)
+    window.tg = window.Telegram ? window.Telegram.WebApp : null;
+    // Local alias for the rest of the script
+    let tg = window.tg;
 
     // EMBEDDED SNAPSHOT (committed to the repo, NOT a live feed).
     // Fields that were placeholder/invented upstream are shown as "not published"
@@ -627,6 +706,29 @@
     let walkinCity = 'all';
     let savedJobIds = JSON.parse(localStorage.getItem('myjob_saved') || '[]');
     let activeModalJob = null;
+
+    // Populate JSON-LD structured data for JobPosting list
+    function populateJsonLd() {
+      const jobs = allJobs.filter(j => j.type !== 'simplify').slice(0, 50);
+      const items = jobs.map(j => ({
+        "@type": "JobPosting",
+        "title": j.role,
+        "hiringOrganization": { "@type": "Organization", "name": j.company },
+        "jobLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": j.location.split(',')[0].trim(), "addressCountry": "IN" }},
+        "datePosted": new Date().toISOString().split('T')[0],
+        "description": j.description || `Job opportunity at ${j.company}.`,
+        "employerOverview": j.company,
+        "skills": j.skills || [],
+        "baseSalary": j.salary && j.salary !== 'Salary not published' ? { "@type": "MonetaryAmount", "currency": "INR", "value": j.salary } : undefined,
+        "url": j.link,
+        "identifier": { "@type": "PropertyValue", "name": j.id, "value": j.id }
+      }));
+      const jsonLd = { "@context": "https://schema.org", "@type": "ItemList", "itemListElement": items.map((item, idx) => ({ "@type": "ListItem", "position": idx + 1, "item": item })) };
+      const el = document.getElementById('jsonLdJobs');
+      if (el) el.textContent = JSON.stringify(jsonLd);
+    }
+    // Initial population
+    populateJsonLd();
 
     function triggerHaptic(type = 'light') {
       if (tg && tg.HapticFeedback) {
@@ -745,14 +847,22 @@
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(`tab-${tabName}`)?.classList.remove('hidden');
 
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-nav'));
-      document.getElementById(`nav-${tabName}`)?.classList.add('active-nav');
+      document.querySelectorAll('nav[role="tablist"] button[role="tab"]').forEach(b => {
+        b.classList.remove('active-nav');
+        b.setAttribute('aria-selected', 'false');
+      });
+      const activeBtn = document.getElementById(`nav-${tabName}`);
+      if (activeBtn) {
+        activeBtn.classList.add('active-nav');
+        activeBtn.setAttribute('aria-selected', 'true');
+      }
 
       const filterBar = document.getElementById('filterChipsContainer');
       if (tabName === 'jobs' || tabName === 'walkins') filterBar?.classList.remove('hidden');
       else filterBar?.classList.add('hidden');
 
       renderCurrentView();
+      populateJsonLd();
       lucide.createIcons();
     }
 
@@ -760,6 +870,7 @@
       if (currentTab === 'jobs') renderJobs();
       else if (currentTab === 'walkins') renderWalkinsTab();
       else if (currentTab === 'drives') renderDrivesTab();
+      populateJsonLd();
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -848,7 +959,7 @@
         `;
       }
 
-      container.innerHTML = exportBanner + filtered.map(j => {
+      container.innerHTML = exportBanner + filtered.map((j, idx) => {
         const isSaved = savedJobIds.includes(j.id);
         const isTN = j.is_tamil_nadu;
         const isWalkin = j.is_walkin;
@@ -868,9 +979,11 @@
         }
 
         const applyUrl = j.apply_url || j.link || '#';
+        const staggerIdx = (idx % 8) + 1;
+        const staggerClass = `stagger-${staggerIdx}`;
 
         return `
-          <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 ${isWalkin ? 'border-cyan-500/30' : (isTN ? 'border-amber-500/25' : '')}">
+          <div class="glass-card rounded-2xl p-4 flex flex-col gap-3 card-enter ${staggerClass} ${isWalkin ? 'border-cyan-500/30' : (isTN ? 'border-amber-500/25' : '')}">
             <div class="flex items-start justify-between gap-2">
               <div class="flex-1">
                 <div class="flex items-center gap-1.5 flex-wrap mb-1.5">
@@ -886,8 +999,8 @@
                   <i data-lucide="check-circle" class="w-3 h-3 text-amber-400"></i>
                 </p>
               </div>
-              <button onclick="toggleSave('${j.id}')" title="Save Job" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all shrink-0">
-                <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'text-pink-400 fill-pink-400' : ''}"></i>
+              <button onclick="toggleSave('${j.id.replace(/'/g, "\\'")}')" aria-label="Save job" title="Save Job" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all shrink-0">
+                <i data-lucide="bookmark" class="w-4 h-4 ${isSaved ? 'text-pink-400 fill-pink-400' : ''}" aria-hidden="true"></i>
               </button>
             </div>
 
@@ -902,9 +1015,9 @@
             ` : ''}
 
             <div class="grid grid-cols-2 gap-2 text-xs text-slate-300">
-              <div class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-blue-400 shrink-0"></i> <span class="truncate">${escapeHtml(j.location)}</span></div>
-              <div class="flex items-center gap-1.5"><i data-lucide="wallet" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> <span class="truncate font-semibold text-emerald-300">${escapeHtml(j.salary)}</span></div>
-              <div class="flex items-center gap-1.5 col-span-2"><i data-lucide="calendar" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i> <span class="truncate">${escapeHtml(j.batch)}</span></div>
+              <div class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-blue-400 shrink-0" aria-hidden="true"></i> <span class="truncate">${escapeHtml(j.location)}</span></div>
+              <div class="flex items-center gap-1.5"><i data-lucide="wallet" class="w-3.5 h-3.5 text-emerald-400 shrink-0" aria-hidden="true"></i> <span class="truncate font-semibold text-emerald-300">${escapeHtml(j.salary)}</span></div>
+              <div class="flex items-center gap-1.5 col-span-2"><i data-lucide="calendar" class="w-3.5 h-3.5 text-amber-400 shrink-0" aria-hidden="true"></i> <span class="truncate">${escapeHtml(j.batch)}</span></div>
             </div>
 
             ${skillsHtml}
@@ -915,8 +1028,8 @@
                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Apply Link
               </a>
 
-              <button onclick="openDetailsModal('${j.id}')" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i> Details
+              <button onclick="openDetailsModal('${j.id.replace(/'/g, "\\'")}')" aria-label="View job details" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400" aria-hidden="true"></i> Details
               </button>
 
               ${j.maps_url ? `
@@ -925,12 +1038,12 @@
                 </a>
               ` : ''}
 
-              <button onclick="shareJob('${j.id}')" title="Share Opening" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
-                <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <button onclick="shareJob('${j.id.replace(/'/g, "\\'")}')" aria-label="Share opening" title="Share Opening" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+                <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400" aria-hidden="true"></i>
               </button>
 
-              <button onclick="populateATSMatcher('${escapeHtml(j.role)}', '${escapeHtml(j.company)}', '${escapeHtml(j.description || j.summary || j.role)}')" title="ATS Match" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
-                <i data-lucide="target" class="w-3.5 h-3.5 text-pink-400"></i>
+              <button onclick="populateATSMatcher('${escapeHtml(j.role)}', '${escapeHtml(j.company)}', '${escapeHtml(j.description || j.summary || j.role)}')" aria-label="Check ATS match" title="ATS Match" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white text-xs flex items-center justify-center active:scale-95 transition-all shrink-0">
+                <i data-lucide="target" class="w-3.5 h-3.5 text-pink-400" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -1514,6 +1627,7 @@ ${summary}`;
         active.classList.add('bg-amber-500', 'text-slate-900', 'font-bold');
       }
       renderCurrentView();
+      populateJsonLd();
     }
 
     function handleSearch() {
