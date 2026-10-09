@@ -4482,7 +4482,7 @@ def live_screenshot():
 def live_action():
     if not HANDOFF_ACTIVE or not HANDOFF_PAGE: return "No active handoff", 400
     try:
-        data = request.json
+        data = request.get_json(silent=True) or {}
         if data.get('action') == 'click':
             HANDOFF_PAGE.mouse.click(data['x'], data['y'])
         elif data.get('action') == 'type':
@@ -4871,7 +4871,7 @@ import subprocess
 
 @app.route("/api/manual_apply", methods=["POST"])
 def api_manual_apply():
-    data = request.json
+    data = request.get_json(silent=True) or {}
     url = data.get("url")
     if url:
         if not url.startswith("http"):
@@ -4892,7 +4892,7 @@ def api_manual_apply():
 
 @app.route("/api/update_profile", methods=["POST"])
 def api_update_profile():
-    data = request.json
+    data = request.get_json(silent=True) or {}
     field = data.get("field")
     value = data.get("value")
     if field and value:
@@ -4964,8 +4964,8 @@ def api_download_profile():
 @app.route("/api/add_channel", methods=["POST"])
 def api_add_channel():
     global TARGET_CHANNELS
-    data = request.json
-    channel = data.get("channel", "").replace("@", "").strip()
+    data = request.get_json(silent=True) or {}
+    channel = str(data.get("channel", "") or "").replace("@", "").strip()
     if channel:
         if channel not in TARGET_CHANNELS:
             TARGET_CHANNELS.append(channel)
@@ -5013,7 +5013,7 @@ def api_scan_inbox():
 
 @app.route("/api/mark_crm", methods=["POST"])
 def api_mark_crm():
-    data = request.json
+    data = request.get_json(silent=True) or {}
     url = data.get("url")
     new_status = data.get("status")
     
