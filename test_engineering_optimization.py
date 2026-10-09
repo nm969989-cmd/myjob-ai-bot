@@ -6,7 +6,6 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import engineering_telegram as e
-
 from test_engineering_telegram import job, result
 
 class OptimizationTests(unittest.TestCase):
