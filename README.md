@@ -49,7 +49,12 @@ Private card/reminder state lives in the git-ignored `job_discovery_state.json`.
 
 ```sh
 python -m unittest test_job_discovery -v
+python -m unittest test_backend_hardening -v
+python -m unittest tests.test_dashboard_templates -v
 node --test tn-live-jobs/test_priority_cities.js
+npm ci && npm test          # static checks for docs/ and templates/
 ```
 
 These tests mock portal calls and Telegram delivery. They do not submit applications or publish live Telegram messages.
+
+`npm test` loads `docs/index.html` and `templates/miniapp.html` in jsdom with the CDN assets stubbed out, so it also runs without a browser. It covers the render paths that take scraped third-party data (escaping, URL scheme checks) plus the SEO/accessibility invariants. `tests/README.md` describes each suite and includes a ready-to-paste workflow snippet that runs them automatically whenever `docs/`, `templates/`, `tests/` or the root `package.json` change.
