@@ -175,3 +175,18 @@ A local export is also available without Telegram or a browser:
 ```sh
 python -m tn_search_delivery --days 7 --city Chennai --output /tmp/chennai-jobs.csv
 ```
+
+## Importing into Buildra or another Node web host
+
+The repository root now contains package.json and an npm workspace for the existing public job board. Select the branch containing this change when importing. Use Node 20.19+ (Node 24 recommended):
+
+```sh
+npm ci
+npm run dev -- --host 0.0.0.0 --port 3000
+```
+
+Host settings: root directory `.`, install `npm ci`, development command `npm run dev`, build `npm run build`, static output directory `dist`. `npm start` and `npm run preview` serve the existing public board too. PORT/HOST environment variables are supported; explicit --port/--host flags override them. Default port is 3000.
+
+The static build copies the existing board, data, assets and offline workspace into dist; it does not refresh feeds or send applications. The root Node entry point serves the public job board. The authenticated Flask dashboard, continuous Telegram bot and automatic application worker still require their documented Python deployment. A Node-only web host does not run those services. Existing tn-live-jobs standalone npm commands remain available with their own lockfile.
+
+This addresses the missing-root-package error shown by Buildra. Actual third-party import/deployment must be retried there after the branch is available; local checks cannot confirm Buildra account or hosting configuration.

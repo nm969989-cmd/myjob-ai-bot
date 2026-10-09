@@ -539,7 +539,7 @@ const MIME = {
   '.png': 'image/png',
 };
 
-function runServe(port = readNumber(process.env.PORT, 5173)) {
+function runServe(port = readNumber(process.env.PORT, 5173), host = '0.0.0.0') {
   const server = http.createServer((request, response) => {
     let requested;
     try {
@@ -565,7 +565,7 @@ function runServe(port = readNumber(process.env.PORT, 5173)) {
       response.end(data);
     });
   });
-  server.listen(port, () => {
+  server.listen(port, host, () => {
     log(`Preview server running: http://localhost:${port}/  (press Ctrl+C to stop)`);
   });
   return server;

@@ -1,0 +1,15 @@
+{
+  "name": "myjob-ai-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MyJob public job board and existing Python automation services",
+  "engines": { "node": ">=20.19" },
+  "workspaces": ["tn-live-jobs"],
+  "scripts": {
+    "dev": "node scripts/serve-web.js",
+    "start": "node scripts/serve-web.js",
+    "preview": "node scripts/serve-web.js",
+    "build": "node scripts/build-web.js",
+    "test": "npm run test --workspace=tn-live-jobs"
+  }
+}

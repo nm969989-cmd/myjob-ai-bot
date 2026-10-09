@@ -22,8 +22,13 @@ jobs:
         with:
           node-version: '20'
           cache: npm
-          cache-dependency-path: tn-live-jobs/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            tn-live-jobs/package-lock.json
       - run: npm ci --ignore-scripts
         working-directory: tn-live-jobs
       - run: npm test
         working-directory: tn-live-jobs
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: npm test

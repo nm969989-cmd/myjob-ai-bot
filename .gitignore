@@ -112,3 +112,7 @@ career_workspace.sqlite3*
 !docs/career/icon-512.png
 !tn-live-jobs/public/career/icon-192.png
 !tn-live-jobs/public/career/icon-512.png
+
+# Root Node workspace and static web build
+/node_modules/
+/dist/
