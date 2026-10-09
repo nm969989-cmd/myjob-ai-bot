@@ -118,6 +118,11 @@
     @media (max-width: 640px) { .orb { display: none; } }
     nav { padding-bottom: max(8px, env(safe-area-inset-bottom)) !important; }
 </style>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./career/icon-192.png">
+  <link rel="stylesheet" href="./career/workspace.css">
+  <script src="./career/core.js" defer></script>
+  <script src="./career/workspace.js" defer></script>
 </head>
 <body class="min-h-screen pb-24 text-slate-100 flex flex-col">
 
@@ -762,6 +767,7 @@
 
       updateMetrics();
       renderCurrentView();
+      window.dispatchEvent(new Event("career:jobs"));
       window.lucide?.createIcons();
       document.getElementById('refreshIcon')?.classList.remove('animate-spin');
     }
@@ -835,6 +841,7 @@
       const bannerText = document.getElementById('searchBannerText');
 
       let filtered = allJobs.filter(j => {
+        if (currentFilter !== 'saved' && window.CareerCore?.freshness(j).expired) return false;
         if (searchVal) {
           // If searching, search everywhere across all platforms!
           const text = `${j.company} ${j.role} ${j.location} ${j.source} ${j.platform || ''} ${j.description || ''} ${Array.isArray(j.skills) ? j.skills.join(' ') : (j.skills || '')} ${j.batch || ''} ${j.venue || ''}`.toLowerCase();
@@ -888,6 +895,8 @@
 
         const platformBadge = getPlatformBadge(j);
         const tnBadge = isTN ? '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/30">⭐ Tamil Nadu</span>' : '';
+        const availability = window.CareerCore?.freshness(j);
+        const checkedBadge = `<p class="text-xs text-slate-400">${escapeHtml(availability?.label || 'Not checked')} · Last checked: ${escapeHtml(availability?.checked || 'not recorded')}</p>`;
         const freshnessBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">🟢 ${escapeHtml(j.date_posted || 'Recently Posted')}</span>`;
 
         // Render skill chips
@@ -903,6 +912,7 @@
 
         return `
           <div class="job-card glass-card rounded-2xl p-4 flex flex-col gap-3 ${isWalkin ? 'border-cyan-500/30' : (isTN ? 'border-amber-500/25' : '')}">
+            ${checkedBadge}
             <div class="flex items-start justify-between gap-2">
               <div class="flex-1">
                 <div class="flex items-center gap-1.5 flex-wrap mb-1.5">
@@ -1639,6 +1649,7 @@ ${summary}`;
       storeList('myjob_saved', savedJobIds);
       updateMetrics();
       renderCurrentView();
+      window.dispatchEvent(new Event("career:jobs"));
     }
 
     function exportSavedJobsToCSV() {
@@ -1716,7 +1727,9 @@ ${summary}`;
     window.addEventListener('DOMContentLoaded', () => {
       updateMetrics();
       renderCurrentView();
+      window.dispatchEvent(new Event("career:jobs"));
       window.lucide?.createIcons();
+      window.CareerWorkspace.mount({ getJobs: () => allJobs, getSavedJobs: () => allJobs.filter(j => savedJobIds.includes(j.id)), pwa: true });
       // Background refresh
       setTimeout(() => { fetchAllData(); }, 1200);
     });

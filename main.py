@@ -4443,6 +4443,9 @@ def _dashboard_security_headers(resp):
         resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
+from career_service import register_routes as register_career_routes
+register_career_routes(app, os.path.dirname(os.path.abspath(__file__)))
+
 @app.route("/live")
 def live_handoff():
     if not HANDOFF_ACTIVE:
@@ -4978,6 +4981,10 @@ def api_health_check():
     except Exception:
         pass
         
+    from career_service import Store
+    for provider, client, status in (("gemini", gemini_client, gemini_status), ("groq", groq_client, groq_status)):
+        if client:
+            Store().observe(provider, "check succeeded" if status.startswith("Online") else "check failed; inspect credentials, quota and provider status")
     return {"gemini": gemini_status, "groq": groq_status}
 
 @app.route("/api/download_qa")
@@ -8138,6 +8145,18 @@ def walkin_reminder_loop():
         time.sleep(30)
 
 
+def career_notification_loop():
+    from career_service import Store, load_jobs, dispatch
+    store = Store()
+    while True:
+        try:
+            if bot and not BOT_PAUSED:
+                dispatch(store, load_jobs(os.path.dirname(os.path.abspath(__file__))), bot, load_chat_id())
+        except Exception:
+            print('[Career] Notification delivery failed; retrying next minute. Check dashboard health.')
+        time.sleep(60)
+
+
 def thread_supervisor():
     """Monitors and automatically restarts background threads if they crash."""
     print("[Supervisor] Thread supervisor loop started.")
@@ -8146,6 +8165,7 @@ def thread_supervisor():
         "Job Monitor": {"target": job_monitor_loop, "thread": None},
         "Daily Report": {"target": daily_report_loop, "thread": None},
         "Job Radar Loop": {"target": radar_loop, "thread": None},
+        "Career Notifications": {"target": career_notification_loop, "thread": None},
         "Walk-in Reminders": {"target": walkin_reminder_loop, "thread": None},
     }
     if bot:

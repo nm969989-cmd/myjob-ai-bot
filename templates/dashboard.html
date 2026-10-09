@@ -70,6 +70,9 @@
     }
 
 </style>
+<link rel="stylesheet" href="/career-assets/workspace.css">
+<script src="/career-assets/core.js" defer></script>
+<script src="/career-assets/workspace.js" defer></script>
 </head>
 <body>
 <!-- Background Orbs -->
@@ -903,6 +906,13 @@
       logToConsole('FATAL: Engine failed to launch!', 'error');
     }
   }
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  let jobs = [];
+  try { const response = await fetch('/api/career/jobs'); if (response.ok) jobs = (await response.json()).jobs; } catch {}
+  CareerWorkspace.mount({getJobs: () => jobs, server: true});
+});
 </script>
 </body>
 </html>

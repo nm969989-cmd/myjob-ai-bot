@@ -155,6 +155,8 @@ def run_cloud():
 
             _stage_start = time.time()
             new_radar_jobs = run_radar() or []
+            from career_service import expired, normalize, UTC
+            new_radar_jobs = [job for job in new_radar_jobs if not expired(normalize(job), datetime.now(UTC))]
             stage_times["radar_scan"] = int(time.time() - _stage_start)
             radar_jobs_count = len(new_radar_jobs)
             print(f"✅ Job Radar scan finished. Found {radar_jobs_count} new opportunities.")

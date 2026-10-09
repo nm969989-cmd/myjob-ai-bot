@@ -43,7 +43,7 @@ const { loadSources, tierForSite } = require('./sources');
 const { SITE_LABELS } = require('./sources/company-careers');
 const { validateJobs } = require('./validate');
 const { readJobFile, readJsonSafe, computeDiff, appendHistory } = require('./diff');
-const { writeOutputs, writeJson } = require('./export');
+const { writeOutputs, writeJson, isPublishable } = require('./export');
 const { buildReport, writeReport } = require('./report');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -397,7 +397,7 @@ async function runExport() {
   const existingHistory = readJsonSafe(historyPath, {});
   const enrichedJobs = validated.jobs.map(enrichJobRecord);
   const enrichedNewJobs = (diff.new || []).map(enrichJobRecord);
-  const live = enrichedJobs.filter((job) => job.verified === true);
+  const live = enrichedJobs.filter(isPublishable);
   const finishedAt = validated.validated_at || new Date().toISOString();
 
   const history = appendHistory(existingHistory, finishedAt, {
@@ -487,7 +487,7 @@ async function runReport() {
   const validated = readWorkFile(VALIDATED_FILE, 'Validation output');
   const diff = readWorkFile(DIFF_FILE, 'Diff output');
   const lastRun = readJsonSafe(path.join(DATA_DIR, 'last-run.json'), {});
-  const live = validated.jobs.filter((job) => job.verified === true);
+  const live = validated.jobs.filter(isPublishable);
 
   const markdown = buildReport({
     meta: {
@@ -530,6 +530,8 @@ const MIME = {
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.csv': 'text/csv; charset=utf-8',
+  '.webmanifest': 'application/manifest+json',
+  '.png': 'image/png',
 };
 
 function runServe(port = readNumber(process.env.PORT, 5173)) {

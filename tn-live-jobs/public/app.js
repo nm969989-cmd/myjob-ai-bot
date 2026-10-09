@@ -58,6 +58,7 @@ function persistSavedIds() {
     /* ignore storage errors */
   }
   updateSavedBadge();
+  window.CareerWorkspace?.syncBookmarks();
 }
 
 function toggleSaveJob(id) {
@@ -227,6 +228,7 @@ function applyFilters() {
   const q = state.query.trim();
 
   let list = state.allJobs.filter(job => {
+    if (state.quickChip !== 'saved' && window.CareerCore?.freshness(job).expired) return false;
     if (!matchesQuickChip(job, state.quickChip)) return false;
     if (state.city && job.city !== state.city) return false;
     if (state.category && job.category !== state.category) return false;
@@ -345,6 +347,7 @@ function createCardHtml(job) {
       <div class="tags">${tags.join('')}</div>
       <div class="card-details">${detailsItems.join('')}</div>
       ${skillsHtml}
+      <p class="card-details-item">${escapeHtml(window.CareerCore?.freshness(job).label || 'Availability not checked')} · Last checked: ${escapeHtml(job.verified_at || 'not recorded')}</p>
       <div class="card-actions">
         <button class="btn-details" type="button" data-view="${escapeHtml(job.id)}">View Details</button>
         <a class="btn-apply" href="${escapeHtml(safeUrl(job.apply_url))}" target="_blank" rel="noopener noreferrer">Apply Now &rarr;</a>
@@ -816,6 +819,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   state.allJobs = (payload.jobs || []).filter(j => j && j.verified === true);
   stampHeader(payload);
+  window.dispatchEvent(new Event("career:jobs"));
 
   readUrlParams();
   applyFilters();

@@ -17,6 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 const { log } = require('./util');
+const { freshness } = require('../public/career/core');
 const { PRIORITY_CITIES, canonicalCity } = require('./config');
 
 const CSV_COLUMNS = [
@@ -100,6 +101,8 @@ function sortJobs(jobs) {
  * previous jobs.json still had some, we refuse to overwrite the good data.
  * A broken run must never push an empty or corrupted jobs.json.
  */
+function isPublishable(job) { return job.verified === true && !freshness(job).expired; }
+
 function writeOutputs(options) {
   const {
     rootDir,
@@ -117,7 +120,7 @@ function writeOutputs(options) {
   ensureDir(path.join(publicDir, 'data'));
 
   const sorted = sortJobs(allJobs);
-  const live = sorted.filter((job) => job.verified === true);
+  const live = sorted.filter(isPublishable);
 
   const nothingScraped = rawScrapedCount === 0;
   const wouldWipeGoodData = live.length === 0 && previousVerifiedCount > 0;
@@ -165,7 +168,7 @@ function writeOutputs(options) {
   const publicPayload = {
     generated_at: meta.finished_at,
     count: live.length,
-    new_count: newJobs.filter((job) => job.verified === true).length,
+    new_count: newJobs.filter(isPublishable).length,
     jobs: live,
   };
   writeJson(path.join(publicDir, 'data', 'jobs.json'), publicPayload);
@@ -184,6 +187,7 @@ function writeOutputs(options) {
 
 module.exports = {
   CSV_COLUMNS,
+  isPublishable,
   ensureDir,
   writeJson,
   writeCsv,

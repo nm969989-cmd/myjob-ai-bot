@@ -15,7 +15,7 @@ class DashboardAuthTests(unittest.TestCase):
         source = Path(__file__).with_name('main.py').read_text()
         # Importing main starts a worker; execute only the deployed auth section.
         section = source[source.index('app = Flask(__name__)'):source.index('@app.route("/live")')]
-        self.ns = dict(__name__=__name__, Flask=Flask, jsonify=jsonify, request=request, hmac=hmac, os=os)
+        self.ns = dict(__name__=__name__, __file__=__file__, Flask=Flask, jsonify=jsonify, request=request, hmac=hmac, os=os)
         with patch.dict(os.environ, DASHBOARD_TOKEN=self.token):
             exec(compile(section, 'main.py:dashboard-auth', 'exec'), self.ns)
         self.app = self.ns['app']

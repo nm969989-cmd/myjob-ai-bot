@@ -10,6 +10,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>" />
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./career/icon-192.png">
+  <link rel="stylesheet" href="./career/workspace.css">
+  <script src="./career/core.js" defer></script>
+  <script src="./career/workspace.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to jobs</a>
@@ -287,5 +292,6 @@
 
   <!-- Scripts -->
   <script src="./app.js" defer></script>
+<script>document.addEventListener("DOMContentLoaded",()=>CareerWorkspace.mount({getJobs:()=>state.allJobs,getSavedJobs:()=>state.allJobs.filter(j=>state.savedIds.has(j.id)),pwa:true}));</script>
 </body>
 </html>

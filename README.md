@@ -85,3 +85,34 @@ Set `DASHBOARD_TOKEN` to a long random secret. Open `/?token=YOUR_TOKEN` over HT
 The application expects one trusted reverse proxy to overwrite `X-Forwarded-Proto`; it uses that scheme for Secure cookies and Origin validation. Do not expose the upstream HTTP listener directly in production. Local HTTP previews use cookies without Secure. Rotating the token invalidates existing sessions. `/` without credentials and `/healthz` return only service health, not private dashboard content. Only `/healthz` permits public cross-origin reads. Authenticated pages and APIs are not cached or indexed.
 
 Open the administrative miniapp directly in its own browser origin. Telegram iframe authentication is not implemented; the public Pages hub remains the public job browsing surface. Live provider authentication, delivery and job submissions require a separate deployment smoke check.
+
+## Career workspace
+
+Expand **My career workspace** on the Pages hub, Node job board or authenticated Flask dashboard:
+
+- **Personalized matches:** save skills, cities, experience, minimum annual salary in LPA and remote preference. Scores show the information used; unknown salary/experience is never invented. These are preference scores, not hiring predictions.
+- **Application tracker:** Saved → Applied → Interview → Offer/Rejected, with notes, follow-up dates, stage filters and calendar downloads. A tracker entry contains a snapshot, so removing a feed listing or bookmark does not delete your application history. Existing saved bookmarks are copied to the device tracker when their jobs load.
+- **Freshness:** cards expose recorded check times and stale/unknown checks. Explicit closed/expired results are hidden from recommendations and excluded from published verified feeds and radar alerts. Raw scraper results and tracker history remain. A successful link check is not employer confirmation. Date-only deadlines last through their UTC calendar day; ambiguous date text is never guessed.
+- **Resume comparison:** paste resume and job text locally to see exact recognized skill overlap, missing keywords and truthful suggestions. Resume text is neither saved nor uploaded by this feature. It cannot verify skill proficiency.
+- **Alerts:** the private dashboard can enable a daily matched-job Telegram digest and per-application follow-up reminders. Configure an IANA timezone, delivery time, quiet hours, minimum score and maximum age. Save matching preferences first. Equal quiet-hour start/end disables quiet hours. Digests contain at most eight new matches; already tracked, previously delivered, expired, undated and failed-check jobs are excluded. Follow-ups use the selected timezone and remain available as calendar files on public/offline pages.
+- **Health:** public pages show device/feed status. The private dashboard shows provider configuration, observed send/check results, scraper-run age and notification-worker activity. “Configured, not checked” is intentional. Explicit AI checks use the existing provider API and quota; viewing health does not call paid AI APIs.
+- **Install/offline:** use **Install app** when offered, your browser's installation menu, or Add to Home Screen on iPhone. After one successful online load, both public sites have an offline workspace with device-saved applications/preferences and calendar/backup export. Offline access does not refresh jobs or send Telegram notifications. The private dashboard is deliberately excluded from service-worker caching.
+
+### Device storage and server storage
+
+Public sites store their workspace locally in that browser origin (`myjob.career.v1`). Separate sites/devices do not automatically share this data. **Export backup** and **Import backup** transfer it: importing replaces preferences/alert settings and merges applications by normalized job URL. Backups include private notes; keep them private. Resume text and credentials are never included.
+
+The authenticated dashboard stores state and delivery receipts in SQLite. Set `CAREER_DB_FILE` to a **persistent writable volume path**, for example `/data/career_workspace.sqlite3`. It defaults to `career_workspace.sqlite3` in the process working directory and is ignored by Git along with SQLite journals and the delivery lock. Back up the SQLite database with SQLite's backup API (or stop the process before copying it); preserve it across deploys. A revision check rejects concurrent stale edits rather than silently overwriting them. If saving fails, the UI reports the error and leaves the form available to retry.
+
+The **continuous bot** checks career notifications every minute while unpaused. Enable delivery only in the authenticated dashboard; public/offline settings alone do not schedule a server. This new digest/reminder schedule is separate from existing radar/channel campaigns and existing walk-in reminders; its quiet hours apply only to career notifications. `/pause` pauses the new worker as well. GitHub's ephemeral scheduled runner does not send these private tracker notifications or commit this database. Keep one continuously running notifier against the same persistent database. Receipts are saved only after successful Telegram sends; failures retry. A process crash between a successful send and receipt commit may duplicate that message on restart.
+
+### Workspace development
+
+Shared browser sources live in `docs/career/`. Run `npm --prefix tn-live-jobs run sync:career` after changing them or the public manifest/offline shell. This copies assets into the independently deployed Node board and versions the service-worker cache. Do not edit those generated copies independently. The Node suite checks source/copy equality. Existing static Pages deployment already includes these files.
+
+```sh
+python -m unittest test_job_discovery test_careerops_integration test_dashboard test_career_workspace -v
+npm --prefix tn-live-jobs test
+```
+
+No extra provider, API key or JavaScript framework is required. Browser reminders are calendar downloads and in-app due-date indicators, not background push notifications. The Linux production service uses a file lock to serialize local notifier processes. Health observations report their timestamps rather than claiming continuous integration availability.

@@ -105,3 +105,10 @@ tn-live-jobs/work/
 # Local Python virtual environments
 .venv/
 .venv-applier/
+
+# Private career preferences, notes and notification receipts
+career_workspace.sqlite3*
+!docs/career/icon-192.png
+!docs/career/icon-512.png
+!tn-live-jobs/public/career/icon-192.png
+!tn-live-jobs/public/career/icon-512.png

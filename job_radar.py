@@ -1299,6 +1299,9 @@ scrape_jobspy_multi_portal = scrape_linkedin_indeed
 
 def send_radar_telegram(new_jobs):
     """Sends consolidated Telegram messages with Tamil Nadu opportunities prioritized at the top."""
+    from career_service import expired, normalize, UTC
+    new_jobs = [job for job in new_jobs if not expired(normalize(job), datetime.now(UTC))]
+
     try:
         import telebot
         
@@ -2329,6 +2332,8 @@ def dispatch_tamil_nadu_alerts(bot=None, chat_id=None, limit=8, force_refresh=Fa
 
     # Fetch wider pool (up to 50 jobs) so unseen filtering finds fresh opportunities across multiple sweeps
     jobs = get_tamil_nadu_jobs(limit=50 if only_unseen else limit, force_refresh=force_refresh)
+    from career_service import expired, normalize, UTC
+    jobs = [job for job in jobs if not expired(normalize(job), datetime.now(UTC))]
 
     if only_unseen:
         seen_links = set(load_seen_jobs())
