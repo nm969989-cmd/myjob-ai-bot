@@ -15,6 +15,9 @@
   "dependencies": {
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "firebase": "^13.0.0",
+    "nodemailer": "^10.1.0",
+    "pdf-lib": "^1.17.1"
   }
 }

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "receipt-1791659874471",
+    "refId": "APP-TN-TEST-001",
+    "messageId": "<cd9294a3-d6fb-98a7-239d-f08a6105d3d4@myjob-radar.tn.gov.in>",
+    "to": "manojprofessional007@gmail.com",
+    "candidateName": "Manoj",
+    "role": "Full Stack Engineer",
+    "company": "Zoho Corporation",
+    "location": "Chennai, Tamil Nadu",
+    "jobUrl": "https://careers.zohocorp.com",
+    "status": "VERIFIED & SUBMITTED",
+    "timestamp": "2026-10-10T19:17:54.471Z",
+    "timeFormatted": "Sunday, 11 October 2026 at 12:47:49 am",
+    "previewUrl": "https://ethereal.email/message/asqPXkYSGgV8XIowasqPYlz99noLdm0aAAAAAZcY-xRb7w7uSf7tejq7Fdo",
+    "isTest": true
+  },
+  {
+    "id": "receipt-1791623399148",
+    "refId": "APP-TN-88291",
+    "messageId": "<3a3b1693-48cc-985d-1447-32ccea43ec2f@myjob-radar.tn.gov.in>",
+    "to": "manojprofessional007@gmail.com",
+    "candidateName": "Manoj",
+    "role": "Junior Software Engineer",
+    "company": "Zoho Corporation",
+    "location": "Chennai, Tamil Nadu",
+    "jobUrl": "https://www.zoho.com/careers/",
+    "status": "VERIFIED & SUBMITTED",
+    "timestamp": "2026-10-10T09:09:59.148Z",
+    "timeFormatted": "Saturday, 10 October 2026 at 2:39:54 pm",
+    "previewUrl": "https://ethereal.email/message/asoA40YSGgV8TTAlasoA5p0L.yTpAw4sAAAAARD3oTEmdq6OMR1ScVvb0AE",
+    "isTest": true
+  }
+]

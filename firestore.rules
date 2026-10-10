@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function isValidLinkedInJob(data) {
+      return data.keys().hasAll(['title', 'company', 'location', 'apply_url', 'source']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 300 &&
+             data.company is string && data.company.size() > 0 && data.company.size() <= 200 &&
+             data.location is string && data.location.size() > 0 && data.location.size() <= 200 &&
+             data.apply_url is string && data.apply_url.size() > 0 && data.apply_url.size() <= 1000 &&
+             data.source is string && data.source.size() <= 100;
+    }
+
+    // Default deny for all unspecified collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Publicly accessible Tamil Nadu LinkedIn job listings
+    match /linkedin_jobs/{jobId} {
+      allow read: if true;
+      allow create, update: if isValidId(jobId) && isValidLinkedInJob(request.resource.data);
+      allow delete: if false;
+    }
+  }
+}

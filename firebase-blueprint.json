@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "LinkedInJob": {
+      "title": "LinkedInJob",
+      "description": "Scraped LinkedIn job posting in Tamil Nadu",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Document ID"
+        },
+        "jobId": {
+          "type": "string",
+          "description": "LinkedIn internal job posting ID"
+        },
+        "title": {
+          "type": "string",
+          "description": "Job title"
+        },
+        "company": {
+          "type": "string",
+          "description": "Hiring company name"
+        },
+        "location": {
+          "type": "string",
+          "description": "Job location description"
+        },
+        "city": {
+          "type": "string",
+          "description": "City in Tamil Nadu"
+        },
+        "state": {
+          "type": "string",
+          "description": "State name (Tamil Nadu)"
+        },
+        "apply_url": {
+          "type": "string",
+          "description": "URL to view or apply for the job"
+        },
+        "link": {
+          "type": "string",
+          "description": "Canonical job URL"
+        },
+        "posted_date": {
+          "type": "string",
+          "description": "Date or relative date posted"
+        },
+        "source": {
+          "type": "string",
+          "description": "Data source (LinkedIn)"
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Verification status flag"
+        },
+        "scraped_at": {
+          "type": "string",
+          "description": "ISO timestamp when scraped"
+        }
+      },
+      "required": [
+        "title",
+        "company",
+        "location",
+        "apply_url",
+        "source"
+      ]
+    }
+  },
+  "firestore": {
+    "/linkedin_jobs/{jobId}": {
+      "schema": "LinkedInJob",
+      "description": "Collection of Tamil Nadu LinkedIn job postings"
+    }
+  }
+}

@@ -80,6 +80,17 @@
 
 <div class="relative z-10 max-w-6xl mx-auto px-4 py-8">
 
+  <!-- 🔙 BREADCRUMB / TOP NAVIGATION BACK BUTTON -->
+  <div class="mb-4 flex items-center justify-between">
+    <a href="/" onclick="navigateToMainBoard(event)" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-white/10 hover:border-cyan-400/50 text-xs font-bold transition-all shadow-md group">
+      <span class="group-hover:-translate-x-0.5 transition-transform text-cyan-400">←</span> Back to Main Job Board
+    </a>
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span class="text-xs text-gray-400 font-mono">MyJob Autonomous Radar Console</span>
+    </div>
+  </div>
+
   <!-- ENHANCED PRO TOP BAR -->
   <header id="command-center" tabindex="-1" class="pro-card rounded-3xl p-8 mb-8 flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 mix-blend-overlay"></div>
@@ -100,7 +111,11 @@
     </div>
     
     <div class="relative z-10 mt-6 md:mt-0 flex flex-col items-center md:items-end gap-4">
-      <div class="flex gap-4">
+      <div class="flex items-center gap-3 flex-wrap justify-center">
+        <!-- Prominent Back Button -->
+        <a href="/" onclick="navigateToMainBoard(event)" class="pro-btn bg-slate-800/90 hover:bg-slate-700/90 border border-white/20 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-lg hover:border-cyan-400">
+          ← Back to Board
+        </a>
         <a href="https://t.me/" target="_blank" class="pro-btn bg-gradient-to-r from-blue-600 to-blue-500 border border-blue-400/50 text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.4)]">
           ✈️ Open Telegram
         </a>
@@ -601,22 +616,27 @@
   // Load radar results on page load
   async function loadRadar() {
     try {
-      const res  = await adminFetch('api/radar');
+      const res  = await adminFetch('api/radar?format=object');
       const data = await res.json();
+      const jobsList = Array.isArray(data) ? data : (data.jobs || []);
+      const totalCount = data.total !== undefined ? data.total : jobsList.length;
+      const lastScan = data.last_scan || (jobsList.length > 0 ? 'Recently Synced' : 'Never');
+
       document.getElementById('radarStatus').textContent =
-        `Last scan: ${data.last_scan || 'Never'}  •  ${data.total || 0} new jobs found`;
+        `Last scan: ${lastScan}  •  ${totalCount} new jobs found`;
 
       const container = document.getElementById('radarJobList');
-      if (!data.jobs || data.jobs.length === 0) {
+      if (!jobsList || jobsList.length === 0) {
         container.innerHTML = '<div class="text-center text-gray-500 text-xs py-4">No new jobs found yet. Click "Scan Now" to start!</div>';
         return;
       }
 
       // Group by source
       const grouped = {};
-      data.jobs.forEach(j => {
-        if (!grouped[j.source]) grouped[j.source] = [];
-        grouped[j.source].push(j);
+      jobsList.forEach(j => {
+        const src = j.source || 'Tamil Nadu Live Radar';
+        if (!grouped[src]) grouped[src] = [];
+        grouped[src].push(j);
       });
 
       const timeAgo = (dateStr) => {
@@ -645,23 +665,28 @@
         html += `<h3 class="text-xs font-bold mb-2 uppercase tracking-widest" style="color:#f59e0b">${src}</h3>`;
         html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-2">`;
         jobs.forEach(j => {
+          const title = j.title || j.role || 'Software Vacancy';
           const displayDate = timeAgo(j.date_posted);
           const descSnippet = j.description ? `<div class="text-gray-500 text-[9px] mt-1.5 line-clamp-2 italic leading-tight border-l-2 border-white/10 pl-2">${j.description}</div>` : '';
+          const targetLink = j.link || j.apply_url || '#';
           html += `
-            <a href="${j.link}" target="_blank" class="block p-3 rounded-xl border transition-all hover:scale-[1.02] hover:border-yellow-500/50 relative overflow-hidden"
+            <a href="${targetLink}" target="_blank" rel="noopener noreferrer" class="block p-3 rounded-xl border transition-all hover:scale-[1.02] hover:border-yellow-500/50 relative overflow-hidden"
                style="background:rgba(245,158,11,0.05);border-color:rgba(245,158,11,0.15)">
-              <div class="font-bold text-xs text-yellow-300 truncate pr-6">${j.title}</div>
+              <div class="font-bold text-xs text-yellow-300 truncate pr-6">${title}</div>
               <div class="text-gray-400 text-[10px] mt-1 font-semibold truncate">🏢 ${j.company}</div>
               <div class="text-gray-400 text-[10px] mt-0.5 truncate">📍 ${j.location}  •  🗓️ ${displayDate}</div>
               ${descSnippet}
-              <div class="mt-2 text-[10px] font-bold uppercase tracking-wide" style="color:#f59e0b">👆 Click to Apply Manually →</div>
+              <div class="mt-2 text-[10px] font-bold uppercase tracking-wide flex items-center justify-between" style="color:#f59e0b">
+                <span>👆 Click to View & Apply</span>
+                <span class="text-xs">↗</span>
+              </div>
             </a>`;
         });
         html += `</div></div>`;
       }
       container.innerHTML = html;
     } catch(e) {
-      document.getElementById('radarJobList').innerHTML = '<div class="text-red-400 text-xs">Failed to load radar data.</div>';
+      document.getElementById('radarJobList').innerHTML = '<div class="text-red-400 text-xs">Failed to load radar data. Click "Scan Now" to refresh.</div>';
     }
   }
 
@@ -672,12 +697,14 @@
     btn.disabled = true;
     try {
       const res  = await adminFetch('api/run_radar', {method: 'POST'});
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
-      status.textContent = '✅ ' + data.message;
+      status.textContent = '✅ ' + (data.message || 'Scan completed successfully!');
       status.style.color = '#4ade80';
-      setTimeout(loadRadar, 65000); // Reload results after ~1 min
+      await loadRadar(); // Reload results immediately
     } catch(e) {
-      status.textContent = '❌ Scan failed';
+      status.textContent = '❌ Scan failed: ' + (e.message || 'Server error');
+      status.style.color = '#f87171';
     }
     btn.textContent = '🚀 Scan Now';
     btn.disabled = false;
@@ -933,6 +960,17 @@
       statusEl.textContent = '❌ Error launching engine'; 
       logToConsole('FATAL: Engine failed to launch!', 'error');
     }
+  }
+
+  function navigateToMainBoard(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    try {
+      if (window.top && window.top !== window) {
+        window.top.location.href = '/';
+        return;
+      }
+    } catch (_) {}
+    window.location.href = '/';
   }
 </script>
 </body>
