@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-09T04:13:15.900Z",
-  "finished_at": "2026-10-09T04:18:06.349Z",
-  "duration_seconds": 156,
-  "validate_seconds": 134,
+  "started_at": "2026-10-11T02:24:00.206Z",
+  "finished_at": "2026-10-11T02:28:50.271Z",
+  "duration_seconds": 159,
+  "validate_seconds": 131,
   "trigger": "GitHub Actions (push)",
   "keywords": [
     "software developer",
@@ -39,21 +39,38 @@
     "Sivakasi",
     "Kumbakonam",
     "Neyveli",
+    "Namakkal",
+    "Dharmapuri",
+    "Krishnagiri",
+    "Tiruvallur",
+    "Tirupattur",
+    "Villupuram",
+    "Kallakurichi",
+    "Tenkasi",
+    "Theni",
+    "Ramanathapuram",
+    "Sivagangai",
+    "Pudukkottai",
+    "Perambalur",
+    "Ariyalur",
+    "Nagapattinam",
+    "Tiruvarur",
+    "Nilgiris",
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 123,
-  "new_jobs": 35,
-  "removed_jobs": 32,
+  "verified_jobs": 124,
+  "new_jobs": 45,
+  "removed_jobs": 45,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 123,
+    "live": 124,
     "loginRequired": 1,
-    "dead": 25,
+    "dead": 24,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 8,
+    "documents": 15,
     "unreachable": 0
   },
   "source_status": [
@@ -62,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "14 opening(s) in Tamil Nadu"
+      "detail": "15 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -83,7 +100,28 @@
       "label": "Coimbatore District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Coimbatore District portal"
+      "detail": "2 notice(s) on Coimbatore District portal"
+    },
+    {
+      "id": "cuddalore.nic.in",
+      "label": "cuddalore.nic.in",
+      "tier": 1,
+      "status": "no_listings",
+      "detail": "0 notice(s) on Cuddalore District portal"
+    },
+    {
+      "id": "dindigul.nic.in",
+      "label": "dindigul.nic.in",
+      "tier": 1,
+      "status": "ok",
+      "detail": "1 notice(s) on Dindigul District portal"
+    },
+    {
+      "id": "erode.nic.in",
+      "label": "erode.nic.in",
+      "tier": 1,
+      "status": "ok",
+      "detail": "1 notice(s) on Erode District portal"
     },
     {
       "id": "freshersworld.com",
@@ -114,18 +152,39 @@
       "detail": "1 job(s)"
     },
     {
+      "id": "kanchipuram.nic.in",
+      "label": "kanchipuram.nic.in",
+      "tier": 1,
+      "status": "unreachable",
+      "detail": "fetch failed for https://kanchipuram.nic.in/notice_category/recruitment/: fetch failed"
+    },
+    {
+      "id": "kanyakumari.nic.in",
+      "label": "kanyakumari.nic.in",
+      "tier": 1,
+      "status": "unreachable",
+      "detail": "fetch failed for https://kanyakumari.nic.in/notice_category/recruitment/: fetch failed"
+    },
+    {
+      "id": "karur.nic.in",
+      "label": "karur.nic.in",
+      "tier": 1,
+      "status": "ok",
+      "detail": "2 notice(s) on Karur District portal"
+    },
+    {
       "id": "kyndryl.com",
       "label": "kyndryl.com",
       "tier": 1,
       "status": "ok",
-      "detail": "7 opening(s) in Tamil Nadu"
+      "detail": "6 opening(s) in Tamil Nadu"
     },
     {
       "id": "madurai.nic.in",
       "label": "Madurai District Collectorate",
       "tier": 1,
-      "status": "ok",
-      "detail": "4 notice(s) on Madurai District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Madurai District portal"
     },
     {
       "id": "paypal.com",
@@ -139,7 +198,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "35 opening(s) in Tamil Nadu"
+      "detail": "30 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -156,11 +215,32 @@
       "detail": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
     },
     {
+      "id": "thanjavur.nic.in",
+      "label": "thanjavur.nic.in",
+      "tier": 1,
+      "status": "ok",
+      "detail": "3 notice(s) on Thanjavur District portal"
+    },
+    {
+      "id": "thoothukudi.nic.in",
+      "label": "thoothukudi.nic.in",
+      "tier": 1,
+      "status": "ok",
+      "detail": "1 notice(s) on Thoothukudi District portal"
+    },
+    {
       "id": "tirunelveli.nic.in",
       "label": "Tirunelveli District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Tirunelveli District portal"
+      "detail": "3 notice(s) on Tirunelveli District portal"
+    },
+    {
+      "id": "tiruppur.nic.in",
+      "label": "tiruppur.nic.in",
+      "tier": 1,
+      "status": "no_listings",
+      "detail": "0 notice(s) on Tiruppur District portal"
     },
     {
       "id": "tnvelaivaaippu.gov.in",
@@ -205,6 +285,13 @@
       "detail": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed"
     },
     {
+      "id": "vellore.nic.in",
+      "label": "vellore.nic.in",
+      "tier": 1,
+      "status": "ok",
+      "detail": "1 notice(s) on Vellore District portal"
+    },
+    {
       "id": "wipro.com",
       "label": "Wipro",
       "tier": 1,
@@ -223,7 +310,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "155 job(s) from 9 category page(s)"
+      "detail": "173 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -237,7 +324,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "155 job(s) from 9 search request(s)"
+      "detail": "152 job(s) from 9 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -248,21 +335,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 8,
+    "govt-tn": 15,
     "company-careers": 3,
-    "tech-ats": 79,
+    "tech-ats": 74,
     "naukri": 0,
-    "apna": 155,
+    "apna": 173,
     "indeed": 0,
-    "linkedin": 155
+    "linkedin": 152
   },
   "dead_domains": {
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 118
+  "dropped_records": 144
 }
