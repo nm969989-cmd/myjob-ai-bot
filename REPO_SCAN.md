@@ -205,7 +205,7 @@ dispatched during this scan._
 | --- | --- | --- |
 | C1 `cloud_runner.py` missing | Reconstructed `cloud_runner.py` (single bounded cycle, exit codes 0/1/2, regional digest before channel scans, nonfatal per-channel notes, follow-up suppression) | `test_cloud_runner.py` 6 pass; AST ordering test passes |
 | H1 `package-lock.json` missing | Generated `tn-live-jobs/package-lock.json` (lockfileVersion 3, cheerio + playwright) | `npm ci` succeeds; 30 Node tests pass |
-| H2 `verify.yml` missing | Added `.github/workflows/verify.yml` (Python offline, Playwright browser, Node jobs; `pull_request`; secret-free; installs PyYAML) | `test_workflows.py` 5 pass, 1 skip |
+| H2 `verify.yml` missing | Added `.github/workflows/verify.yml` (Python offline, Playwright browser, Node jobs; `pull_request`; secret-free; installs PyYAML). **Present locally but could not be pushed** - the sandbox GitHub App token lacks the `workflow` scope (see note) | `test_workflows.py` 5 pass, 1 skip locally |
 | H3 `engineering_app.py` missing | Added `engineering_app.py` - reuses `main.bot`/`main.app`/`main.thread_supervisor`, installs engineering handlers, one scan thread, no second poller | `py_compile` clean |
 | M1 no `.gitignore` | Added `.gitignore` (Python/Node caches, secrets, private state, runtime dedup state) | workflow's non-force `git add` paths confirmed not ignored |
 | M2 committed `__pycache__` | Untracked `__pycache__/` (`git rm -r --cached`) and ignored it | 0 tracked `.pyc` |
@@ -235,6 +235,11 @@ node --test tn-live-jobs/test_priority_cities.js tn-live-jobs/test_client.js
   Firebase keys are not secrets but the project should rely on `firestore.rules`.
 - **Deployment:** enabling GitHub Pages and pointing the Hugging Face Space at
   the Docker entrypoint are still repository-settings actions, not code changes.
+- **Workflow scope:** the connected GitHub App cannot create/update files under
+  `.github/workflows/` (git push is rejected and the Contents API returns 403).
+  `verify.yml` therefore exists in the working tree but not on the pushed branch.
+  Someone with `workflow` scope must commit it (e.g. paste it through the GitHub
+  web UI). Until then `test_workflows.py` fails on a clean clone of the branch.
 - `cloud_runner.py` and `engineering_app.py` were reconstructed from their
   tests, docs and call sites; they were never exercised against live Telegram or
   live job sources here.
