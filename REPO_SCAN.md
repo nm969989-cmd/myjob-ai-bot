@@ -66,6 +66,19 @@ lockfile is missing (see finding H1).
 Combined `pytest test_careerops_integration.py test_job_discovery.py test_dashboard.py test_cloud_runner.py -q`:
 **1 failed, 51 passed, 6 errors.**
 
+Full offline run (all test files except the browser suite):
+**3 failed, 77 passed, 1 skipped, 6 errors.** Every failure traces to a missing
+file, not to a code defect:
+
+- `cloud_runner.py` missing -> 6 errors in `test_cloud_runner.py` +
+  1 failure in `test_job_discovery.py::test_cloud_priority_search_precedes_channel_scraping`.
+- `.github/workflows/verify.yml` missing -> 2 failures in `test_workflows.py`.
+
+Syntax/import health is otherwise clean: `python -m py_compile` over all tracked
+`.py` files and `node --check` over all tracked `.js` files produce no errors,
+and every existing Python module imports successfully. The only import errors
+are the two absent modules (`cloud_runner`, `engineering_app`).
+
 ## 4. Findings
 
 ### Critical
