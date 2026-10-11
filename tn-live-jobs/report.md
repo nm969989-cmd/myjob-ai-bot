@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-11T11:31:24.684Z
-- **Finished:** 2026-10-11T11:36:09.719Z
-- **Duration:** 159 s
+- **Started:** 2026-10-11T18:18:27.742Z
+- **Finished:** 2026-10-11T18:23:11.019Z
+- **Duration:** 158 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 122** (kept this run: 150, new: 24, gone since last run: 24)
+- **Live verified jobs: 118** (kept this run: 150, new: 36, gone since last run: 36)
 
 ## Results per source
 
@@ -28,7 +28,7 @@
 | kyndryl.com | 1 | :white_check_mark: ok | 6 | 0 | 6 opening(s) in Tamil Nadu |
 | Madurai District Collectorate | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Madurai District portal |
 | paypal.com | 1 | :white_check_mark: ok | 1 | 0 | 1 opening(s) in Tamil Nadu |
-| Robert Bosch India | 1 | :white_check_mark: ok | 4 | 26 | 30 opening(s) in Tamil Nadu |
+| Robert Bosch India | 1 | :white_check_mark: ok | 10 | 26 | 36 opening(s) in Tamil Nadu |
 | Salem District Collectorate | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Salem District portal |
 | Tata Consultancy Services | 1 | :x: blocked | 0 | 0 | fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed |
 | thanjavur.nic.in | 1 | :white_check_mark: ok | 0 | 3 | 3 notice(s) on Thanjavur District portal |
@@ -46,7 +46,7 @@
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
 | apna.co | 2 | :white_check_mark: ok | 88 | 44 | 173 job(s) from 9 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 15 | 44 | 153 job(s) from 9 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 32 | 44 | 167 job(s) from 10 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -56,72 +56,80 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 122 |
+| :white_check_mark: Verified live | 118 |
 | Government documents verified | 15 |
 | Login required (kept, not published) | 1 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 26 |
+| Dead link (HTTP 4xx/5xx) | 30 |
 | Could not be reached | 0 |
 
-## New this run (24)
+## New this run (36)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Sr Java Developer – Contract Role | Heurova Technologies | Tamil Nadu | Software | no (http_429) | https://in.linkedin.com/jobs/view/sr-java-developer-%E2%80%93-contract-role-4474237844 |
-| Medical Coding Jobs for Bioinfomatics Graduates | Achievers Spot | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-bioinfomatics-graduates-at-achievers-spot-4470087640 |
-| Medical Coding Jobs for Bioinformatics Graduates | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-bioinformatics-graduates-at-achievers-spot-4464853891 |
-| Wanted Biotechnology engineer for Medical Coding Jobs | Achievers Spot | Vellore | Other | yes | https://in.linkedin.com/jobs/view/wanted-biotechnology-engineer-for-medical-coding-jobs-at-achievers-spot-4463226710 |
-| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Vellore | Software | yes | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
-| Manager Manufacturing Execution Systems | Ivy cornersearch | Vellore | Engineering & Manufacturing | yes | https://in.linkedin.com/jobs/view/manager-manufacturing-execution-systems-4475607529 |
-| SAP CPI Principal Architect | NTT DATA North America | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/sap-cpi-principal-architect-at-ntt-data-north-america-4411617572 |
-| Medical Coding Jobs for Bioinfomatics Graduates | Achievers Spot | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-bioinfomatics-graduates-at-achievers-spot-4470075930 |
-| Relationship Associate | Niva Bupa Health Insurance | Vellore | Other | yes | https://in.linkedin.com/jobs/view/relationship-associate-at-niva-bupa-health-insurance-3891964008 |
-| Rebar Detailers – US Projects | Pro Ultima | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/rebar-detailers-%E2%80%93-us-projects-4471328509 |
-| Junior Architect | Grid Studio | Vellore | Other | yes | https://in.linkedin.com/jobs/view/junior-architect-at-grid-studio-4473410076 |
-| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Vellore | Sales & Marketing | no (http_429) | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4462687056 |
-| Client & Expert Engagement Specialist | Frost & Sullivan | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/client-expert-engagement-specialist-at-frost-sullivan-4467544812 |
-| Medical Coding Fresher jobs | Achievers Spot | Vellore | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-fresher-jobs-at-achievers-spot-4459478876 |
-| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Ranipet | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4471521686 |
-| Sales Executive - Prayaan Capital - Vellore | VIHU | Vellore | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/sales-executive-prayaan-capital-vellore-at-vihu-4462260023 |
-| Digital Media Designer & Video Editor | XenAI Tech | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/digital-media-designer-video-editor-at-xenai-tech-4448125246 |
-| SEO / SEM Developer (Fresher) | XenAI Tech | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/seo-sem-developer-fresher-at-xenai-tech-4448127228 |
-| Relationship Associate | Niva Bupa Health Insurance | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/relationship-associate-at-niva-bupa-health-insurance-3891964009 |
-| FOS - Digital Sales | IndBank Global Support Services Li… | Puducherry | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/fos-digital-sales-at-indbank-global-support-services-limited-4470907646 |
-| Junior Architect | Nurall | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/junior-architect-at-nurall-4464541152 |
-| Medical Coding Trainee | Achievers Spot | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/medical-coding-trainee-at-achievers-spot-4477206253 |
-| Medical Coding Fresher jobs | Achievers Spot | Cuddalore | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-fresher-jobs-at-achievers-spot-4426212896 |
-| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Puducherry | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4462671153 |
+| Hardware Lead responsible for end-to-end series hardware ow… | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154886378 |
+| Senior Software Developer – .NET / Full-Stack Applications … | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154886288 |
+| Senior Hardware Functional Safety Engineer – Braking Systems | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154886248 |
+| Senior Hardware Module Developer – Braking Systems | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154886148 |
+| Senior Mechanical Design Engineer - Steering Systems | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154886068 |
+| Senior Mechanical Design Engineer - Steering Systems | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154886028 |
+| Senior Hardware Design Engineer – Braking Systems | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154885918 |
+| Senior Hardware Design Engineer – Braking Systems | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154885878 |
+| Senior Mechanical Design Engineer - Steering Systems | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154885838 |
+| Senior Hardware Design Engineer – Braking Systems | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000154885728 |
+| Collection Associate | HDB Financial Services Limited | Trichy | Other | no (http_481) | https://apna.co/job/trichy-region/collection-associate-650600597 |
+| Vacancy for Bioinfomatics and Biochemistry Graduates for Me… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-bioinfomatics-and-biochemistry-graduates-for-medical-coding-at-achievers-spot-4460952382 |
+| Interesting Job Opportunity: QX Impact - Lead Data Analyst | QX Impact | Vellore | Data & Analytics | yes | https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022 |
+| Oracle HCM Consultant | Altraize | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/oracle-hcm-consultant-at-altraize-4462920900 |
+| Jobs for Bioinfomatics and Biochemistry Graduates for Medic… | Achievers Spot | Villupuram | Other | yes | https://in.linkedin.com/jobs/view/jobs-for-bioinfomatics-and-biochemistry-graduates-for-medical-coding-at-achievers-spot-4463311511 |
+| Senior Developer - Microsoft .NET | Nokia | Tamil Nadu | Software | no (http_429) | https://in.linkedin.com/jobs/view/senior-developer-microsoft-net-at-nokia-4477140089 |
+| Developer III - Software Engineering - Angular | UST | Chennai | Software | yes | https://in.linkedin.com/jobs/view/developer-iii-software-engineering-angular-at-ust-4464773845 |
+| Sr. Software Engineer (Python) | BigThinkCode | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/sr-software-engineer-python-at-bigthinkcode-4339895870 |
+| Full Stack Developer-Angular | UST | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/full-stack-developer-angular-at-ust-4457234516 |
+| Fullstack Java With Angular-Software Engineer II | Deloitte | Chennai | Software | yes | https://in.linkedin.com/jobs/view/fullstack-java-with-angular-software-engineer-ii-at-deloitte-4424676269 |
+| Senior .NET Developer | TVS Next | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-net-developer-at-tvs-next-4475422913 |
+| Senior Developer | IDFC FIRST Bank | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-developer-at-idfc-first-bank-4448561376 |
+| Sr Python Developer | TransUnion | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/sr-python-developer-at-transunion-4477148052 |
+| Intermediate Software Engineer – Java Full Stack | Citi | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/intermediate-software-engineer-%E2%80%93-java-full-stack-at-citi-4474624831 |
+| Senior Software Engineer (Dot.Net Core, C#) | Viasat | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-software-engineer-dot-net-core-c%23-at-viasat-4435837027 |
+| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4462685110 |
+| Opening for Bsc Biology, Msc Biology, Botany, Zoology Gradu… | Achievers Spot | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/opening-for-bsc-biology-msc-biology-botany-zoology-graduates-at-achievers-spot-4476899498 |
+| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Tamil Nadu | Sales & Marketing | no (http_429) | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4471528380 |
+| Opening for Nutrition and Dietetics and Food Technology Gra… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/opening-for-nutrition-and-dietetics-and-food-technology-graduates-at-achievers-spot-4464840912 |
+| Sales And Marketing Specialist | Manjula Motocorp Pvt. Ltd. — Autho… | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/sales-and-marketing-specialist-4471254829 |
 
-## Gone since last run (24)
+_(showing the first 30 of 36)_
 
-- Opening for Bsc Biology, Msc Biology, Botany, Zoology Graduates (Achievers Spot)
-- Sales Intern (IZIVAR)
-- Senior Developer (IDFC FIRST Bank)
-- Senior Developer - Microsoft .NET (Nokia)
-- Sr Python Developer (TransUnion)
-- Full Stack Developer-Angular (UST)
-- Voluntee (French Sport & Event Association - Abu …)
-- Relationship Manager (MII Finserv)
-- Senior .NET Developer (TVS Next)
-- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
-- Developer III - Software Engineering - Angular (UST)
-- Intermediate Software Engineer – Java Full Stack (Citi)
-- Primary Teacher (SIR MUTHA SCHOOL)
-- Vacancy for Bsc Chemistry, Msc Chemistry, Organic and Inorganic Chemi… (Achievers Spot)
-- Sales And Marketing Specialist (Manjula Motocorp Pvt. Ltd. — Authorized…)
+## Gone since last run (36)
+
+- Medical Coding Trainee (Achievers Spot)
+- Voluntee (Abu Dhabi & Dubai properties)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- SAP CPI Principal Architect (NTT DATA North America)
+- Junior Architect (Grid Studio)
+- Medical Coding Jobs for Bioinfomatics Graduates (Achievers Spot)
+- FOS - Digital Sales (IndBank Global Support Services Limited)
+- Client & Expert Engagement Specialist (Frost & Sullivan)
+- Medical Coding Jobs for Bioinformatics Graduates (Achievers Spot)
+- Junior Architect (Nurall)
+- Wanted Biotechnology engineer for Medical Coding Jobs (Achievers Spot)
+- Sales Executive - Prayaan Capital - Vellore (VIHU)
 - Deputy Relationship Manager LAP (AU SMALL FINANCE BANK)
-- Fullstack Java With Angular-Software Engineer II (Deloitte)
-- Oracle HCM Consultant (Altraize)
-- Vacancy for Bioinfomatics and Biochemistry Graduates for Medical Codi… (Achievers Spot)
-- Senior Software Engineer (Dot.Net Core, C#) (Viasat)
+- Deputy Relationship Manager LAP (AU SMALL FINANCE BANK)
+- Deputy Relationship Manager LAP (AU SMALL FINANCE BANK)
+- Medical Coding Fresher jobs (Achievers Spot)
+- Wanted Biomedical and Biotechnology Engineering Graduates (Achievers Spot)
+- SEO / SEM Developer (Fresher) (XenAI Tech)
+- Digital Media Designer & Video Editor (XenAI Tech)
+- Relationship Associate (Niva Bupa Health Insurance)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 133 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 156 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
