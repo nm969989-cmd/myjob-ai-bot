@@ -199,3 +199,46 @@ the applier sometimes records non-jobs as "Applied".
 _No application was submitted, no Telegram message sent, and no workflow
 dispatched during this scan._
 
+## 7. Fixes applied
+
+| Finding | Fix | Verified |
+| --- | --- | --- |
+| C1 `cloud_runner.py` missing | Reconstructed `cloud_runner.py` (single bounded cycle, exit codes 0/1/2, regional digest before channel scans, nonfatal per-channel notes, follow-up suppression) | `test_cloud_runner.py` 6 pass; AST ordering test passes |
+| H1 `package-lock.json` missing | Generated `tn-live-jobs/package-lock.json` (lockfileVersion 3, cheerio + playwright) | `npm ci` succeeds; 30 Node tests pass |
+| H2 `verify.yml` missing | Added `.github/workflows/verify.yml` (Python offline, Playwright browser, Node jobs; `pull_request`; secret-free; installs PyYAML) | `test_workflows.py` 5 pass, 1 skip |
+| H3 `engineering_app.py` missing | Added `engineering_app.py` - reuses `main.bot`/`main.app`/`main.thread_supervisor`, installs engineering handlers, one scan thread, no second poller | `py_compile` clean |
+| M1 no `.gitignore` | Added `.gitignore` (Python/Node caches, secrets, private state, runtime dedup state) | workflow's non-force `git add` paths confirmed not ignored |
+| M2 committed `__pycache__` | Untracked `__pycache__/` (`git rm -r --cached`) and ignored it | 0 tracked `.pyc` |
+| M3 doc drift | Fixed `tn-live-jobs/README.md` references to the non-existent `tn-jobs.yml` / 6-hourly cron / Pages `publish` job | grep clean |
+| M4 no license | Added MIT `LICENSE` | present |
+| P1 committed PII | **Not auto-removed** - `profile.json` / `email_receipts.json` are live runtime data; deleting them is an owner decision (see below) | flagged |
+
+### Verification after fixes
+
+```
+pytest test_careerops_integration.py test_dashboard.py test_cloud_runner.py \
+       test_workflows.py test_public_sites.py test_engineering_telegram.py \
+       test_engineering_optimization.py test_job_discovery.py -q
+-> 86 passed, 1 skipped
+node --test tn-live-jobs/test_priority_cities.js tn-live-jobs/test_client.js
+-> 30 passed
+```
+
+### Still requires owner action
+
+- **P1 (privacy):** `profile.json` holds a real name, personal email and phone;
+  the same email appears in `email_receipts.json` and `applied_jobs_log.csv`.
+  These are runtime data the bot reads, so they were left intact rather than
+  silently replaced. Decide whether to scrub them or move them to private
+  configuration.
+- **P2 (Firebase):** `firebase-applet-config.json` remains committed. Web
+  Firebase keys are not secrets but the project should rely on `firestore.rules`.
+- **Deployment:** enabling GitHub Pages and pointing the Hugging Face Space at
+  the Docker entrypoint are still repository-settings actions, not code changes.
+- `cloud_runner.py` and `engineering_app.py` were reconstructed from their
+  tests, docs and call sites; they were never exercised against live Telegram or
+  live job sources here.
+
+_No application was submitted, no Telegram message sent, and no workflow
+dispatched while applying these fixes._
+

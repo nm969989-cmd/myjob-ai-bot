@@ -1,0 +1,29 @@
+# --- Python -----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# --- Node -------------------------------------------------------------------
+node_modules/
+tn-live-jobs/node_modules/
+tn-live-jobs/work/
+
+# --- Local secrets / private state (never commit) ---------------------------
+.env
+chat_id.json
+job_discovery_state.json
+*.log
+screenshots/
+
+# Runtime dedup state. These are intentionally committed by the cloud workflow
+# (it uses `git add -f`) so delivery markers survive between runs, but they must
+# never be picked up by a plain `git add .` in a working tree.
+applied_jobs.json
+applied_jobs_log.csv
+radar_seen_jobs.txt
+tn_jobs_cache.json
+channel_status.json
+last_job.json
+last_walkin_dispatch.json

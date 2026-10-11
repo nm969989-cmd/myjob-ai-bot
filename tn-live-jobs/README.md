@@ -63,12 +63,12 @@ Extra knobs (same names work in `env:` blocks in CI):
 1. Create an empty repo on GitHub called `tn-live-jobs`.
 2. Push this folder's content (see the commands below). Your live site will end up at
    `https://<your-github-username>.github.io/tn-live-jobs/`.
-3. **Actions tab →** the first run appears automatically (runs on push plus every 6 hours
-   via the `cron` in `.github/workflows/tn-jobs.yml`). To run by hand, open the
-   `TN Live Jobs` workflow and press **Run workflow**; you can type an optional
-   `query` and `city`.
+3. **Actions tab →** the first run appears automatically. The Node pipeline is
+   driven by the repository-root workflow `.github/workflows/job_bot.yml`
+   (`npm run scrape`), which runs on push and on a schedule. To run by hand,
+   open that workflow and press **Run workflow**.
 4. **Settings → Pages →** under *Build and deployment*, choose **GitHub Actions**.
-   (The workflow's `publish` job deploys `public/` via `actions/deploy-pages`.)
+   (The root `.github/workflows/static.yml` workflow deploys the static site.)
 5. Open `https://<your-github-username>.github.io/tn-live-jobs/` and check for job cards.
 
 ```powershell
@@ -119,7 +119,8 @@ git push -u origin main
 
 ## File map
 
-- `.github/workflows/tn-jobs.yml` — every-6-hours workflow + Pages deploy
+- Repository root `.github/workflows/job_bot.yml` — invokes `npm run scrape`
+  and the Python cloud cycle; `.github/workflows/static.yml` deploys Pages
 - `package.json` — Node 20, cheerio, playwright, `npm run *` scripts
 - `src/cli.js` — runs the five steps, or `serve` for local preview
 - `src/config.js` — cities, categories, keywords, limits
