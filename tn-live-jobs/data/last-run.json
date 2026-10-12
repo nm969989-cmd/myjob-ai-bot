@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-12T13:23:30.191Z",
-  "finished_at": "2026-10-12T13:28:16.029Z",
-  "duration_seconds": 157,
-  "validate_seconds": 129,
+  "started_at": "2026-10-12T21:49:19.278Z",
+  "finished_at": "2026-10-12T21:54:04.009Z",
+  "duration_seconds": 159,
+  "validate_seconds": 126,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 116,
-  "new_jobs": 26,
-  "removed_jobs": 26,
+  "verified_jobs": 121,
+  "new_jobs": 32,
+  "removed_jobs": 32,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 116,
+    "live": 121,
     "loginRequired": 1,
-    "dead": 32,
+    "dead": 27,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 15,
+    "documents": 14,
     "unreachable": 0
   },
   "source_status": [
@@ -113,8 +113,8 @@
       "id": "dindigul.nic.in",
       "label": "dindigul.nic.in",
       "tier": 1,
-      "status": "ok",
-      "detail": "1 notice(s) on Dindigul District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Dindigul District portal"
     },
     {
       "id": "erode.nic.in",
@@ -324,7 +324,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "155 job(s) from 9 search request(s)"
+      "detail": "168 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -335,13 +335,13 @@
     }
   ],
   "per_source": {
-    "govt-tn": 15,
+    "govt-tn": 14,
     "company-careers": 3,
     "tech-ats": 68,
     "naukri": 0,
     "apna": 152,
     "indeed": 0,
-    "linkedin": 155
+    "linkedin": 168
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -351,5 +351,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 119
+  "dropped_records": 110
 }
