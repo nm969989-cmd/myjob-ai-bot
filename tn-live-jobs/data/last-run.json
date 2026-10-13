@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-12T21:49:19.278Z",
-  "finished_at": "2026-10-12T21:54:04.009Z",
-  "duration_seconds": 159,
-  "validate_seconds": 126,
+  "started_at": "2026-10-13T12:51:52.195Z",
+  "finished_at": "2026-10-13T12:56:35.498Z",
+  "duration_seconds": 155,
+  "validate_seconds": 128,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -60,8 +60,8 @@
   ],
   "scraped_records": 150,
   "verified_jobs": 121,
-  "new_jobs": 32,
-  "removed_jobs": 32,
+  "new_jobs": 25,
+  "removed_jobs": 25,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
@@ -70,7 +70,7 @@
     "dead": 27,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 14,
+    "documents": 13,
     "unreachable": 0
   },
   "source_status": [
@@ -79,14 +79,21 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "13 opening(s) in Tamil Nadu"
+      "detail": "11 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
       "label": "Avery Dennison",
       "tier": 1,
       "status": "ok",
-      "detail": "4 opening(s) in Tamil Nadu"
+      "detail": "3 opening(s) in Tamil Nadu"
+    },
+    {
+      "id": "chennai.nic.in",
+      "label": "chennai.nic.in",
+      "tier": 1,
+      "status": "no_listings",
+      "detail": "0 notice(s) on Chennai District portal"
     },
     {
       "id": "cognizant.com",
@@ -191,21 +198,21 @@
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "2 opening(s) in Tamil Nadu"
+      "detail": "3 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "27 opening(s) in Tamil Nadu"
+      "detail": "26 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
       "label": "Salem District Collectorate",
       "tier": 1,
-      "status": "ok",
-      "detail": "1 notice(s) on Salem District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Salem District portal"
     },
     {
       "id": "tcs.com",
@@ -310,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "152 job(s) from 9 category page(s)"
+      "detail": "154 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -324,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "168 job(s) from 11 search request(s)"
+      "detail": "162 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -335,13 +342,13 @@
     }
   ],
   "per_source": {
-    "govt-tn": 14,
+    "govt-tn": 13,
     "company-careers": 3,
-    "tech-ats": 68,
+    "tech-ats": 65,
     "naukri": 0,
-    "apna": 152,
+    "apna": 154,
     "indeed": 0,
-    "linkedin": 168
+    "linkedin": 162
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -351,5 +358,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 110
+  "dropped_records": 113
 }
