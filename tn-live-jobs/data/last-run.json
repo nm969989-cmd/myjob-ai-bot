@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-14T18:07:45.236Z",
-  "finished_at": "2026-10-14T18:12:27.645Z",
-  "duration_seconds": 159,
-  "validate_seconds": 124,
+  "started_at": "2026-10-15T10:10:26.843Z",
+  "finished_at": "2026-10-15T10:15:07.747Z",
+  "duration_seconds": 158,
+  "validate_seconds": 123,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -60,15 +60,15 @@
   ],
   "scraped_records": 150,
   "verified_jobs": 118,
-  "new_jobs": 38,
-  "removed_jobs": 38,
-  "login_required": 2,
+  "new_jobs": 19,
+  "removed_jobs": 19,
+  "login_required": 1,
   "validate_stats": {
     "checked": 150,
     "live": 118,
-    "loginRequired": 2,
-    "dead": 27,
-    "noSignal": 3,
+    "loginRequired": 1,
+    "dead": 30,
+    "noSignal": 1,
     "redirected": 0,
     "documents": 15,
     "unreachable": 0
@@ -205,7 +205,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "19 opening(s) in Tamil Nadu"
+      "detail": "21 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "152 job(s) from 9 category page(s)"
+      "detail": "154 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "159 job(s) from 10 search request(s)"
+      "detail": "117 job(s) from 9 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,11 +344,11 @@
   "per_source": {
     "govt-tn": 15,
     "company-careers": 3,
-    "tech-ats": 58,
+    "tech-ats": 60,
     "naukri": 0,
-    "apna": 152,
+    "apna": 154,
     "indeed": 0,
-    "linkedin": 159
+    "linkedin": 117
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -358,5 +358,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 112
+  "dropped_records": 100
 }
