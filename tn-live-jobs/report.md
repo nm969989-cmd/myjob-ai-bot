@@ -1,17 +1,17 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-16T10:02:20.798Z
-- **Finished:** 2026-10-16T10:07:05.224Z
-- **Duration:** 157 s
+- **Started:** 2026-10-16T17:36:41.919Z
+- **Finished:** 2026-10-16T17:41:21.199Z
+- **Duration:** 156 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 120** (kept this run: 150, new: 27, gone since last run: 27)
+- **Live verified jobs: 120** (kept this run: 150, new: 16, gone since last run: 16)
 
 ## Results per source
 
 | Source | Tier | Status | Found | In this run | Note |
 | --- | --- | --- | --- | --- | --- |
-| astrazeneca.com | 1 | :white_check_mark: ok | 8 | 0 | 8 opening(s) in Tamil Nadu |
+| astrazeneca.com | 1 | :white_check_mark: ok | 11 | 0 | 11 opening(s) in Tamil Nadu |
 | Avery Dennison | 1 | :white_check_mark: ok | 0 | 5 | 5 opening(s) in Tamil Nadu |
 | chennai.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Chennai District portal |
 | Cognizant | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
@@ -45,9 +45,9 @@
 | vellore.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Vellore District portal |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 72 | 43 | 172 job(s) from 10 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 71 | 43 | 172 job(s) from 10 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 21 | 42 | 153 job(s) from 9 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 36 | 42 | 159 job(s) from 11 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -60,72 +60,57 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | :white_check_mark: Verified live | 120 |
 | Government documents verified | 19 |
 | Login required (kept, not published) | 1 |
-| Page did not look like a job (no_job_signal) | 4 |
+| Page did not look like a job (no_job_signal) | 2 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 25 |
+| Dead link (HTTP 4xx/5xx) | 27 |
 | Could not be reached | 0 |
 
-## New this run (27)
+## New this run (16)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Department of Child Welfare and Special Services – Recruitm… | Government of Tamil Nadu | Tiruppur | Government | yes | https://cdn.s3waas.gov.in/s3d1f255a373a3cef72e03aa9d980c7eca/uploads/2026/10/17921447004647.pdf |
-| District Climate Change Mission,Tiruppur -Technical Assista… | Government of Tamil Nadu | Tiruppur | Government | yes | https://cdn.s3waas.gov.in/s3d1f255a373a3cef72e03aa9d980c7eca/uploads/2026/10/17921275338864.pdf |
-| DCPU – Out Reach Worker – Post – Notification | Government of Tamil Nadu | Dindigul | Government | yes | https://cdn.s3waas.gov.in/s3f74909ace68e51891440e4da0b65a70c/uploads/2026/10/17921278468125.pdf |
-| Applications are invited from eligible candidates for the p… | Government of Tamil Nadu | Thoothukudi | Government | yes | https://cdn.s3waas.gov.in/s3019d385eb67632a7e958e23f24bd07d7/uploads/2026/10/17921379177766.pdf |
-| Software for HW Evaluation_Embedded_Engg_BSH | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000155946889 |
-| AI/ML Expert | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000155924839 |
-| Territory Sales Manager -Performance Tapes, South India | Avery Dennison | Chennai | Sales & Marketing | yes | https://jobs.smartrecruiters.com/AveryDennison/744000134598259 |
-| Relationship Manager | IndusInd Nippon Life Insurance (Re… | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai-region/relationship-manager-763701955 |
-| Senior Distribution Manager | Dhanalakshmi Havan Worldwide Priva… | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/senior-distribution-manager-292170275 |
-| Senior Associate | L B N & Associates Llp | Puducherry | Other | yes | https://apna.co/job/bengaluru-bangalore-region/senior-associate-715394009 |
-| Operation Manager | Protean Egov Technologies Limited | Puducherry | Other | yes | https://apna.co/job/puducherry/operation-manager-428275395 |
-| Finance Manager | eOrbitor Technologies | Chennai | Accounting & Finance | yes | https://apna.co/job/chennai-region/finance-manager-44771344 |
-| Software Testing Intern | IZIVAR | Tiruvannamalai | Software | yes | https://in.linkedin.com/jobs/view/software-testing-intern-at-izivar-4479209603 |
-| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4476748922 |
-| L6 – Supervisor – Software Developer | Wonder Worth Solutions | Vellore | Software | no (http_429) | https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4479021817 |
-| Consultant - CSD | Pelatro | Tamil Nadu | Other | yes | https://in.linkedin.com/jobs/view/consultant-csd-at-pelatro-4479348398 |
-| Flutter Developer | Zenzio India | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/flutter-developer-4479170480 |
-| MERN Stack Developer | Askan Technologies | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/mern-stack-developer-at-askan-technologies-4479161684 |
-| Backend Developer | Zenzio India | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/backend-developer-4479168563 |
-| React JS Developer JOBS | Askan Technologies | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/react-js-developer-jobs-at-askan-technologies-4479161693 |
-| Web Developer | Zenzio India | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/web-developer-4479175117 |
-| Intermediate Software Engineer – Java Full Stack | Citi | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/intermediate-software-engineer-%E2%80%93-java-full-stack-at-citi-4474624831 |
-| Senior Software Engineer (Dot.Net Core, C#) | Viasat | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-software-engineer-dot-net-core-c%23-at-viasat-4435837027 |
-| AIX and Linux Expert | Kyndryl | Chennai | Other | no (no_job_signal) | https://kyndryl.wd5.myworkdayjobs.com/KyndrylProfessionalCareers/job/Chennai-Tamil-Nadu-India/AIX-and-Linux-Expert_R-63704-1 |
-| Cloud Expert | Kyndryl | Chennai | Other | yes | https://kyndryl.wd5.myworkdayjobs.com/KyndrylProfessionalCareers/job/Chennai-Tamil-Nadu-India/Cloud-Expert_R-69167 |
-| Cloud Expert | Kyndryl | Chennai | Other | no (no_job_signal) | https://kyndryl.wd5.myworkdayjobs.com/KyndrylProfessionalCareers/job/Chennai-Tamil-Nadu-India/Cloud-Expert_R-69168 |
-| Mainframe DB2 System Programmer SME | Kyndryl | Chennai | Software | no (no_job_signal) | https://kyndryl.wd5.myworkdayjobs.com/KyndrylProfessionalCareers/job/Chennai-Tamil-Nadu-India/Mainframe-DB2-System-Programmer-SME_R-69889 |
+| Financial Advisor | Axis Max Life Insurance Company Li… | Chennai | Other | yes | https://apna.co/job/chennai/financial-advisor-886710576 |
+| Portfolio Manager | GreenIndia Wealth | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/portfolio-manager-569474980 |
+| Vacancy for Bioinfomatics and Biochemistry Graduates for Me… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-bioinfomatics-and-biochemistry-graduates-for-medical-coding-at-achievers-spot-4460952382 |
+| React Native Developer \| Mobile App Developer | Askan Technologies | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/react-native-developer-mobile-app-developer-at-askan-technologies-4479162683 |
+| Software Engineer II | NCR Voyix | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/software-engineer-ii-at-ncr-voyix-4480363568 |
+| Opening for Bsc Biology, Msc Biology, Botany, Zoology Gradu… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/opening-for-bsc-biology-msc-biology-botany-zoology-graduates-at-achievers-spot-4476899498 |
+| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4471528380 |
+| Opening for Nutrition and Dietetics and Food Technology Gra… | Achievers Spot | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/opening-for-nutrition-and-dietetics-and-food-technology-graduates-at-achievers-spot-4464840912 |
+| Primary Teacher | SIR MUTHA SCHOOL | Vellore | Teaching | yes | https://in.linkedin.com/jobs/view/primary-teacher-at-sir-mutha-school-4474226936 |
+| Relationship Manager | MII Finserv | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/relationship-manager-4475186254 |
+| Relationship Manager | Niva Bupa Health Insurance | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/relationship-manager-at-niva-bupa-health-insurance-3887080507 |
+| Cosmetologist | Advanced GroHair & GloSkin | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/cosmetologist-at-advanced-grohair-gloskin-4477642728 |
+| Assembly Process Executive / Assembly Technician | Rockwell Automation | Kanchipuram | Engineering & Manufacturing | yes | https://in.linkedin.com/jobs/view/assembly-process-executive-assembly-technician-at-rockwell-automation-4448853605 |
+| LTRPM CA Fresher | Larsen & Toubro | Kanchipuram | Other | no (http_429) | https://in.linkedin.com/jobs/view/ltrpm-ca-fresher-at-larsen-toubro-4471723326 |
+| Relationship Officer Home Loan | AU SMALL FINANCE BANK | Chennai | Other | yes | https://in.linkedin.com/jobs/view/relationship-officer-home-loan-at-au-small-finance-bank-4477567594 |
+| Relationship Officer Wheels | AU SMALL FINANCE BANK | Kanchipuram | Other | yes | https://in.linkedin.com/jobs/view/relationship-officer-wheels-at-au-small-finance-bank-4462692048 |
 
-## Gone since last run (27)
+## Gone since last run (16)
 
-- Full Stack Developer (Python) - Software Engineer II (Deloitte)
-- Senior Account Executive - Inside Sales (CX NA Inbound) (Freshworks)
-- Sr Python Developer (TransUnion)
-- Oracle HCM Consultant (Altraize)
-- Sales Executive - Prayaan Capital - Vellore (VIHU)
-- Deputy Relationship Manager LAP (AU SMALL FINANCE BANK)
-- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
-- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
-- Associate Database Engineer (Mydbops)
-- Development Manager (Sbi Life Insurance Company Limited)
-- Relationship Manager (IndusInd Nippon Life Insurance (Relianc…)
-- Financial Consultant (Kotak Life Insurance)
-- Portfolio Manager (GreenIndia Wealth)
-- Hardware Lead responsible for end-to-end series hardware ownership (Robert Bosch India)
-- Senior Hardware Design Engineer – Braking Systems (Robert Bosch India)
-- Senior Hardware Design Engineer – Braking Systems (Robert Bosch India)
-- Senior Hardware Functional Safety Engineer – Braking Systems (Robert Bosch India)
-- Senior Hardware Module Developer – Braking Systems (Robert Bosch India)
-- Senior Mechanical Design Engineer - Steering Systems (Robert Bosch India)
-- Senior Software Developer – .NET / Full-Stack Applications - Braking … (Robert Bosch India)
+- React JS Developer JOBS (Askan Technologies)
+- Software Developer (Hitachi Energy)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- THE BUILDER – Product Engineer (Wonder Worth Solutions)
+- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
+- QX Impact - Senior Data Engineer - ETL/Python (QX Impact)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- L1 – Junior Software Developer ( THE BUILDER ) (Wonder Worth Solutions)
+- L4 – Team Lead – Software Developer – (THE BUILDER) (Wonder Worth Solutions)
+- Junior Architect (Grid Studio)
+- Full Stack Developer (BHS-Sonthofen GmbH)
+- Interesting Job Opportunity: QX Impact - Lead Data Analyst (QX Impact)
+- Associate Data Engineer Position filled (Irastrive Technologies Private Limited)
+- Finance Controller (Altilium Energie)
+- Finance Manager (Axis Max Life Insurance Company Limited)
+- Consultant - CSD (Pelatro)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 104 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 121 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
