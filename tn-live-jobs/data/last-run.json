@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-17T09:34:35.184Z",
-  "finished_at": "2026-10-17T09:39:44.227Z",
-  "duration_seconds": 157,
-  "validate_seconds": 152,
+  "started_at": "2026-10-17T16:35:06.125Z",
+  "finished_at": "2026-10-17T16:39:48.224Z",
+  "duration_seconds": 158,
+  "validate_seconds": 124,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,16 +59,16 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 108,
-  "new_jobs": 37,
-  "removed_jobs": 37,
+  "verified_jobs": 123,
+  "new_jobs": 23,
+  "removed_jobs": 23,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 108,
+    "live": 123,
     "loginRequired": 1,
-    "dead": 30,
-    "noSignal": 11,
+    "dead": 21,
+    "noSignal": 5,
     "redirected": 0,
     "documents": 19,
     "unreachable": 0
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "40 job(s) from 5 search request(s)"
+      "detail": "158 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -348,15 +348,15 @@
     "naukri": 0,
     "apna": 172,
     "indeed": 0,
-    "linkedin": 40
+    "linkedin": 158
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 63
+  "dropped_records": 111
 }
