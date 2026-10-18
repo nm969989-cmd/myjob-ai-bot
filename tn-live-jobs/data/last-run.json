@@ -1,8 +1,8 @@
 {
   "status": "ok",
-  "started_at": "2026-10-17T16:35:06.125Z",
-  "finished_at": "2026-10-17T16:39:48.224Z",
-  "duration_seconds": 158,
+  "started_at": "2026-10-18T09:47:09.618Z",
+  "finished_at": "2026-10-18T09:51:50.602Z",
+  "duration_seconds": 157,
   "validate_seconds": 124,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
@@ -59,16 +59,16 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 123,
-  "new_jobs": 23,
-  "removed_jobs": 23,
+  "verified_jobs": 115,
+  "new_jobs": 11,
+  "removed_jobs": 11,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 123,
+    "live": 115,
     "loginRequired": 1,
-    "dead": 21,
-    "noSignal": 5,
+    "dead": 31,
+    "noSignal": 3,
     "redirected": 0,
     "documents": 19,
     "unreachable": 0
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "172 job(s) from 10 category page(s)"
+      "detail": "169 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "158 job(s) from 8 search request(s)"
+      "detail": "96 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -346,17 +346,17 @@
     "company-careers": 3,
     "tech-ats": 56,
     "naukri": 0,
-    "apna": 172,
+    "apna": 169,
     "indeed": 0,
-    "linkedin": 158
+    "linkedin": 96
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 111
+  "dropped_records": 83
 }

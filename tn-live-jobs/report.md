@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-17T16:35:06.125Z
-- **Finished:** 2026-10-17T16:39:48.224Z
-- **Duration:** 158 s
+- **Started:** 2026-10-18T09:47:09.618Z
+- **Finished:** 2026-10-18T09:51:50.602Z
+- **Duration:** 157 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 123** (kept this run: 150, new: 23, gone since last run: 23)
+- **Live verified jobs: 115** (kept this run: 150, new: 11, gone since last run: 11)
 
 ## Results per source
 
@@ -45,9 +45,9 @@
 | vellore.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Vellore District portal |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 72 | 43 | 172 job(s) from 10 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 70 | 43 | 169 job(s) from 10 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 26 | 42 | 158 job(s) from 8 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 42 | 96 job(s) from 8 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,71 +57,50 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 123 |
+| :white_check_mark: Verified live | 115 |
 | Government documents verified | 19 |
 | Login required (kept, not published) | 1 |
-| Page did not look like a job (no_job_signal) | 5 |
+| Page did not look like a job (no_job_signal) | 3 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 21 |
+| Dead link (HTTP 4xx/5xx) | 31 |
 | Could not be reached | 0 |
 
-## New this run (23)
+## New this run (11)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Full Stack Developer | BHS-Sonthofen GmbH | Vellore | Software | yes | https://in.linkedin.com/jobs/view/full-stack-developer-at-bhs-sonthofen-gmbh-4461048899 |
-| Wanted Biotechnology engineer for Medical Coding Jobs | Achievers Spot | Vellore | Other | yes | https://in.linkedin.com/jobs/view/wanted-biotechnology-engineer-for-medical-coding-jobs-at-achievers-spot-4463226710 |
-| L6 – Supervisor – Software Developer | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4479021817 |
-| L6 – Supervisor – Software Developer | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4476755759 |
-| SAP CPI Principal Architect | NTT DATA North America | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/sap-cpi-principal-architect-at-ntt-data-north-america-4411617572 |
-| Software Engineer II | NCR Voyix | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/software-engineer-ii-at-ncr-voyix-4480363568 |
-| Developer III - Software Engineering - Angular | UST | Chennai | Software | yes | https://in.linkedin.com/jobs/view/developer-iii-software-engineering-angular-at-ust-4464773845 |
-| Python Backend Developer | Kavi India | Chennai | Software | yes | https://in.linkedin.com/jobs/view/python-backend-developer-at-kavi-india-4478429782 |
-| Sr. Software Engineer (Python) | BigThinkCode | Chennai | Software | yes | https://in.linkedin.com/jobs/view/sr-software-engineer-python-at-bigthinkcode-4339895870 |
-| Full Stack Developer-Angular | UST | Chennai | Software | yes | https://in.linkedin.com/jobs/view/full-stack-developer-angular-at-ust-4457234516 |
-| Fullstack Java With Angular-Software Engineer II | Deloitte | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/fullstack-java-with-angular-software-engineer-ii-at-deloitte-4424676269 |
-| Senior Software Engineer - (Java Fullstack Angular) | EPAM Systems | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-software-engineer-java-fullstack-angular-at-epam-systems-4459908032 |
-| Software Engineer II (.NET) | NCR Voyix | Chennai | Software | yes | https://in.linkedin.com/jobs/view/software-engineer-ii-net-at-ncr-voyix-4479814678 |
-| Senior .NET Developer | TVS Next | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-net-developer-at-tvs-next-4475422913 |
-| Senior Software Engineer (Dot.Net Core, C#) | Viasat | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-software-engineer-dot-net-core-c%23-at-viasat-4435837027 |
-| Jobs for Biomedical and Biotechnology Engineers | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/jobs-for-biomedical-and-biotechnology-engineers-at-achievers-spot-4475761888 |
-| Relationship Associate | Niva Bupa Health Insurance | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/relationship-associate-at-niva-bupa-health-insurance-3891964010 |
-| Housekeeping Specialist | PNS Nakshatra | Vellore | Other | yes | https://in.linkedin.com/jobs/view/housekeeping-specialist-4478103018 |
-| Relationship Associate | Niva Bupa Health Insurance | Vellore | Other | yes | https://in.linkedin.com/jobs/view/relationship-associate-at-niva-bupa-health-insurance-3891964008 |
-| Medical Coding Fresher jobs | Achievers Spot | Vellore | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-fresher-jobs-at-achievers-spot-4459478876 |
-| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4462677138 |
-| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Vellore | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4462687056 |
-| Sales Executive - Prayaan Capital - Vellore | VIHU | Vellore | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/sales-executive-prayaan-capital-vellore-at-vihu-4462260023 |
+| Voice Actor | Realcircle Technologies Private Li… | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/voice-actor-551121837 |
+| Accountant/ Accounts Executive | Benteng (India) Precision Technolo… | Chennai | Accounting & Finance | no (http_481) | https://apna.co/job/chennai-region/accountant-accounts-executive-696939169 |
+| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Tamil Nadu | Software | no (http_429) | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
+| Interesting Job Opportunity: QX Impact - Lead Data Analyst | QX Impact | Vellore | Data & Analytics | yes | https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022 |
+| Consultant - CSD | Pelatro | Tamil Nadu | Other | no (http_429) | https://in.linkedin.com/jobs/view/consultant-csd-at-pelatro-4479348398 |
+| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4462685110 |
+| Physician Assistant | intensiveQ Critical Care Team LLP | Villupuram | Other | yes | https://in.linkedin.com/jobs/view/physician-assistant-at-intensiveq-critical-care-team-llp-4477257876 |
+| Office Boy / Peon | Awign | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/office-boy-peon-at-awign-4478812582 |
+| Process Controller | Airysole | Vellore | Other | yes | https://in.linkedin.com/jobs/view/process-controller-at-airysole-4479902900 |
+| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Ranipet | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4471521686 |
+| Opening for Nutrition and Dietetics and Food Technology Gra… | Achievers Spot | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/opening-for-nutrition-and-dietetics-and-food-technology-graduates-at-achievers-spot-4463312465 |
 
-## Gone since last run (23)
+## Gone since last run (11)
 
-- Senior Consultant – Business Systems Analyst – Coupa (AstraZeneca)
-- Director - Principal Data Engineering Lead (AstraZeneca)
-- Lead Consultant - Coupa and S/4HANA Procurement (AstraZeneca)
-- Lead Consultant - SAP EWM (AstraZeneca)
-- Lead Consultant - S/4HANA Indirect Procurement IT Business Analyst (AstraZeneca)
-- Lead Consultant - SAP S/4HANA – IT Product Expert – Asset Maintenance (AstraZeneca)
-- Mainframe DB2 System Programmer SME (Kyndryl)
-- Accountant/ Accounts Executive (Benteng (India) Precision Technology Pr…)
-- Analyst - Commercial Pharma Analytics (AstraZeneca)
-- Area Sales Manager-Chennai-Building Matrials Industry (The Banyan Hr Consults Chennai)
-- Associate Manager (Hdfc Life Insurance Company Limited)
-- Branch Manager - Gold Loan (Tata Capital Ltd.)
-- Dermatologist (Euro Asia Support Services)
-- Enterprise Sales Manager / B2B Sales Executive (Sayzo Platforms Private Limited)
-- Lead Engineer - SIEM & Detection Platforms (AstraZeneca)
-- MEP QUANTITY SURVEYOR (Optalon Hr Consultant Private Limited)
-- Secretary / Executive Assistant (Insohub India Private Limited)
-- Senior Analyst - Brand Analytics (AstraZeneca)
-- Senior Analyst - Commercial Pharma Analytics (AstraZeneca)
-- Team Coordinator (Kotak Mahindra Life Insurance Co)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
+- Software Testing Intern (IZIVAR)
+- THE BUILDER – Product Engineer (Wonder Worth Solutions)
+- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- SAP CPI Principal Architect (NTT DATA North America)
+- Wanted Biotechnology engineer for Medical Coding Jobs (Achievers Spot)
+- Deputy Relationship Manager LAP (AU SMALL FINANCE BANK)
+- Senior Relationship Manager (Kotak Mahindra General Insurance Compan…)
+- Senior Relationship Officer (Sbi Life Insurance Company Limited)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 111 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 83 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
