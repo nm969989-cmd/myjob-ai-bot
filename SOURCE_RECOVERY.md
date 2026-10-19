@@ -1,0 +1,49 @@
+# Source recovery diagnosis (2026-10-09)
+
+Documentation only. No scraper, workflow, generated feed, dedup or application state changes are included. Runtime changes require verification before publication. No recovered-opening count is known yet.
+
+## Evidence and scope
+
+Main inspected through GitHub API: 85bac8bee153de2d94ccbc8036349680a352c1a6. Original latest cloud job: https://github.com/nm969989-cmd/myjob-ai-bot/actions/runs/37864506137/job/113607908910 (push-triggered, not cron-triggered; same workflow used by schedules). Its scraper ran 00:24-00:30 UTC. Original log and committed tn-live-jobs/report.md were read. A successful overall run does not establish source coverage.
+
+Relevant code: tn-live-jobs/src/scraper.js (fetchText, fetchJson, launchBrowser, renderCapture), sources/tech-ats.js (scrapeWorkdayCompany), sources/company-careers.js (scrapeSpaCompany, scrapeFreshersworld), sources/govt-tn.js, sources/naukri.js, sources/indeed.js. All paths below are under tn-live-jobs/src/.
+
+## Per-source findings
+
+| Source | Observed run error and origin | Assessment / confidence |
+|---|---|---|
+| Kyndryl | HTTP 400 at wd5.myworkdayjobs.com/wday/cxs/kyndryl/KyndrylProfessionalCareers/jobs; tech-ats.js scrapeWorkdayCompany -> scraper.js fetchJson | Confirmed transport bug: adapter requests POST/body, but fetchText forwards neither. Bodyless GET is sent. High confidence bug exists; full recovery/endpoint validity unverified. |
+| AstraZeneca | HTTP 400 at wd3.myworkdayjobs.com/wday/cxs/astrazeneca/Careers/jobs; same functions | Same confirmed method/body loss. High confidence bug; restoration unverified. |
+| PayPal | HTTP 400 at wd1.myworkdayjobs.com/wday/cxs/paypal/jobs/jobs; same functions | Same confirmed method/body loss. High confidence bug; restoration unverified. |
+| HCLTech | Original log: page.goto: net::ERR_HTTP2_PROTOCOL_ERROR at https://www.hcltech.com/careers; company-careers.js scrapeSpaCompany/renderCapture | Not evidence of missing Chromium. Catch labels navigation errors as browser unavailable. High confidence navigation/reporting defect; protocol cause unresolved. Earlier Infosys rendering succeeded. Official careers.hcltech.com exposes a separate search surface. |
+| TCS | fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed; scrapeSpaCompany/fetchJson | DNS/TLS/connection/block cause not retained; low confidence external cause. Confirmed control-flow issue: failed direct JSON request skips the page fallback because both are in one outer try. |
+| Wipro | no job records could be read from this site; scrapeSpaCompany | Zero extracted candidates/jobs, not proof of anti-bot block. Generic JSON/LD+JSON parser may miss current rendered cards; cause unresolved. Current official job details were accessible through page extraction, which does not prove Actions can fetch them. |
+| Cognizant | same no-records message; scrapeSpaCompany | Cause unresolved, not a proven block. Config uses /global/en/search-results; current indexed details use /india-en/jobs and /global-en/jobs. robots.txt explicitly disallows GPTBot and several other bots. Do not evade identity-specific exclusions; use owner alerts/manual links or obtain permission before bot ingestion. |
+| Naukri | Naukri returned no job cards to a headless browser either; naukri.js scrape | Empty DOM/JSON output is not proof of a CAPTCHA, no vacancies, or browser launch failure. Low confidence cause. No verified permitted automated fallback established. Exclude direct scraping from recovery promises; offer native job alerts/manual employer links. |
+| Indeed | report says bot protection answered HTTP 403 on 4 requests; indeed.js scrape | That exact report text is hardcoded for 403, 429, CAPTCHA, network failures and even an empty result. Specific 403 cause is not established by available log. Reporting bug confirmed. No bypass; authorized API/feed only if provider grants it, otherwise native alerts/manual access. |
+| TN Government job opportunities | fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed; govt-tn.js scrapeTnGov | Transport failure, underlying cause discarded; unresolved. |
+| TNPSC | fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed; scrapeTnpsc | Transport failure, underlying cause discarded; unresolved. |
+| TN Employment & Training | fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed; scrapeTnEmploymentPortal | Transport failure, unresolved. |
+| TN Employment Exchange | fetch failed for https://employment.tn.gov.in/: fetch failed; probeExchangePortal | Transport failure, unresolved. Code comment about state-network-only reachability is not evidence. |
+| TN Private Employment Exchange | fetch failed for https://protnnetc.tn.gov.in/: fetch failed; probeExchangePortal | Transport failure, unresolved. No authenticated/private access fallback assumed. |
+| TN MRB | fetch failed for https://www.mrb.tn.gov.in/: fetch failed; scrapeMrb | Transport failure, unresolved; lower engineering relevance than employers/TNPSC. |
+| Freshersworld | 0 jobs from 4 listing pages; scrapeFreshersworld | May be no matching jobs, outdated routes/selectors, or HTTP errors silently skipped. It treats all HTTP >=400 as no listings; cause unresolved. |
+
+## Ranked recovery plan
+
+Rank is qualitative expected engineering value, NOT a promise of opening counts or eligibility. Preserve working SmartRecruiters, Zoho, Infosys, public feeds, dedup and all other functionality.
+
+1. Workday transport repair (quick win, three employers): pass method/body to fetch, preserve GET behavior, add localhost GET/POST regression test. Needs Node20 executor and npm dependencies, not credentials or workflow scope. Before live ingestion, confirm current employer endpoints and permitted access; robots probes here returned HTTP406 and did not establish permissions. No POST probe or bypass was made. Pagination/four-city coverage follow only after correctness and permissions checks.
+2. Dedicated HCL/Wipro public careers adapters (bigger, Chennai engineering value): use current official search/detail pages, not a marketing page or generic JSON harvesting alone. HCL example: https://careers.hcltech.com/job/Full-Stack-Developer/161519-en_US/ . Wipro example: https://careers.wipro.com/job/Azure-Data-Engineer/203927-en_US/ (5-8 years; not automatically suitable for the owner). HCL search HTTP response was obtained but its search UI is JavaScript-based. Read terms/robots; no disallowed application/services routes. Needs executor/browser and fixture tests, no credentials for public read pages. No verified public RSS/API has been established. Robots availability is not a blanket license.
+3. TCS fallback and diagnostic repair (quick win to isolate failures; recovery uncertain): retain safe network cause codes and separate direct JSON failure from permitted official-page fallback. Needs executor/browser and confirmation of allowed official route. No credential or workflow change inherently needed.
+4. Government reachability (bigger, selective engineering/apprenticeship coverage): preserve network cause codes; check DNS/TLS/status/redirects from the actual Actions runtime, never disable TLS checks as a fix. Prioritize TNPSC/TN job opportunities; employment exchanges require verified public listings rather than assumed access. MRB is lower priority. Tiruvannamalai/Vellore district pages are reachable via page extraction and absent from current DISTRICT_SITES; consider additive adapters with deadline/eligibility checks. Retrieved notices were old/expired/nonengineering, not evidence of current suitable openings: https://tiruvannamalai.nic.in/notice_category/recruitment/ and https://vellore.nic.in/notice_category/recruitment/ . Needs executor and current official notice data; credentials only if explicitly required/authorized.
+5. Freshersworld (quick win diagnostic pass, recovery uncertain): record real status and selector counts, test four-city listing fixtures, do not translate every HTTP error into no jobs. Needs executor and permitted public fixtures, no new credential.
+6. Cognizant/Naukri/Indeed (no direct-scraping recovery promise): respect exclusions/blocks. Use native owner-configured job alerts or manual links, optionally private mailbox ingestion with explicit consent and provider authorization. Bigger integration; requires owner alert/account data and executor. Do not relabel unavailable sources as working. Existing code is not deleted by this plan.
+
+## Pending implementation / verification
+
+An UNPUSHED transport patch and localhost regression test are held outside this branch. All other runtime changes above are proposals, not implemented. No workflow scope is needed for the transport fix. If later CI/browser-installation changes become necessary, scope must be granted and checks must run first; the HCL log does not justify reinstalling Chromium blindly.
+
+On a recovered executor: clean branch from current main, re-check source hashes, git apply --check, inspect diff, npm ci, node --check changed JS, run the new transport test plus existing priority-city/client tests and README Python/dependency/browser suites. Add captured public fixtures for each adapter, permission review, and a bounded read-only live smoke test from the actual deployment runtime. Do not submit applications or send Telegram while testing discovery. Record per-source HTTP/error code, current official route, eligible-city results and confirmed direct links. Verify final head before push; never merge without verified results.
+
+Direct TNPSC/TN page probes in this assistant environment failed without usable diagnostics, so they add no cause evidence. Fresh source reads and original logs are not a replacement for executing the patch. Terms/robots and all data can change; recheck before deployment.
