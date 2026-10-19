@@ -1,21 +1,21 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-18T16:43:02.147Z
-- **Finished:** 2026-10-18T16:47:41.005Z
-- **Duration:** 159 s
+- **Started:** 2026-10-19T11:03:33.241Z
+- **Finished:** 2026-10-19T11:08:13.042Z
+- **Duration:** 157 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 118** (kept this run: 150, new: 15, gone since last run: 15)
+- **Live verified jobs: 120** (kept this run: 150, new: 16, gone since last run: 16)
 
 ## Results per source
 
 | Source | Tier | Status | Found | In this run | Note |
 | --- | --- | --- | --- | --- | --- |
-| astrazeneca.com | 1 | :white_check_mark: ok | 10 | 0 | 10 opening(s) in Tamil Nadu |
+| astrazeneca.com | 1 | :white_check_mark: ok | 9 | 0 | 9 opening(s) in Tamil Nadu |
 | Avery Dennison | 1 | :white_check_mark: ok | 0 | 5 | 5 opening(s) in Tamil Nadu |
 | chennai.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Chennai District portal |
 | Cognizant | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
-| Coimbatore District Collectorate | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Coimbatore District portal |
+| Coimbatore District Collectorate | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Coimbatore District portal |
 | cuddalore.nic.in | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Cuddalore District portal |
 | dindigul.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Dindigul District portal |
 | erode.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Erode District portal |
@@ -26,7 +26,7 @@
 | kanchipuram.nic.in | 1 | :x: unreachable | 0 | 0 | fetch failed for https://kanchipuram.nic.in/notice_category/recruitment/: fetch failed |
 | kanyakumari.nic.in | 1 | :x: unreachable | 0 | 0 | fetch failed for https://kanyakumari.nic.in/notice_category/recruitment/: fetch failed |
 | karur.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Karur District portal |
-| kyndryl.com | 1 | :white_check_mark: ok | 1 | 4 | 5 opening(s) in Tamil Nadu |
+| kyndryl.com | 1 | :white_check_mark: ok | 0 | 5 | 5 opening(s) in Tamil Nadu |
 | Madurai District Collectorate | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Madurai District portal |
 | paypal.com | 1 | :white_check_mark: ok | 2 | 0 | 2 opening(s) in Tamil Nadu |
 | Robert Bosch India | 1 | :white_check_mark: ok | 0 | 17 | 17 opening(s) in Tamil Nadu |
@@ -45,9 +45,9 @@
 | vellore.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Vellore District portal |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 72 | 43 | 171 job(s) from 10 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 72 | 43 | 172 job(s) from 10 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 26 | 42 | 154 job(s) from 8 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 30 | 43 | 161 job(s) from 10 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,58 +57,60 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 118 |
-| Government documents verified | 19 |
+| :white_check_mark: Verified live | 120 |
+| Government documents verified | 17 |
 | Login required (kept, not published) | 1 |
-| Page did not look like a job (no_job_signal) | 2 |
+| Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 29 |
+| Dead link (HTTP 4xx/5xx) | 28 |
 | Could not be reached | 0 |
 
-## New this run (15)
+## New this run (16)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Mechanical Design Engineer | VRM Structures India Private Limit… | Chennai | Engineering & Manufacturing | yes | https://apna.co/job/chennai/mechanical-design-engineer-467360399 |
-| Software Testing Intern | IZIVAR | Tiruvannamalai | Software | yes | https://in.linkedin.com/jobs/view/software-testing-intern-at-izivar-4479209603 |
-| THE BUILDER – Product Engineer | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/the-builder-%E2%80%93-product-engineer-at-wonder-worth-solutions-4479024608 |
-| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4479028573 |
-| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4476748922 |
-| Wanted Biotechnology engineer for Medical Coding Jobs | Achievers Spot | Vellore | Other | yes | https://in.linkedin.com/jobs/view/wanted-biotechnology-engineer-for-medical-coding-jobs-at-achievers-spot-4463226710 |
-| L6 – Supervisor – Software Developer | Wonder Worth Solutions | Vellore | Software | no (http_429) | https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4479021817 |
-| L6 – Supervisor – Software Developer | Wonder Worth Solutions | Vellore | Software | no (http_429) | https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4476755759 |
-| Flutter Developer | Zenzio India | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/flutter-developer-4479170480 |
-| MERN Stack Developer | Askan Technologies | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/mern-stack-developer-at-askan-technologies-4479161684 |
-| Backend Developer | Zenzio India | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/backend-developer-4479168563 |
-| Web Developer | Zenzio India | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/web-developer-4479175117 |
-| React Native Developer \| Mobile App Developer | Askan Technologies | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/react-native-developer-mobile-app-developer-at-askan-technologies-4479162683 |
-| Web Developer | Digitalfactoryindia | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/web-developer-4475732330 |
-| Deputy Relationship Manager LAP | AU SMALL FINANCE BANK | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/deputy-relationship-manager-lap-at-au-small-finance-bank-4462677138 |
+| Build & Artifact_Engineer_EPS1 | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000156230140 |
+| BGSW_2026_SAP_CONTROLLING_SME | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000156229748 |
+| Team Leader | Zorell Appliances | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-410195768 |
+| Team Leader | M2 Data Studio Private Limited | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-423122350 |
+| Relationship Manager | IndusInd Nippon Life Insurance (Re… | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai-region/relationship-manager-132286283 |
+| Telecaller | CRESCO-MARUTI | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai-region/telecaller-70094992 |
+| Picker / Packer | Zepto | Puducherry | Other | yes | https://apna.co/job/puducherry/picker-packer-732184999 |
+| Insurance Agent/Advisor | Life Insurance Corporation Of India | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/insurance-agent-advisor-982174768 |
+| Vacancy for Bioinfomatics and Biochemistry Graduates for Me… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-bioinfomatics-and-biochemistry-graduates-for-medical-coding-at-achievers-spot-4460952382 |
+| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Tamil Nadu | Software | no (http_429) | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
+| Interesting Job Opportunity: QX Impact - Lead Data Analyst | QX Impact | Tamil Nadu | Data & Analytics | no (http_429) | https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022 |
+| Consultant - CSD | Pelatro | Tamil Nadu | Other | yes | https://in.linkedin.com/jobs/view/consultant-csd-at-pelatro-4479348398 |
+| Physician Assistant | intensiveQ Critical Care Team LLP | Villupuram | Other | no (http_429) | https://in.linkedin.com/jobs/view/physician-assistant-at-intensiveq-critical-care-team-llp-4477257876 |
+| Student Counselor Associcate in Vellore, Trichey, Alwal, Ve… | WeMakeScholars | Vellore | Other | yes | https://in.linkedin.com/jobs/view/student-counselor-associcate-in-vellore-trichey-alwal-vellore-salem-nashik-chennai-wardha-paralakhemundi-coimbatore-madurai-secunderabad-hubli-hyderabad-at-wemakescholars-4473569317 |
+| Assembly Process Executive / Assembly Technician | Rockwell Automation | Kanchipuram | Engineering & Manufacturing | yes | https://in.linkedin.com/jobs/view/assembly-process-executive-assembly-technician-at-rockwell-automation-4448853605 |
+| Mainframe DB2 System Programmer SME | Kyndryl | Chennai | Software | yes | https://kyndryl.wd5.myworkdayjobs.com/KyndrylProfessionalCareers/job/Chennai-Tamil-Nadu-India/Mainframe-DB2-System-Programmer-SME_R-69896 |
 
-## Gone since last run (15)
+## Gone since last run (16)
 
-- Process Controller (Airysole)
-- Office Boy / Peon (Awign)
-- Oracle HCM Consultant (Altraize)
-- Deputy Relationship Manager LAP (AU SMALL FINANCE BANK)
-- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
-- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
-- Opening for Nutrition and Dietetics and Food Technology Graduates (Achievers Spot)
-- Associate Database Engineer (Mydbops)
-- Interesting Job Opportunity: QX Impact - Lead Data Analyst (QX Impact)
-- Salesforce Architect (SuccessMetrics Corp)
-- Accountant/ Accounts Executive (Benteng (India) Precision Technology Pr…)
-- Physician Assistant (intensiveQ Critical Care Team LLP)
-- Deputy Relationship Manager LAP (AU SMALL FINANCE BANK)
-- Consultant - CSD (Pelatro)
-- QX Impact - Senior Data Engineer - ETL/Python (QX Impact)
+- THE BUILDER – Product Engineer (Wonder Worth Solutions)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
+- Wanted Biotechnology engineer for Medical Coding Jobs (Achievers Spot)
+- Client Relationship Manager (Daily Gong Financial Service Limited)
+- Payroll Executive (Gesco Healthcare Private Limited)
+- Relationship Manager (IndusInd Nippon Life Insurance (Relianc…)
+- Senior Business Consultant (Zorell Appliances)
+- Embedded_Project_System_Architect (Robert Bosch India)
+- System Architect (Robert Bosch India)
+- Customer Acquisition Executive (Muthoot Finance)
+- Staff Nurse Recruitment – List of Selected Candidates (Government of Tamil Nadu)
+- Staff Nurse Recruitment – Waiting List (Government of Tamil Nadu)
+- Rental Team Manager (Agarwal Estates Private Limited)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 111 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 113 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
