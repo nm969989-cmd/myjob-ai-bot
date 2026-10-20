@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-20T10:16:16.727Z",
-  "finished_at": "2026-10-20T10:20:59.617Z",
-  "duration_seconds": 154,
-  "validate_seconds": 128,
+  "started_at": "2026-10-20T18:04:41.277Z",
+  "finished_at": "2026-10-20T18:09:25.998Z",
+  "duration_seconds": 160,
+  "validate_seconds": 125,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,16 +59,16 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 123,
-  "new_jobs": 19,
-  "removed_jobs": 19,
+  "verified_jobs": 118,
+  "new_jobs": 17,
+  "removed_jobs": 17,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 123,
+    "live": 118,
     "loginRequired": 1,
-    "dead": 23,
-    "noSignal": 3,
+    "dead": 29,
+    "noSignal": 2,
     "redirected": 0,
     "documents": 17,
     "unreachable": 0
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "162 job(s) from 9 search request(s)"
+      "detail": "155 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -348,7 +348,7 @@
     "naukri": 0,
     "apna": 172,
     "indeed": 0,
-    "linkedin": 162
+    "linkedin": 155
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
