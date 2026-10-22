@@ -1,24 +1,24 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-22T10:24:32.475Z
-- **Finished:** 2026-10-22T10:29:18.282Z
-- **Duration:** 158 s
+- **Started:** 2026-10-22T18:07:18.450Z
+- **Finished:** 2026-10-22T18:12:10.576Z
+- **Duration:** 159 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 112** (kept this run: 150, new: 20, gone since last run: 20)
+- **Live verified jobs: 111** (kept this run: 150, new: 15, gone since last run: 15)
 
 ## Results per source
 
 | Source | Tier | Status | Found | In this run | Note |
 | --- | --- | --- | --- | --- | --- |
-| astrazeneca.com | 1 | :white_check_mark: ok | 11 | 3 | 14 opening(s) in Tamil Nadu |
+| astrazeneca.com | 1 | :white_check_mark: ok | 14 | 2 | 16 opening(s) in Tamil Nadu |
 | Avery Dennison | 1 | :white_check_mark: ok | 0 | 5 | 5 opening(s) in Tamil Nadu |
 | chennai.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Chennai District portal |
 | Cognizant | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Coimbatore District Collectorate | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Coimbatore District portal |
 | cuddalore.nic.in | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Cuddalore District portal |
 | dindigul.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Dindigul District portal |
-| erode.nic.in | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Erode District portal |
+| erode.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Erode District portal |
 | Freshersworld | 1 | :grey_question: no listings | 0 | 0 | 0 job(s) from 12 listing page(s) |
 | Freshworks | 1 | :white_check_mark: ok | 0 | 17 | 17 opening(s) in Tamil Nadu |
 | HCLTech | 1 | :x: blocked | 0 | 0 | headless browser unavailable in this environment |
@@ -29,10 +29,10 @@
 | kyndryl.com | 1 | :white_check_mark: ok | 0 | 5 | 5 opening(s) in Tamil Nadu |
 | Madurai District Collectorate | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Madurai District portal |
 | paypal.com | 1 | :white_check_mark: ok | 2 | 0 | 2 opening(s) in Tamil Nadu |
-| Robert Bosch India | 1 | :white_check_mark: ok | 0 | 14 | 14 opening(s) in Tamil Nadu |
+| Robert Bosch India | 1 | :white_check_mark: ok | 0 | 15 | 15 opening(s) in Tamil Nadu |
 | Salem District Collectorate | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Salem District portal |
 | Tata Consultancy Services | 1 | :x: blocked | 0 | 0 | fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed |
-| thanjavur.nic.in | 1 | :white_check_mark: ok | 0 | 3 | 3 notice(s) on Thanjavur District portal |
+| thanjavur.nic.in | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Thanjavur District portal |
 | thoothukudi.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Thoothukudi District portal |
 | Tirunelveli District Collectorate | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Tirunelveli District portal |
 | tiruppur.nic.in | 1 | :white_check_mark: ok | 0 | 4 | 4 notice(s) on Tiruppur District portal |
@@ -45,9 +45,9 @@
 | vellore.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Vellore District portal |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 73 | 43 | 150 job(s) from 9 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 72 | 44 | 150 job(s) from 9 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 29 | 43 | 167 job(s) from 10 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 22 | 44 | 157 job(s) from 8 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,68 +57,58 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 112 |
-| Government documents verified | 17 |
+| :white_check_mark: Verified live | 111 |
+| Government documents verified | 14 |
 | Login required (kept, not published) | 1 |
-| Page did not look like a job (no_job_signal) | 6 |
+| Page did not look like a job (no_job_signal) | 7 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 31 |
-| Could not be reached | 0 |
+| Dead link (HTTP 4xx/5xx) | 30 |
+| Could not be reached | 1 |
 
-## New this run (20)
+## New this run (15)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Technical Assistant Recruitment – District Climate Change M… | Government of Tamil Nadu | Coimbatore | Government | yes | https://cdn.s3waas.gov.in/s3d9fc5b73a8d78fad3d6dffe419384e70/uploads/2026/10/17926644991537.pdf |
-| Wealth Planner | Kotak Life Insurance | Puducherry | Other | yes | https://apna.co/job/bengaluru/wealth-planner-21018514 |
-| Team Leader | Axis Max Life Insurance Company Li… | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-983444204 |
-| QA / QC Manager | Cohera Automations Private Limited | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/qa-qc-manager-750995344 |
-| Ph.D. Candidate – Nanoelectronics and VLSI @ VIT Vellore | Vellore Institute of Technology | Vellore | Other | yes | https://in.linkedin.com/jobs/view/ph-d-candidate-%E2%80%93-nanoelectronics-and-vlsi-%40-vit-vellore-at-vellore-institute-of-technology-4479479787 |
-| THE BUILDER – Product Engineer | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/the-builder-%E2%80%93-product-engineer-at-wonder-worth-solutions-4479024608 |
-| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4479028573 |
-| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4476748922 |
-| L6 – Supervisor – Software Developer | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4479021817 |
-| L6 – Supervisor – Software Developer | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4476755759 |
-| Java Fullstack Developer | Wipro | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/java-fullstack-developer-at-wipro-4482435140 |
-| Software Engineer | Virtusa | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/software-engineer-at-virtusa-4479499988 |
-| Insurance Sales Executive | Staunch HR Services Private Limited | Tiruvannamalai | Sales & Marketing | no (http_429) | https://in.linkedin.com/jobs/view/insurance-sales-executive-at-staunch-hr-services-private-limited-4479682373 |
-| Primary Teacher | SIR MUTHA SCHOOL | Vellore | Teaching | yes | https://in.linkedin.com/jobs/view/primary-teacher-at-sir-mutha-school-4474226936 |
-| Business Development Executive | Advaidha Pratyaya | Tamil Nadu | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/business-development-executive-at-advaidha-pratyaya-4481147685 |
-| Relationship Manager | Niva Bupa Health Insurance | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/relationship-manager-at-niva-bupa-health-insurance-3887080507 |
-| Cosmetologist | Advanced GroHair & GloSkin | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/cosmetologist-at-advanced-grohair-gloskin-4477642728 |
-| Jobs for Bsc Microbiology, Msc Microbiology, Microbiologist… | Achievers Spot | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/jobs-for-bsc-microbiology-msc-microbiology-microbiologist-for-medical-coding-at-achievers-spot-4477983213 |
-| Vacancy for BPT, MPT, Physiotherapy Graduates | Achievers Spot | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/vacancy-for-bpt-mpt-physiotherapy-graduates-at-achievers-spot-4473207368 |
-| General Dentist | Rajan Dental clinic | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/general-dentist-4479919889 |
+| Full Stack with C# & Angular, Pune | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000157152783 |
+| Client Relationship Manager | Daily Gong Financial Service Limit… | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai-region/client-relationship-manager-469487957 |
+| Technical Mentor (DSA) | FACE Prep | Vellore | Other | yes | https://in.linkedin.com/jobs/view/technical-mentor-dsa-at-face-prep-4481364139 |
+| Coding and Robotics Trainer | Infinity Learn | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/coding-and-robotics-trainer-at-infinity-learn-4480357313 |
+| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Vellore | Software | yes | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
+| Interesting Job Opportunity: QX Impact - Lead Data Analyst | QX Impact | Vellore | Data & Analytics | yes | https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022 |
+| Salesforce Developer | SuccessMetrics Corp | Puducherry | Software | no (http_429) | https://in.linkedin.com/jobs/view/salesforce-developer-at-successmetrics-corp-4442574293 |
+| Senior Salesforce Developer | SuccessMetrics Corp | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/senior-salesforce-developer-at-successmetrics-corp-4442558941 |
+| WEB WORDPRESS ( JUNIOR FULLTIME) | HyperZ Digital | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/web-wordpress-junior-fulltime-at-hyperz-digital-4461484242 |
+| WEB WORDPRESS (INTERN – FULLTIME) | HyperZ Digital | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/web-wordpress-intern-%E2%80%93-fulltime-at-hyperz-digital-4461806167 |
+| Salesforce Architect | SuccessMetrics Corp | Puducherry | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/salesforce-architect-at-successmetrics-corp-4442579072 |
+| Assembly Process Executive / Assembly Technician | Rockwell Automation | Kanchipuram | Engineering & Manufacturing | no (http_429) | https://in.linkedin.com/jobs/view/assembly-process-executive-assembly-technician-at-rockwell-automation-4448853605 |
+| LTRPM CA Fresher | Larsen & Toubro | Kanchipuram | Other | yes | https://in.linkedin.com/jobs/view/ltrpm-ca-fresher-at-larsen-toubro-4471723326 |
+| Director – Cell Therapy IT, Software Engineering - Salesfor… | AstraZeneca | Chennai | Software | no (no_job_signal) | https://astrazeneca.wd3.myworkdayjobs.com/Careers/job/India---Chennai/Director---Software-Development--Cell-Therapy-IT_R-258180 |
+| Senior Analyst - Brand Analytics | AstraZeneca | Chennai | Data & Analytics | no (no_job_signal) | https://astrazeneca.wd3.myworkdayjobs.com/Careers/job/India---Chennai/Senior-Analyst---Brand-Analytics_R-261980 |
 
-## Gone since last run (20)
+## Gone since last run (15)
 
-- Development Engineer 2 (Comcast)
-- Software Engineer (Virtusa)
-- QX Impact - Senior Data Engineer - ETL/Python (QX Impact)
-- SAP CPI Principal Architect (NTT DATA North America)
-- Wanted Biotechnology engineer for Medical Coding Jobs (Achievers Spot)
-- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
-- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
-- Interesting Job Opportunity: QX Impact - Lead Data Analyst (QX Impact)
-- Salesforce Architect (SuccessMetrics Corp)
-- Salesforce Developer (SuccessMetrics Corp)
-- Senior Salesforce Developer (SuccessMetrics Corp)
-- Business Operations (Agarwal Estates Private Limited)
-- Senior Associate (L B N & Associates Llp)
-- Senior Human Resource Executive (DK Housing and Properties)
-- Senior Relationship Manager (Axis Max Life Insurance Company Limited)
-- Coding and Robotics Trainer (Infinity Learn)
-- Assembly Process Executive / Assembly Technician (Rockwell Automation)
-- LTRPM CA Fresher (Larsen & Toubro)
-- Guest Relations Executive - Front Office (NU Hospitals)
-- Data Entry Trainee (Wikiprospects)
+- Student Counselor Associcate in Alwal, Vellore, Vellore, Salem, Nashi… (WeMakeScholars)
+- General Dentist (Rajan Dental clinic)
+- Office Boy / Peon (Awign)
+- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
+- Vacancy for BPT, MPT, Physiotherapy Graduates (Achievers Spot)
+- Sales Executive - Prayaan Capital - Vellore (VIHU)
+- Medical Coding Fresher jobs (Achievers Spot)
+- Platform Engineer – Enterprise Golden Paths & Automated Governance (AstraZeneca)
+- Platform Engineer – Enterprise Golden Paths & Automated Governance (AstraZeneca)
+- Platform Engineer – Enterprise Golden Paths & Automated Governance (AstraZeneca)
+- Recruitment for the post of Technical Assistant in District Climate C… (Government of Tamil Nadu)
+- Staff Nurse Recruitment – List of Selected and Withheld Candidates (Government of Tamil Nadu)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 115 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 110 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
