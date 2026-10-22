@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-21T18:11:04.745Z",
-  "finished_at": "2026-10-21T18:15:56.103Z",
-  "duration_seconds": 160,
-  "validate_seconds": 132,
+  "started_at": "2026-10-22T10:24:32.475Z",
+  "finished_at": "2026-10-22T10:29:18.282Z",
+  "duration_seconds": 158,
+  "validate_seconds": 127,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 115,
-  "new_jobs": 16,
-  "removed_jobs": 16,
+  "verified_jobs": 112,
+  "new_jobs": 20,
+  "removed_jobs": 20,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 115,
+    "live": 112,
     "loginRequired": 1,
-    "dead": 26,
-    "noSignal": 8,
+    "dead": 31,
+    "noSignal": 6,
     "redirected": 0,
-    "documents": 16,
+    "documents": 17,
     "unreachable": 0
   },
   "source_status": [
@@ -106,8 +106,8 @@
       "id": "coimbatore.nic.in",
       "label": "Coimbatore District Collectorate",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Coimbatore District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Coimbatore District portal"
     },
     {
       "id": "cuddalore.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "173 job(s) from 10 category page(s)"
+      "detail": "150 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "160 job(s) from 10 search request(s)"
+      "detail": "167 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,21 +342,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 16,
+    "govt-tn": 17,
     "company-careers": 3,
     "tech-ats": 57,
     "naukri": 0,
-    "apna": 173,
+    "apna": 150,
     "indeed": 0,
-    "linkedin": 160
+    "linkedin": 167
   },
   "dead_domains": {
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 116
+  "dropped_records": 115
 }
