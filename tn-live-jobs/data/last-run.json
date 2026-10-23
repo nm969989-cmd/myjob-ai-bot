@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-22T18:07:18.450Z",
-  "finished_at": "2026-10-22T18:12:10.576Z",
-  "duration_seconds": 159,
-  "validate_seconds": 133,
+  "started_at": "2026-10-23T10:22:14.009Z",
+  "finished_at": "2026-10-23T10:27:01.422Z",
+  "duration_seconds": 157,
+  "validate_seconds": 131,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 111,
-  "new_jobs": 15,
-  "removed_jobs": 15,
+  "verified_jobs": 121,
+  "new_jobs": 20,
+  "removed_jobs": 20,
   "login_required": 1,
   "validate_stats": {
     "checked": 150,
-    "live": 111,
+    "live": 121,
     "loginRequired": 1,
-    "dead": 30,
-    "noSignal": 7,
+    "dead": 22,
+    "noSignal": 5,
     "redirected": 0,
-    "documents": 14,
+    "documents": 16,
     "unreachable": 1
   },
   "source_status": [
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "16 opening(s) in Tamil Nadu"
+      "detail": "18 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -142,7 +142,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "17 opening(s) in Tamil Nadu"
+      "detail": "16 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -198,7 +198,7 @@
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "2 opening(s) in Tamil Nadu"
+      "detail": "1 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
@@ -211,8 +211,8 @@
       "id": "salem.nic.in",
       "label": "Salem District Collectorate",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Salem District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Salem District portal"
     },
     {
       "id": "tcs.com",
@@ -247,7 +247,7 @@
       "label": "tiruppur.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "4 notice(s) on Tiruppur District portal"
+      "detail": "5 notice(s) on Tiruppur District portal"
     },
     {
       "id": "tnvelaivaaippu.gov.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "150 job(s) from 9 category page(s)"
+      "detail": "151 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -342,21 +342,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 15,
+    "govt-tn": 17,
     "company-careers": 3,
     "tech-ats": 60,
     "naukri": 0,
-    "apna": 150,
+    "apna": 151,
     "indeed": 0,
     "linkedin": 157
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 110
+  "dropped_records": 111
 }
