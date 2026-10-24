@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-23T17:56:42.050Z",
-  "finished_at": "2026-10-23T18:01:30.465Z",
-  "duration_seconds": 159,
-  "validate_seconds": 130,
+  "started_at": "2026-10-24T09:43:10.567Z",
+  "finished_at": "2026-10-24T09:47:48.818Z",
+  "duration_seconds": 160,
+  "validate_seconds": 118,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,16 +59,16 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 115,
-  "new_jobs": 14,
-  "removed_jobs": 14,
+  "verified_jobs": 121,
+  "new_jobs": 18,
+  "removed_jobs": 18,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 115,
+    "live": 121,
     "loginRequired": 0,
-    "dead": 27,
-    "noSignal": 8,
+    "dead": 26,
+    "noSignal": 3,
     "redirected": 0,
     "documents": 18,
     "unreachable": 0
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "16 opening(s) in Tamil Nadu"
+      "detail": "15 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -176,8 +176,8 @@
       "id": "karur.nic.in",
       "label": "karur.nic.in",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Karur District portal"
+      "status": "unreachable",
+      "detail": "fetch failed for https://karur.nic.in/notice_category/recruitment/: fetch failed"
     },
     {
       "id": "kyndryl.com",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "151 job(s) from 9 category page(s)"
+      "detail": "174 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "159 job(s) from 8 search request(s)"
+      "detail": "99 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,19 +344,19 @@
   "per_source": {
     "govt-tn": 19,
     "company-careers": 2,
-    "tech-ats": 58,
+    "tech-ats": 57,
     "naukri": 0,
-    "apna": 151,
+    "apna": 174,
     "indeed": 0,
-    "linkedin": 159
+    "linkedin": 99
   },
   "dead_domains": {
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 114
+  "dropped_records": 91
 }
