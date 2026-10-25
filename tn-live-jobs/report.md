@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-25T10:00:09.272Z
-- **Finished:** 2026-10-25T10:07:09.437Z
-- **Duration:** 158 s
+- **Started:** 2026-10-25T17:10:30.223Z
+- **Finished:** 2026-10-25T17:17:47.000Z
+- **Duration:** 156 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 101** (kept this run: 150, new: 12, gone since last run: 12)
+- **Live verified jobs: 109** (kept this run: 150, new: 14, gone since last run: 14)
 
 ## Results per source
 
@@ -45,9 +45,9 @@
 | vellore.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Vellore District portal |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 65 | 44 | 170 job(s) from 10 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 66 | 44 | 171 job(s) from 10 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 25 | 43 | 162 job(s) from 10 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 24 | 43 | 161 job(s) from 9 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,45 +57,49 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 101 |
+| :white_check_mark: Verified live | 109 |
 | Government documents verified | 0 |
 | Login required (kept, not published) | 0 |
-| Page did not look like a job (no_job_signal) | 5 |
+| Page did not look like a job (no_job_signal) | 6 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 44 |
-| Could not be reached | 0 |
+| Dead link (HTTP 4xx/5xx) | 33 |
+| Could not be reached | 2 |
 
-## New this run (12)
+## New this run (14)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Team Leader - Operations | M2 Data Studio Private Limited | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-operations-678974266 |
-| Client Relationship Manager | Daily Gong Financial Service Limit… | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai-region/client-relationship-manager-469487957 |
-| Enterprise Sales Manager / B2B Sales Executive | Sayzo Platforms Private Limited | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai/enterprise-sales-manager-b2b-sales-executive-652103664 |
-| Team Leader | Kotak Life Insurance | Chennai | Other | no (http_481) | https://apna.co/job/chennai/team-leader-981948675 |
-| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Vellore | Software | yes | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
-| Interesting Job Opportunity: QX Impact - Lead Data Analyst | QX Impact | Vellore | Data & Analytics | yes | https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022 |
-| Oracle HCM Consultant | Altraize | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/oracle-hcm-consultant-at-altraize-4462920900 |
-| Student Counselor Associcate in Trichey, Alwal, Vellore, Na… | WeMakeScholars | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/student-counselor-associcate-in-trichey-alwal-vellore-nashik-hyderabad-vellore-secunderabad-hubli-wardha-paralakhemundi-madurai-salem-coimbatore-chennai-at-wemakescholars-4481287948 |
-| Assembly Process Executive / Assembly Technician | Rockwell Automation | Kanchipuram | Engineering & Manufacturing | yes | https://in.linkedin.com/jobs/view/assembly-process-executive-assembly-technician-at-rockwell-automation-4448853605 |
-| LTRPM CA Fresher | Larsen & Toubro | Kanchipuram | Other | yes | https://in.linkedin.com/jobs/view/ltrpm-ca-fresher-at-larsen-toubro-4471723326 |
-| FOS_Liabilities Team Member_Chennai Zone | IndBank Global Support Services Li… | Chennai | Other | no (http_429) | https://in.linkedin.com/jobs/view/fos-liabilities-team-member-chennai-zone-at-indbank-global-support-services-limited-4368683251 |
-| Senior Consultant - SAP PaPM | AstraZeneca | Chennai | Other | no (no_job_signal) | https://astrazeneca.wd3.myworkdayjobs.com/Careers/job/India---Chennai/Senior-Consultant---SAP-PaPM_R-262434-2 |
+| Payroll Executive | Gesco Healthcare Private Limited | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/payroll-executive-813630967 |
+| THE BUILDER – Product Engineer | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/the-builder-%E2%80%93-product-engineer-at-wonder-worth-solutions-4479024608 |
+| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4479028573 |
+| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4476748922 |
+| Software Engineer II | Trimble Inc. | Chennai | Software | yes | https://in.linkedin.com/jobs/view/software-engineer-ii-at-trimble-inc-4481138872 |
+| Opening for Bsc Biology, Msc Biology, Botany, Zoology Gradu… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/opening-for-bsc-biology-msc-biology-botany-zoology-graduates-at-achievers-spot-4476899498 |
+| Wanted Bioinfomatics and Biochemistry Graduates for Medical… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/wanted-bioinfomatics-and-biochemistry-graduates-for-medical-coding-jobs-at-achievers-spot-4481655701 |
+| Insurance Sales Executive | Staunch HR Services Private Limited | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/insurance-sales-executive-at-staunch-hr-services-private-limited-4479682373 |
+| Primary Teacher | SIR MUTHA SCHOOL | Vellore | Teaching | yes | https://in.linkedin.com/jobs/view/primary-teacher-at-sir-mutha-school-4474226936 |
+| Business Development Executive | Advaidha Pratyaya | Tamil Nadu | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/business-development-executive-at-advaidha-pratyaya-4481147685 |
+| Relationship Manager | Niva Bupa Health Insurance | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/relationship-manager-at-niva-bupa-health-insurance-3887080507 |
+| Opening for Bsc Chemistry, Msc Chemistry, Organic and Inorg… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/opening-for-bsc-chemistry-msc-chemistry-organic-and-inorganic-chemistry-grad-at-achievers-spot-4482609988 |
+| Jobs for Bsc Microbiology, Msc Microbiology, Microbiologist… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/jobs-for-bsc-microbiology-msc-microbiology-microbiologist-for-medical-coding-at-achievers-spot-4477983213 |
+| Vacancy for Lifescience and Paramedical Graduates | Achievers Spot | Vellore | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-lifescience-and-paramedical-graduates-at-achievers-spot-4482680877 |
 
-## Gone since last run (12)
+## Gone since last run (14)
 
-- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
-- THE BUILDER – Product Engineer (Wonder Worth Solutions)
-- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
-- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
-- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
-- Data Entry Trainee (Wikiprospects)
-- Accounts Manager (Agustya Automobiles Pvt. Ltd.)
-- Senior Finance Executive (Bizcraft Advisors Private Limited)
-- XML Developer & ePub Developer (GNext Data Solutions)
-- Annual Recruitment Planner (Government of Tamil Nadu)
-- Senior Distribution Manager (Dhanalakshmi Havan Worldwide Private Li…)
-- TENTATIVE ANNUAL RECRUITMENT PLANNER FOR THE YEAR 2025 – 2026-02-07 (Government of Tamil Nadu)
+- Junior Digital Content & Communications Associate (Auroville Consulting)
+- Student Counselor Associcate in Trichey, Alwal, Vellore, Nashik, Hyde… (WeMakeScholars)
+- Office Boy / Peon (Awign)
+- Jobs for Biomedical and Biotechnology Engineers (Achievers Spot)
+- Web Developer (Digitalfactoryindia)
+- Sales Executive - Prayaan Capital - Vellore (VIHU)
+- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
+- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
+- Salesforce Developer (SuccessMetrics Corp)
+- Senior Salesforce Developer (SuccessMetrics Corp)
+- Senior Software Engineer (Dot.Net Core, C#) (Viasat)
+- FOS_Liabilities Team Member_Chennai Zone (IndBank Global Support Services Limited)
+- Team Leader (Axis Max Life Insurance Company Limited)
+- Guest Relations Executive - Front Office (NU Hospitals)
 
 ## Data integrity
 

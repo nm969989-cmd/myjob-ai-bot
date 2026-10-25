@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-25T10:00:09.272Z",
-  "finished_at": "2026-10-25T10:07:09.437Z",
-  "duration_seconds": 158,
-  "validate_seconds": 262,
+  "started_at": "2026-10-25T17:10:30.223Z",
+  "finished_at": "2026-10-25T17:17:47.000Z",
+  "duration_seconds": 156,
+  "validate_seconds": 281,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 101,
-  "new_jobs": 12,
-  "removed_jobs": 12,
+  "verified_jobs": 109,
+  "new_jobs": 14,
+  "removed_jobs": 14,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 101,
+    "live": 109,
     "loginRequired": 0,
-    "dead": 44,
-    "noSignal": 5,
+    "dead": 33,
+    "noSignal": 6,
     "redirected": 0,
     "documents": 0,
-    "unreachable": 0
+    "unreachable": 2
   },
   "source_status": [
     {
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "170 job(s) from 10 category page(s)"
+      "detail": "171 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "162 job(s) from 10 search request(s)"
+      "detail": "161 job(s) from 9 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -346,9 +346,9 @@
     "company-careers": 2,
     "tech-ats": 57,
     "naukri": 0,
-    "apna": 170,
+    "apna": 171,
     "indeed": 0,
-    "linkedin": 162
+    "linkedin": 161
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
