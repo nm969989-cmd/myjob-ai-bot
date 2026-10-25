@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-24T16:48:29.617Z",
-  "finished_at": "2026-10-24T16:53:09.483Z",
-  "duration_seconds": 156,
-  "validate_seconds": 124,
+  "started_at": "2026-10-25T10:00:09.272Z",
+  "finished_at": "2026-10-25T10:07:09.437Z",
+  "duration_seconds": 158,
+  "validate_seconds": 262,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 117,
-  "new_jobs": 7,
-  "removed_jobs": 7,
+  "verified_jobs": 101,
+  "new_jobs": 12,
+  "removed_jobs": 12,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 117,
+    "live": 101,
     "loginRequired": 0,
-    "dead": 30,
-    "noSignal": 3,
+    "dead": 44,
+    "noSignal": 5,
     "redirected": 0,
-    "documents": 18,
+    "documents": 0,
     "unreachable": 0
   },
   "source_status": [
@@ -274,8 +274,8 @@
       "id": "mrb.tn.gov.in",
       "label": "TN Medical Services Recruitment Board (MRB)",
       "tier": 1,
-      "status": "ok",
-      "detail": "2 notification(s) on Medical Services Recruitment Board"
+      "status": "unreachable",
+      "detail": "fetch failed for https://www.mrb.tn.gov.in/: fetch failed"
     },
     {
       "id": "protnnetc.tn.gov.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "174 job(s) from 10 category page(s)"
+      "detail": "170 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "156 job(s) from 8 search request(s)"
+      "detail": "162 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,21 +342,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 19,
+    "govt-tn": 17,
     "company-careers": 2,
     "tech-ats": 57,
     "naukri": 0,
-    "apna": 174,
+    "apna": 170,
     "indeed": 0,
-    "linkedin": 156
+    "linkedin": 162
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
-    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
-    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
+    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 110
+  "dropped_records": 103
 }
