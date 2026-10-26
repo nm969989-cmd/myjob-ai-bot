@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-26T11:22:19.821Z",
-  "finished_at": "2026-10-26T11:29:06.382Z",
-  "duration_seconds": 157,
-  "validate_seconds": 250,
+  "started_at": "2026-10-26T19:29:49.915Z",
+  "finished_at": "2026-10-26T19:34:36.273Z",
+  "duration_seconds": 158,
+  "validate_seconds": 128,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 117,
-  "new_jobs": 17,
-  "removed_jobs": 17,
+  "verified_jobs": 111,
+  "new_jobs": 15,
+  "removed_jobs": 15,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 117,
+    "live": 111,
     "loginRequired": 0,
-    "dead": 25,
-    "noSignal": 7,
+    "dead": 30,
+    "noSignal": 9,
     "redirected": 0,
-    "documents": 14,
-    "unreachable": 1
+    "documents": 16,
+    "unreachable": 0
   },
   "source_status": [
     {
@@ -128,7 +128,7 @@
       "label": "erode.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Erode District portal"
+      "detail": "2 notice(s) on Erode District portal"
     },
     {
       "id": "freshersworld.com",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "155 job(s) from 9 search request(s)"
+      "detail": "168 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,21 +342,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 15,
+    "govt-tn": 16,
     "company-careers": 2,
     "tech-ats": 58,
     "naukri": 0,
     "apna": 172,
     "indeed": 0,
-    "linkedin": 155
+    "linkedin": 168
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 110
+  "dropped_records": 111
 }
