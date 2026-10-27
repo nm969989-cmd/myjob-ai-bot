@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-26T19:29:49.915Z",
-  "finished_at": "2026-10-26T19:34:36.273Z",
-  "duration_seconds": 158,
-  "validate_seconds": 128,
+  "started_at": "2026-10-27T10:46:32.685Z",
+  "finished_at": "2026-10-27T10:51:13.866Z",
+  "duration_seconds": 157,
+  "validate_seconds": 124,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 111,
-  "new_jobs": 15,
-  "removed_jobs": 15,
+  "verified_jobs": 116,
+  "new_jobs": 18,
+  "removed_jobs": 18,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 111,
+    "live": 116,
     "loginRequired": 0,
-    "dead": 30,
-    "noSignal": 9,
+    "dead": 29,
+    "noSignal": 5,
     "redirected": 0,
-    "documents": 16,
+    "documents": 17,
     "unreachable": 0
   },
   "source_status": [
@@ -198,7 +198,7 @@
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "3 opening(s) in Tamil Nadu"
+      "detail": "2 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
@@ -239,8 +239,8 @@
       "id": "tirunelveli.nic.in",
       "label": "Tirunelveli District Collectorate",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Tirunelveli District portal"
+      "status": "unreachable",
+      "detail": "fetch failed for https://tirunelveli.nic.in/notice_category/recruitment/: fetch failed"
     },
     {
       "id": "tiruppur.nic.in",
@@ -295,8 +295,8 @@
       "id": "vellore.nic.in",
       "label": "vellore.nic.in",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Vellore District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Vellore District portal"
     },
     {
       "id": "wipro.com",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "168 job(s) from 11 search request(s)"
+      "detail": "146 job(s) from 12 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,13 +342,13 @@
     }
   ],
   "per_source": {
-    "govt-tn": 16,
+    "govt-tn": 17,
     "company-careers": 2,
-    "tech-ats": 58,
+    "tech-ats": 57,
     "naukri": 0,
     "apna": 172,
     "indeed": 0,
-    "linkedin": 168
+    "linkedin": 146
   },
   "dead_domains": {
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
@@ -358,5 +358,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 111
+  "dropped_records": 107
 }
