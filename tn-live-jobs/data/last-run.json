@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-28T11:29:30.842Z",
-  "finished_at": "2026-10-28T11:34:13.776Z",
-  "duration_seconds": 158,
-  "validate_seconds": 125,
+  "started_at": "2026-10-28T18:59:35.701Z",
+  "finished_at": "2026-10-28T19:04:18.235Z",
+  "duration_seconds": 159,
+  "validate_seconds": 123,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -60,15 +60,15 @@
   ],
   "scraped_records": 150,
   "verified_jobs": 117,
-  "new_jobs": 18,
-  "removed_jobs": 18,
+  "new_jobs": 24,
+  "removed_jobs": 24,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
     "live": 117,
     "loginRequired": 0,
-    "dead": 27,
-    "noSignal": 6,
+    "dead": 26,
+    "noSignal": 7,
     "redirected": 0,
     "documents": 15,
     "unreachable": 0
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "14 opening(s) in Tamil Nadu"
+      "detail": "11 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "159 job(s) from 8 search request(s)"
+      "detail": "161 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,18 +344,18 @@
   "per_source": {
     "govt-tn": 17,
     "company-careers": 2,
-    "tech-ats": 55,
+    "tech-ats": 52,
     "naukri": 0,
     "apna": 166,
     "indeed": 0,
-    "linkedin": 159
+    "linkedin": 161
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 129
+  "dropped_records": 126
 }

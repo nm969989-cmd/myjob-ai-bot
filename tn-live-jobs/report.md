@@ -1,17 +1,17 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-10-28T11:29:30.842Z
-- **Finished:** 2026-10-28T11:34:13.776Z
-- **Duration:** 158 s
+- **Started:** 2026-10-28T18:59:35.701Z
+- **Finished:** 2026-10-28T19:04:18.235Z
+- **Duration:** 159 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 117** (kept this run: 150, new: 18, gone since last run: 18)
+- **Live verified jobs: 117** (kept this run: 150, new: 24, gone since last run: 24)
 
 ## Results per source
 
 | Source | Tier | Status | Found | In this run | Note |
 | --- | --- | --- | --- | --- | --- |
-| astrazeneca.com | 1 | :white_check_mark: ok | 9 | 5 | 14 opening(s) in Tamil Nadu |
+| astrazeneca.com | 1 | :white_check_mark: ok | 6 | 5 | 11 opening(s) in Tamil Nadu |
 | Avery Dennison | 1 | :white_check_mark: ok | 0 | 5 | 5 opening(s) in Tamil Nadu |
 | chennai.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Chennai District portal |
 | Cognizant | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
@@ -45,9 +45,9 @@
 | vellore.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Vellore District portal |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 92 | 44 | 166 job(s) from 9 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 93 | 44 | 166 job(s) from 9 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 26 | 43 | 159 job(s) from 8 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 25 | 43 | 161 job(s) from 11 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -60,61 +60,69 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | :white_check_mark: Verified live | 117 |
 | Government documents verified | 15 |
 | Login required (kept, not published) | 0 |
-| Page did not look like a job (no_job_signal) | 6 |
+| Page did not look like a job (no_job_signal) | 7 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 27 |
+| Dead link (HTTP 4xx/5xx) | 26 |
 | Could not be reached | 0 |
 
-## New this run (18)
+## New this run (24)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| CI/CD Workflow Engineer_EBH | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000158241869 |
-| Automotive Senior Hardware Engineer-Specialist | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000158230220 |
-| Mechanical Design (CAD NX) | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000158204658 |
-| Accountant | Savifast Management | Tamil Nadu | Accounting & Finance | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/accountant-864951838 |
-| Senior Accountant | Unilateral Technology Private Limi… | Tamil Nadu | Accounting & Finance | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/senior-accountant-941811863 |
-| HR / IR | AS-IT-IS Nutrition | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/hr-ir-150438512 |
-| Sales & Service Engineer | V Deco Products | Tamil Nadu | Sales & Marketing | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/sales-service-engineer-988401023 |
-| Client Relationship Manager | Daily Gong Financial Service Limit… | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai-region/client-relationship-manager-469487957 |
-| Banking Executive | Tata Aia Life Insurance Company Li… | Chennai | Other | yes | https://apna.co/job/chennai-region/banking-executive-123459696 |
-| VMC HMC Programmer | Yae Cube Equipments | Chennai | Software | no (http_481) | https://apna.co/job/chennai-region/vmc-hmc-programmer-790711758 |
-| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Vellore | Software | yes | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
-| Interesting Job Opportunity: QX Impact - Lead Data Analyst | QX Impact | Chennai | Data & Analytics | yes | https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022 |
-| Salesforce Architect | SuccessMetrics Corp | Puducherry | Sales & Marketing | no (http_429) | https://in.linkedin.com/jobs/view/salesforce-architect-at-successmetrics-corp-4442579072 |
-| Assistant Relationship Manager | Niva Bupa Health Insurance | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/assistant-relationship-manager-at-niva-bupa-health-insurance-3887082378 |
-| Recruitment for Rural Development and Panchayat Raj – Filli… | Government of Tamil Nadu | Vellore | Government | yes | https://cdn.s3waas.gov.in/s31651cf0d2f737d7adeab84d339dbabd3/uploads/2026/10/17931651527079.pdf |
-| Senior Analyst - Commercial Pharma Analytics | AstraZeneca | Chennai | Data & Analytics | no (no_job_signal) | https://astrazeneca.wd3.myworkdayjobs.com/Careers/job/India---Chennai/Senior-Analyst---Brand-Analytics_R-261980 |
-| Specialist - BPM Process Optimisation | AstraZeneca | Chennai | Other | no (no_job_signal) | https://astrazeneca.wd3.myworkdayjobs.com/Careers/job/India---Chennai/Specialist---BPM-Process-Optimisation_R-262491-1 |
-| Senior Consultant - SAP PaPM | AstraZeneca | Chennai | Other | no (no_job_signal) | https://astrazeneca.wd3.myworkdayjobs.com/Careers/job/India---Chennai/Senior-Consultant---SAP-PaPM_R-262434-2 |
+| Team Leader | M2 Data Studio Private Limited | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-492747258 |
+| Team Leader - Operations | Zorell Appliances | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-operations-448537365 |
+| Senior Sales Manager | Ayushman Ayurvedic Therapy Centre | Puducherry | Sales & Marketing | yes | https://apna.co/job/bengaluru-bangalore-region/senior-sales-manager-934001715 |
+| Team Coordinator | Axis Max Life Insurance Company Li… | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/team-coordinator-798874025 |
+| L6 – Supervisor – Software Developer | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4476755759 |
+| Software Engineer II .NET | NCR Voyix | Chennai | Software | yes | https://in.linkedin.com/jobs/view/software-engineer-ii-net-at-ncr-voyix-4484456540 |
+| Vacancy for Lifescience and Paramedical Graduates | Achievers Spot | Vellore | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-lifescience-and-paramedical-graduates-at-achievers-spot-4482680877 |
+| Jobs for Biomedical and Biotechnology Engineers | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/jobs-for-biomedical-and-biotechnology-engineers-at-achievers-spot-4475784091 |
+| Relationship Associate | Niva Bupa Health Insurance | Vellore | Other | yes | https://in.linkedin.com/jobs/view/relationship-associate-at-niva-bupa-health-insurance-3891964008 |
+| Junior Digital Content & Communications Associate | Auroville Consulting | Vellore | Other | yes | https://in.linkedin.com/jobs/view/junior-digital-content-communications-associate-at-auroville-consulting-4481639716 |
+| Sales Executive - Prayaan Capital - Vellore | VIHU | Vellore | Sales & Marketing | no (http_429) | https://in.linkedin.com/jobs/view/sales-executive-prayaan-capital-vellore-at-vihu-4462260023 |
+| Office Boy / Peon | Awign | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/office-boy-peon-at-awign-4478812582 |
+| Guest Relations Executive - Front Office | NU Hospitals | Tirupattur | Back Office & Admin | no (http_429) | https://in.linkedin.com/jobs/view/guest-relations-executive-front-office-at-nu-hospitals-4397747632 |
+| Student Counselor Associcate in Hyderabad, Vellore, Hubli, … | WeMakeScholars | Vellore | Other | yes | https://in.linkedin.com/jobs/view/student-counselor-associcate-in-hyderabad-vellore-hubli-wardha-paralakhemundi-coimbatore-madurai-secunderabad-chennai-alwal-vellore-salem-trichey-nashik-at-wemakescholars-4481287948 |
+| Data Entry Trainee | Wikiprospects | Tiruvannamalai | Back Office & Admin | yes | https://in.linkedin.com/jobs/view/data-entry-trainee-at-wikiprospects-4418816542 |
+| LTRPM CA Fresher | Larsen & Toubro | Kanchipuram | Other | yes | https://in.linkedin.com/jobs/view/ltrpm-ca-fresher-at-larsen-toubro-4471723326 |
+| FOS_Liabilities Team Member_Chennai Zone | IndBank Global Support Services Li… | Chennai | Other | no (http_429) | https://in.linkedin.com/jobs/view/fos-liabilities-team-member-chennai-zone-at-indbank-global-support-services-limited-4368683251 |
+| General Dentist | Rajan Dental clinic | Vellore | Other | yes | https://in.linkedin.com/jobs/view/general-dentist-4479919889 |
+| Digital Media Designer & Video Editor | XenAI Tech | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/digital-media-designer-video-editor-at-xenai-tech-4448125246 |
+| SEO / SEM Developer (Fresher) | XenAI Tech | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/seo-sem-developer-fresher-at-xenai-tech-4448127228 |
+| Relationship Manager | Policybazaar.com | Puducherry | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/relationship-manager-at-policybazaar-com-4480003746 |
+| Relationship Associate | Niva Bupa Health Insurance | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/relationship-associate-at-niva-bupa-health-insurance-3891964009 |
+| Platform Engineer – Enterprise Golden Paths & Automated Gov… | AstraZeneca | Chennai | Other | no (no_job_signal) | https://astrazeneca.wd3.myworkdayjobs.com/Careers/job/India---Chennai/Platform-Product-Owner---Developer-Tooling_R-262358-1 |
+| Senior Manager – DevOps Engineering | AstraZeneca | Chennai | Software | no (no_job_signal) | https://astrazeneca.wd3.myworkdayjobs.com/Careers/job/India---Chennai/Senior-Manager---DevOps-Engineering_R-262361 |
 
-## Gone since last run (18)
+## Gone since last run (24)
 
-- AIX and Linux Expert (Kyndryl)
-- Web Developer (Digitalfactoryindia)
-- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
-- Lead - Business Analyst (Marketing Analytics) (Freshworks)
-- Medical Coding Jobs for Bioinfomatics Graduates (Achievers Spot)
-- Senior Director, Engineering - AI Studio (CX & EX) (Freshworks)
-- Senior Analyst - Cybersecurity (Freshworks)
-- HR Intern (Muthoot Finance)
-- Recruitment for Rural Development and Panchayat Raj – Filling up the … (Government of Tamil Nadu)
-- Walkin Drive- Store Managers & Duty Managers (More Retail Private Limited)
-- Accounts Manager (Infra Engineers India Pvt. Ltd.)
-- Marketing Manager (Merloam Estates)
-- CI/CD Workflow Engineer_EBH (Robert Bosch India)
-- Full Stack Software Developer with AI expertise, Pune (Robert Bosch India)
-- LTRPM CA Fresher (Larsen & Toubro)
-- Department of Child Welfare and Special Services – Recruitment. (Government of Tamil Nadu)
-- Accounts Executive (Savifast Management)
-- Channel Partner (Dhanalakshmi Havan Worldwide Private Li…)
+- Wanted Bioinfomatics and Biochemistry Graduates for Medical Coding Jo… (Achievers Spot)
+- Java Fullstack Developer (Citi)
+- Insurance Sales Executive (Staunch HR Services Private Limited)
+- QX Impact - Senior Data Engineer - ETL/Python (QX Impact)
+- Primary Teacher (SIR MUTHA SCHOOL)
+- Medical coding jobs for Bioinformatics and Biochemist (Achievers Spot)
+- Medical Coding Jobs for Biomedical Engineer (Achievers Spot)
+- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
+- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
+- Interesting Job Opportunity: QX Impact - Lead Data Analyst (QX Impact)
+- Salesforce Developer (SuccessMetrics Corp)
+- Senior Salesforce Developer (SuccessMetrics Corp)
+- Salesforce Architect (SuccessMetrics Corp)
+- Assistant Relationship Manager (Niva Bupa Health Insurance)
+- Relationship Manager (Niva Bupa Health Insurance)
+- Banking Executive (Tata Aia Life Insurance Company Limited)
+- Team Leader - Operations (M2 Data Studio Private Limited)
+- Analyst - Data Quality (AstraZeneca)
+- Senior Specialist-Payroll (AstraZeneca)
+- VMC HMC Programmer (Yae Cube Equipments)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 129 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 126 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
