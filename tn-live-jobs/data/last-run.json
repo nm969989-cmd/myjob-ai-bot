@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-28T18:59:35.701Z",
-  "finished_at": "2026-10-28T19:04:18.235Z",
-  "duration_seconds": 159,
-  "validate_seconds": 123,
+  "started_at": "2026-10-29T11:39:39.851Z",
+  "finished_at": "2026-10-29T11:44:16.988Z",
+  "duration_seconds": 156,
+  "validate_seconds": 121,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,15 +59,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 117,
-  "new_jobs": 24,
-  "removed_jobs": 24,
+  "verified_jobs": 115,
+  "new_jobs": 18,
+  "removed_jobs": 18,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 117,
+    "live": 115,
     "loginRequired": 0,
-    "dead": 26,
+    "dead": 28,
     "noSignal": 7,
     "redirected": 0,
     "documents": 15,
@@ -142,7 +142,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "14 opening(s) in Tamil Nadu"
+      "detail": "16 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -198,14 +198,14 @@
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "2 opening(s) in Tamil Nadu"
+      "detail": "3 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "16 opening(s) in Tamil Nadu"
+      "detail": "14 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -253,8 +253,8 @@
       "id": "tnvelaivaaippu.gov.in",
       "label": "TN Employment & Training",
       "tier": 1,
-      "status": "ok",
-      "detail": "2 notice(s) on the Employment & Training portal"
+      "status": "unreachable",
+      "detail": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed"
     },
     {
       "id": "employment.tn.gov.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "166 job(s) from 9 category page(s)"
+      "detail": "168 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "161 job(s) from 11 search request(s)"
+      "detail": "155 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,20 +342,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 17,
+    "govt-tn": 15,
     "company-careers": 2,
-    "tech-ats": 52,
+    "tech-ats": 53,
     "naukri": 0,
-    "apna": 166,
+    "apna": 168,
     "indeed": 0,
-    "linkedin": 161
+    "linkedin": 155
   },
   "dead_domains": {
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 126
+  "dropped_records": 119
 }
