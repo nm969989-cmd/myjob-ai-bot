@@ -1,7 +1,7 @@
 {
   "status": "ok",
-  "started_at": "2026-10-29T19:07:06.259Z",
-  "finished_at": "2026-10-29T19:11:54.293Z",
+  "started_at": "2026-10-30T11:30:55.129Z",
+  "finished_at": "2026-10-30T11:35:43.253Z",
   "duration_seconds": 158,
   "validate_seconds": 130,
   "trigger": "GitHub Actions (schedule)",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 116,
-  "new_jobs": 16,
-  "removed_jobs": 16,
+  "verified_jobs": 117,
+  "new_jobs": 26,
+  "removed_jobs": 26,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 116,
+    "live": 117,
     "loginRequired": 0,
-    "dead": 24,
-    "noSignal": 10,
+    "dead": 26,
+    "noSignal": 7,
     "redirected": 0,
-    "documents": 15,
+    "documents": 13,
     "unreachable": 0
   },
   "source_status": [
@@ -128,7 +128,7 @@
       "label": "erode.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Erode District portal"
+      "detail": "1 notice(s) on Erode District portal"
     },
     {
       "id": "freshersworld.com",
@@ -142,7 +142,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "16 opening(s) in Tamil Nadu"
+      "detail": "17 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -184,7 +184,7 @@
       "label": "kyndryl.com",
       "tier": 1,
       "status": "ok",
-      "detail": "4 opening(s) in Tamil Nadu"
+      "detail": "5 opening(s) in Tamil Nadu"
     },
     {
       "id": "madurai.nic.in",
@@ -247,7 +247,7 @@
       "label": "tiruppur.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Tiruppur District portal"
+      "detail": "1 notice(s) on Tiruppur District portal"
     },
     {
       "id": "tnvelaivaaippu.gov.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "168 job(s) from 9 category page(s)"
+      "detail": "169 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "158 job(s) from 8 search request(s)"
+      "detail": "161 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,21 +342,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 15,
+    "govt-tn": 13,
     "company-careers": 2,
-    "tech-ats": 52,
+    "tech-ats": 54,
     "naukri": 0,
-    "apna": 168,
+    "apna": 169,
     "indeed": 0,
-    "linkedin": 158
+    "linkedin": 161
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 122
+  "dropped_records": 120
 }
