@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-30T11:30:55.129Z",
-  "finished_at": "2026-10-30T11:35:43.253Z",
-  "duration_seconds": 158,
-  "validate_seconds": 130,
+  "started_at": "2026-10-30T18:44:30.570Z",
+  "finished_at": "2026-10-30T18:49:10.245Z",
+  "duration_seconds": 156,
+  "validate_seconds": 124,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 117,
-  "new_jobs": 26,
-  "removed_jobs": 26,
+  "verified_jobs": 121,
+  "new_jobs": 12,
+  "removed_jobs": 12,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 117,
+    "live": 121,
     "loginRequired": 0,
-    "dead": 26,
-    "noSignal": 7,
+    "dead": 21,
+    "noSignal": 8,
     "redirected": 0,
-    "documents": 13,
+    "documents": 15,
     "unreachable": 0
   },
   "source_status": [
@@ -198,14 +198,14 @@
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "3 opening(s) in Tamil Nadu"
+      "detail": "4 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "15 opening(s) in Tamil Nadu"
+      "detail": "13 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -239,8 +239,8 @@
       "id": "tirunelveli.nic.in",
       "label": "Tirunelveli District Collectorate",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Tirunelveli District portal"
+      "status": "ok",
+      "detail": "2 notice(s) on Tirunelveli District portal"
     },
     {
       "id": "tiruppur.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "169 job(s) from 9 category page(s)"
+      "detail": "167 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "161 job(s) from 10 search request(s)"
+      "detail": "157 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,21 +342,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 13,
+    "govt-tn": 15,
     "company-careers": 2,
-    "tech-ats": 54,
+    "tech-ats": 53,
     "naukri": 0,
-    "apna": 169,
+    "apna": 167,
     "indeed": 0,
-    "linkedin": 161
+    "linkedin": 157
   },
   "dead_domains": {
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 120
+  "dropped_records": 119
 }
