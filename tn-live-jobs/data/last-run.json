@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-10-30T18:44:30.570Z",
-  "finished_at": "2026-10-30T18:49:10.245Z",
-  "duration_seconds": 156,
-  "validate_seconds": 124,
+  "started_at": "2026-10-31T11:02:29.876Z",
+  "finished_at": "2026-10-31T11:07:17.187Z",
+  "duration_seconds": 158,
+  "validate_seconds": 129,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 121,
-  "new_jobs": 12,
-  "removed_jobs": 12,
+  "verified_jobs": 114,
+  "new_jobs": 19,
+  "removed_jobs": 19,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 121,
+    "live": 114,
     "loginRequired": 0,
-    "dead": 21,
+    "dead": 28,
     "noSignal": 8,
     "redirected": 0,
-    "documents": 15,
+    "documents": 11,
     "unreachable": 0
   },
   "source_status": [
@@ -107,7 +107,7 @@
       "label": "Coimbatore District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Coimbatore District portal"
+      "detail": "1 notice(s) on Coimbatore District portal"
     },
     {
       "id": "cuddalore.nic.in",
@@ -120,8 +120,8 @@
       "id": "dindigul.nic.in",
       "label": "dindigul.nic.in",
       "tier": 1,
-      "status": "ok",
-      "detail": "1 notice(s) on Dindigul District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Dindigul District portal"
     },
     {
       "id": "erode.nic.in",
@@ -190,8 +190,8 @@
       "id": "madurai.nic.in",
       "label": "Madurai District Collectorate",
       "tier": 1,
-      "status": "ok",
-      "detail": "2 notice(s) on Madurai District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Madurai District portal"
     },
     {
       "id": "paypal.com",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "167 job(s) from 9 category page(s)"
+      "detail": "166 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "157 job(s) from 8 search request(s)"
+      "detail": "160 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,13 +342,13 @@
     }
   ],
   "per_source": {
-    "govt-tn": 15,
+    "govt-tn": 11,
     "company-careers": 2,
     "tech-ats": 53,
     "naukri": 0,
-    "apna": 167,
+    "apna": 166,
     "indeed": 0,
-    "linkedin": 157
+    "linkedin": 160
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -358,5 +358,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 119
+  "dropped_records": 122
 }
