@@ -1,24 +1,24 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-11-01T18:29:25.185Z
-- **Finished:** 2026-11-01T18:34:11.364Z
-- **Duration:** 158 s
+- **Started:** 2026-11-02T13:43:56.690Z
+- **Finished:** 2026-11-02T13:48:20.422Z
+- **Duration:** 156 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 119** (kept this run: 150, new: 39, gone since last run: 39)
+- **Live verified jobs: 128** (kept this run: 150, new: 38, gone since last run: 38)
 
 ## Results per source
 
 | Source | Tier | Status | Found | In this run | Note |
 | --- | --- | --- | --- | --- | --- |
-| astrazeneca.com | 1 | :white_check_mark: ok | 3 | 6 | 9 opening(s) in Tamil Nadu |
+| astrazeneca.com | 1 | :white_check_mark: ok | 8 | 0 | 8 opening(s) in Tamil Nadu |
 | Avery Dennison | 1 | :white_check_mark: ok | 0 | 5 | 5 opening(s) in Tamil Nadu |
 | chennai.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Chennai District portal |
 | Cognizant | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
-| Coimbatore District Collectorate | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Coimbatore District portal |
-| cuddalore.nic.in | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Cuddalore District portal |
+| Coimbatore District Collectorate | 1 | :white_check_mark: ok | 1 | 0 | 1 notice(s) on Coimbatore District portal |
+| cuddalore.nic.in | 1 | :white_check_mark: ok | 2 | 0 | 2 notice(s) on Cuddalore District portal |
 | dindigul.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Dindigul District portal |
-| erode.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Erode District portal |
+| erode.nic.in | 1 | :white_check_mark: ok | 1 | 0 | 1 notice(s) on Erode District portal |
 | Freshersworld | 1 | :grey_question: no listings | 0 | 0 | 0 job(s) from 12 listing page(s) |
 | Freshworks | 1 | :white_check_mark: ok | 0 | 17 | 17 opening(s) in Tamil Nadu |
 | HCLTech | 1 | :x: blocked | 0 | 0 | headless browser unavailable in this environment |
@@ -26,28 +26,28 @@
 | kanchipuram.nic.in | 1 | :x: unreachable | 0 | 0 | fetch failed for https://kanchipuram.nic.in/notice_category/recruitment/: fetch failed |
 | kanyakumari.nic.in | 1 | :x: unreachable | 0 | 0 | fetch failed for https://kanyakumari.nic.in/notice_category/recruitment/: fetch failed |
 | karur.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Karur District portal |
-| kyndryl.com | 1 | :white_check_mark: ok | 0 | 5 | 5 opening(s) in Tamil Nadu |
+| kyndryl.com | 1 | :white_check_mark: ok | 3 | 2 | 5 opening(s) in Tamil Nadu |
 | Madurai District Collectorate | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Madurai District portal |
-| paypal.com | 1 | :white_check_mark: ok | 5 | 0 | 5 opening(s) in Tamil Nadu |
+| paypal.com | 1 | :white_check_mark: ok | 2 | 0 | 2 opening(s) in Tamil Nadu |
 | Robert Bosch India | 1 | :white_check_mark: ok | 0 | 13 | 13 opening(s) in Tamil Nadu |
-| Salem District Collectorate | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Salem District portal |
+| Salem District Collectorate | 1 | :white_check_mark: ok | 2 | 0 | 2 notice(s) on Salem District portal |
 | Tata Consultancy Services | 1 | :x: blocked | 0 | 0 | fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed |
 | thanjavur.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Thanjavur District portal |
-| thoothukudi.nic.in | 1 | :white_check_mark: ok | 1 | 0 | 1 notice(s) on Thoothukudi District portal |
-| Tirunelveli District Collectorate | 1 | :white_check_mark: ok | 0 | 2 | 2 notice(s) on Tirunelveli District portal |
-| tiruppur.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Tiruppur District portal |
+| thoothukudi.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Thoothukudi District portal |
+| Tirunelveli District Collectorate | 1 | :white_check_mark: ok | 2 | 0 | 2 notice(s) on Tirunelveli District portal |
+| tiruppur.nic.in | 1 | :white_check_mark: ok | 1 | 0 | 1 notice(s) on Tiruppur District portal |
 | TN Employment & Training | 1 | :x: unreachable | 0 | 0 | fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed |
 | TN Employment Exchange | 1 | :x: unreachable | 0 | 0 | fetch failed for https://employment.tn.gov.in/: fetch failed |
-| TN Government - Job Opportunity | 1 | :x: unreachable | 0 | 0 | fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed |
-| TN Medical Services Recruitment Board (MRB) | 1 | :x: unreachable | 0 | 0 | fetch failed for https://www.mrb.tn.gov.in/: fetch failed |
+| TN Government - Job Opportunity | 1 | :x: unreachable | 1 | 1 | fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed |
+| TN Medical Services Recruitment Board (MRB) | 1 | :white_check_mark: ok | 0 | 0 | 2 notification(s) on Medical Services Recruitment Board |
 | TN Private Employment Exchange | 1 | :x: unreachable | 0 | 0 | fetch failed for https://protnnetc.tn.gov.in/: fetch failed |
 | TNPSC - Notifications | 1 | :white_check_mark: ok | 0 | 36 | 43 TNPSC notification(s) |
-| vellore.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Vellore District portal |
+| vellore.nic.in | 1 | :white_check_mark: ok | 1 | 0 | 1 notice(s) on Vellore District portal |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 88 | 46 | 166 job(s) from 9 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 95 | 37 | 167 job(s) from 9 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 0 | 10 | 20 job(s) from 4 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 31 | 37 | 150 job(s) from 10 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,80 +57,80 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 119 |
-| Government documents verified | 46 |
+| :white_check_mark: Verified live | 128 |
+| Government documents verified | 37 |
 | Login required (kept, not published) | 0 |
-| Page did not look like a job (no_job_signal) | 8 |
+| Page did not look like a job (no_job_signal) | 2 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 23 |
+| Dead link (HTTP 4xx/5xx) | 20 |
 | Could not be reached | 0 |
 
-## New this run (39)
+## New this run (38)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| DISTRIBUTION OF VACANCIES | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/Vacancy_Distribution_CESSE.pdf |
-| DISTRIBUTION OF VACANCIES | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/RI_DOV.pdf |
-| ADDENDUM_26A (DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2022_26A_CCSE_III_Addendum.pdf |
-| Group-V.A Posts of Assistant Section Officer / Assistant in… | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/english/21_2022_Group_V_A_Notfn_Eng.pdf |
-| FOREST APPRENTICE (GROUP- VI SERVICES) (TAMIL NADU FOREST S… | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/english/20_2022_Group_VI_Forest%20App_Notfn_Eng.pdf |
-| TYPIST_ (REVISED DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/TYP_Vacancy_Distribution_30_06_23.pdf |
-| DISTRIBUTION OF VACANCIES | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/Vacancy_Distribution_Gr-II.pdf |
-| ADDENDUM (REVISED VACANCIES -DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2022_01A_EO_GR_I_Addendum.pdf |
-| ADDENDUM (DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2021_17A_RAEAR_ADDENDUM.pdf |
-| ADDENDUM (DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2021_16A_CSSSE_ADDENDUM.pdf |
-| ADDENDUM(REVISED DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/BHS%20Addendum.pdf |
-| ADDENDUM (DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2021_13A_ARCH%20ASST_PLAN%20ASST_ADDENDUM.pdf |
-| ADDENDUM (DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2021_12_CGSSE_%20ADDENDUM.pdf |
-| ADDENDUM (DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2021_11_PRINCIPAL%20ITI_ADDENDUM.pdf |
-| ADDENDUM (DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2021_10_APP_%20ADDENDUM.pdf |
-| ADDENDUM (DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2020_01A_Group_I_Addendum.pdf |
-| SUPPLEMENTAL NOTIFICATION NO. 25A/2019,DATED 22.10.2019 | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2019_25_Civil_Judge_Sup_notyfn.pdf |
-| ADDENDUM (DISTRIBUTION OF VACANCIES) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2019_25_CJ_DIST_VACANCIES.pdf |
-| ADDENDUM (Revised Distribution of Vacancies) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2019_20B_JSO_Addendum.pdf |
-| ACCOUNTS OFFICER, CLASS III [SHORTFALL VACANCIES] (The Tami… | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/english/2019_07_notifyn_accountofficer_class_III.pdf |
-| Curator in Museum Department (The Tamil Nadu General Subord… | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/english/2019_06_Notifyn_Curator.pdf |
-| DISTRIBUTION OF VACANCIES | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2018_39_AAO_distribution_vacancies.pdf |
-| Forest Apprentice (The Tamil Nadu Forest Subordinate Servic… | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/english/2018_12_notfy_Forest_Apprentice.pdf |
-| DISTRIBUTION OF VACANCIES | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2018_10_AHO_dist_vacancies.pdf |
-| SUPPLEMENTAL NOTIFICATION NO.09A/2018 | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2018_09A_AO_Extension.pdf |
-| DISTRIBUTION OF VACANCIES | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2018_09_09A_AGRI_EXTEN_DISRIBUTION.pdf |
-| DISTRIBUTION OF VACANCIES | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2018_05_CESE_distributionofvacancies.pdf |
-| DISTRIBUTION OF VACANCIES | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2018_03_MVI_Dist_vacancies.pdf |
-| DISTRIBUTION OF VACANCIES (REVISED) | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2018_03_MVI-GR%20II_Revised%20Distribution%20of%20Vacancies.pdf |
-| DISTRIBUTION OF VACANCIES | Government of Tamil Nadu | Tamil Nadu | Government | yes | https://www.tnpsc.gov.in/Document/English/2018_02_distribution_Lab_asst.pdf |
+| Senior Account Management (EX) - Top Tier NA | Freshworks | Chennai | Other | yes | https://jobs.smartrecruiters.com/Freshworks/744000159090559 |
+| Senior Account Executive - Inside Sales | Freshworks | Chennai | Sales & Marketing | yes | https://jobs.smartrecruiters.com/Freshworks/744000159089985 |
+| Senior Hardware Module Developer – Braking Systems | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159114818 |
+| Chapter Area Lead – Software Testing and Test Automation | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159055029 |
+| BDE – Immediate Hiring \| Field Sales \| Attractive Incentives | Iwiz Android Robo | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai-region/bde-immediate-hiring-field-sales-attractive-incent-892079897 |
+| Digital Marketing Manager | Vibez Estates | Puducherry | Sales & Marketing | yes | https://apna.co/job/bengaluru-bangalore-region/digital-marketing-manager-622083562 |
+| Senior Relationship Manager | Sbi Life Insurance Company Limited | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai-region/senior-relationship-manager-948324015 |
+| Two Wheeler Riders | Big Basket | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/two-wheeler-riders-985829815 |
+| Financial Planner | Ageas Federal Life Insurance | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/financial-planner-106938295 |
+| Software Testing Intern | IZIVAR | Tiruvannamalai | Software | yes | https://in.linkedin.com/jobs/view/software-testing-intern-at-izivar-4479209603 |
+| Senior Research Fellow | Vellore Institute of Technology - … | Vellore | Other | yes | https://in.linkedin.com/jobs/view/senior-research-fellow-4484335538 |
+| Web Developer | Digitalfactoryindia | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/web-developer-4475732330 |
+| Senior Node.js Develpoer | BigThinkCode | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/senior-node-js-develpoer-at-bigthinkcode-4466908401 |
+| Integrations Engineer | DrDoctor | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/integrations-engineer-at-drdoctor-4444153802 |
+| SAP CPI Principal Architect | NTT DATA North America | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/sap-cpi-principal-architect-at-ntt-data-north-america-4411617572 |
+| Medical Coding Jobs for Bioinfomatics Graduates | Achievers Spot | Villupuram | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-bioinfomatics-graduates-at-achievers-spot-4485459441 |
+| Associate Database Engineer | Mydbops | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/associate-database-engineer-at-mydbops-4454260797 |
+| Oracle HCM Consultant | Altraize | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/oracle-hcm-consultant-at-altraize-4462920900 |
+| Developer III - Software Engineering - Angular | UST | Chennai | Software | no (http_429) | https://in.linkedin.com/jobs/view/developer-iii-software-engineering-angular-at-ust-4464773845 |
+| Java Fullstack Developer | Wipro | Chennai | Software | yes | https://in.linkedin.com/jobs/view/java-fullstack-developer-at-wipro-4482435140 |
+| Python Backend Developer | Kavi India | Chennai | Software | yes | https://in.linkedin.com/jobs/view/python-backend-developer-at-kavi-india-4478429782 |
+| Sr. Software Engineer (Python) | BigThinkCode | Chennai | Software | yes | https://in.linkedin.com/jobs/view/sr-software-engineer-python-at-bigthinkcode-4339895870 |
+| Full Stack Developer-Angular | UST | Chennai | Software | yes | https://in.linkedin.com/jobs/view/full-stack-developer-angular-at-ust-4457234516 |
+| Fullstack Java With Angular-Software Engineer II | Deloitte | Chennai | Software | yes | https://in.linkedin.com/jobs/view/fullstack-java-with-angular-software-engineer-ii-at-deloitte-4424676269 |
+| Software Engineer II .NET | NCR Voyix | Chennai | Software | yes | https://in.linkedin.com/jobs/view/software-engineer-ii-net-at-ncr-voyix-4484456540 |
+| Software Development Engineer, Alexa Connections | Amazon | Chennai | Software | yes | https://in.linkedin.com/jobs/view/software-development-engineer-alexa-connections-at-amazon-4485217407 |
+| Senior .NET Developer | TVS Next | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-net-developer-at-tvs-next-4475422913 |
+| Java Fullstack Developer | Citi | Chennai | Software | yes | https://in.linkedin.com/jobs/view/java-fullstack-developer-at-citi-4480493248 |
+| Relationship Associate | Niva Bupa Health Insurance | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/relationship-associate-at-niva-bupa-health-insurance-3891964010 |
+| Relationship Associate | Niva Bupa Health Insurance | Vellore | Other | yes | https://in.linkedin.com/jobs/view/relationship-associate-at-niva-bupa-health-insurance-3891964008 |
 
-_(showing the first 30 of 39)_
+_(showing the first 30 of 38)_
 
-## Gone since last run (39)
+## Gone since last run (38)
 
-- Library Assistant (Sri Manakula Vinayagar Medical College …)
-- Calibration Engineer (Nagman Calibration Services LLP)
-- Full Stack Developer-Angular (UST)
-- Medical Coding Jobs for Biomedical Engineer and Biotechnology Engineer (Achievers Spot)
-- Software Development Engineer, Alexa Connections (Amazon)
-- Software Engineer II .NET (NCR Voyix)
-- SAP CPI Principal Architect (NTT DATA North America)
-- Developer III - Software Engineering - Angular (UST)
-- Java Fullstack Developer (Wipro)
-- Relationship Manager (Policybazaar.com)
-- Java Fullstack Developer (Citi)
-- Fullstack Java With Angular-Software Engineer II (Deloitte)
-- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
-- Python Backend Developer (Kavi India)
-- THE BUILDER – Product Engineer (Wonder Worth Solutions)
-- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
-- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
-- Senior .NET Developer (TVS Next)
-- FOS - Digital Sales (IndBank Global Support Services Limited)
-- Senior Node.js Develpoer (BigThinkCode)
+- Senior Account Executive - Inside Sales (Freshworks)
+- Senior Account Management (EX) - Top Tier NA (Freshworks)
+- Senior Consultant - SAP PaPM (AstraZeneca)
+- Ph.D. Candidate – Nanoelectronics and VLSI @ VIT Vellore (Vellore Institute of Technology)
+- Platform Engineer – Enterprise Golden Paths & Automated Governance (AstraZeneca)
+- Senior Consultant - SAP Tax Consultant (AstraZeneca)
+- Senior Manager – DevOps Engineering (AstraZeneca)
+- Senior Product Manager – Enterprise DevOps Platforms (AstraZeneca)
+- Mainframe DB2 System Programmer SME (Kyndryl)
+- Mainframe DB2 System Programmer SME (Kyndryl)
+- Senior Consultant – Business Systems Analyst – Coupa (AstraZeneca)
+- Cloud Expert (Kyndryl)
+- ENGINEER (Yae Cube Equipments)
+- Finance Manager (Axis Max Life Insurance Company Limited)
+- Recruitment for Rural Development and Panchayat Raj – Filling up the … (Government of Tamil Nadu)
+- Salesman Cum Driver (Sri Thirupathi Traders)
+- Salesman Cum Driver (Sri Thirupathi Traders)
+- Salesman Cum Driver (Sri Thirupathi Traders)
+- Senior Accountant (Prasanna K Venkatachalam)
+- Wealth Planner (Kotak Life Insurance)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 97 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 150 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 

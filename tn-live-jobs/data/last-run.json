@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-01T18:29:25.185Z",
-  "finished_at": "2026-11-01T18:34:11.364Z",
-  "duration_seconds": 158,
-  "validate_seconds": 128,
+  "started_at": "2026-11-02T13:43:56.690Z",
+  "finished_at": "2026-11-02T13:48:20.422Z",
+  "duration_seconds": 156,
+  "validate_seconds": 108,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 119,
-  "new_jobs": 39,
-  "removed_jobs": 39,
+  "verified_jobs": 128,
+  "new_jobs": 38,
+  "removed_jobs": 38,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 119,
+    "live": 128,
     "loginRequired": 0,
-    "dead": 23,
-    "noSignal": 8,
+    "dead": 20,
+    "noSignal": 2,
     "redirected": 0,
-    "documents": 46,
+    "documents": 37,
     "unreachable": 0
   },
   "source_status": [
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "9 opening(s) in Tamil Nadu"
+      "detail": "8 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -198,7 +198,7 @@
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "5 opening(s) in Tamil Nadu"
+      "detail": "2 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
@@ -232,8 +232,8 @@
       "id": "thoothukudi.nic.in",
       "label": "thoothukudi.nic.in",
       "tier": 1,
-      "status": "ok",
-      "detail": "1 notice(s) on Thoothukudi District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Thoothukudi District portal"
     },
     {
       "id": "tirunelveli.nic.in",
@@ -274,8 +274,8 @@
       "id": "mrb.tn.gov.in",
       "label": "TN Medical Services Recruitment Board (MRB)",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "fetch failed for https://www.mrb.tn.gov.in/: fetch failed"
+      "status": "ok",
+      "detail": "2 notification(s) on Medical Services Recruitment Board"
     },
     {
       "id": "protnnetc.tn.gov.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "166 job(s) from 9 category page(s)"
+      "detail": "167 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "20 job(s) from 4 search request(s)"
+      "detail": "150 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,20 +342,20 @@
     }
   ],
   "per_source": {
-    "govt-tn": 54,
+    "govt-tn": 55,
     "company-careers": 2,
-    "tech-ats": 54,
+    "tech-ats": 50,
     "naukri": 0,
-    "apna": 166,
+    "apna": 167,
     "indeed": 0,
-    "linkedin": 20
+    "linkedin": 150
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
-    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
-    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
+    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
+    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 97
+  "dropped_records": 150
 }
