@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-02T13:43:56.690Z",
-  "finished_at": "2026-11-02T13:48:20.422Z",
-  "duration_seconds": 156,
-  "validate_seconds": 108,
+  "started_at": "2026-11-02T22:25:08.425Z",
+  "finished_at": "2026-11-02T22:29:33.347Z",
+  "duration_seconds": 158,
+  "validate_seconds": 107,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,16 +59,16 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 128,
-  "new_jobs": 38,
-  "removed_jobs": 38,
+  "verified_jobs": 132,
+  "new_jobs": 5,
+  "removed_jobs": 5,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 128,
+    "live": 132,
     "loginRequired": 0,
-    "dead": 20,
-    "noSignal": 2,
+    "dead": 17,
+    "noSignal": 1,
     "redirected": 0,
     "documents": 37,
     "unreachable": 0
@@ -274,8 +274,8 @@
       "id": "mrb.tn.gov.in",
       "label": "TN Medical Services Recruitment Board (MRB)",
       "tier": 1,
-      "status": "ok",
-      "detail": "2 notification(s) on Medical Services Recruitment Board"
+      "status": "unreachable",
+      "detail": "fetch failed for https://www.mrb.tn.gov.in/: fetch failed"
     },
     {
       "id": "protnnetc.tn.gov.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "150 job(s) from 10 search request(s)"
+      "detail": "159 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,20 +342,20 @@
     }
   ],
   "per_source": {
-    "govt-tn": 55,
+    "govt-tn": 53,
     "company-careers": 2,
     "tech-ats": 50,
     "naukri": 0,
     "apna": 167,
     "indeed": 0,
-    "linkedin": 150
+    "linkedin": 159
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
-    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
-    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
+    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 150
+  "dropped_records": 148
 }
