@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-03T12:56:05.119Z",
-  "finished_at": "2026-11-03T13:00:45.695Z",
-  "duration_seconds": 156,
-  "validate_seconds": 125,
+  "started_at": "2026-11-03T20:14:04.364Z",
+  "finished_at": "2026-11-03T20:18:47.628Z",
+  "duration_seconds": 157,
+  "validate_seconds": 127,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 117,
-  "new_jobs": 49,
-  "removed_jobs": 49,
+  "verified_jobs": 128,
+  "new_jobs": 45,
+  "removed_jobs": 45,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 117,
+    "live": 128,
     "loginRequired": 0,
-    "dead": 24,
-    "noSignal": 9,
+    "dead": 19,
+    "noSignal": 1,
     "redirected": 0,
-    "documents": 11,
-    "unreachable": 0
+    "documents": 35,
+    "unreachable": 2
   },
   "source_status": [
     {
@@ -288,8 +288,8 @@
       "id": "tnpsc.gov.in",
       "label": "TNPSC - Notifications",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "HTTP 503"
+      "status": "ok",
+      "detail": "43 TNPSC notification(s)"
     },
     {
       "id": "vellore.nic.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "154 job(s) from 10 search request(s)"
+      "detail": "156 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,21 +342,20 @@
     }
   ],
   "per_source": {
-    "govt-tn": 11,
+    "govt-tn": 54,
     "company-careers": 2,
     "tech-ats": 53,
     "naukri": 0,
     "apna": 168,
     "indeed": 0,
-    "linkedin": 154
+    "linkedin": 156
   },
   "dead_domains": {
-    "tnpsc.gov.in": "HTTP 503",
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 119
+  "dropped_records": 160
 }
