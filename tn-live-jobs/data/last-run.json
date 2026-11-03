@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-02T22:25:08.425Z",
-  "finished_at": "2026-11-02T22:29:33.347Z",
-  "duration_seconds": 158,
-  "validate_seconds": 107,
+  "started_at": "2026-11-03T12:56:05.119Z",
+  "finished_at": "2026-11-03T13:00:45.695Z",
+  "duration_seconds": 156,
+  "validate_seconds": 125,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 132,
-  "new_jobs": 5,
-  "removed_jobs": 5,
+  "verified_jobs": 117,
+  "new_jobs": 49,
+  "removed_jobs": 49,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 132,
+    "live": 117,
     "loginRequired": 0,
-    "dead": 17,
-    "noSignal": 1,
+    "dead": 24,
+    "noSignal": 9,
     "redirected": 0,
-    "documents": 37,
+    "documents": 11,
     "unreachable": 0
   },
   "source_status": [
@@ -86,7 +86,7 @@
       "label": "Avery Dennison",
       "tier": 1,
       "status": "ok",
-      "detail": "5 opening(s) in Tamil Nadu"
+      "detail": "4 opening(s) in Tamil Nadu"
     },
     {
       "id": "chennai.nic.in",
@@ -205,14 +205,14 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "13 opening(s) in Tamil Nadu"
+      "detail": "17 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
       "label": "Salem District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Salem District portal"
+      "detail": "1 notice(s) on Salem District portal"
     },
     {
       "id": "tcs.com",
@@ -225,8 +225,8 @@
       "id": "thanjavur.nic.in",
       "label": "thanjavur.nic.in",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Thanjavur District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Thanjavur District portal"
     },
     {
       "id": "thoothukudi.nic.in",
@@ -240,7 +240,7 @@
       "label": "Tirunelveli District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Tirunelveli District portal"
+      "detail": "3 notice(s) on Tirunelveli District portal"
     },
     {
       "id": "tiruppur.nic.in",
@@ -288,8 +288,8 @@
       "id": "tnpsc.gov.in",
       "label": "TNPSC - Notifications",
       "tier": 1,
-      "status": "ok",
-      "detail": "43 TNPSC notification(s)"
+      "status": "unreachable",
+      "detail": "HTTP 503"
     },
     {
       "id": "vellore.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "167 job(s) from 9 category page(s)"
+      "detail": "168 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "159 job(s) from 10 search request(s)"
+      "detail": "154 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,20 +342,21 @@
     }
   ],
   "per_source": {
-    "govt-tn": 53,
+    "govt-tn": 11,
     "company-careers": 2,
-    "tech-ats": 50,
+    "tech-ats": 53,
     "naukri": 0,
-    "apna": 167,
+    "apna": 168,
     "indeed": 0,
-    "linkedin": 159
+    "linkedin": 154
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tnpsc.gov.in": "HTTP 503",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 148
+  "dropped_records": 119
 }
