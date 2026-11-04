@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-11-04T13:11:04.751Z
-- **Finished:** 2026-11-04T13:15:46.438Z
-- **Duration:** 159 s
+- **Started:** 2026-11-04T20:30:40.053Z
+- **Finished:** 2026-11-04T20:35:00.245Z
+- **Duration:** 156 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 100** (kept this run: 150, new: 28, gone since last run: 28)
+- **Live verified jobs: 125** (kept this run: 150, new: 12, gone since last run: 12)
 
 ## Results per source
 
@@ -45,9 +45,9 @@
 | vellore.nic.in | 1 | :white_check_mark: ok | 0 | 1 | 1 notice(s) on Vellore District portal |
 | Wipro | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
-| apna.co | 2 | :white_check_mark: ok | 95 | 37 | 169 job(s) from 9 category page(s) |
+| apna.co | 2 | :white_check_mark: ok | 96 | 37 | 170 job(s) from 9 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 29 | 37 | 159 job(s) from 9 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 37 | 37 | 166 job(s) from 11 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,76 +57,52 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 100 |
-| Government documents verified | 13 |
+| :white_check_mark: Verified live | 125 |
+| Government documents verified | 36 |
 | Login required (kept, not published) | 0 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 47 |
-| Could not be reached | 2 |
+| Dead link (HTTP 4xx/5xx) | 23 |
+| Could not be reached | 1 |
 
-## New this run (28)
+## New this run (12)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| BMS Hardware Engineer (Analog) | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159555073 |
-| Embedded Linux BSP Development_EPS1 | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159551134 |
-| Linux kernel developer_BSH | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159550959 |
-| Linux kernel developer_BSH | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159550250 |
-| Line Technical support Engineer (Assistant Manager) | Robert Bosch India | Chennai | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159546259 |
-| Embedded_Devops_ECT | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159545819 |
-| ECT2_Test Automation for Mobile APP_COB | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159545668 |
-| ECT2_Test Automation for Mobile APP_COB | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159545085 |
-| Build & Artifact Engineer_EPS1 | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159545198 |
-| SW Architect CICD_EPS1 | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000159544998 |
-| Team Leader - Operations | Zorell Appliances | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-operations-215570785 |
-| Business Development & Sales Executive (Construction) | House Construct | Tamil Nadu | Sales & Marketing | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/business-development-sales-executive-construction-299018331 |
-| Cab Driver - Bangalore | Everest Fleet Pvt. Ltd. | Puducherry | Other | yes | https://apna.co/job/nelamangala/cab-driver-bangalore-633478964 |
-| Sales and Marketing Executive | Incept Interior Concepts | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai-region/sales-and-marketing-executive-82715052 |
-| L1 – Junior Software Developer ( THE BUILDER ) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4476769047 |
-| L4 – Team Lead – Software Developer – (THE BUILDER) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l4-%E2%80%93-team-lead-%E2%80%93-software-developer-%E2%80%93-the-builder-at-wonder-worth-solutions-4476758587 |
-| Associate Data Engineer Position filled | Irastrive Technologies Private Lim… | Vellore | Software | no (http_429) | https://in.linkedin.com/jobs/view/associate-data-engineer-position-filled-at-irastrive-technologies-private-limited-4416217228 |
-| Senior Research Fellow | Vellore Institute of Technology - … | Vellore | Other | yes | https://in.linkedin.com/jobs/view/senior-research-fellow-4484335538 |
-| Coding and Robotics Trainer | Infinity Learn | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/coding-and-robotics-trainer-at-infinity-learn-4480357313 |
-| Medical Coding Jobs for Biomedical Engineer and Biotechnolo… | Achievers Spot | Vellore | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-biomedical-engineer-and-biotechnology-engineer-at-achievers-spot-4484834165 |
-| THE BUILDER – Product Engineer | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/the-builder-%E2%80%93-product-engineer-at-wonder-worth-solutions-4479024608 |
-| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4479028573 |
-| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4476748922 |
-| Full Stack Developer | BHS-Sonthofen GmbH | Vellore | Software | yes | https://in.linkedin.com/jobs/view/full-stack-developer-at-bhs-sonthofen-gmbh-4461048899 |
-| DevOps Engineer | BHS-Sonthofen GmbH | Vellore | Software | yes | https://in.linkedin.com/jobs/view/devops-engineer-at-bhs-sonthofen-gmbh-4482595382 |
-| Software Engineer - .NET Developer | NCR Voyix | Chennai | Software | yes | https://in.linkedin.com/jobs/view/software-engineer-net-developer-at-ncr-voyix-4487271097 |
-| (IND) Software Engineer III | Walmart Global Tech India | Chennai | Software | yes | https://in.linkedin.com/jobs/view/ind-software-engineer-iii-at-walmart-global-tech-india-4485084648 |
-| Vacancy for Bioinfomatics and Biochemistry Graduates | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-bioinfomatics-and-biochemistry-graduates-at-achievers-spot-4486347865 |
+| L1 – Junior Software Developer ( THE BUILDER ) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4479031515 |
+| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Tamil Nadu | Software | no (http_429) | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
+| Data Scientist | Larsen & Toubro | Kanchipuram | Data & Analytics | yes | https://in.linkedin.com/jobs/view/data-scientist-at-larsen-toubro-4485685415 |
+| Interesting Job Opportunity: QX Impact - Lead Data Analyst | QX Impact | Vellore | Data & Analytics | yes | https://in.linkedin.com/jobs/view/interesting-job-opportunity-qx-impact-lead-data-analyst-at-qx-impact-4449963022 |
+| Oracle HCM Consultant | Altraize | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/oracle-hcm-consultant-at-altraize-4462920900 |
+| Salesforce Architect | SuccessMetrics Corp | Puducherry | Sales & Marketing | no (http_429) | https://in.linkedin.com/jobs/view/salesforce-architect-at-successmetrics-corp-4442579072 |
+| Vacancy for Bsc Chemistry, Msc Chemistry, Organic and Inorg… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-bsc-chemistry-msc-chemistry-organic-and-inorganic-chemistry-grad-at-achievers-spot-4486343931 |
+| Rebar Detailers – US Projects | Pro Ultima | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/rebar-detailers-%E2%80%93-us-projects-4484920813 |
+| Sales Executive - Prayaan Capital - Vellore | VIHU | Vellore | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/sales-executive-prayaan-capital-vellore-at-vihu-4462260023 |
+| Student Counselor Associcate in Alwal, Vellore, Salem, Nash… | WeMakeScholars | Vellore | Other | yes | https://in.linkedin.com/jobs/view/student-counselor-associcate-in-alwal-vellore-salem-nashik-trichey-vellore-hyderabad-hubli-wardha-paralakhemundi-coimbatore-madurai-secunderabad-chennai-at-wemakescholars-4481287948 |
+| Guest Relations Executive - Front Office | NU Hospitals | Tirupattur | Back Office & Admin | yes | https://in.linkedin.com/jobs/view/guest-relations-executive-front-office-at-nu-hospitals-4397747632 |
+| Auditor | The vellore kitchen | Vellore | Accounting & Finance | yes | https://in.linkedin.com/jobs/view/auditor-4485190898 |
 
-## Gone since last run (28)
+## Gone since last run (12)
 
-- Medical Coding Jobs for BPT, MPT, Physiotherapy Grad (Achievers Spot)
-- Front Office Manager (Ellora Hotel)
-- Auditor (The vellore kitchen)
-- Vacancy for Anesthesiologist and Cardiac Care Technologist (Achievers Spot)
-- Intermediate Software Engineer- Full Stack-C#, Dotnet, MVC, Angular, … (UPS)
-- Student Counselor Associcate in Vellore, Alwal, Vellore, Salem, Nashi… (WeMakeScholars)
-- Java Fullstack Developer (Citi)
-- Field Sales Executive - Chittoor (Rentokil Initial)
-- Sales Executive - Prayaan Capital - Vellore (VIHU)
-- Relationship Associate (Niva Bupa Health Insurance)
-- Relationship Associate (Niva Bupa Health Insurance)
-- Assistant Relationship Manager (Niva Bupa Health Insurance)
-- Relationship Manager (Niva Bupa Health Insurance)
-- Insurance Agent/Advisor (Life Insurance Corporation Of India)
-- Picker / Packer (Zepto)
-- Team Leader - Operations (Zorell Appliances)
-- Audio Signal processing expert (Robert Bosch India)
-- BMS Hardware Engineer (Robert Bosch India)
-- Automotive Senior Hardware Engineer-Specialist (Robert Bosch India)
-- CI/CD Workflow Engineer_EBH (Robert Bosch India)
+- Vacancy for Bioinfomatics and Biochemistry Graduates (Achievers Spot)
+- Jobs for Bioinfomatics and Biochemistry Graduates For Medical Coding (Achievers Spot)
+- Medical Coding Jobs for Biomedical Engineer and Biotechnology Engineer (Achievers Spot)
+- SAP CPI Principal Architect (NTT DATA North America)
+- Job for Nutrition, Dietetics and Food Technology Grad (Achievers Spot)
+- Opening for Bsc Nursing, Msc Nursing, GNM, ANM and DGNM (Achievers Spot)
+- Jobs for Bsc Microbiology, Msc Microbiology, Microbiologist for Medic… (Achievers Spot)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- Web Developer (Digitalfactoryindia)
+- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- L1 – Junior Software Developer ( THE BUILDER ) (Wonder Worth Solutions)
+- L4 – Team Lead – Software Developer – (THE BUILDER) (Wonder Worth Solutions)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 162 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 171 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
