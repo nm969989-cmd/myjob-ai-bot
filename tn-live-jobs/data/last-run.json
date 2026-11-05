@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-05T13:24:53.304Z",
-  "finished_at": "2026-11-05T13:29:38.472Z",
-  "duration_seconds": 157,
-  "validate_seconds": 128,
+  "started_at": "2026-11-05T20:45:58.641Z",
+  "finished_at": "2026-11-05T20:50:43.418Z",
+  "duration_seconds": 158,
+  "validate_seconds": 127,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,15 +59,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 131,
-  "new_jobs": 10,
-  "removed_jobs": 10,
+  "verified_jobs": 135,
+  "new_jobs": 8,
+  "removed_jobs": 8,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 131,
+    "live": 135,
     "loginRequired": 0,
-    "dead": 18,
+    "dead": 14,
     "noSignal": 1,
     "redirected": 0,
     "documents": 37,
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "12 opening(s) in Tamil Nadu"
+      "detail": "9 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "160 job(s) from 10 search request(s)"
+      "detail": "151 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,11 +344,11 @@
   "per_source": {
     "govt-tn": 56,
     "company-careers": 2,
-    "tech-ats": 67,
+    "tech-ats": 64,
     "naukri": 0,
     "apna": 170,
     "indeed": 0,
-    "linkedin": 160
+    "linkedin": 151
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -357,5 +357,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 173
+  "dropped_records": 167
 }
