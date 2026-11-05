@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-04T20:30:40.053Z",
-  "finished_at": "2026-11-04T20:35:00.245Z",
-  "duration_seconds": 156,
-  "validate_seconds": 104,
+  "started_at": "2026-11-05T13:24:53.304Z",
+  "finished_at": "2026-11-05T13:29:38.472Z",
+  "duration_seconds": 157,
+  "validate_seconds": 128,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 125,
-  "new_jobs": 12,
-  "removed_jobs": 12,
+  "verified_jobs": 131,
+  "new_jobs": 10,
+  "removed_jobs": 10,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 125,
+    "live": 131,
     "loginRequired": 0,
-    "dead": 23,
+    "dead": 18,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 36,
-    "unreachable": 1
+    "documents": 37,
+    "unreachable": 0
   },
   "source_status": [
     {
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "9 opening(s) in Tamil Nadu"
+      "detail": "12 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -128,7 +128,7 @@
       "label": "erode.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Erode District portal"
+      "detail": "2 notice(s) on Erode District portal"
     },
     {
       "id": "freshersworld.com",
@@ -142,7 +142,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "17 opening(s) in Tamil Nadu"
+      "detail": "16 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -184,7 +184,7 @@
       "label": "kyndryl.com",
       "tier": 1,
       "status": "ok",
-      "detail": "6 opening(s) in Tamil Nadu"
+      "detail": "7 opening(s) in Tamil Nadu"
     },
     {
       "id": "madurai.nic.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "166 job(s) from 11 search request(s)"
+      "detail": "160 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,20 +342,20 @@
     }
   ],
   "per_source": {
-    "govt-tn": 55,
+    "govt-tn": 56,
     "company-careers": 2,
-    "tech-ats": 64,
+    "tech-ats": 67,
     "naukri": 0,
     "apna": 170,
     "indeed": 0,
-    "linkedin": 166
+    "linkedin": 160
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 171
+  "dropped_records": 173
 }
