@@ -1,17 +1,17 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-11-06T13:07:28.509Z
-- **Finished:** 2026-11-06T13:12:09.841Z
-- **Duration:** 157 s
+- **Started:** 2026-11-06T20:02:12.629Z
+- **Finished:** 2026-11-06T20:06:56.484Z
+- **Duration:** 159 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 136** (kept this run: 150, new: 13, gone since last run: 13)
+- **Live verified jobs: 136** (kept this run: 150, new: 11, gone since last run: 11)
 
 ## Results per source
 
 | Source | Tier | Status | Found | In this run | Note |
 | --- | --- | --- | --- | --- | --- |
-| astrazeneca.com | 1 | :white_check_mark: ok | 11 | 0 | 11 opening(s) in Tamil Nadu |
+| astrazeneca.com | 1 | :white_check_mark: ok | 13 | 0 | 13 opening(s) in Tamil Nadu |
 | Avery Dennison | 1 | :white_check_mark: ok | 4 | 0 | 4 opening(s) in Tamil Nadu |
 | chennai.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Chennai District portal |
 | Cognizant | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
@@ -47,7 +47,7 @@
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
 | apna.co | 2 | :white_check_mark: ok | 96 | 37 | 170 job(s) from 9 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 37 | 37 | 159 job(s) from 11 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 29 | 37 | 154 job(s) from 10 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -65,46 +65,42 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Dead link (HTTP 4xx/5xx) | 13 |
 | Could not be reached | 0 |
 
-## New this run (13)
+## New this run (11)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Embedded_C++ Developer_EBH | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000160127819 |
-| Embedded_C++ Developer_EBH | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000160126673 |
-| Data Consultant - Logistics | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000160117778 |
-| Sr. Leadership Development Manager | Dhanalakshmi Havan Worldwide Priva… | Tamil Nadu | Other | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/sr-leadership-development-manager-810940776 |
-| Accounts Manager | Global Trade Ventures | Chennai | Accounting & Finance | yes | https://apna.co/job/chennai-region/accounts-manager-813550224 |
-| Web Developer | Digitalfactoryindia | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/web-developer-4475732330 |
-| .Net Senior Developer | NCR Voyix | Chennai | Software | yes | https://in.linkedin.com/jobs/view/net-senior-developer-at-ncr-voyix-4488148581 |
-| Vacancy for Bioinfomatics and Biochemistry Graduates | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-bioinfomatics-and-biochemistry-graduates-at-achievers-spot-4486347865 |
-| Jobs for Bioinfomatics and Biochemistry Graduates For Medic… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/jobs-for-bioinfomatics-and-biochemistry-graduates-for-medical-coding-at-achievers-spot-4485143733 |
-| Opening for Bsc Nursing, Msc Nursing, GNM, ANM and DGNM | Achievers Spot | Tiruvannamalai | Healthcare | yes | https://in.linkedin.com/jobs/view/opening-for-bsc-nursing-msc-nursing-gnm-anm-and-dgnm-at-achievers-spot-4479326842 |
-| Jobs for Bsc Microbiology, Msc Microbiology, Microbiologist… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/jobs-for-bsc-microbiology-msc-microbiology-microbiologist-for-medical-coding-at-achievers-spot-4477978458 |
-| Vacancy for Bsc Nursing,Msc Nursing, GNM, DGNM, ANM and Mid… | Achievers Spot | Tiruvannamalai | Healthcare | yes | https://in.linkedin.com/jobs/view/vacancy-for-bsc-nursing-msc-nursing-gnm-dgnm-anm-and-midwifery-at-achievers-spot-4486581463 |
-| Field Sales Executive - Chittoor | Rentokil Initial | Vellore | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/field-sales-executive-chittoor-at-rentokil-initial-4471414469 |
+| Coding and Robotics Trainer | Infinity Learn | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/coding-and-robotics-trainer-at-infinity-learn-4480357313 |
+| L1 – Junior Software Developer ( THE BUILDER ) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4479031515 |
+| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Vellore | Software | yes | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
+| Data Scientist | Larsen & Toubro | Kanchipuram | Data & Analytics | yes | https://in.linkedin.com/jobs/view/data-scientist-at-larsen-toubro-4485685415 |
+| Gold Loan Officer- KA-TN-KL | Ujjivan Small Finance Bank | Vellore | Other | yes | https://in.linkedin.com/jobs/view/gold-loan-officer-ka-tn-kl-at-ujjivan-small-finance-bank-4488179337 |
+| Vacancy for Bsc Chemistry, Msc Chemistry, Organic and Inorg… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-bsc-chemistry-msc-chemistry-organic-and-inorganic-chemistry-grad-at-achievers-spot-4486343931 |
+| Business Development Executive | TeleCMI | Villupuram | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/business-development-executive-at-telecmi-4486569545 |
+| Customer Relationship Officer - MB - South 2 | Ujjivan Small Finance Bank | Kallakurichi | Other | yes | https://in.linkedin.com/jobs/view/customer-relationship-officer-mb-south-2-at-ujjivan-small-finance-bank-4488167838 |
+| Rebar Detailers – US Projects | Pro Ultima | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/rebar-detailers-%E2%80%93-us-projects-4484920813 |
+| Sales Executive - Prayaan Capital - Vellore | VIHU | Vellore | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/sales-executive-prayaan-capital-vellore-at-vihu-4462260023 |
+| Guest Relations Executive - Front Office | NU Hospitals | Tirupattur | Back Office & Admin | yes | https://in.linkedin.com/jobs/view/guest-relations-executive-front-office-at-nu-hospitals-4397747632 |
 
-## Gone since last run (13)
+## Gone since last run (11)
 
-- Vacancy for Bsc Chemistry, Msc Chemistry, Organic and Inorganic Chemi… (Achievers Spot)
-- Software Engineer II .NET (NCR Voyix)
-- L1 – Junior Software Developer ( THE BUILDER ) (Wonder Worth Solutions)
-- QX Impact - Senior Data Engineer - ETL/Python (QX Impact)
-- Interesting Job Opportunity: QX Impact - Lead Data Analyst (QX Impact)
-- Salesforce Architect (SuccessMetrics Corp)
-- Accountant/ Accounts Executive (Well and Wall)
-- Verification Executive (Dignity Enterprises Private Limited)
-- Chapter Area Lead – Software Testing and Test Automation (Robert Bosch India)
-- Data Scientist (Larsen & Toubro)
-- Service Now Expert (Robert Bosch India)
-- Linux Administrator (Robert Bosch India)
-- Coding and Robotics Trainer (Infinity Learn)
+- Vacancy for Bsc Nursing,Msc Nursing, GNM, DGNM, ANM and Midwifery (Achievers Spot)
+- Vacancy for Bioinfomatics and Biochemistry Graduates (Achievers Spot)
+- Jobs for Bioinfomatics and Biochemistry Graduates For Medical Coding (Achievers Spot)
+- Opening for Bsc Nursing, Msc Nursing, GNM, ANM and DGNM (Achievers Spot)
+- Jobs for Bsc Microbiology, Msc Microbiology, Microbiologist for Medic… (Achievers Spot)
+- Field Sales Executive - Chittoor (Rentokil Initial)
+- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
+- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
+- Salesforce Developer (SuccessMetrics Corp)
+- Senior Salesforce Developer (SuccessMetrics Corp)
+- SAP CPI Principal Architect (NTT DATA North America)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 175 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 169 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
