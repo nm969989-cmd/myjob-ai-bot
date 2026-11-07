@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-11-06T20:02:12.629Z
-- **Finished:** 2026-11-06T20:06:56.484Z
-- **Duration:** 159 s
+- **Started:** 2026-11-07T11:51:40.133Z
+- **Finished:** 2026-11-07T11:56:00.197Z
+- **Duration:** 155 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 136** (kept this run: 150, new: 11, gone since last run: 11)
+- **Live verified jobs: 128** (kept this run: 150, new: 11, gone since last run: 11)
 
 ## Results per source
 
@@ -47,7 +47,7 @@
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
 | apna.co | 2 | :white_check_mark: ok | 96 | 37 | 170 job(s) from 9 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 29 | 37 | 154 job(s) from 10 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 32 | 37 | 153 job(s) from 8 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,50 +57,50 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 136 |
+| :white_check_mark: Verified live | 128 |
 | Government documents verified | 37 |
 | Login required (kept, not published) | 0 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 13 |
+| Dead link (HTTP 4xx/5xx) | 21 |
 | Could not be reached | 0 |
 
 ## New this run (11)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Coding and Robotics Trainer | Infinity Learn | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/coding-and-robotics-trainer-at-infinity-learn-4480357313 |
-| L1 – Junior Software Developer ( THE BUILDER ) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4479031515 |
-| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Vellore | Software | yes | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
-| Data Scientist | Larsen & Toubro | Kanchipuram | Data & Analytics | yes | https://in.linkedin.com/jobs/view/data-scientist-at-larsen-toubro-4485685415 |
-| Gold Loan Officer- KA-TN-KL | Ujjivan Small Finance Bank | Vellore | Other | yes | https://in.linkedin.com/jobs/view/gold-loan-officer-ka-tn-kl-at-ujjivan-small-finance-bank-4488179337 |
-| Vacancy for Bsc Chemistry, Msc Chemistry, Organic and Inorg… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-bsc-chemistry-msc-chemistry-organic-and-inorganic-chemistry-grad-at-achievers-spot-4486343931 |
-| Business Development Executive | TeleCMI | Villupuram | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/business-development-executive-at-telecmi-4486569545 |
-| Customer Relationship Officer - MB - South 2 | Ujjivan Small Finance Bank | Kallakurichi | Other | yes | https://in.linkedin.com/jobs/view/customer-relationship-officer-mb-south-2-at-ujjivan-small-finance-bank-4488167838 |
-| Rebar Detailers – US Projects | Pro Ultima | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/rebar-detailers-%E2%80%93-us-projects-4484920813 |
-| Sales Executive - Prayaan Capital - Vellore | VIHU | Vellore | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/sales-executive-prayaan-capital-vellore-at-vihu-4462260023 |
-| Guest Relations Executive - Front Office | NU Hospitals | Tirupattur | Back Office & Admin | yes | https://in.linkedin.com/jobs/view/guest-relations-executive-front-office-at-nu-hospitals-4397747632 |
+| Team Leader - Operations | M2 Data Studio Private Limited | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-operations-938773916 |
+| Maintenance Manager | Image Synergy Ekxplor Private Limi… | Puducherry | Other | yes | https://apna.co/job/bengaluru-bangalore-region/maintenance-manager-159843836 |
+| Client Relationship Manager | Axis Max Life Insurance Company Li… | Chennai | Sales & Marketing | yes | https://apna.co/job/chennai-region/client-relationship-manager-17382497 |
+| Sr. Accountant | Oswal Minerals Limited | Tamil Nadu | Accounting & Finance | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/sr-accountant-24009523 |
+| General Manager | Aspire Electric Company | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/general-manager-805182972 |
+| Salesforce Developer | SuccessMetrics Corp | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/salesforce-developer-at-successmetrics-corp-4442574293 |
+| Senior Salesforce Developer | SuccessMetrics Corp | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/senior-salesforce-developer-at-successmetrics-corp-4442558941 |
+| WEB WORDPRESS ( JUNIOR FULLTIME) | HyperZ Digital | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/web-wordpress-junior-fulltime-at-hyperz-digital-4461484242 |
+| WEB WORDPRESS (INTERN – FULLTIME) | HyperZ Digital | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/web-wordpress-intern-%E2%80%93-fulltime-at-hyperz-digital-4461806167 |
+| SAP CPI Principal Architect | NTT DATA North America | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/sap-cpi-principal-architect-at-ntt-data-north-america-4411617572 |
+| Salesforce Architect | SuccessMetrics Corp | Puducherry | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/salesforce-architect-at-successmetrics-corp-4442579072 |
 
 ## Gone since last run (11)
 
-- Vacancy for Bsc Nursing,Msc Nursing, GNM, DGNM, ANM and Midwifery (Achievers Spot)
-- Vacancy for Bioinfomatics and Biochemistry Graduates (Achievers Spot)
-- Jobs for Bioinfomatics and Biochemistry Graduates For Medical Coding (Achievers Spot)
-- Opening for Bsc Nursing, Msc Nursing, GNM, ANM and DGNM (Achievers Spot)
-- Jobs for Bsc Microbiology, Msc Microbiology, Microbiologist for Medic… (Achievers Spot)
-- Field Sales Executive - Chittoor (Rentokil Initial)
-- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
-- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
-- Salesforce Developer (SuccessMetrics Corp)
-- Senior Salesforce Developer (SuccessMetrics Corp)
-- SAP CPI Principal Architect (NTT DATA North America)
+- Gold Loan Officer- KA-TN-KL (Ujjivan Small Finance Bank)
+- Web Developer (Digitalfactoryindia)
+- Sales Executive - Prayaan Capital - Vellore (VIHU)
+- Customer Relationship Officer (Axis Max Life Insurance Company Limited)
+- Team Leader (M2 Data Studio Private Limited)
+- Senior Relationship Manager (Sbi Life Insurance Company Limited)
+- Customer Relationship Officer - MB - South 2 (Ujjivan Small Finance Bank)
+- Rebar Detailers – US Projects (Pro Ultima)
+- Guest Relations Executive - Front Office (NU Hospitals)
+- QA / QC Manager (Cohera Automations Private Limited)
+- Relationship Manager (Vikiro Solutions Private Limited)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 169 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 172 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
