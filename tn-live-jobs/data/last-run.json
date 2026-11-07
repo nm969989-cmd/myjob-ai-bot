@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-07T11:51:40.133Z",
-  "finished_at": "2026-11-07T11:56:00.197Z",
-  "duration_seconds": 155,
-  "validate_seconds": 105,
+  "started_at": "2026-11-07T18:09:59.342Z",
+  "finished_at": "2026-11-07T18:14:19.768Z",
+  "duration_seconds": 159,
+  "validate_seconds": 102,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,15 +59,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 128,
-  "new_jobs": 11,
-  "removed_jobs": 11,
+  "verified_jobs": 122,
+  "new_jobs": 16,
+  "removed_jobs": 16,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 128,
+    "live": 122,
     "loginRequired": 0,
-    "dead": 21,
+    "dead": 27,
     "noSignal": 1,
     "redirected": 0,
     "documents": 37,
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "153 job(s) from 8 search request(s)"
+      "detail": "113 job(s) from 9 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -348,14 +348,14 @@
     "naukri": 0,
     "apna": 170,
     "indeed": 0,
-    "linkedin": 153
+    "linkedin": 113
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 172
+  "dropped_records": 159
 }
