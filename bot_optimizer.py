@@ -3203,20 +3203,19 @@ def _fuzzy_hit(token: str, haystack: str) -> bool:
 
     if len(token) < 4:
         return False
-    if difflib.get_close_matches(token, haystack.split(), n=1, cutoff=0.82):
+
+    words = haystack.split()
+    if difflib.get_close_matches(token, words, n=1, cutoff=0.82):
         return True
-    best_run = 0
-    for word in haystack.split():
-        if len(word) < 4:
-            continue
-        for i in range(len(token)):
-            for j in range(len(word)):
-                run = 0
-                while i + run < len(token) and j + run < len(word) and token[i + run] == word[j + run]:
-                    run += 1
-                if run > best_run:
-                    best_run = run
-    return best_run >= 6
+
+    if len(token) >= 6:
+        chunks = [token[i:i+6] for i in range(len(token) - 5)]
+        for word in words:
+            if len(word) >= 6:
+                if any(chunk in word for chunk in chunks):
+                    return True
+
+    return False
 
 
 # Role-family synonyms so related titles match without inventing any job data.
