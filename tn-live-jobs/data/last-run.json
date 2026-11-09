@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-09T14:10:38.080Z",
-  "finished_at": "2026-11-09T14:15:15.747Z",
-  "duration_seconds": 156,
-  "validate_seconds": 122,
+  "started_at": "2026-11-09T23:06:20.981Z",
+  "finished_at": "2026-11-09T23:10:42.572Z",
+  "duration_seconds": 158,
+  "validate_seconds": 104,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 113,
-  "new_jobs": 45,
-  "removed_jobs": 45,
+  "verified_jobs": 125,
+  "new_jobs": 41,
+  "removed_jobs": 41,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 113,
+    "live": 125,
     "loginRequired": 0,
-    "dead": 36,
+    "dead": 24,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 12,
+    "documents": 37,
     "unreachable": 0
   },
   "source_status": [
@@ -86,7 +86,7 @@
       "label": "Avery Dennison",
       "tier": 1,
       "status": "ok",
-      "detail": "4 opening(s) in Tamil Nadu"
+      "detail": "3 opening(s) in Tamil Nadu"
     },
     {
       "id": "chennai.nic.in",
@@ -205,7 +205,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "27 opening(s) in Tamil Nadu"
+      "detail": "29 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -288,8 +288,8 @@
       "id": "tnpsc.gov.in",
       "label": "TNPSC - Notifications",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed"
+      "status": "ok",
+      "detail": "43 TNPSC notification(s)"
     },
     {
       "id": "vellore.nic.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "164 job(s) from 11 search request(s)"
+      "detail": "166 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,21 +342,20 @@
     }
   ],
   "per_source": {
-    "govt-tn": 12,
+    "govt-tn": 55,
     "company-careers": 2,
-    "tech-ats": 69,
+    "tech-ats": 70,
     "naukri": 0,
     "apna": 170,
     "indeed": 0,
-    "linkedin": 164
+    "linkedin": 166
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
-    "tnpsc.gov.in": "fetch failed for https://www.tnpsc.gov.in/English/Notification.aspx: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 140
+  "dropped_records": 177
 }
