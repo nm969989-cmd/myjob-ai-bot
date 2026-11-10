@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-09T23:06:20.981Z",
-  "finished_at": "2026-11-09T23:10:42.572Z",
-  "duration_seconds": 158,
-  "validate_seconds": 104,
+  "started_at": "2026-11-10T13:40:47.155Z",
+  "finished_at": "2026-11-10T13:45:36.881Z",
+  "duration_seconds": 157,
+  "validate_seconds": 132,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 125,
-  "new_jobs": 41,
-  "removed_jobs": 41,
+  "verified_jobs": 129,
+  "new_jobs": 14,
+  "removed_jobs": 14,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 125,
+    "live": 129,
     "loginRequired": 0,
-    "dead": 24,
+    "dead": 18,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 37,
-    "unreachable": 0
+    "documents": 35,
+    "unreachable": 2
   },
   "source_status": [
     {
@@ -114,7 +114,7 @@
       "label": "cuddalore.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Cuddalore District portal"
+      "detail": "1 notice(s) on Cuddalore District portal"
     },
     {
       "id": "dindigul.nic.in",
@@ -142,7 +142,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "16 opening(s) in Tamil Nadu"
+      "detail": "17 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -211,8 +211,8 @@
       "id": "salem.nic.in",
       "label": "Salem District Collectorate",
       "tier": 1,
-      "status": "ok",
-      "detail": "1 notice(s) on Salem District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Salem District portal"
     },
     {
       "id": "tcs.com",
@@ -274,8 +274,8 @@
       "id": "mrb.tn.gov.in",
       "label": "TN Medical Services Recruitment Board (MRB)",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "fetch failed for https://www.mrb.tn.gov.in/: fetch failed"
+      "status": "ok",
+      "detail": "2 notification(s) on Medical Services Recruitment Board"
     },
     {
       "id": "protnnetc.tn.gov.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "166 job(s) from 11 search request(s)"
+      "detail": "168 job(s) from 12 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,18 +344,18 @@
   "per_source": {
     "govt-tn": 55,
     "company-careers": 2,
-    "tech-ats": 70,
+    "tech-ats": 71,
     "naukri": 0,
     "apna": 170,
     "indeed": 0,
-    "linkedin": 166
+    "linkedin": 168
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
-    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
-    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
+    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
+    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 177
+  "dropped_records": 176
 }
