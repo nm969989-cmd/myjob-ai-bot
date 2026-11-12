@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-11T12:53:14.832Z",
-  "finished_at": "2026-11-11T12:57:41.318Z",
+  "started_at": "2026-11-12T13:55:27.704Z",
+  "finished_at": "2026-11-12T14:00:51.701Z",
   "duration_seconds": 157,
-  "validate_seconds": 110,
+  "validate_seconds": 167,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 129,
-  "new_jobs": 15,
-  "removed_jobs": 15,
+  "verified_jobs": 120,
+  "new_jobs": 11,
+  "removed_jobs": 11,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 129,
+    "live": 120,
     "loginRequired": 0,
-    "dead": 20,
+    "dead": 25,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 37,
-    "unreachable": 0
+    "documents": 33,
+    "unreachable": 4
   },
   "source_status": [
     {
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "17 opening(s) in Tamil Nadu"
+      "detail": "19 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -107,7 +107,7 @@
       "label": "Coimbatore District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Coimbatore District portal"
+      "detail": "2 notice(s) on Coimbatore District portal"
     },
     {
       "id": "cuddalore.nic.in",
@@ -128,7 +128,7 @@
       "label": "erode.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Erode District portal"
+      "detail": "3 notice(s) on Erode District portal"
     },
     {
       "id": "freshersworld.com",
@@ -142,7 +142,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "16 opening(s) in Tamil Nadu"
+      "detail": "15 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -198,21 +198,21 @@
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "2 opening(s) in Tamil Nadu"
+      "detail": "1 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "30 opening(s) in Tamil Nadu"
+      "detail": "28 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
       "label": "Salem District Collectorate",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Salem District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Salem District portal"
     },
     {
       "id": "tcs.com",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "151 job(s) from 9 category page(s)"
+      "detail": "150 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "166 job(s) from 11 search request(s)"
+      "detail": "153 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,13 +342,13 @@
     }
   ],
   "per_source": {
-    "govt-tn": 53,
+    "govt-tn": 56,
     "company-careers": 2,
-    "tech-ats": 74,
+    "tech-ats": 72,
     "naukri": 0,
-    "apna": 151,
+    "apna": 150,
     "indeed": 0,
-    "linkedin": 166
+    "linkedin": 153
   },
   "dead_domains": {
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
@@ -357,5 +357,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 158
+  "dropped_records": 144
 }
