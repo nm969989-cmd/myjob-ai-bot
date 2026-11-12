@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-12T13:55:27.704Z",
-  "finished_at": "2026-11-12T14:00:51.701Z",
+  "started_at": "2026-11-12T21:00:15.865Z",
+  "finished_at": "2026-11-12T21:04:36.415Z",
   "duration_seconds": 157,
-  "validate_seconds": 167,
+  "validate_seconds": 103,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 120,
+  "verified_jobs": 127,
   "new_jobs": 11,
   "removed_jobs": 11,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 120,
+    "live": 127,
     "loginRequired": 0,
-    "dead": 25,
+    "dead": 22,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 33,
-    "unreachable": 4
+    "documents": 37,
+    "unreachable": 0
   },
   "source_status": [
     {
@@ -205,7 +205,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "28 opening(s) in Tamil Nadu"
+      "detail": "29 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "153 job(s) from 11 search request(s)"
+      "detail": "167 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,11 +344,11 @@
   "per_source": {
     "govt-tn": 56,
     "company-careers": 2,
-    "tech-ats": 72,
+    "tech-ats": 73,
     "naukri": 0,
     "apna": 150,
     "indeed": 0,
-    "linkedin": 153
+    "linkedin": 167
   },
   "dead_domains": {
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
@@ -357,5 +357,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 144
+  "dropped_records": 157
 }

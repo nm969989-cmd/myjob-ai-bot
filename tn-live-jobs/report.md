@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-11-12T13:55:27.704Z
-- **Finished:** 2026-11-12T14:00:51.701Z
+- **Started:** 2026-11-12T21:00:15.865Z
+- **Finished:** 2026-11-12T21:04:36.415Z
 - **Duration:** 157 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 120** (kept this run: 150, new: 11, gone since last run: 11)
+- **Live verified jobs: 127** (kept this run: 150, new: 11, gone since last run: 11)
 
 ## Results per source
 
@@ -29,7 +29,7 @@
 | kyndryl.com | 1 | :white_check_mark: ok | 6 | 0 | 6 opening(s) in Tamil Nadu |
 | Madurai District Collectorate | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Madurai District portal |
 | paypal.com | 1 | :white_check_mark: ok | 1 | 0 | 1 opening(s) in Tamil Nadu |
-| Robert Bosch India | 1 | :white_check_mark: ok | 6 | 22 | 28 opening(s) in Tamil Nadu |
+| Robert Bosch India | 1 | :white_check_mark: ok | 7 | 22 | 29 opening(s) in Tamil Nadu |
 | Salem District Collectorate | 1 | :white_check_mark: ok | 1 | 0 | 1 notice(s) on Salem District portal |
 | Tata Consultancy Services | 1 | :x: blocked | 0 | 0 | fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed |
 | thanjavur.nic.in | 1 | :white_check_mark: ok | 1 | 0 | 1 notice(s) on Thanjavur District portal |
@@ -47,7 +47,7 @@
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
 | apna.co | 2 | :white_check_mark: ok | 73 | 37 | 150 job(s) from 9 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 24 | 37 | 153 job(s) from 11 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 36 | 37 | 167 job(s) from 10 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,50 +57,50 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 120 |
-| Government documents verified | 33 |
+| :white_check_mark: Verified live | 127 |
+| Government documents verified | 37 |
 | Login required (kept, not published) | 0 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 25 |
-| Could not be reached | 4 |
+| Dead link (HTTP 4xx/5xx) | 22 |
+| Could not be reached | 0 |
 
 ## New this run (11)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| Technical Support Engineer (Assistant Manager) | Robert Bosch India | Chennai | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000161270019 |
-| UI Expert & AI-Assisted Developer | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000161220619 |
-| Accountant | Jane Aerospace Private Limited | Tamil Nadu | Accounting & Finance | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/accountant-151716409 |
-| Sales Officers / Senior Sales Officer / Sales Manager | HDB Financial Services Limited | Vellore | Sales & Marketing | no (http_481) | https://apna.co/job/vellore/sales-officers-senior-sales-officer-sales-manager-512502767 |
-| Electrical Engineer | Etricals Engineers Private Limited | Chennai | Engineering & Manufacturing | yes | https://apna.co/job/chennai-region/electrical-engineer-823512137 |
-| L1 – Junior Software Developer ( THE BUILDER ) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4479031515 |
-| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Tamil Nadu | Software | no (http_429) | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
-| Data Scientist | Larsen & Toubro | Kanchipuram | Data & Analytics | yes | https://in.linkedin.com/jobs/view/data-scientist-at-larsen-toubro-4485685415 |
-| Coding and Robotics Trainer | Infinity Learn | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/coding-and-robotics-trainer-at-infinity-learn-4480357313 |
-| Customer Relationship Officer | Ujjivan Small Finance Bank | Villupuram | Other | yes | https://in.linkedin.com/jobs/view/customer-relationship-officer-at-ujjivan-small-finance-bank-4488809878 |
-| Customer Relationship Officer - MB - South 2 | Ujjivan Small Finance Bank | Villupuram | Other | yes | https://in.linkedin.com/jobs/view/customer-relationship-officer-mb-south-2-at-ujjivan-small-finance-bank-4488489032 |
+| *Associate - Project Management support | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000161306435 |
+| L1 – Junior Software Developer ( THE BUILDER ) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4487276562 |
+| L4 – Team Lead – Software Developer – (THE BUILDER) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l4-%E2%80%93-team-lead-%E2%80%93-software-developer-%E2%80%93-the-builder-at-wonder-worth-solutions-4487285085 |
+| L4 – Team Lead – Software Developer – (THE BUILDER) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l4-%E2%80%93-team-lead-%E2%80%93-software-developer-%E2%80%93-the-builder-at-wonder-worth-solutions-4479042010 |
+| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4479028573 |
+| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4487281297 |
+| Java Specialist I - Software Engineering | UST | Chennai | Software | yes | https://in.linkedin.com/jobs/view/java-specialist-i-software-engineering-at-ust-4488533625 |
+| Vacancy for Bioinfomatics and Biochemistry Graduates | Achievers Spot | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/vacancy-for-bioinfomatics-and-biochemistry-graduates-at-achievers-spot-4486347865 |
+| Digital Banking- FOS- TIRUVANNAMALAI | IndBank Global Support Services Li… | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/digital-banking-fos-tiruvannamalai-at-indbank-global-support-services-limited-4490321354 |
+| Jobs for Bioinfomatics and Biochemistry Graduates For Medic… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/jobs-for-bioinfomatics-and-biochemistry-graduates-for-medical-coding-at-achievers-spot-4485143733 |
+| Jobs for Bsc Microbiology, Msc Microbiology, Microbiologist… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/jobs-for-bsc-microbiology-msc-microbiology-microbiologist-for-medical-coding-at-achievers-spot-4477978458 |
 
 ## Gone since last run (11)
 
-- Senior Analyst - Order Management (Freshworks)
-- Robotics Specialist (Otomatiks)
+- (IND) Software Engineer III (Walmart Global Tech India)
 - L1 – Junior Software Developer ( THE BUILDER ) (Wonder Worth Solutions)
-- Line Technical support Engineer (Assistant Manager) (Robert Bosch India)
-- L4 – Team Lead – Software Developer – (THE BUILDER) (Wonder Worth Solutions)
-- Student Counselor Associcate in Vellore, Nashik, Trichey, Alwal, Vell… (WeMakeScholars)
-- L4 – Team Lead – Software Developer – (THE BUILDER) (Wonder Worth Solutions)
-- Process Manager (Ideal Management Solutions)
-- Accountant (Shri Lakshmi Steel Suppliers)
-- Guest Relations Executive - Front Office (NU Hospitals)
-- Sales & Service Engineer (V Deco Products)
+- Web Developer (Digitalfactoryindia)
+- Sales Executive - Prayaan Capital - Vellore (VIHU)
+- Customer Relationship Officer (Ujjivan Small Finance Bank)
+- Customer Relationship Officer - MB - South 2 (Ujjivan Small Finance Bank)
+- Embedded_Devops_ECT (Robert Bosch India)
+- Opening for Lifescience and Paramedical Graduates (Achievers Spot)
+- Data Scientist (Larsen & Toubro)
+- Rebar Detailers – US Projects (Pro Ultima)
+- QX Impact - Senior Data Engineer - ETL/Python (QX Impact)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 144 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 157 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
