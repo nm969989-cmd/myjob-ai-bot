@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-12T21:00:15.865Z",
-  "finished_at": "2026-11-12T21:04:36.415Z",
-  "duration_seconds": 157,
-  "validate_seconds": 103,
+  "started_at": "2026-11-13T13:19:28.957Z",
+  "finished_at": "2026-11-13T13:24:13.878Z",
+  "duration_seconds": 160,
+  "validate_seconds": 125,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,15 +59,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 127,
-  "new_jobs": 11,
-  "removed_jobs": 11,
+  "verified_jobs": 134,
+  "new_jobs": 19,
+  "removed_jobs": 19,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 127,
+    "live": 134,
     "loginRequired": 0,
-    "dead": 22,
+    "dead": 15,
     "noSignal": 1,
     "redirected": 0,
     "documents": 37,
@@ -128,7 +128,7 @@
       "label": "erode.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "3 notice(s) on Erode District portal"
+      "detail": "1 notice(s) on Erode District portal"
     },
     {
       "id": "freshersworld.com",
@@ -142,7 +142,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "15 opening(s) in Tamil Nadu"
+      "detail": "16 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -184,7 +184,7 @@
       "label": "kyndryl.com",
       "tier": 1,
       "status": "ok",
-      "detail": "6 opening(s) in Tamil Nadu"
+      "detail": "5 opening(s) in Tamil Nadu"
     },
     {
       "id": "madurai.nic.in",
@@ -205,7 +205,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "29 opening(s) in Tamil Nadu"
+      "detail": "26 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -225,8 +225,8 @@
       "id": "thanjavur.nic.in",
       "label": "thanjavur.nic.in",
       "tier": 1,
-      "status": "ok",
-      "detail": "1 notice(s) on Thanjavur District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Thanjavur District portal"
     },
     {
       "id": "thoothukudi.nic.in",
@@ -247,7 +247,7 @@
       "label": "tiruppur.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Tiruppur District portal"
+      "detail": "2 notice(s) on Tiruppur District portal"
     },
     {
       "id": "tnvelaivaaippu.gov.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "167 job(s) from 10 search request(s)"
+      "detail": "161 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,20 +342,20 @@
     }
   ],
   "per_source": {
-    "govt-tn": 56,
+    "govt-tn": 54,
     "company-careers": 2,
-    "tech-ats": 73,
+    "tech-ats": 70,
     "naukri": 0,
     "apna": 150,
     "indeed": 0,
-    "linkedin": 167
+    "linkedin": 161
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 157
+  "dropped_records": 152
 }
