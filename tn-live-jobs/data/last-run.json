@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-13T13:19:28.957Z",
-  "finished_at": "2026-11-13T13:24:13.878Z",
-  "duration_seconds": 160,
-  "validate_seconds": 125,
+  "started_at": "2026-11-13T20:35:59.204Z",
+  "finished_at": "2026-11-13T20:40:17.852Z",
+  "duration_seconds": 156,
+  "validate_seconds": 103,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,15 +59,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 134,
-  "new_jobs": 19,
-  "removed_jobs": 19,
+  "verified_jobs": 126,
+  "new_jobs": 12,
+  "removed_jobs": 12,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 134,
+    "live": 126,
     "loginRequired": 0,
-    "dead": 15,
+    "dead": 23,
     "noSignal": 1,
     "redirected": 0,
     "documents": 37,
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "19 opening(s) in Tamil Nadu"
+      "detail": "18 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -205,7 +205,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "26 opening(s) in Tamil Nadu"
+      "detail": "25 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "161 job(s) from 10 search request(s)"
+      "detail": "150 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,18 +344,18 @@
   "per_source": {
     "govt-tn": 54,
     "company-careers": 2,
-    "tech-ats": 70,
+    "tech-ats": 68,
     "naukri": 0,
     "apna": 150,
     "indeed": 0,
-    "linkedin": 161
+    "linkedin": 150
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 152
+  "dropped_records": 140
 }
