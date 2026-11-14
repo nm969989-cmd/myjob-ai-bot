@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-13T20:35:59.204Z",
-  "finished_at": "2026-11-13T20:40:17.852Z",
+  "started_at": "2026-11-14T12:23:36.121Z",
+  "finished_at": "2026-11-14T12:28:07.833Z",
   "duration_seconds": 156,
-  "validate_seconds": 103,
+  "validate_seconds": 116,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,15 +59,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 126,
-  "new_jobs": 12,
-  "removed_jobs": 12,
+  "verified_jobs": 130,
+  "new_jobs": 11,
+  "removed_jobs": 11,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 126,
+    "live": 130,
     "loginRequired": 0,
-    "dead": 23,
+    "dead": 19,
     "noSignal": 1,
     "redirected": 0,
     "documents": 37,
@@ -183,8 +183,8 @@
       "id": "kyndryl.com",
       "label": "kyndryl.com",
       "tier": 1,
-      "status": "ok",
-      "detail": "5 opening(s) in Tamil Nadu"
+      "status": "unreachable",
+      "detail": "response from https://kyndryl.wd5.myworkdayjobs.com/wday/cxs/kyndryl/KyndrylProfessionalCareers/jobs was not valid JSON"
     },
     {
       "id": "madurai.nic.in",
@@ -197,8 +197,8 @@
       "id": "paypal.com",
       "label": "paypal.com",
       "tier": 1,
-      "status": "ok",
-      "detail": "1 opening(s) in Tamil Nadu"
+      "status": "unreachable",
+      "detail": "response from https://paypal.wd1.myworkdayjobs.com/wday/cxs/paypal/jobs/jobs was not valid JSON"
     },
     {
       "id": "bosch.in",
@@ -240,7 +240,7 @@
       "label": "Tirunelveli District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "3 notice(s) on Tirunelveli District portal"
+      "detail": "1 notice(s) on Tirunelveli District portal"
     },
     {
       "id": "tiruppur.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "150 job(s) from 9 category page(s)"
+      "detail": "161 job(s) from 11 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "150 job(s) from 8 search request(s)"
+      "detail": "162 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,20 +342,20 @@
     }
   ],
   "per_source": {
-    "govt-tn": 54,
+    "govt-tn": 52,
     "company-careers": 2,
-    "tech-ats": 68,
+    "tech-ats": 62,
     "naukri": 0,
-    "apna": 150,
+    "apna": 161,
     "indeed": 0,
-    "linkedin": 150
+    "linkedin": 162
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 140
+  "dropped_records": 146
 }
