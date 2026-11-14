@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-14T12:23:36.121Z",
-  "finished_at": "2026-11-14T12:28:07.833Z",
-  "duration_seconds": 156,
-  "validate_seconds": 116,
+  "started_at": "2026-11-14T18:48:07.186Z",
+  "finished_at": "2026-11-14T18:53:37.824Z",
+  "duration_seconds": 160,
+  "validate_seconds": 171,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 130,
-  "new_jobs": 11,
-  "removed_jobs": 11,
+  "verified_jobs": 127,
+  "new_jobs": 12,
+  "removed_jobs": 12,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 130,
+    "live": 127,
     "loginRequired": 0,
-    "dead": 19,
+    "dead": 17,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 37,
-    "unreachable": 0
+    "documents": 32,
+    "unreachable": 5
   },
   "source_status": [
     {
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "18 opening(s) in Tamil Nadu"
+      "detail": "17 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -183,8 +183,8 @@
       "id": "kyndryl.com",
       "label": "kyndryl.com",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "response from https://kyndryl.wd5.myworkdayjobs.com/wday/cxs/kyndryl/KyndrylProfessionalCareers/jobs was not valid JSON"
+      "status": "ok",
+      "detail": "5 opening(s) in Tamil Nadu"
     },
     {
       "id": "madurai.nic.in",
@@ -197,15 +197,15 @@
       "id": "paypal.com",
       "label": "paypal.com",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "response from https://paypal.wd1.myworkdayjobs.com/wday/cxs/paypal/jobs/jobs was not valid JSON"
+      "status": "ok",
+      "detail": "1 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "25 opening(s) in Tamil Nadu"
+      "detail": "26 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "161 job(s) from 11 category page(s)"
+      "detail": "173 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "162 job(s) from 10 search request(s)"
+      "detail": "151 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,18 +344,18 @@
   "per_source": {
     "govt-tn": 52,
     "company-careers": 2,
-    "tech-ats": 62,
+    "tech-ats": 68,
     "naukri": 0,
-    "apna": 161,
+    "apna": 173,
     "indeed": 0,
-    "linkedin": 162
+    "linkedin": 151
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 146
+  "dropped_records": 147
 }
