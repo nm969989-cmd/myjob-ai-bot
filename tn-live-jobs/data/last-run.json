@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-15T12:54:10.169Z",
-  "finished_at": "2026-11-15T12:58:34.595Z",
+  "started_at": "2026-11-15T19:26:35.866Z",
+  "finished_at": "2026-11-15T19:31:03.600Z",
   "duration_seconds": 157,
-  "validate_seconds": 108,
+  "validate_seconds": 111,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,15 +59,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 125,
-  "new_jobs": 13,
-  "removed_jobs": 13,
+  "verified_jobs": 127,
+  "new_jobs": 6,
+  "removed_jobs": 6,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 125,
+    "live": 127,
     "loginRequired": 0,
-    "dead": 23,
+    "dead": 21,
     "noSignal": 1,
     "redirected": 0,
     "documents": 36,
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "17 opening(s) in Tamil Nadu"
+      "detail": "15 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -205,7 +205,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "26 opening(s) in Tamil Nadu"
+      "detail": "25 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "172 job(s) from 10 category page(s)"
+      "detail": "157 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "154 job(s) from 10 search request(s)"
+      "detail": "169 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,11 +344,11 @@
   "per_source": {
     "govt-tn": 52,
     "company-careers": 2,
-    "tech-ats": 68,
+    "tech-ats": 65,
     "naukri": 0,
-    "apna": 172,
+    "apna": 157,
     "indeed": 0,
-    "linkedin": 154
+    "linkedin": 169
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -357,5 +357,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 148
+  "dropped_records": 138
 }
