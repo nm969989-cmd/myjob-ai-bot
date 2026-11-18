@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-18T14:25:29.659Z",
-  "finished_at": "2026-11-18T14:29:52.622Z",
+  "started_at": "2026-11-18T21:30:51.588Z",
+  "finished_at": "2026-11-18T21:35:21.800Z",
   "duration_seconds": 157,
-  "validate_seconds": 106,
+  "validate_seconds": 113,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 128,
-  "new_jobs": 24,
-  "removed_jobs": 24,
+  "verified_jobs": 127,
+  "new_jobs": 16,
+  "removed_jobs": 16,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 128,
+    "live": 127,
     "loginRequired": 0,
-    "dead": 20,
+    "dead": 22,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 36,
-    "unreachable": 1
+    "documents": 37,
+    "unreachable": 0
   },
   "source_status": [
     {
@@ -184,7 +184,7 @@
       "label": "kyndryl.com",
       "tier": 1,
       "status": "ok",
-      "detail": "11 opening(s) in Tamil Nadu"
+      "detail": "12 opening(s) in Tamil Nadu"
     },
     {
       "id": "madurai.nic.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "155 job(s) from 8 search request(s)"
+      "detail": "99 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,18 +344,18 @@
   "per_source": {
     "govt-tn": 50,
     "company-careers": 2,
-    "tech-ats": 66,
+    "tech-ats": 67,
     "naukri": 0,
     "apna": 150,
     "indeed": 0,
-    "linkedin": 155
+    "linkedin": 99
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 134
+  "dropped_records": 118
 }

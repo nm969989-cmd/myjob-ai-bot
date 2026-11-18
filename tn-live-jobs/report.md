@@ -1,11 +1,11 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-11-18T14:25:29.659Z
-- **Finished:** 2026-11-18T14:29:52.622Z
+- **Started:** 2026-11-18T21:30:51.588Z
+- **Finished:** 2026-11-18T21:35:21.800Z
 - **Duration:** 157 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 128** (kept this run: 150, new: 24, gone since last run: 24)
+- **Live verified jobs: 127** (kept this run: 150, new: 16, gone since last run: 16)
 
 ## Results per source
 
@@ -26,7 +26,7 @@
 | kanchipuram.nic.in | 1 | :x: unreachable | 0 | 0 | fetch failed for https://kanchipuram.nic.in/notice_category/recruitment/: fetch failed |
 | kanyakumari.nic.in | 1 | :x: unreachable | 0 | 0 | fetch failed for https://kanyakumari.nic.in/notice_category/recruitment/: fetch failed |
 | karur.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Karur District portal |
-| kyndryl.com | 1 | :white_check_mark: ok | 10 | 1 | 11 opening(s) in Tamil Nadu |
+| kyndryl.com | 1 | :white_check_mark: ok | 11 | 1 | 12 opening(s) in Tamil Nadu |
 | Madurai District Collectorate | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Madurai District portal |
 | paypal.com | 1 | :white_check_mark: ok | 2 | 0 | 2 opening(s) in Tamil Nadu |
 | Robert Bosch India | 1 | :white_check_mark: ok | 0 | 18 | 18 opening(s) in Tamil Nadu |
@@ -47,7 +47,7 @@
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
 | apna.co | 2 | :white_check_mark: ok | 70 | 37 | 150 job(s) from 9 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 29 | 37 | 155 job(s) from 8 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 12 | 37 | 99 job(s) from 8 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,72 +57,60 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 128 |
-| Government documents verified | 36 |
+| :white_check_mark: Verified live | 127 |
+| Government documents verified | 37 |
 | Login required (kept, not published) | 0 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 20 |
-| Could not be reached | 1 |
+| Dead link (HTTP 4xx/5xx) | 22 |
+| Could not be reached | 0 |
 
-## New this run (24)
+## New this run (16)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| System Requirement Engineer | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000162222559 |
-| Associate _ Project Management Associate | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000162220380 |
-| Hydraulics Component Design Engineer (Specialist), Mobile C… | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000162219989 |
-| SAP FI Consultant | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000162218105 |
-| Accountant/ Accounts Executive | Excel Auto Tube Private Limited | Chennai | Accounting & Finance | yes | https://apna.co/job/chennai-region/accountant-accounts-executive-764567168 |
-| Team Manager | Aarthi Associates | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/team-manager-118558664 |
-| Collection Executive / Officer | Mahindra Finance | Vellore | Other | yes | https://apna.co/job/vellore/collection-executive-officer-786306930 |
-| Senior Engineer Maintenance | Cybele Industries Ltd | Chennai | Other | yes | https://apna.co/job/chennai-region/senior-engineer-maintenance-16856800 |
-| L1 – Junior Software Developer ( THE BUILDER ) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4487276562 |
-| Medical Coding Jobs for Bioinfomatics Graduates | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-bioinfomatics-graduates-at-achievers-spot-4470077886 |
-| Medical Coding Jobs for Bioinfomatics Graduates | Achievers Spot | Villupuram | Other | no (http_429) | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-bioinfomatics-graduates-at-achievers-spot-4487650225 |
-| L4 – Team Lead – Software Developer – (THE BUILDER) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l4-%E2%80%93-team-lead-%E2%80%93-software-developer-%E2%80%93-the-builder-at-wonder-worth-solutions-4487285085 |
-| L4 – Team Lead – Software Developer – (THE BUILDER) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l4-%E2%80%93-team-lead-%E2%80%93-software-developer-%E2%80%93-the-builder-at-wonder-worth-solutions-4479042010 |
-| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4479028573 |
-| L1 – Junior Machine Learner – THE ORACLE | Wonder Worth Solutions | Vellore | Other | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-machine-learner-%E2%80%93-the-oracle-at-wonder-worth-solutions-4487281297 |
-| L6 – Supervisor – Software Developer | Wonder Worth Solutions | Vellore | Software | no (http_429) | https://in.linkedin.com/jobs/view/l6-%E2%80%93-supervisor-%E2%80%93-software-developer-at-wonder-worth-solutions-4479021817 |
-| Medical Coding Jobs for Biomedical Engineer and Biotechnolo… | Achievers Spot | Vellore | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-biomedical-engineer-and-biotechnology-engineer-at-achievers-spot-4484834165 |
-| Senior Software Engineer - (Java Fullstack Angular) | EPAM Systems | Chennai | Software | yes | https://in.linkedin.com/jobs/view/senior-software-engineer-java-fullstack-angular-at-epam-systems-4459908032 |
-| Gold Loan Officer- KA-TN-KL | Ujjivan Small Finance Bank | Vellore | Other | yes | https://in.linkedin.com/jobs/view/gold-loan-officer-ka-tn-kl-at-ujjivan-small-finance-bank-4490743270 |
-| Opening for Lifescience and Paramedical Grad | Achievers Spot | Tamil Nadu | Other | no (http_429) | https://in.linkedin.com/jobs/view/opening-for-lifescience-and-paramedical-grad-at-achievers-spot-4482612811 |
-| Opening for Bsc Chemistry, Msc Chemistry, Organic and Inorg… | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/opening-for-bsc-chemistry-msc-chemistry-organic-and-inorganic-chemistry-grad-at-achievers-spot-4489431651 |
-| Video Editor \| Graphic Designer \| Video Grapher | THE LAZR COMPANY | Tirupattur | Other | yes | https://in.linkedin.com/jobs/view/video-editor-graphic-designer-video-grapher-at-the-lazr-company-4491828902 |
-| Student Counselor Associcate in Vellore, Nashik, Trichey, A… | WeMakeScholars | Vellore | Other | yes | https://in.linkedin.com/jobs/view/student-counselor-associcate-in-vellore-nashik-trichey-alwal-chennai-coimbatore-salem-paralakhemundi-hyderabad-madurai-secunderabad-hubli-wardha-vellore-at-wemakescholars-4481287948 |
-| Senior Application Support Engineer | Kyndryl | Chennai | Software | yes | https://kyndryl.wd5.myworkdayjobs.com/KyndrylProfessionalCareers/job/Chennai-Tamil-Nadu-India/Senior-Application-Support-Engineer_R-71898 |
+| Team Leader | Zorell Appliances | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-689817862 |
+| Team Leader - Operations | M2 Data Studio Private Limited | Chennai | Other | yes | https://apna.co/job/chennai-region/team-leader-operations-40017358 |
+| Opening for Lifescience and Paramedical Graduates | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/opening-for-lifescience-and-paramedical-graduates-at-achievers-spot-4485194980 |
+| Vacancy for Lifescience and Paramedical Graduates | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-lifescience-and-paramedical-graduates-at-achievers-spot-4487646344 |
+| Digital Banking- FOS- TIRUVANNAMALAI | IndBank Global Support Services Li… | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/digital-banking-fos-tiruvannamalai-at-indbank-global-support-services-limited-4490321354 |
+| Relationship Manager - GL South East | Bajaj Finserv | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/relationship-manager-gl-south-east-at-bajaj-finserv-4422635913 |
+| Credit Officer-Housing- Tamil Nadu & Kerala | Ujjivan Small Finance Bank | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/credit-officer-housing-tamil-nadu-kerala-at-ujjivan-small-finance-bank-4488485186 |
+| Centre Manager - MFI South | Bajaj Finserv | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/centre-manager-mfi-south-at-bajaj-finserv-4451488259 |
+| Front Office Managers, Aesthetic Nurses, Aestheticians, Pha… | Chennai Plastic Surgery | Tamil Nadu | Healthcare | no (http_429) | https://in.linkedin.com/jobs/view/front-office-managers-aesthetic-nurses-aestheticians-pharmacists-at-chennai-plastic-surgery-4491814043 |
+| Customer Relationship Manager | Ujjivan Small Finance Bank | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/customer-relationship-manager-at-ujjivan-small-finance-bank-4490795222 |
+| Medical Coding Trainee | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/medical-coding-trainee-at-achievers-spot-4477206249 |
+| Assembly Process Executive / Assembly Technician | Rockwell Automation | Kanchipuram | Engineering & Manufacturing | no (http_429) | https://in.linkedin.com/jobs/view/assembly-process-executive-assembly-technician-at-rockwell-automation-4448853605 |
+| Customer Relationship Officer | Ujjivan Small Finance Bank | Vellore | Other | no (http_429) | https://in.linkedin.com/jobs/view/customer-relationship-officer-at-ujjivan-small-finance-bank-4489685675 |
+| Customer Relationship Officer - MB - South 2 | Ujjivan Small Finance Bank | Vellore | Other | yes | https://in.linkedin.com/jobs/view/customer-relationship-officer-mb-south-2-at-ujjivan-small-finance-bank-4489697232 |
+| FOS_Liabilities Team Member_Chennai Zone | IndBank Global Support Services Li… | Chennai | Other | no (http_429) | https://in.linkedin.com/jobs/view/fos-liabilities-team-member-chennai-zone-at-indbank-global-support-services-limited-4368683251 |
+| Sales Executive - Customer Service | Staunch HR Services Private Limited | Kanchipuram | Sales & Marketing | no (http_429) | https://in.linkedin.com/jobs/view/sales-executive-customer-service-at-staunch-hr-services-private-limited-4489078935 |
 
-## Gone since last run (24)
+## Gone since last run (16)
 
-- IN_RBIN_Deputy Manager_Sales Quality Warranty (Robert Bosch India)
-- Electrical Engineer (Adhirohah Infrastructure Private Limited)
-- Junior Frontend Developer (React.js / Next.js) (IZIVAR)
-- Junior Java Backend Developer (IZIVAR)
-- Medical Coding jobs for Bioinfomatics,Biochemistry,Microbiology gradu… (Achievers Spot)
-- Digital Banking- FOS- TIRUVANNAMALAI (IndBank Global Support Services Limited)
-- Loan Officer-Agriculture Banking _ Tamilnadu, Kerala & Karnataka (Ujjivan Small Finance Bank)
-- Relationship Officer - Micro Mortgages - TN & KL (Ujjivan Small Finance Bank)
-- (IND) Software Engineer III (Walmart Global Tech India)
-- Vacancy for Bioinfomatics and Biochemistry Graduates (Achievers Spot)
-- Opening for Lifescience and Paramedical Graduates (Achievers Spot)
-- Jobs for Bioinfomatics and Biochemistry Graduates For Medical Coding (Achievers Spot)
-- AIX and Linux Expert (Kyndryl)
-- L1 – Junior Software Developer ( THE BUILDER ) (Wonder Worth Solutions)
-- QX Impact - Senior Data Engineer - ETL/Python (QX Impact)
-- BDE – Immediate Hiring | Field Sales | Attractive Incentives (Iwiz Android Robo)
-- Digital Marketing Manager (Vibez Estates)
-- Payroll Executive (Gesco Healthcare Private Limited)
-- Two Wheeler Riders (Big Basket)
-- 2027_BGSW_Embedded_Application_Software_Developer_Integrator_ASW_COB_… (Robert Bosch India)
+- Gold Loan Officer- KA-TN-KL (Ujjivan Small Finance Bank)
+- Student Counselor Associcate in Vellore, Nashik, Trichey, Alwal, Chen… (WeMakeScholars)
+- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
+- Medical Coding Jobs for Bioinfomatics Graduates (Achievers Spot)
+- Oracle HCM Consultant (Altraize)
+- WEB WORDPRESS ( JUNIOR FULLTIME) (HyperZ Digital)
+- WEB WORDPRESS (INTERN – FULLTIME) (HyperZ Digital)
+- Associate Database Engineer (Mydbops)
+- Integrations Engineer (DrDoctor)
+- Salesforce Developer (SuccessMetrics Corp)
+- Salesforce Architect (SuccessMetrics Corp)
+- Senior Salesforce Developer (SuccessMetrics Corp)
+- Team Leader - Operations (Zorell Appliances)
+- Team Leader - Operations (M2 Data Studio Private Limited)
+- Video Editor | Graphic Designer | Video Grapher (THE LAZR COMPANY)
+- Medical Coding Jobs for Bioinfomatics Graduates (Achievers Spot)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 134 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 118 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
