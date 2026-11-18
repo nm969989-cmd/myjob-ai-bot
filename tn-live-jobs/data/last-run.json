@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-17T21:52:02.221Z",
-  "finished_at": "2026-11-17T21:56:32.695Z",
-  "duration_seconds": 159,
-  "validate_seconds": 111,
+  "started_at": "2026-11-18T14:25:29.659Z",
+  "finished_at": "2026-11-18T14:29:52.622Z",
+  "duration_seconds": 157,
+  "validate_seconds": 106,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 133,
-  "new_jobs": 12,
-  "removed_jobs": 12,
+  "verified_jobs": 128,
+  "new_jobs": 24,
+  "removed_jobs": 24,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 133,
+    "live": 128,
     "loginRequired": 0,
-    "dead": 15,
-    "noSignal": 2,
+    "dead": 20,
+    "noSignal": 1,
     "redirected": 0,
-    "documents": 37,
-    "unreachable": 0
+    "documents": 36,
+    "unreachable": 1
   },
   "source_status": [
     {
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "14 opening(s) in Tamil Nadu"
+      "detail": "17 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -184,7 +184,7 @@
       "label": "kyndryl.com",
       "tier": 1,
       "status": "ok",
-      "detail": "5 opening(s) in Tamil Nadu"
+      "detail": "11 opening(s) in Tamil Nadu"
     },
     {
       "id": "madurai.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "174 job(s) from 10 category page(s)"
+      "detail": "150 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "152 job(s) from 9 search request(s)"
+      "detail": "155 job(s) from 8 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,11 +344,11 @@
   "per_source": {
     "govt-tn": 50,
     "company-careers": 2,
-    "tech-ats": 57,
+    "tech-ats": 66,
     "naukri": 0,
-    "apna": 174,
+    "apna": 150,
     "indeed": 0,
-    "linkedin": 152
+    "linkedin": 155
   },
   "dead_domains": {
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
@@ -357,5 +357,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 132
+  "dropped_records": 134
 }
