@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-20T14:14:53.042Z",
-  "finished_at": "2026-11-20T14:20:54.547Z",
-  "duration_seconds": 160,
-  "validate_seconds": 202,
+  "started_at": "2026-11-20T21:25:42.225Z",
+  "finished_at": "2026-11-20T21:30:08.803Z",
+  "duration_seconds": 157,
+  "validate_seconds": 109,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 120,
-  "new_jobs": 31,
-  "removed_jobs": 31,
+  "verified_jobs": 127,
+  "new_jobs": 30,
+  "removed_jobs": 30,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 120,
+    "live": 127,
     "loginRequired": 0,
-    "dead": 19,
-    "noSignal": 4,
+    "dead": 21,
+    "noSignal": 1,
     "redirected": 0,
     "documents": 36,
-    "unreachable": 7
+    "unreachable": 1
   },
   "source_status": [
     {
@@ -127,8 +127,8 @@
       "id": "erode.nic.in",
       "label": "erode.nic.in",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Erode District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Erode District portal"
     },
     {
       "id": "freshersworld.com",
@@ -212,7 +212,7 @@
       "label": "Salem District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Salem District portal"
+      "detail": "3 notice(s) on Salem District portal"
     },
     {
       "id": "tcs.com",
@@ -233,7 +233,7 @@
       "label": "thoothukudi.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Thoothukudi District portal"
+      "detail": "2 notice(s) on Thoothukudi District portal"
     },
     {
       "id": "tirunelveli.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "171 job(s) from 10 category page(s)"
+      "detail": "172 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "39 job(s) from 5 search request(s)"
+      "detail": "118 job(s) from 9 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,20 +342,20 @@
     }
   ],
   "per_source": {
-    "govt-tn": 57,
+    "govt-tn": 60,
     "company-careers": 2,
     "tech-ats": 70,
     "naukri": 0,
-    "apna": 171,
+    "apna": 172,
     "indeed": 0,
-    "linkedin": 39
+    "linkedin": 118
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 101
+  "dropped_records": 134
 }
