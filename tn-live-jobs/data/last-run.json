@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-19T21:43:24.335Z",
-  "finished_at": "2026-11-19T21:48:21.256Z",
-  "duration_seconds": 159,
-  "validate_seconds": 138,
+  "started_at": "2026-11-20T14:14:53.042Z",
+  "finished_at": "2026-11-20T14:20:54.547Z",
+  "duration_seconds": 160,
+  "validate_seconds": 202,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 124,
-  "new_jobs": 13,
-  "removed_jobs": 13,
+  "verified_jobs": 120,
+  "new_jobs": 31,
+  "removed_jobs": 31,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 124,
+    "live": 120,
     "loginRequired": 0,
-    "dead": 25,
-    "noSignal": 1,
+    "dead": 19,
+    "noSignal": 4,
     "redirected": 0,
-    "documents": 42,
-    "unreachable": 0
+    "documents": 36,
+    "unreachable": 7
   },
   "source_status": [
     {
@@ -79,14 +79,14 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "13 opening(s) in Tamil Nadu"
+      "detail": "16 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
       "label": "Avery Dennison",
       "tier": 1,
       "status": "ok",
-      "detail": "4 opening(s) in Tamil Nadu"
+      "detail": "3 opening(s) in Tamil Nadu"
     },
     {
       "id": "chennai.nic.in",
@@ -107,7 +107,7 @@
       "label": "Coimbatore District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Coimbatore District portal"
+      "detail": "2 notice(s) on Coimbatore District portal"
     },
     {
       "id": "cuddalore.nic.in",
@@ -120,15 +120,15 @@
       "id": "dindigul.nic.in",
       "label": "dindigul.nic.in",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Dindigul District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Dindigul District portal"
     },
     {
       "id": "erode.nic.in",
       "label": "erode.nic.in",
       "tier": 1,
-      "status": "ok",
-      "detail": "1 notice(s) on Erode District portal"
+      "status": "no_listings",
+      "detail": "0 notice(s) on Erode District portal"
     },
     {
       "id": "freshersworld.com",
@@ -176,8 +176,8 @@
       "id": "karur.nic.in",
       "label": "karur.nic.in",
       "tier": 1,
-      "status": "unreachable",
-      "detail": "fetch failed for https://karur.nic.in/notice_category/recruitment/: fetch failed"
+      "status": "ok",
+      "detail": "1 notice(s) on Karur District portal"
     },
     {
       "id": "kyndryl.com",
@@ -205,14 +205,14 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "24 opening(s) in Tamil Nadu"
+      "detail": "22 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
       "label": "Salem District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Salem District portal"
+      "detail": "2 notice(s) on Salem District portal"
     },
     {
       "id": "tcs.com",
@@ -225,29 +225,29 @@
       "id": "thanjavur.nic.in",
       "label": "thanjavur.nic.in",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Thanjavur District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Thanjavur District portal"
     },
     {
       "id": "thoothukudi.nic.in",
       "label": "thoothukudi.nic.in",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Thoothukudi District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Thoothukudi District portal"
     },
     {
       "id": "tirunelveli.nic.in",
       "label": "Tirunelveli District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Tirunelveli District portal"
+      "detail": "2 notice(s) on Tirunelveli District portal"
     },
     {
       "id": "tiruppur.nic.in",
       "label": "tiruppur.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Tiruppur District portal"
+      "detail": "2 notice(s) on Tiruppur District portal"
     },
     {
       "id": "tnvelaivaaippu.gov.in",
@@ -296,7 +296,7 @@
       "label": "vellore.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Vellore District portal"
+      "detail": "2 notice(s) on Vellore District portal"
     },
     {
       "id": "wipro.com",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "172 job(s) from 10 category page(s)"
+      "detail": "171 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "20 job(s) from 4 search request(s)"
+      "detail": "39 job(s) from 5 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,13 +342,13 @@
     }
   ],
   "per_source": {
-    "govt-tn": 49,
+    "govt-tn": 57,
     "company-careers": 2,
     "tech-ats": 70,
     "naukri": 0,
-    "apna": 172,
+    "apna": 171,
     "indeed": 0,
-    "linkedin": 20
+    "linkedin": 39
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -357,5 +357,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 85
+  "dropped_records": 101
 }
