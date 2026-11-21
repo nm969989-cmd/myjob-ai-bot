@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-20T21:25:42.225Z",
-  "finished_at": "2026-11-20T21:30:08.803Z",
-  "duration_seconds": 157,
-  "validate_seconds": 109,
+  "started_at": "2026-11-21T13:38:52.502Z",
+  "finished_at": "2026-11-21T13:43:13.645Z",
+  "duration_seconds": 154,
+  "validate_seconds": 107,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 127,
-  "new_jobs": 30,
-  "removed_jobs": 30,
+  "verified_jobs": 130,
+  "new_jobs": 24,
+  "removed_jobs": 24,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 127,
+    "live": 130,
     "loginRequired": 0,
-    "dead": 21,
+    "dead": 19,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 36,
-    "unreachable": 1
+    "documents": 37,
+    "unreachable": 0
   },
   "source_status": [
     {
@@ -86,7 +86,7 @@
       "label": "Avery Dennison",
       "tier": 1,
       "status": "ok",
-      "detail": "3 opening(s) in Tamil Nadu"
+      "detail": "4 opening(s) in Tamil Nadu"
     },
     {
       "id": "chennai.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "172 job(s) from 10 category page(s)"
+      "detail": "171 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "118 job(s) from 9 search request(s)"
+      "detail": "158 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,18 +344,18 @@
   "per_source": {
     "govt-tn": 60,
     "company-careers": 2,
-    "tech-ats": 70,
+    "tech-ats": 71,
     "naukri": 0,
-    "apna": 172,
+    "apna": 171,
     "indeed": 0,
-    "linkedin": 118
+    "linkedin": 158
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
-    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
-    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
+    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
+    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 134
+  "dropped_records": 154
 }
