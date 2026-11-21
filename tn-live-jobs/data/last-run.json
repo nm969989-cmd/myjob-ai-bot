@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-21T13:38:52.502Z",
-  "finished_at": "2026-11-21T13:43:13.645Z",
-  "duration_seconds": 154,
-  "validate_seconds": 107,
+  "started_at": "2026-11-21T20:12:26.522Z",
+  "finished_at": "2026-11-21T20:16:52.343Z",
+  "duration_seconds": 157,
+  "validate_seconds": 109,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 130,
-  "new_jobs": 24,
-  "removed_jobs": 24,
+  "verified_jobs": 123,
+  "new_jobs": 13,
+  "removed_jobs": 13,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 130,
+    "live": 123,
     "loginRequired": 0,
-    "dead": 19,
+    "dead": 25,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 37,
-    "unreachable": 0
+    "documents": 36,
+    "unreachable": 1
   },
   "source_status": [
     {
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "158 job(s) from 10 search request(s)"
+      "detail": "160 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -348,14 +348,14 @@
     "naukri": 0,
     "apna": 171,
     "indeed": 0,
-    "linkedin": 158
+    "linkedin": 160
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
-    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
-    "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
+    "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 154
+  "dropped_records": 156
 }
