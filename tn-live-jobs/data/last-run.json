@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-22T20:26:23.625Z",
-  "finished_at": "2026-11-22T20:31:01.605Z",
+  "started_at": "2026-11-23T16:19:31.609Z",
+  "finished_at": "2026-11-23T16:24:07.823Z",
   "duration_seconds": 158,
-  "validate_seconds": 120,
+  "validate_seconds": 119,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,18 +59,18 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 125,
-  "new_jobs": 27,
-  "removed_jobs": 27,
+  "verified_jobs": 127,
+  "new_jobs": 30,
+  "removed_jobs": 30,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 125,
+    "live": 127,
     "loginRequired": 0,
-    "dead": 24,
+    "dead": 22,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 38,
+    "documents": 37,
     "unreachable": 0
   },
   "source_status": [
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "16 opening(s) in Tamil Nadu"
+      "detail": "18 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -121,7 +121,7 @@
       "label": "dindigul.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Dindigul District portal"
+      "detail": "2 notice(s) on Dindigul District portal"
     },
     {
       "id": "erode.nic.in",
@@ -198,14 +198,14 @@
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "3 opening(s) in Tamil Nadu"
+      "detail": "4 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "21 opening(s) in Tamil Nadu"
+      "detail": "23 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "170 job(s) from 10 category page(s)"
+      "detail": "173 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "79 job(s) from 7 search request(s)"
+      "detail": "165 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,13 +342,13 @@
     }
   ],
   "per_source": {
-    "govt-tn": 60,
+    "govt-tn": 61,
     "company-careers": 2,
-    "tech-ats": 70,
+    "tech-ats": 75,
     "naukri": 0,
-    "apna": 170,
+    "apna": 173,
     "indeed": 0,
-    "linkedin": 79
+    "linkedin": 165
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -357,5 +357,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 116
+  "dropped_records": 163
 }
