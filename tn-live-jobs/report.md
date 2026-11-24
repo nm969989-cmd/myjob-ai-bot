@@ -1,18 +1,18 @@
 # Tamil Nadu Live Jobs - run summary
 
-- **Started:** 2026-11-23T16:19:31.609Z
-- **Finished:** 2026-11-23T16:24:07.823Z
-- **Duration:** 158 s
+- **Started:** 2026-11-24T01:08:14.770Z
+- **Finished:** 2026-11-24T01:12:44.135Z
+- **Duration:** 161 s
 - **Trigger:** GitHub Actions (schedule)
 - **Search:** keywords = software developer, fresher, data analyst, accountant, data entry, nurse, teacher, sales executive | cities = Tiruvannamalai, Vellore, Puducherry, Chennai, Coimbatore, Madurai, Trichy, Salem, Tirunelveli, Erode, Thanjavur, Tiruppur, Hosur, Kanchipuram, Dindigul, Karur, Nagercoil, Thoothukudi, Cuddalore, Ranipet, Sivakasi, Kumbakonam, Neyveli, Namakkal, Dharmapuri, Krishnagiri, Tiruvallur, Tirupattur, Villupuram, Kallakurichi, Tenkasi, Theni, Ramanathapuram, Sivagangai, Pudukkottai, Perambalur, Ariyalur, Nagapattinam, Tiruvarur, Nilgiris, Tamil Nadu
-- **Live verified jobs: 127** (kept this run: 150, new: 30, gone since last run: 30)
+- **Live verified jobs: 129** (kept this run: 150, new: 10, gone since last run: 10)
 
 ## Results per source
 
 | Source | Tier | Status | Found | In this run | Note |
 | --- | --- | --- | --- | --- | --- |
 | astrazeneca.com | 1 | :white_check_mark: ok | 18 | 0 | 18 opening(s) in Tamil Nadu |
-| Avery Dennison | 1 | :white_check_mark: ok | 4 | 0 | 4 opening(s) in Tamil Nadu |
+| Avery Dennison | 1 | :white_check_mark: ok | 1 | 3 | 4 opening(s) in Tamil Nadu |
 | chennai.nic.in | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Chennai District portal |
 | Cognizant | 1 | :x: blocked | 0 | 0 | no job records could be read from this site |
 | Coimbatore District Collectorate | 1 | :white_check_mark: ok | 2 | 0 | 2 notice(s) on Coimbatore District portal |
@@ -29,7 +29,7 @@
 | kyndryl.com | 1 | :white_check_mark: ok | 11 | 0 | 11 opening(s) in Tamil Nadu |
 | Madurai District Collectorate | 1 | :grey_question: no listings | 0 | 0 | 0 notice(s) on Madurai District portal |
 | paypal.com | 1 | :white_check_mark: ok | 4 | 0 | 4 opening(s) in Tamil Nadu |
-| Robert Bosch India | 1 | :white_check_mark: ok | 1 | 22 | 23 opening(s) in Tamil Nadu |
+| Robert Bosch India | 1 | :white_check_mark: ok | 0 | 19 | 19 opening(s) in Tamil Nadu |
 | Salem District Collectorate | 1 | :white_check_mark: ok | 3 | 0 | 3 notice(s) on Salem District portal |
 | Tata Consultancy Services | 1 | :x: blocked | 0 | 0 | fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed |
 | thanjavur.nic.in | 1 | :white_check_mark: ok | 1 | 0 | 1 notice(s) on Thanjavur District portal |
@@ -47,7 +47,7 @@
 | Zoho Corporation | 1 | :white_check_mark: ok | 0 | 2 | 2 India opening(s) |
 | apna.co | 2 | :white_check_mark: ok | 70 | 37 | 173 job(s) from 10 category page(s) |
 | Indeed India | 2 | :x: blocked | 0 | 0 | bot protection answered HTTP 403 on 4 request(s); source disabled |
-| LinkedIn Jobs | 2 | :white_check_mark: ok | 38 | 37 | 165 job(s) from 10 search request(s) |
+| LinkedIn Jobs | 2 | :white_check_mark: ok | 39 | 37 | 157 job(s) from 10 search request(s) |
 | Naukri.com | 2 | :x: blocked | 0 | 0 | Naukri returned no job cards to a headless browser either |
 
 _"Found" = usable records this site offered; "In this run" = how many survived the per-run cap._
@@ -57,78 +57,48 @@ _"Found" = usable records this site offered; "In this run" = how many survived t
 | Check | Count |
 | --- | --- |
 | Links re-opened | 150 |
-| :white_check_mark: Verified live | 127 |
-| Government documents verified | 37 |
+| :white_check_mark: Verified live | 129 |
+| Government documents verified | 36 |
 | Login required (kept, not published) | 0 |
 | Page did not look like a job (no_job_signal) | 1 |
 | Redirected elsewhere | 0 |
-| Dead link (HTTP 4xx/5xx) | 22 |
-| Could not be reached | 0 |
+| Dead link (HTTP 4xx/5xx) | 19 |
+| Could not be reached | 1 |
 
-## New this run (30)
+## New this run (10)
 
 | Title | Company | City | Category | Verified | Apply |
 | --- | --- | --- | --- | --- | --- |
-| SAP S4HANA Data Migration – Migration Manager | Robert Bosch India | Coimbatore | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000163168020 |
-| Customer Sales Lead – South Region | Robert Bosch India | Chennai | Sales & Marketing | yes | https://jobs.smartrecruiters.com/BoschGroup/744000163164759 |
-| IN_RBIN_Manager / Deputy Manager - for Facility Management … | Robert Bosch India | Tirunelveli | Other | yes | https://jobs.smartrecruiters.com/BoschGroup/744000163161624 |
-| Software_Architect_EBH_10+Years | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000163150309 |
-| Software_Architect_EBH_10+Years | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000163149749 |
-| Software_Architect_EBH_10+Years | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000163149359 |
-| Software_Architect__ECU_EBH | Robert Bosch India | Hosur | Software | yes | https://jobs.smartrecruiters.com/BoschGroup/744000163148609 |
-| Agency Development Manager | Indusind Nippon Life Insurance (Re… | Chennai | Other | yes | https://apna.co/job/chennai-region/agency-development-manager-407044878 |
-| Commerical Officer | Agustya Automobiles Pvt. Ltd. | Puducherry | Other | yes | https://apna.co/job/bengaluru-bangalore-region/commerical-officer-283023094 |
-| Business Development Executive (BDE) | Sourcecorp Solution Private Limited | Chennai | Sales & Marketing | no (http_481) | https://apna.co/job/chennai-region/business-development-executive-bde-403447986 |
-| MIS Executive | Ysw Learning Private Limited | Tamil Nadu | Data & Analytics | no (http_481) | https://apna.co/job/bengaluru-bangalore-region/mis-executive-603010094 |
-| Delivery Executive | New Kwality Dairy | Chennai | Other | no (http_481) | https://apna.co/job/chennai-region/delivery-executive-350712643 |
-| Medical Coding Jobs for Bioinfomatics and Biochemistry Grad… | Achievers Spot | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-bioinfomatics-and-biochemistry-graduates-at-achievers-spot-4463824652 |
-| QX Impact - Senior Data Engineer - ETL/Python | QX Impact | Tamil Nadu | Software | yes | https://in.linkedin.com/jobs/view/qx-impact-senior-data-engineer-etl-python-at-qx-impact-4476955545 |
-| Data Scientist | Larsen & Toubro | Kanchipuram | Data & Analytics | yes | https://in.linkedin.com/jobs/view/data-scientist-at-larsen-toubro-4485685415 |
-| Web Developer | Digitalfactoryindia | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/web-developer-4475732330 |
-| Salesforce Developer | SuccessMetrics Corp | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/salesforce-developer-at-successmetrics-corp-4442574293 |
-| Senior Salesforce Developer | SuccessMetrics Corp | Puducherry | Software | yes | https://in.linkedin.com/jobs/view/senior-salesforce-developer-at-successmetrics-corp-4442558941 |
-| Integrations Engineer | DrDoctor | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/integrations-engineer-at-drdoctor-4444153802 |
-| WEB WORDPRESS ( JUNIOR FULLTIME) | HyperZ Digital | Puducherry | Other | no (http_429) | https://in.linkedin.com/jobs/view/web-wordpress-junior-fulltime-at-hyperz-digital-4461484242 |
-| WEB WORDPRESS (INTERN – FULLTIME) | HyperZ Digital | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/web-wordpress-intern-%E2%80%93-fulltime-at-hyperz-digital-4461806167 |
-| Associate Database Engineer | Mydbops | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/associate-database-engineer-at-mydbops-4454260797 |
-| Oracle HCM Consultant | Altraize | Puducherry | Other | yes | https://in.linkedin.com/jobs/view/oracle-hcm-consultant-at-altraize-4462920900 |
-| Salesforce Architect | SuccessMetrics Corp | Puducherry | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/salesforce-architect-at-successmetrics-corp-4442579072 |
-| Opening for Lifescience and Paramedical Graduates | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/opening-for-lifescience-and-paramedical-graduates-at-achievers-spot-4485194980 |
-| Vacancy for Lifescience and Paramedical Graduates | Achievers Spot | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/vacancy-for-lifescience-and-paramedical-graduates-at-achievers-spot-4487646344 |
-| Digital Banking- FOS- TIRUVANNAMALAI | IndBank Global Support Services Li… | Tiruvannamalai | Other | no (http_429) | https://in.linkedin.com/jobs/view/digital-banking-fos-tiruvannamalai-at-indbank-global-support-services-limited-4490321354 |
-| Officer -Micro banking Collections-Karnataka | Ujjivan Small Finance Bank | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/officer-micro-banking-collections-karnataka-at-ujjivan-small-finance-bank-4490787447 |
-| Relationship Manager - GL South East | Bajaj Finserv | Tiruvannamalai | Sales & Marketing | yes | https://in.linkedin.com/jobs/view/relationship-manager-gl-south-east-at-bajaj-finserv-4422635913 |
-| Loan Officer - MB - South 2 | Ujjivan Small Finance Bank | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/loan-officer-mb-south-2-at-ujjivan-small-finance-bank-4491746408 |
+| Associate Manager - HR- Plant HR | Avery Dennison | Coimbatore | Other | yes | https://jobs.smartrecruiters.com/AveryDennison/744000162955019 |
+| Associate Manager - HR | Avery Dennison | Coimbatore | Other | yes | https://jobs.smartrecruiters.com/AveryDennison/744000161752669 |
+| Production Shift Supervisor(Female) | Avery Dennison | Coimbatore | Engineering & Manufacturing | yes | https://jobs.smartrecruiters.com/AveryDennison/744000155479329 |
+| L1 – Junior Software Developer ( THE BUILDER ) | Wonder Worth Solutions | Vellore | Software | yes | https://in.linkedin.com/jobs/view/l1-%E2%80%93-junior-software-developer-the-builder-at-wonder-worth-solutions-4479031515 |
+| Associate Data Engineer Position filled | Irastrive Technologies Private Lim… | Vellore | Software | yes | https://in.linkedin.com/jobs/view/associate-data-engineer-position-filled-at-irastrive-technologies-private-limited-4416217228 |
+| SAP CPI Principal Architect | NTT DATA North America | Tamil Nadu | Other | yes | https://in.linkedin.com/jobs/view/sap-cpi-principal-architect-at-ntt-data-north-america-4411617572 |
+| Medical Coding Jobs for Bioinfomatics Graduates | Achievers Spot | Tamil Nadu | Other | no (http_429) | https://in.linkedin.com/jobs/view/medical-coding-jobs-for-bioinfomatics-graduates-at-achievers-spot-4470085722 |
+| Application Software Engineer 2 | Oracle | Chennai | Software | yes | https://in.linkedin.com/jobs/view/application-software-engineer-2-at-oracle-4492660402 |
+| Credit Officer-Housing- Tamil Nadu & Kerala | Ujjivan Small Finance Bank | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/credit-officer-housing-tamil-nadu-kerala-at-ujjivan-small-finance-bank-4488485186 |
+| Centre Manager - MFI South | Bajaj Finserv | Tiruvannamalai | Other | yes | https://in.linkedin.com/jobs/view/centre-manager-mfi-south-at-bajaj-finserv-4451488259 |
 
-## Gone since last run (30)
+## Gone since last run (10)
 
-- Jr. Customer Service Executive - India Operations, New Rollouts and A… (Tata Communications)
-- Opening for Bsc Chemistry, Msc Chemistry, Organic and Inorganic Chemi… (Achievers Spot)
-- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
-- Auditor (The vellore kitchen)
-- L1 – Junior Machine Learner – THE ORACLE (Wonder Worth Solutions)
+- Loan Officer - MB - South 2 (Ujjivan Small Finance Bank)
+- Officer -Micro banking Collections-Karnataka (Ujjivan Small Finance Bank)
+- Java Specialist I - Software Engineering (UST)
 - L1 – Junior Software Developer ( THE BUILDER ) (Wonder Worth Solutions)
-- L6 – Supervisor – Software Developer (Wonder Worth Solutions)
-- Medical Coding Jobs for Biomedical Engineer and Biotechnology Engineer (Achievers Spot)
-- Sales Executive - Prayaan Capital - Vellore (VIHU)
-- Associate Data Engineer Position filled (Irastrive Technologies Private Limited)
-- Agency Development Manager (Indusind Nippon Life Insurance (Relianc…)
-- Finance Manager (Axis Max Life Insurance Company Limited)
-- Recruitment for Rural Development and Panchayat Raj – Filling up the … (Government of Tamil Nadu)
-- Sr. Accountant (Oswal Minerals Limited)
-- Account Assistant (Carbonaire Industries Madras Pvt. Ltd.)
-- General Manager (Aspire Electric Company)
-- Associate Manager - HR- Plant HR (Avery Dennison)
-- SAP FI Consultant (Robert Bosch India)
-- Video Editor | Graphic Designer | Video Grapher (THE LAZR COMPANY)
-- Mechanical Design Engineer_ECU Mechanics_2WP (Robert Bosch India)
+- L4 – Team Lead – Software Developer – (THE BUILDER) (Wonder Worth Solutions)
+- Oracle HCM Consultant (Altraize)
+- Salesforce Architect (SuccessMetrics Corp)
+- Associate _ Project Management Associate (Robert Bosch India)
+- Hydraulics Component Design Engineer (Specialist), Mobile Control val… (Robert Bosch India)
+- System Requirement Engineer (Robert Bosch India)
 
 ## Data integrity
 
 | Rule | Result |
 | --- | --- |
 | Every published job was re-opened and checked | yes - 150 links checked |
-| Jobs without a real title/company/apply URL dropped | yes - 163 record(s) dropped while scraping |
+| Jobs without a real title/company/apply URL dropped | yes - 160 record(s) dropped while scraping |
 | Invented salary / date / URL | never - values are only ever read from a fetched page |
 | Unverified jobs excluded from the web page | yes - public/data/jobs.json holds verified jobs only |
 
