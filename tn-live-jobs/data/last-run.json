@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-25T15:53:53.210Z",
-  "finished_at": "2026-11-25T15:58:22.233Z",
-  "duration_seconds": 159,
-  "validate_seconds": 111,
+  "started_at": "2026-11-25T22:40:03.300Z",
+  "finished_at": "2026-11-25T22:44:35.882Z",
+  "duration_seconds": 158,
+  "validate_seconds": 114,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -60,8 +60,8 @@
   ],
   "scraped_records": 150,
   "verified_jobs": 129,
-  "new_jobs": 28,
-  "removed_jobs": 28,
+  "new_jobs": 9,
+  "removed_jobs": 9,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "19 opening(s) in Tamil Nadu"
+      "detail": "18 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -198,14 +198,14 @@
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "3 opening(s) in Tamil Nadu"
+      "detail": "2 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "25 opening(s) in Tamil Nadu"
+      "detail": "24 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "153 job(s) from 10 search request(s)"
+      "detail": "163 job(s) from 9 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -344,11 +344,11 @@
   "per_source": {
     "govt-tn": 62,
     "company-careers": 2,
-    "tech-ats": 85,
+    "tech-ats": 82,
     "naukri": 0,
     "apna": 151,
     "indeed": 0,
-    "linkedin": 153
+    "linkedin": 163
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -357,5 +357,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 167
+  "dropped_records": 170
 }
