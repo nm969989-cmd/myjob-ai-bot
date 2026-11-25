@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-24T23:12:10.409Z",
-  "finished_at": "2026-11-24T23:17:31.743Z",
-  "duration_seconds": 158,
-  "validate_seconds": 163,
+  "started_at": "2026-11-25T15:53:53.210Z",
+  "finished_at": "2026-11-25T15:58:22.233Z",
+  "duration_seconds": 159,
+  "validate_seconds": 111,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,19 +59,19 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 123,
-  "new_jobs": 19,
-  "removed_jobs": 19,
+  "verified_jobs": 129,
+  "new_jobs": 28,
+  "removed_jobs": 28,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 123,
+    "live": 129,
     "loginRequired": 0,
-    "dead": 22,
+    "dead": 20,
     "noSignal": 1,
     "redirected": 0,
-    "documents": 36,
-    "unreachable": 4
+    "documents": 37,
+    "unreachable": 0
   },
   "source_status": [
     {
@@ -142,7 +142,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "15 opening(s) in Tamil Nadu"
+      "detail": "16 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -190,15 +190,15 @@
       "id": "madurai.nic.in",
       "label": "Madurai District Collectorate",
       "tier": 1,
-      "status": "no_listings",
-      "detail": "0 notice(s) on Madurai District portal"
+      "status": "ok",
+      "detail": "1 notice(s) on Madurai District portal"
     },
     {
       "id": "paypal.com",
       "label": "paypal.com",
       "tier": 1,
       "status": "ok",
-      "detail": "4 opening(s) in Tamil Nadu"
+      "detail": "3 opening(s) in Tamil Nadu"
     },
     {
       "id": "bosch.in",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "150 job(s) from 9 category page(s)"
+      "detail": "151 job(s) from 9 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "60 job(s) from 6 search request(s)"
+      "detail": "153 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,13 +342,13 @@
     }
   ],
   "per_source": {
-    "govt-tn": 61,
+    "govt-tn": 62,
     "company-careers": 2,
     "tech-ats": 85,
     "naukri": 0,
-    "apna": 150,
+    "apna": 151,
     "indeed": 0,
-    "linkedin": 60
+    "linkedin": 153
   },
   "dead_domains": {
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
@@ -357,5 +357,5 @@
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed"
   },
-  "dropped_records": 127
+  "dropped_records": 167
 }
