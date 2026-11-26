@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-26T15:34:31.054Z",
-  "finished_at": "2026-11-26T15:38:52.133Z",
-  "duration_seconds": 156,
-  "validate_seconds": 105,
+  "started_at": "2026-11-26T22:30:20.537Z",
+  "finished_at": "2026-11-26T22:34:59.170Z",
+  "duration_seconds": 157,
+  "validate_seconds": 122,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -60,8 +60,8 @@
   ],
   "scraped_records": 150,
   "verified_jobs": 130,
-  "new_jobs": 16,
-  "removed_jobs": 16,
+  "new_jobs": 18,
+  "removed_jobs": 18,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "152 job(s) from 11 search request(s)"
+      "detail": "160 job(s) from 11 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -348,14 +348,14 @@
     "naukri": 0,
     "apna": 151,
     "indeed": 0,
-    "linkedin": 152
+    "linkedin": 160
   },
   "dead_domains": {
-    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
+    "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 163
+  "dropped_records": 162
 }
