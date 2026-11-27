@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "started_at": "2026-11-26T22:30:20.537Z",
-  "finished_at": "2026-11-26T22:34:59.170Z",
-  "duration_seconds": 157,
-  "validate_seconds": 122,
+  "started_at": "2026-11-27T15:26:35.526Z",
+  "finished_at": "2026-11-27T15:30:59.593Z",
+  "duration_seconds": 156,
+  "validate_seconds": 108,
   "trigger": "GitHub Actions (schedule)",
   "keywords": [
     "software developer",
@@ -59,15 +59,15 @@
     "Tamil Nadu"
   ],
   "scraped_records": 150,
-  "verified_jobs": 130,
-  "new_jobs": 18,
-  "removed_jobs": 18,
+  "verified_jobs": 131,
+  "new_jobs": 24,
+  "removed_jobs": 24,
   "login_required": 0,
   "validate_stats": {
     "checked": 150,
-    "live": 130,
+    "live": 131,
     "loginRequired": 0,
-    "dead": 19,
+    "dead": 18,
     "noSignal": 1,
     "redirected": 0,
     "documents": 37,
@@ -79,7 +79,7 @@
       "label": "astrazeneca.com",
       "tier": 1,
       "status": "ok",
-      "detail": "18 opening(s) in Tamil Nadu"
+      "detail": "16 opening(s) in Tamil Nadu"
     },
     {
       "id": "averydennison.com",
@@ -107,7 +107,7 @@
       "label": "Coimbatore District Collectorate",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Coimbatore District portal"
+      "detail": "3 notice(s) on Coimbatore District portal"
     },
     {
       "id": "cuddalore.nic.in",
@@ -128,7 +128,7 @@
       "label": "erode.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "1 notice(s) on Erode District portal"
+      "detail": "3 notice(s) on Erode District portal"
     },
     {
       "id": "freshersworld.com",
@@ -142,7 +142,7 @@
       "label": "Freshworks",
       "tier": 1,
       "status": "ok",
-      "detail": "16 opening(s) in Tamil Nadu"
+      "detail": "17 opening(s) in Tamil Nadu"
     },
     {
       "id": "hcltech.com",
@@ -183,8 +183,8 @@
       "id": "kyndryl.com",
       "label": "kyndryl.com",
       "tier": 1,
-      "status": "ok",
-      "detail": "18 opening(s) in Tamil Nadu"
+      "status": "no_listings",
+      "detail": "0 opening(s) in Tamil Nadu"
     },
     {
       "id": "madurai.nic.in",
@@ -205,7 +205,7 @@
       "label": "Robert Bosch India",
       "tier": 1,
       "status": "ok",
-      "detail": "20 opening(s) in Tamil Nadu"
+      "detail": "18 opening(s) in Tamil Nadu"
     },
     {
       "id": "salem.nic.in",
@@ -247,7 +247,7 @@
       "label": "tiruppur.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "3 notice(s) on Tiruppur District portal"
+      "detail": "2 notice(s) on Tiruppur District portal"
     },
     {
       "id": "tnvelaivaaippu.gov.in",
@@ -296,7 +296,7 @@
       "label": "vellore.nic.in",
       "tier": 1,
       "status": "ok",
-      "detail": "2 notice(s) on Vellore District portal"
+      "detail": "1 notice(s) on Vellore District portal"
     },
     {
       "id": "wipro.com",
@@ -317,7 +317,7 @@
       "label": "apna.co",
       "tier": 2,
       "status": "ok",
-      "detail": "151 job(s) from 9 category page(s)"
+      "detail": "170 job(s) from 10 category page(s)"
     },
     {
       "id": "indeed.co.in",
@@ -331,7 +331,7 @@
       "label": "LinkedIn Jobs",
       "tier": 2,
       "status": "ok",
-      "detail": "160 job(s) from 11 search request(s)"
+      "detail": "154 job(s) from 10 search request(s)"
     },
     {
       "id": "naukri.com",
@@ -342,20 +342,20 @@
     }
   ],
   "per_source": {
-    "govt-tn": 64,
+    "govt-tn": 65,
     "company-careers": 2,
-    "tech-ats": 78,
+    "tech-ats": 57,
     "naukri": 0,
-    "apna": 151,
+    "apna": 170,
     "indeed": 0,
-    "linkedin": 160
+    "linkedin": 154
   },
   "dead_domains": {
-    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "tn.gov.in": "fetch failed for https://www.tn.gov.in/job_opportunity_list.php: fetch failed",
+    "tnvelaivaaippu.gov.in": "fetch failed for https://tnvelaivaaippu.gov.in/: fetch failed",
     "employment.tn.gov.in": "fetch failed for https://employment.tn.gov.in/: fetch failed",
     "protnnetc.tn.gov.in": "fetch failed for https://protnnetc.tn.gov.in/: fetch failed",
     "tcs.com": "fetch failed for https://ibegin.tcs.com/iBegin/api/careers/getJobPost: fetch failed"
   },
-  "dropped_records": 162
+  "dropped_records": 146
 }
